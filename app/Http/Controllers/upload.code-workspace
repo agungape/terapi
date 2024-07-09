@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../mlite-4.0.3"
+		},
+		{
+			"path": "../../../../hitungcepat"
+		},
+		{
+			"path": "../../../../laravel01"
+		},
+		{
+			"path": "E:/WEB PROGRAMMING/TEMPLATE/NiceAdmin"
+		},
+		{
+			"path": "../../../../penjualan"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "NiceAdmin"
+	}
+}

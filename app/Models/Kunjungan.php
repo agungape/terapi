@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Kunjungan extends Model
 {
@@ -20,6 +22,11 @@ class Kunjungan extends Model
     public function terapis(): BelongsTo
     {
         return $this->belongsTo('App\Models\Terapis');
+    }
+
+    public function pemeriksaan(): HasOne
+    {
+        return $this->hasOne('App\Models\Pemeriksaan');
     }
 
     protected static function boot()

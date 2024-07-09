@@ -41,8 +41,6 @@ class AnakController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
-        dd($request);
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:6|unique:anaks,nib',
             'nama' => 'required',

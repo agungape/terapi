@@ -39,8 +39,45 @@
                                 </form>
                             </div>
 
-                            {{-- garfik --}}
+                            {{-- riwayat --}}
                             <div class="tab-pane fade pt-3" id="profile-settings">
+
+
+                                @foreach ($riwayat as $r)
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th width ="30"> Tanggal </th>
+                                                <th colspan="4"> Pemeriksaan </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td rowspan="4"> {{ $r->kunjungan->created_at }}</td>
+                                                <td width="50"> Subjektif</td>
+                                                <td width="5"> :</td>
+                                                <td> {{ $r->subjek }} </td>
+                                                <td rowspan="4" width="20"> {{ $r->kunjungan->terapis->nama }} </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="50"> Objectif</td>
+                                                <td width="5"> :</td>
+                                                <td> {{ $r->objek }} </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="50"> Assesment</td>
+                                                <td width="5"> :</td>
+                                                <td> {{ $r->assesment }} </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="50"> Planning</td>
+                                                <td width="5"> :</td>
+                                                <td> {{ $r->planning }} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                @endforeach
+
                             </div>
 
                         </div><!-- End Bordered Tabs -->

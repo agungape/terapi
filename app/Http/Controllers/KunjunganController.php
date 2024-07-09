@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anak;
 use App\Models\Kunjungan;
+use App\Models\Pemeriksaan;
 use App\Models\Program;
 use App\Models\Terapis;
 use Carbon\Carbon;
@@ -49,7 +50,7 @@ class KunjunganController extends Controller
 
     public function riwayatAnak()
     {
-        $kunjungan = Kunjungan::orderBy('created_at')->paginate(5);
+        $kunjungan = Kunjungan::orderBy('created_at', 'desc')->paginate(5);
         return view('kunjungan.data', compact('kunjungan'));
     }
 
@@ -58,10 +59,13 @@ class KunjunganController extends Controller
      */
     public function show(Kunjungan $kunjungan)
     {
+        $riwayat = Pemeriksaan::whereHas('kunjungan', function ($query) use ($kunjungan) {
+            $query->where('anak_id', $kunjungan->anak->id);
+        })->orderBy('created_at', 'desc')->paginate(5);
         $program = Program::all();
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());
-        return view('kunjungan.detail', compact('kunjungan', 'program'));
+        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat'));
     }
 
     /**

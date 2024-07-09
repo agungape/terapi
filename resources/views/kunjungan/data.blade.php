@@ -30,7 +30,7 @@
                                         </td>
                                         <td> {{ $kun->terapis->nama }} </td>
                                         <td> Pertemuan {{ $kun->pertemuan }} </td>
-                                        <td> {{ $kun->anak->created_at }} </td>
+                                        <td> {{ $kun->created_at }} </td>
                                         <td> {{ $kun->status }} </td>
                                         <td><a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
                                                 class="btn btn-gradient-primary btn-sm">

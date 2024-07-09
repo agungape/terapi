@@ -61,7 +61,7 @@ class KunjunganController extends Controller
     {
         $riwayat = Pemeriksaan::whereHas('kunjungan', function ($query) use ($kunjungan) {
             $query->where('anak_id', $kunjungan->anak->id);
-        })->orderBy('created_at', 'desc')->paginate(5);
+        })->orderBy('created_at', 'desc')->paginate(2);
         $program = Program::all();
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());

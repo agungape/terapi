@@ -16,4 +16,9 @@ class Pemeriksaan extends Model
     {
         return $this->belongsTo(Kunjungan::class);
     }
+
+    public function program(): BelongsTo
+    {
+        return $this->belongsTo(Program::class);
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Terapis;
+use App\Models\TerapisPelatihan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TerapisController extends Controller
@@ -13,7 +15,11 @@ class TerapisController extends Controller
     public function index()
     {
         $terapis = Terapis::orderBy('nib')->paginate(5);
-        return view('terapis.index', ['terapis' => $terapis]);
+        foreach ($terapis as $t) {
+            $tanggal_lahir = Carbon::parse($t->tanggal_lahir);
+            $t->usia = $tanggal_lahir->diffInYears(Carbon::now());
+        }
+        return view('terapis.index', ['t' => $terapis]);
     }
 
     /**
@@ -21,7 +27,10 @@ class TerapisController extends Controller
      */
     public function create()
     {
-        //
+        $terapis = new Terapis();
+        // buat kode barang BR005
+        $terapis->nib = 'BSC' . str_pad(Terapis::count() + 1, 2, '0', STR_PAD_LEFT);
+        return view('terapis.create', compact('terapis'));
     }
 
     /**
@@ -35,9 +44,15 @@ class TerapisController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Terapis $terapis)
+    public function show(Terapis $terapi)
     {
-        //
+        $terapis = Terapis::with(['pelatihans' => function ($query) {
+            $query->withPivot('tanggal', 'sertifikat'); // Mengambil kolom expires_at dari pivot
+        }])->where('id', $terapi->id)->first();
+        // dd($terapis);
+        // $terapis = Terapis::findOrFail($terapi->id);
+        // $pelatihan = $terapis->pelatihans;
+        return view('terapis.detail', compact('terapi', 'terapis'));
     }
 
     /**
@@ -62,5 +77,9 @@ class TerapisController extends Controller
     public function destroy(Terapis $terapis)
     {
         //
+    }
+
+    public function terapis_pelatihan()
+    {
     }
 }

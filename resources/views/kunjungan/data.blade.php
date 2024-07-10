@@ -31,16 +31,33 @@
                                         <td> {{ $kun->terapis->nama }} </td>
                                         <td> Pertemuan {{ $kun->pertemuan }} </td>
                                         <td> {{ $kun->created_at }} </td>
-                                        <td> {{ $kun->status }} </td>
+                                        <td>
+                                            @if ($kun->status == 'hadir')
+                                                <label class="badge badge-success">{{ $kun->status }}</label>
+                                            @endif
+                                            @if ($kun->status == 'izin')
+                                                <label class="badge badge-warning">{{ $kun->status }}</label>
+                                            @endif
+                                            @if ($kun->status == 'sakit')
+                                                <label class="badge badge-danger">{{ $kun->status }}</label>
+                                            @endif
+                                        </td>
                                         <td><a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
-                                                class="btn btn-gradient-primary btn-sm">
+                                                class="btn
+                                                btn-gradient-primary btn-sm">
                                                 <i class="fa fa-address-card-o"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 @endforeach
+
                             </tbody>
                         </table>
+                        <div class="row">
+                            <div class="mx-auto mt-3">
+                                {{ $kunjungan->fragment('judul')->links() }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

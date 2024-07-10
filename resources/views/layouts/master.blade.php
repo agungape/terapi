@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/css/style.css">
     <link rel="shortcut icon" href="{{ asset('assets') }}/images/favicon.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
 
     {{-- @vite(['resources/sass/app.scss']) --}}
 </head>
@@ -94,6 +97,10 @@
     <script src="{{ asset('assets') }}/js/file-upload.js"></script>
     <script src="{{ asset('assets') }}/js/typeahead.js"></script>
     <script src="{{ asset('assets') }}/js/select2.js"></script>
+    <script src="{{ asset('assets') }}/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.min.js"></script>
+    <script src="{{ asset('assets') }}/adminlte/dist/js/demo.js"></script>
     @yield('scripts')
 
 

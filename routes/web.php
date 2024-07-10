@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::resource('/anak', AnakController::class);
     Route::resource('/terapis', TerapisController::class);
+    // Route::get('/terapis/{terapis}', [TerapisController::class, 'show'])->name('terapis.show');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::resource('/kunjungan', KunjunganController::class);
     Route::get('/pencarian/proses', [PencarianController::class, 'proses']);

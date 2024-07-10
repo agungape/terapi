@@ -50,7 +50,7 @@ class KunjunganController extends Controller
 
     public function riwayatAnak()
     {
-        $kunjungan = Kunjungan::orderBy('created_at', 'desc')->paginate(5);
+        $kunjungan = Kunjungan::orderBy('created_at', 'desc')->paginate(4);
         return view('kunjungan.data', compact('kunjungan'));
     }
 

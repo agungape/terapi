@@ -26286,4 +26286,8 @@ dl li {
   -webkit-flex-grow: 1;
   flex-grow: 1;
 }
+
+.img-fluid{max-width:100%;height:auto}
+.img-circle{border-radius:50%}
+.profile-user-img{border:3px solid #adb5bd;margin:0 auto;padding:3px;width:100px}
 /*# sourceMappingURL=maps/style.css.map */

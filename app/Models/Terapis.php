@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Terapis extends Model
 {
+    protected $fillable = ['nama', 'nib', 'tanggal_lahir', 'sertifikat'];
     use HasFactory;
 
     public function pelatihans(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Pelatihan')->withTimestamps();
+        return $this->belongsToMany(Pelatihan::class, 'terapis_pelatihan', 'terapis_id', 'pelatihan_id');
     }
 
     public function kunjungans(): HasMany

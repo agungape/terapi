@@ -12,6 +12,6 @@ class Pelatihan extends Model
 
     public function terapis(): BelongsToMany
     {
-        return $this->belongsToMany('App\Models\Terapis')->withTimestamps();
+        return $this->belongsToMany(Terapis::class, 'terapis_pelatihan', 'pelatihan_id', 'terapis_id')->withTimestamps();
     }
 }

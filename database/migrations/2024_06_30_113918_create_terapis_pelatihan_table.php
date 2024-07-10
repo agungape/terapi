@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('terapis_id')->constrained()->onDelete('cascade');
             $table->foreignId('pelatihan_id')->constrained()->onDelete('cascade');
+            $table->string('sertifikat')->nullable();
+            $table->date('tanggal');
             $table->timestamps();
         });
     }

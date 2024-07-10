@@ -15,7 +15,7 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr class="text-center">
+                                <tr>
                                     <th> No. Induk</th>
                                     <th> Nama </th>
                                     <th> Usia </th>
@@ -27,7 +27,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($anaks as $anak)
-                                    <tr class="text-center">
+                                    <tr>
                                         <td>{{ $anak->nib }}</td>
                                         <td>
                                             <img src="assets/images/faces/face1.jpg" class="me-2"

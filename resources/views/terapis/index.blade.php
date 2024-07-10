@@ -8,9 +8,8 @@
                 <div class="card-body">
                     <h4 class="card-title">Database Terapis</h4>
                     @auth
-                        <a href="{{ route('terapis.create') }}" class="btn btn-gradient-success btn-sm"><i class="fas fa-plus"></i>
-                            Tambah
-                            Data</a>
+                        <a href="{{ route('terapis.create') }}" class="btn btn-gradient-success btn-sm"><i class="fa fa-plus"></i>
+                        </a>
                     @endauth
 
                     <div class="table-responsive">
@@ -21,28 +20,28 @@
                                     <th> Nama </th>
                                     <th> Usia </th>
                                     <th> Alamat </th>
-                                    <th> Diagnosa </th>
                                     <th> Aksi </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($terapis as $terapi)
+                                @foreach ($t as $terapis)
                                     <tr>
-                                        <td>{{ $terapi->nib }}</td>
+                                        <td>{{ $terapis->nib }}</td>
                                         <td>
-                                            <img src="assets/images/faces/face1.jpg" class="me-2"
-                                                alt="image">{{ $terapi->nama }}
+                                            <img src="assets/images/faces/face6.jpg" class="me-2"
+                                                alt="image">{{ $terapis->nama }}
                                         </td>
-                                        <td> {{ $anak->usia }} </td>
-                                        <td> {{ $anak->alamat }} </td>
-                                        <td> {{ $anak->diagnosa }} </td>
-                                        <td><a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
-                                                class="btn btn-gradient-primary btn-sm">
+                                        <td> {{ $terapis->usia }} </td>
+                                        <td> {{ $terapis->alamat }} </td>
+                                        <td>
+                                            <a href="{{ route('terapis.show', ['terapi' => $terapis->id]) }}"
+                                                class="btn btn-gradient-info btn-sm">
                                                 <i class="fa fa-address-card-o"></i>
                                             </a>
-                                            <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
+                                            <a href="{{ route('terapis.edit', ['terapi' => $terapis->id]) }}"
                                                 class="btn btn-gradient-warning btn-sm">
-                                                <i class="fa fa-pencil-alt"></i></a>
+                                                <i class="fa fa-edit"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

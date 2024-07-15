@@ -32,7 +32,7 @@
                     aria-controls="ui-basic">
                     <span class="menu-title">Master Data</span>
                     <i class="menu-arrow"></i>
-                    <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+                    <i class="fa fa-tasks menu-icon"></i>
                 </a>
                 <div class="collapse" id="ui-basic">
                     <ul class="nav flex-column sub-menu">
@@ -43,7 +43,7 @@
                             <a class="nav-link" href="/terapis">Terapis</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/program">Program</a>
+                            <a class="nav-link" href="/program">Program Anak</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/pelatihan">Pelatihan</a>
@@ -61,6 +61,30 @@
                 <a class="nav-link" href="/data">
                     <span class="menu-title">Data</span>
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#laporan" aria-expanded="false"
+                    aria-controls="ui-basic">
+                    <span class="menu-title">Laporan</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+                </a>
+                <div class="collapse" id="laporan">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/anak">Kehadiran Anak</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/terapis">Kinerja Terapis</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/data">
+                    <span class="menu-title">Kasir</span>
+                    <i class="fa fa-money menu-icon"></i>
                 </a>
             </li>
         </ul>

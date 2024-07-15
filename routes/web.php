@@ -40,6 +40,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/terapis', TerapisController::class);
     // Route::get('/terapis/{terapis}', [TerapisController::class, 'show'])->name('terapis.show');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
+    Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
+    Route::post('/terapis/pelatihan', [TerapisController::class, 'pelatihan_store'])->name('pelatihan.store');
+    Route::get('/terapis/sertifikat/{sertifikat}', [TerapisController::class, 'sertifikat_show'])->name('sertifikat.show');
     Route::resource('/kunjungan', KunjunganController::class);
     Route::get('/pencarian/proses', [PencarianController::class, 'proses']);
     Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');

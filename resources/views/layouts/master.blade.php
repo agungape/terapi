@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Purple Admin</title>
+    <title>Bright Star</title>
 
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/ti-icons/css/themify-icons.css">
@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/select2/select2.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/css/style.css">
-    <link rel="shortcut icon" href="{{ asset('assets') }}/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('assets') }}/images/bsc-mini2.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+    <!-- Theme style -->
 
     {{-- @vite(['resources/sass/app.scss']) --}}
 </head>
@@ -101,6 +101,7 @@
     <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/dist/js/demo.js"></script>
+
     @yield('scripts')
 
 
@@ -121,13 +122,13 @@
             let judulAlert;
             let teksAlert;
             switch (tombol.getAttribute('data-table')) {
-                case 'upload':
+                case 'terapis':
                     judulAlert = 'Apakah anda yakin?';
-                    teksAlert = 'Hapus data Klaim <b> ' + tombol.getAttribute('data-name') + '</b>';
+                    teksAlert = 'Hapus data terapis <b> ' + tombol.getAttribute('data-name') + '</b>';
                     break;
-                case 'dosen':
-                    judulAlert = 'Hapus Dosen ' + tombol.getAttribute('data-name') + '?';
-                    teksAlert = 'Semua data <b>mata kuliah</b> untuk dosen ' +
+                case 'anak':
+                    judulAlert = 'Hapus anak ' + tombol.getAttribute('data-name') + '?';
+                    teksAlert = 'Semua data <b>Kunjungan</b> untuk anak ' +
                         'ini juga akan terhapus!';
                     break;
                 default:

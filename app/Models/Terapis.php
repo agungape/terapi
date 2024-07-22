@@ -9,8 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Terapis extends Model
 {
-    protected $fillable = ['nama', 'nib', 'tanggal_lahir', 'sertifikat'];
     use HasFactory;
+
+    protected $attributes = [
+        'status' => 'aktif',
+    ];
+
+    protected $fillable = ['nama', 'nib', 'tanggal_lahir', 'alamat', 'telepon'];
 
     public function pelatihans(): BelongsToMany
     {

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->char('nib', 5)->unique();
             $table->string('nama');
             $table->date('tanggal_lahir');
+            $table->text('alamat');
+            $table->string('telepon');
             $table->enum('status', ['aktif', 'tidak_aktif']);
             $table->timestamps();
         });

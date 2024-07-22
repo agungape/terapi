@@ -2,38 +2,42 @@
 @section('menuUpload', 'collapsed')
 @section('content')
 
-    <div class="row">
-        <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Database Terapis</h4>
-                    @auth
-                        <a href="{{ route('terapis.create') }}" class="btn btn-gradient-success btn-sm"><i class="fa fa-plus"></i>
-                        </a>
-                    @endauth
 
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
+
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Database Terapis</h4>
+                @auth
+                    <a href="{{ route('terapis.create') }}" class="btn btn-gradient-success btn-sm"><i class="fa fa-plus"></i>
+                    </a>
+                @endauth
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th> No. Induk</th>
+                                <th> Nama </th>
+                                <th> Usia </th>
+                                <th> Alamat </th>
+                                <th> status </th>
+                                <th> Aksi </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($t as $terapis)
                                 <tr>
-                                    <th> No. Induk</th>
-                                    <th> Nama </th>
-                                    <th> Usia </th>
-                                    <th> Alamat </th>
-                                    <th> Aksi </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($t as $terapis)
-                                    <tr>
-                                        <td>{{ $terapis->nib }}</td>
-                                        <td>
-                                            <img src="assets/images/faces/face6.jpg" class="me-2"
-                                                alt="image">{{ $terapis->nama }}
-                                        </td>
-                                        <td> {{ $terapis->usia }} </td>
-                                        <td> {{ $terapis->alamat }} </td>
-                                        <td>
+                                    <td>{{ $terapis->nib }}</td>
+                                    <td>
+                                        <img src="assets/images/faces/face6.jpg" class="me-2"
+                                            alt="image">{{ $terapis->nama }}
+                                    </td>
+                                    <td> {{ $terapis->usia }} Tahun </td>
+                                    <td> {{ $terapis->alamat }} </td>
+                                    <td> {{ $terapis->status }} </td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="{{ route('terapis.show', ['terapi' => $terapis->id]) }}"
                                                 class="btn btn-gradient-info btn-sm">
                                                 <i class="fa fa-address-card-o"></i>
@@ -42,16 +46,28 @@
                                                 class="btn btn-gradient-warning btn-sm">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                            <form action="{{ route('terapis.destroy', ['terapi' => $terapis->id]) }}"
+                                                method="POST">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-gradient-danger btn-sm btn-hapus"
+                                                    title="Hapus Data" data-name="{{ $terapis->nama }}"
+                                                    data-table="terapis">
+                                                    <i class="fa fa-trash fa-fw"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
+
+
 
 
 

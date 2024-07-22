@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pelatihan;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class PelatihanController extends Controller
 {
@@ -12,7 +13,8 @@ class PelatihanController extends Controller
      */
     public function index()
     {
-        //
+        $pelatihan = Pelatihan::orderBy('created_at')->paginate(5);
+        return view('pelatihan.index', compact('pelatihan'));
     }
 
     /**
@@ -28,7 +30,13 @@ class PelatihanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate([
+            'nama' => 'required',
+            'instansi' => 'required',
+        ]);
+        $pelatihan = Pelatihan::create($validateData);
+        Alert::success('Berhasil', "Data pelatihan $request->nama berhasil dibuat");
+        return redirect("/pelatihan#card-{$pelatihan->id}");
     }
 
     /**
@@ -60,6 +68,8 @@ class PelatihanController extends Controller
      */
     public function destroy(Pelatihan $pelatihan)
     {
-        //
+        $pelatihan->delete();
+        Alert::success('Berhasil', "$pelatihan->nama telah di hapus");
+        return redirect("/pelatihan");
     }
 }

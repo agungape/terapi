@@ -52,6 +52,12 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/observasi">
+                    <span class="menu-title">Observasi</span>
+                    <i class="fa fa-file-powerpoint-o menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/kunjungan">
                     <span class="menu-title">Registrasi</span>
                     <i class="mdi mdi-contacts menu-icon"></i>

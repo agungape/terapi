@@ -60,17 +60,23 @@
                                                 </tbody>
                                             @else
                                                 <tbody id="hasilPencarianBody">
+
                                                     @foreach ($result as $anak)
                                                         <tr>
                                                             <th>{{ $anak->nib }}</th>
                                                             <td>{{ $anak->nama }}</td>
                                                             <td>{{ $anak->tanggal_lahir }}</td>
                                                             <td>
-                                                                <a href="#" data-id="{{ $anak->id }}"
-                                                                    data-nama="{{ $anak->nama }}"
-                                                                    class="btn btn-gradient-primary btn-sm kirim-data">
-                                                                    <i class="fa fa-address-card-o"></i>
-                                                                </a>
+                                                                @if ($anak->status == 'aktif')
+                                                                    <a href="#" data-id="{{ $anak->id }}"
+                                                                        data-nama="{{ $anak->nama }}"
+                                                                        class="btn btn-gradient-primary btn-sm kirim-data">
+                                                                        <i class="fa fa-address-card-o"></i>
+                                                                    </a>
+                                                                @else
+                                                                    <b>Nonaktif</b>
+                                                                @endif
+
                                                             </td>
                                                         </tr>
                                                     @endforeach

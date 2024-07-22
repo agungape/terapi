@@ -108,4 +108,23 @@ class AnakController extends Controller
         Alert::success('Berhasil', "$anak->nama telah di hapus");
         return redirect("/anak");
     }
+
+    public function nonaktif($anak)
+    {
+        $anaks = Anak::findOrFail($anak);
+        $anaks->status = 'nonaktif';
+        $anaks->save();
+        Alert::success('Berhasil', "Data Anak $anaks->nama berhasil di Nonaktifkan");
+        return redirect()->back()->with('success', 'Data anak berhasil dinonaktifkan.');
+    }
+
+
+    public function aktif($anak)
+    {
+        $anaks = Anak::findOrFail($anak);
+        $anaks->status = 'aktif';
+        $anaks->save();
+        Alert::success('Berhasil', "Data Anak $anaks->nama berhasil di Aktifkan");
+        return redirect()->back();
+    }
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('telepon');
             $table->string('wali');
+            $table->enum('status', ['aktif', 'nonaktif']);
             $table->timestamps();
         });
     }

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('menuPaslon', 'active')
 @section('content')
-    <form action="{{ route('pelatihan.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('pelatihans.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-md-12 grid-margin stretch-card">
@@ -33,7 +33,8 @@
                                 Pelatihan</label>
                             <div class="col-sm-4">
                                 <input type="date" class="form-control @error('tanggal') is-invalid @enderror"
-                                    id="exampleInputConfirmPassword2" name="tanggal">
+                                    id="exampleInputConfirmPassword2" name="tanggal"
+                                    value="{{ old('tanggal') ?? ($terapispelatihan->tanggal ?? '') }}">
                                 @error('tanggal')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

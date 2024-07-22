@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kunjungan;
 use App\Models\Pelatihan;
 use App\Models\Terapis;
 use App\Models\TerapisPelatihan;
@@ -30,10 +31,10 @@ class TerapisController extends Controller
      */
     public function create()
     {
-        $terapis = new Terapis();
+        $terapi = new Terapis();
         // buat kode barang BR005
-        $terapis->nib = 'BSC' . str_pad(Terapis::count() + 1, 2, '0', STR_PAD_LEFT);
-        return view('terapis.create', compact('terapis'));
+        $terapi->nib = 'BSC' . str_pad(Terapis::count() + 1, 2, '0', STR_PAD_LEFT);
+        return view('terapis.create', compact('terapi'));
     }
 
     /**
@@ -41,7 +42,16 @@ class TerapisController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate([
+            'nib' => 'required|alpha_num|size:5|unique:terapis,nib',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
+            'telepon' => 'required|numeric',
+        ]);
+        $terapis = Terapis::create($validateData);
+        Alert::success('Berhasil', "Data Terapis $request->nama berhasil dibuat");
+        return redirect("/terapis#card-{$terapis->id}");
     }
 
     /**
@@ -49,33 +59,49 @@ class TerapisController extends Controller
      */
     public function show(Terapis $terapi)
     {
+        $tanggal_lahir = Carbon::parse($terapi->tanggal_lahir)->diffInYears(Carbon::now());
+        $activity = Kunjungan::where('terapis_id', $terapi->id)->orderBy('created_at', 'desc')->paginate(10);
         $terapis = Terapis::with(['pelatihans' => function ($query) {
             $query->withPivot('tanggal', 'sertifikat', 'id');
         }])->where('id', $terapi->id)->first();
-        return view('terapis.detail', compact('terapi', 'terapis'));
+        return view('terapis.detail', compact('terapi', 'terapis', 'activity', 'tanggal_lahir'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Terapis $terapis)
+    public function edit(Terapis $terapi)
     {
-        //
+        return view('terapis.edit', compact('terapi'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Terapis $terapis)
+    public function update(Request $request, Terapis $terapi)
     {
-        //
+        $validateData = $request->validate([
+            'nib' => 'required|alpha_num|size:5|unique:terapis,nib,' . $terapi->id,
+            'nama' => 'required',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
+            'telepon' => 'required|numeric',
+            'alamat' => 'required',
+            'status' => 'required'
+        ]);
+        $terapi->update($validateData);
+        Alert::success('Berhasil', "Terapis $request->nama telah di update");
+        // Trik agar halaman kembali ke halaman asal
+        return redirect($request->url_asal);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Terapis $terapis)
+    public function destroy(Terapis $terapi)
     {
+        $terapi->delete();
+        Alert::success('Berhasil', "$terapi->nama telah di hapus");
+        return redirect("/terapis");
     }
 
     public function terapis_pelatihan(Terapis $terapi)
@@ -106,7 +132,7 @@ class TerapisController extends Controller
 
         TerapisPelatihan::create($data);
         Alert::success('Berhasil', "Sertifikat berhasil Di Upload");
-        return redirect()->back();
+        return redirect('/terapis/' . $request->terapis_id);
     }
 
     public function sertifikat_show($sertifikat)

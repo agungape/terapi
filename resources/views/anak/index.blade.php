@@ -13,21 +13,40 @@
                     @endauth
 
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th> #</th>
                                     <th> No. Induk</th>
                                     <th> Nama </th>
                                     <th> Usia </th>
                                     <th> Wali </th>
                                     <th> Alamat </th>
-                                    <th> Diagnosa </th>
                                     <th> Aksi </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($anaks as $anak)
                                     <tr>
+                                        <td>
+                                            @if ($anak->status == 'aktif')
+                                                <form action="{{ route('anak.nonaktif', ['anak' => $anak->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-gradient-danger btn-sm"
+                                                        title="Nonaktifkan"> Nonaktifkan</button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('anak.aktif', ['anak' => $anak->id]) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-gradient-success btn-sm">
+                                                        Aktifkan</i></button>
+                                                </form>
+                                            @endif
+                                        </td>
                                         <td>{{ $anak->nib }}</td>
                                         <td>
                                             <img src="assets/images/faces/face1.jpg" class="me-2"
@@ -36,7 +55,6 @@
                                         <td> {{ $anak->usia }} Tahun </td>
                                         <td> {{ $anak->wali }} </td>
                                         <td> {{ $anak->alamat }} </td>
-                                        <td> {{ $anak->diagnosa }} </td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
                                                 <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
@@ -51,7 +69,7 @@
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="btn btn-gradient-danger btn-sm btn-hapus"
                                                         title="Hapus Data" data-name="{{ $anak->nama }}"
-                                                        data-table="barang">
+                                                        data-table="anak">
                                                         <i class="fa fa-trash fa-fw"></i>
                                                     </button>
                                                 </form>

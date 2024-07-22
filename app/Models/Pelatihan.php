@@ -10,6 +10,8 @@ class Pelatihan extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['nama', 'instansi'];
+
     public function terapis(): BelongsToMany
     {
         return $this->belongsToMany(Terapis::class, 'terapis_pelatihan', 'pelatihan_id', 'terapis_id')->withTimestamps();

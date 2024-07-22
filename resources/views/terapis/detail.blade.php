@@ -12,8 +12,7 @@
                         </div>
                         <h3 class="profile-username text-center pt-2">{{ $terapi->nama }}</h3>
                         <p class="text-muted text-center">Terapis</p>
-                        <a href="{{ route('terapis.pelatihan', ['terapi' => $terapi->id]) }}"
-                            class="btn btn-gradient-info btn-block"><b>Tambah</b></a>
+                        <p class="text-muted text-center">{{ $tanggal_lahir }} Tahun</p>
                     </div>
                 </div>
             </div>
@@ -26,10 +25,15 @@
                             <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a>
                             </li>
                         </ul>
+
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="active tab-pane" id="pelatihan">
+                                <a href="{{ route('terapis.pelatihan', ['terapi' => $terapi->id]) }}"
+                                    class="btn btn-sm btn-gradient-info btn-block"><i class="fa fa-plus"></i></a>
+                                <a href="{{ route('terapis.index') }}" class="btn btn-sm btn-gradient-warning"><i
+                                        class="fa fa-mail-reply-all"></i></a>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -57,11 +61,40 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                             <div class="tab-pane" id="activity">
-
-
+                                <table class="table table-hover">
+                                    @php
+                                        $tanggal = 0;
+                                    @endphp
+                                    @foreach ($activity as $a)
+                                        @if ($a->status == 'hadir')
+                                            @if ($tanggal != $a->created_at->format('Y-m-d'))
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2" class="text-center table-info">
+                                                            {{ $a->created_at->format('Y-m-d') }}
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                            @endif
+                                            @php
+                                                $tanggal = $a->created_at->format('Y-m-d');
+                                            @endphp
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ $a->created_at->format('H:i:s') }}</td>
+                                                    <td>{{ $a->anak->nama }}</td>
+                                                </tr>
+                                            </tbody>
+                                        @endif
+                                    @endforeach
+                                </table>
+                                <div class="row">
+                                    <div class="mx-auto mt-3">
+                                        {{ $activity->fragment('judul')->links() }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

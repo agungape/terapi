@@ -24119,7 +24119,7 @@ dl li {
 }
 .table-hover tbody tr:hover,
 .table-hover tbody td {
-  color: gray;
+  color: black;
 }
 
 /* Tabs */

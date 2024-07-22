@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProgramController extends Controller
 {
@@ -12,7 +13,8 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        //
+        $program = Program::orderBy('deskripsi')->paginate(5);
+        return view('program.index', compact('program'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ProgramController extends Controller
      */
     public function create()
     {
-        //
+        // return view('program.index');
     }
 
     /**
@@ -28,7 +30,12 @@ class ProgramController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateData = $request->validate([
+            'deskripsi' => 'required',
+        ]);
+        $program = Program::create($validateData);
+        Alert::success('Berhasil', "Data program $request->deskripsi berhasil dibuat");
+        return redirect("/program#card-{$program->id}");
     }
 
     /**
@@ -60,6 +67,8 @@ class ProgramController extends Controller
      */
     public function destroy(Program $program)
     {
-        //
+        $program->delete();
+        Alert::success('Berhasil', "$program->nama telah di hapus");
+        return redirect("/program");
     }
 }

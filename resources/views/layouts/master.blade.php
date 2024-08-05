@@ -20,7 +20,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Theme style -->
 
     {{-- @vite(['resources/sass/app.scss']) --}}
 </head>

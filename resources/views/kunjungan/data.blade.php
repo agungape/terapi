@@ -42,11 +42,14 @@
                                                 <label class="badge badge-danger">{{ $kun->status }}</label>
                                             @endif
                                         </td>
-                                        <td><a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
-                                                class="btn
+                                        <td>
+                                            @if ($kun->status == 'hadir')
+                                                <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
+                                                    class="btn
                                                 btn-gradient-primary btn-sm">
-                                                <i class="fa fa-address-card-o"></i>
-                                            </a>
+                                                    <i class="fa fa-address-card-o"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

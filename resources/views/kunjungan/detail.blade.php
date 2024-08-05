@@ -43,16 +43,13 @@
                                                     @if ($r->kunjungan->status == 'hadir')
                                                         <label
                                                             class="badge badge-success">{{ $r->kunjungan->status }}</label>
-                                                    @endif
-                                                    @if ($r->kunjungan->status == 'izin')
+                                                    @elseif ($r->kunjungan->status == 'izin')
                                                         <label
                                                             class="badge badge-warning">{{ $r->kunjungan->status }}</label>
-                                                    @endif
-                                                    @if ($r->kunjungan->status == 'sakit')
+                                                    @elseif ($r->kunjungan->status == 'sakit')
                                                         <label
                                                             class="badge badge-danger">{{ $r->kunjungan->status }}</label>
                                                     @endif
-
                                                 </th>
                                             </tr>
                                             <tr>
@@ -60,7 +57,7 @@
                                                 <th colspan="4">{{ $r->program->deskripsi }} </th>
                                             </tr>
                                             <tr>
-                                                <th width ="30"> Tanggal </th>
+                                                <th width ="30"> Hari & Tanggal </th>
                                                 <th colspan="4" class="text-center"> Pemeriksaan </th>
                                             </tr>
                                         </thead>
@@ -112,4 +109,34 @@
             </div>
         </div>
     </section>
+@endsection
+@section('scripts')
+    <script>
+        function addForm() {
+            const container = document.getElementById('tambah');
+            const div = document.createElement('div');
+            div.classList.add('form-group');
+            div.innerHTML = `<label class="col-sm-3 col-form-label">Program</label>
+            <div class="col-sm-9">
+                <select class="js-example-basic-single" style="width:100%" name="program_id">
+                    @foreach ($program as $p)
+                        <option value="{{ $p->id }}">{{ $p->deskripsi }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <label class="col-sm-3 col-form-label">Skala</label>
+            <div class="col-sm-3">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="status" id="membershipRadios1"
+                            value="dp" checked> DP </label>
+                </div>
+            </div>`;
+            container.appendChild(div);
+        }
+
+        function removeForm(element) {
+            element.parentElement.remove();
+        }
+    </script>
 @endsection

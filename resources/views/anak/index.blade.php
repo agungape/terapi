@@ -1,5 +1,7 @@
 @extends('layouts.master')
-@section('menuUpload', 'collapsed')
+@section('menuMaster', 'active')
+@section('masterShow', 'show')
+@section('menuAnak', 'active')
 @section('content')
 
     <div class="row">

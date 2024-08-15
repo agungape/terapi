@@ -30,10 +30,39 @@ class AnakController extends Controller
      */
     public function create()
     {
+        $pendidikan = [
+            'belum' => 'Belum Sekolah',
+            'PAUD' => 'PAUD',
+            'TK' => 'TK',
+            'SD' => 'SD',
+            'SMP' => 'SMP',
+            'SMA' => 'SMA'
+        ];
+
+        $pendidikan_orangtua = [
+            'tidak' => 'Tidak Sekolah',
+            'SD' => 'SD',
+            'SMP' => 'SMP',
+            'SMA' => 'SMA',
+            'S1' => 'S1',
+            'S2' => 'S2',
+            'S3' => 'S3',
+            'Prof' => 'Prof'
+        ];
+
+        $agama = [
+            'islam' => 'Islam',
+            'katolik' => 'Katolik',
+            'protestan' => 'Protestan',
+            'hindu' => 'Hindu',
+            'budha' => 'Budha',
+            'konghuchu' => 'Konghuchu'
+        ];
+
         $anak = new Anak();
-        // buat kode barang BR005
+        // buat kode anak BSC001
         $anak->nib = 'BSC' . str_pad(Anak::count() + 1, 3, '0', STR_PAD_LEFT);
-        return view('anak.create', compact('anak'));
+        return view('anak.create', compact('anak', 'pendidikan', 'pendidikan_orangtua', 'agama'));
     }
 
     /**
@@ -41,15 +70,38 @@ class AnakController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:6|unique:anaks,nib',
             'nama' => 'required',
-            'alamat' => 'required',
-            'tanggal_lahir' => 'required|date|before_or_equal:today',
-            'diagnosa' => '',
             'jenis_kelamin' => 'required',
-            'telepon' => 'required|numeric',
-            'wali' => 'required',
+            'tempat_lahir' => 'required',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
+            'pendidikan' => 'required',
+            'alamat' => 'required',
+            'anak_ke' => 'nullable|numeric',
+            'total_saudara' => 'nullable|numeric',
+            'diagnosa' => 'nullable',
+            'nama_ayah' => 'nullable',
+            'nama_ibu' => 'nullable',
+            'telepon_ayah' => 'nullable|numeric',
+            'telepon_ibu' => 'nullable|numeric',
+            'umur_ayah' => 'nullable|numeric',
+            'umur_ibu' => 'nullable|numeric',
+            'pendidikan_ayah' => 'nullable',
+            'pendidikan_ibu' => 'nullable',
+            'pekerjaan_ayah' => 'nullable',
+            'pekerjaan_ibu' => 'nullable',
+            'agama_ayah' => 'nullable',
+            'agama_ibu' => 'nullable',
+            'alamat_ayah' => 'nullable',
+            'alamat_ibu' => 'nullable',
+            'suku_ayah' => 'nullable',
+            'suku_ibu' => 'nullable',
+            'pernikahan_ayah' => 'nullable|numeric',
+            'pernikahan_ibu' => 'nullable|numeric',
+            'usia_saat_hamil_ayah' => 'nullable',
+            'usia_saat_hamil_ibu' => 'nullable',
         ]);
         $anak = Anak::create($validateData);
         Alert::success('Berhasil', "Data Anak $request->nama berhasil dibuat");
@@ -69,13 +121,31 @@ class AnakController extends Controller
      * Show the form for editing the specified resource.
      */
 
-    public function kunjungan(Anak $anak)
-    {
-    }
+    public function kunjungan(Anak $anak) {}
 
     public function edit(Anak $anak)
     {
-        return view('anak.edit', compact('anak'));
+        $pendidikan = [
+            'belum' => 'Belum Sekolah',
+            'TK' => 'TK',
+            'SD' => 'SD',
+            'SMP' => 'SMP',
+            'SMA' => 'SMA'
+        ];
+
+        $pendidikan_orangtua = [
+            'tidak' => 'Tidak Sekolah',
+            'SD' => 'SD',
+            'SMP' => 'SMP',
+            'SMA' => 'SMA',
+            'S1' => 'S1',
+            'S2' => 'S2',
+            'S3' => 'S3',
+            'Prof' => 'Prof'
+        ];
+
+        $agama = ['islam' => 'Islam', 'katolik' => 'Katolik', 'protestan' => 'Protestan', 'hindu' => 'Hindu', 'budha' => 'Budha', 'konghuchu' => 'Konghuchu'];
+        return view('anak.edit', compact('anak', 'pendidikan', 'pendidikan_orangtua', 'agama'));
     }
 
     /**
@@ -86,12 +156,34 @@ class AnakController extends Controller
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:6|unique:anaks,nib,' . $anak->id,
             'nama' => 'required',
-            'alamat' => 'required',
-            'tanggal_lahir' => 'required|date|before_or_equal:today',
-            'diagnosa' => '',
             'jenis_kelamin' => 'required',
-            'telepon' => 'required|numeric',
-            'wali' => 'required',
+            'tempat_lahir' => 'required',
+            'tanggal_lahir' => 'required|date|before_or_equal:today',
+            'pendidikan' => 'required',
+            'alamat' => 'required',
+            'anak_ke' => 'nullable|numeric',
+            'total_saudara' => 'nullable|numeric',
+            'diagnosa' => 'nullable',
+            'nama_ayah' => 'nullable',
+            'nama_ibu' => 'nullable',
+            'telepon_ayah' => 'nullable|numeric',
+            'telepon_ibu' => 'nullable|numeric',
+            'umur_ayah' => 'nullable|numeric',
+            'umur_ibu' => 'nullable|numeric',
+            'pendidikan_ayah' => 'nullable',
+            'pendidikan_ibu' => 'nullable',
+            'pekerjaan_ayah' => 'nullable',
+            'pekerjaan_ibu' => 'nullable',
+            'agama_ayah' => 'nullable',
+            'agama_ibu' => 'nullable',
+            'alamat_ayah' => 'nullable',
+            'alamat_ibu' => 'nullable',
+            'suku_ayah' => 'nullable',
+            'suku_ibu' => 'nullable',
+            'pernikahan_ayah' => 'nullable|numeric',
+            'pernikahan_ibu' => 'nullable|numeric',
+            'usia_saat_hamil_ayah' => 'nullable',
+            'usia_saat_hamil_ibu' => 'nullable',
         ]);
         $anak->update($validateData);
         Alert::success('Berhasil', "Anak $request->nama telah di update");

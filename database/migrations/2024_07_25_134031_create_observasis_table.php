@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('observasis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('anak_id')->constrained()->onDelete('cascade');
+            $table->string('jenis');
+            $table->text('deskripsi');
             $table->timestamps();
         });
     }

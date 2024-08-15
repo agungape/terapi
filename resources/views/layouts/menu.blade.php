@@ -21,37 +21,37 @@
                     <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item @yield('menuDashboard')">
                 <a class="nav-link" href="/home">
                     <span class="menu-title">Dashboard</span>
                     <i class="mdi mdi-home menu-icon"></i>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item @yield('menuMaster')">
                 <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                     aria-controls="ui-basic">
                     <span class="menu-title">Master Data</span>
                     <i class="menu-arrow"></i>
                     <i class="fa fa-tasks menu-icon"></i>
                 </a>
-                <div class="collapse" id="ui-basic">
+                <div class="collapse @yield('masterShow')" id="ui-basic">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="/anak">Anak</a>
+                            <a class="nav-link @yield('menuAnak')" href="/anak">Anak</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/terapis">Terapis</a>
+                            <a class="nav-link @yield('menuTerapis')" href="/terapis">Terapis</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/program">Program Anak</a>
+                            <a class="nav-link @yield('menuProgram')" href="/program">Program Anak</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pelatihan">Pelatihan</a>
+                            <a class="nav-link @yield('menuPelatihan')" href="/pelatihan">Pelatihan</a>
                         </li>
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
+            <li class="nav-item @yield('menuObservasi')">
                 <a class="nav-link" href="/observasi">
                     <span class="menu-title">Observasi</span>
                     <i class="fa fa-file-powerpoint-o menu-icon"></i>

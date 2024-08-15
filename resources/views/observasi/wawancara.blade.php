@@ -1,40 +1,30 @@
 @extends('layouts.master')
-@section('menuUpload', 'collapsed')
+@section('menuObservasi', 'active')
 @section('content')
     <div class="row">
         <div class="col-lg-5 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Observasi </h4>
-                    <form action="{{ route('observasi.mulai') }}" method="POST">
+                    <form action="" method="POST">
                         @csrf
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Anak</label>
                             <div class="col-sm-9">
-                                <select class="js-example-basic-single" style="width:100%" name="anak_id" id="anak_id">
 
-                                    @foreach ($anaks as $anak)
-                                        <option value="{{ $anak->id }}">{{ $anak->nama }}</option>
-                                    @endforeach
-
-                                </select>
+                                <input type="text" class="form-control" name="anak_id" value="{{ $anak->nama }}"
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Jenis</label>
                             <div class="col-sm-9">
-                                <select class="js-example-basic-single" style="width:100%" name="jenis" id="jenis">
-                                    @foreach ($jenis as $value => $label)
-                                        <option value="{{ $value }}" {{ $value == old('jenis') ? 'selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" value="{{ $jenis }}" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-3">
-                                <button id="startButton" type="submit" class="btn btn-sm btn-primary">Mulai</button>
+                                <a href="{{ route('observasi.index') }}" class="btn btn-sm btn-gradient-warning">Kembali</a>
                             </div>
                         </div>
                     </form>

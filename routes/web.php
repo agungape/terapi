@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/terapis', TerapisController::class);
     Route::resource('/program', ProgramController::class);
     Route::resource('/pelatihan', PelatihanController::class);
-    Route::get('/observasi', [ObservasiController::class, 'index']);
+    Route::resource('/observasi', ObservasiController::class);
     Route::get('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
@@ -64,4 +64,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
     Route::put('/anak/nonaktif/{anak}', [AnakController::class, 'nonaktif'])->name('anak.nonaktif');
     Route::put('/anak/aktif/{anak}', [AnakController::class, 'aktif'])->name('anak.aktif');
+    Route::post('/observasi/wawancara', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
 });

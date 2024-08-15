@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('menuDashboard', 'active')
 @section('menuHome', 'collapsed')
 
 @section('content')

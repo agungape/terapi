@@ -1,5 +1,7 @@
 @extends('layouts.master')
-@section('menuPaslon', 'active')
+@section('menuMaster', 'active')
+@section('masterShow', 'show')
+@section('menuProgram', 'active')
 @section('content')
 
 

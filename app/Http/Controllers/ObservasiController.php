@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
+use App\Models\Observasi;
 use App\Models\Terapis;
 use Illuminate\Http\Request;
 
@@ -13,9 +14,28 @@ class ObservasiController extends Controller
      */
     public function index()
     {
+        $jenis = [
+            'wawancara' => 'Wawancara',
+            'katolik' => 'Katolik',
+            'protestan' => 'Protestan',
+            'hindu' => 'Hindu',
+            'budha' => 'Budha',
+            'konghuchu' => 'Konghuchu'
+        ];
         $anaks = Anak::all();
         $terapis = Terapis::all();
-        return view('observasi.index', compact('anaks', 'terapis'));
+        return view('observasi.index', compact('anaks', 'terapis', 'jenis'));
+    }
+
+    public function observasi_mulai(Request $request)
+    {
+        if ($request->jenis == 'wawancara') {
+
+            $anak = Anak::where('id', $request->anak_id)->first();
+            $jenis = $request->input('jenis');
+
+            return view('observasi.wawancara', compact('anak', 'jenis'));
+        }
     }
 
     public function observasi_atec()

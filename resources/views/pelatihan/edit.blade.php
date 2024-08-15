@@ -1,5 +1,7 @@
 @extends('layouts.master')
-@section('menuBarang', 'active')
+@section('menuMaster', 'active')
+@section('masterShow', 'show')
+@section('menuPelatihan', 'active')
 @section('content')
 
     <form method="POST" action="{{ route('anak.update', ['anak' => $anak->id]) }}">

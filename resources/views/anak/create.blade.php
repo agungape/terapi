@@ -1,5 +1,7 @@
 @extends('layouts.master')
-@section('menuPaslon', 'active')
+@section('menuMaster', 'active')
+@section('masterShow', 'show')
+@section('menuAnak', 'active')
 @section('content')
     <form action="{{ route('anak.store') }}" method="POST" enctype="multipart/form-data">
         @include('anak.form', ['tombol' => 'Tambah'])

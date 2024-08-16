@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($t as $terapis)
+                            @forelse ($t as $terapis)
                                 <tr>
                                     <td>{{ $terapis->nib }}</td>
                                     <td>
@@ -60,7 +60,12 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center"> Data Terapis tidak ada</td>
+                                </tr>
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div>

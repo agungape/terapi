@@ -108,9 +108,12 @@
                                     <div class="col-sm-9">
                                         <select class="js-example-basic-single" style="width:100%" name="terapis_id">
 
-                                            @foreach ($terapis as $terapi)
+                                            @forelse ($terapis as $terapi)
                                                 <option value="{{ $terapi->id }}">{{ $terapi->nama }}</option>
-                                            @endforeach
+                                            @empty
+                                                <option>tidak ada data</option>
+                                            @endforelse
+
 
                                         </select>
                                     </div>

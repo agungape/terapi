@@ -1,178 +1,204 @@
 @extends('layouts.master')
 @section('menuMaster', 'active')
-@section('masterShow', 'show')
+@section('masterShow', 'menu-is-opening menu-open')
 @section('menuAnak', 'active')
 @section('content')
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Anak</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Data Anak</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
 
-    <div class="row">
-        <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Database Anak</h4>
-                    @auth
-                        <a href="{{ route('anak.create') }}" class="btn btn-gradient-primary btn-sm"><i class="fa fa-plus"></i>
-                        </a>
-                    @endauth
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                @auth
+                                    <a href="{{ route('anak.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus">
+                                        </i> Tambah data
+                                    </a>
+                                @endauth
 
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th> #</th>
-                                    <th> No. Induk</th>
-                                    <th> Nama </th>
-                                    <th> Usia </th>
-                                    <th> Wali </th>
-                                    <th> Alamat </th>
-                                    <th> Aksi </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($anaks as $anak)
-                                    <tr>
-                                        <td>
-                                            @if ($anak->status == 'aktif')
-                                                <form action="{{ route('anak.nonaktif', ['anak' => $anak->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="btn btn-gradient-danger btn-sm"
-                                                        title="Nonaktifkan"> Nonaktifkan</button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('anak.aktif', ['anak' => $anak->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="btn btn-gradient-success btn-sm">
-                                                        Aktifkan</i></button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                        <td>{{ $anak->nib }}</td>
-                                        <td>
-                                            <img src="assets/images/faces/face1.jpg" class="me-2"
-                                                alt="image">{{ $anak->nama }}
-                                        </td>
-                                        <td> {{ $anak->usia }} Tahun </td>
-                                        <td> {{ $anak->wali }} </td>
-                                        <td> {{ $anak->alamat }} </td>
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Basic example">
-                                                <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
-                                                    class="btn btn-gradient-info btn-sm">
-                                                    <i class="fa fa-address-card-o"></i>
-                                                </a>
-                                                <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
-                                                    class="btn btn-gradient-warning btn-sm">
-                                                    <i class="fa fa-edit"></i></a>
-                                                <form action="{{ route('anak.destroy', ['anak' => $anak->id]) }}"
-                                                    method="POST">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-gradient-danger btn-sm btn-hapus"
-                                                        title="Hapus Data" data-name="{{ $anak->nama }}"
-                                                        data-table="anak">
-                                                        <i class="fa fa-trash fa-fw"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div class="row">
-                            <div class="mx-auto mt-3">
-                                {{ $anaks->fragment('judul')->links() }}
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                        <input type="text" name="table_search" class="form-control float-right"
+                                            placeholder="Search">
+
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <!-- /.card-header -->
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th> #</th>
+                                            <th> Foto</th>
+                                            <th> Nama </th>
+                                            <th> Usia </th>
+                                            <th> Progres </th>
+                                            <th> Alamat </th>
+                                            <th> status </th>
+                                            <th> Aksi </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @forelse ($anaks as  $anak)
+                                            <tr>
+
+                                                <td style="vertical-align: middle;">
+                                                    <form action="{{ route('anak.destroy', ['anak' => $anak->id]) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm btn-hapus"
+                                                            title="Hapus Data" data-name="{{ $anak->nama }}"
+                                                            data-table="anak">
+                                                            <i class="fa fa-trash fa-fw"></i>
+                                                        </button>
+                                                    </form>
+                                                    <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fa fa-edit"></i></a>
+                                                    <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
+                                                        class="btn btn-info btn-sm">
+                                                        <i class="fas fa-address-card"></i>
+                                                    </a>
+
+                                                </td>
+
+
+                                                <td style="vertical-align: middle;"> <img
+                                                        class="profile-user-img img-circle"
+                                                        src="assets/images/faces/face1.jpg" alt="User profile picture">
+                                                </td>
+                                                <td style="vertical-align: middle;">
+                                                    {{ $anak->nama }}
+                                                </td>
+                                                <td style="vertical-align: middle;"> {{ $anak->usia }} Tahun </td>
+
+                                                <td class="project_progress" style="vertical-align: middle;">
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-green" role="progressbar"
+                                                            aria-valuenow="{{ $anak->progresnilai }}" aria-valuemin="0"
+                                                            aria-valuemax="100" style="width:  {{ $anak->progresnilai }}%">
+                                                        </div>
+                                                    </div>
+                                                    <small>
+                                                        {{ $anak->progresnilai }}% Selesai
+                                                    </small>
+                                                </td>
+
+                                                <td style="vertical-align: middle;"> {{ $anak->alamat }} </td>
+
+                                                <td style="vertical-align: middle;"> {{ $anak->status }} </td>
+
+                                                <td style="vertical-align: middle;">
+                                                    <form action="{{ route('anak.status') }}" method="POST">
+                                                        @csrf
+                                                        <input type="checkbox" class="status-checkbox"
+                                                            id="status-checkbox-{{ $anak->id }}"
+                                                            data-id="{{ $anak->id }}"
+                                                            {{ $anak->status === 'aktif' ? 'checked' : '' }}
+                                                            data-bootstrap-switch data-off-color="danger"
+                                                            data-on-color="success">
+                                                    </form>
+                                                </td>
+
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center"> data tidak ada...</td>
+                                            </tr>
+                                        @endforelse
+
+                                    </tbody>
+                                </table>
+
+                                <div class="mx-4 mt-3">
+                                    {{ $anaks->fragment('judul')->links() }}
+                                </div>
+
+
+                            </div>
+                            <!-- /.card-body -->
                         </div>
+                        <!-- /.card -->
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
+@endsection
 
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi Bootstrap Switch
+            $("input[data-bootstrap-switch]").bootstrapSwitch();
 
+            // Ketika checkbox diubah
+            $('.status-checkbox').on('switchChange.bootstrapSwitch', function(event, state) {
+                var anakId = $(this).data('id'); // Ambil ID anak dari atribut data-id
 
-    {{-- <div class="pagetitle">
-        <h1>E-Kalim</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item active">Upload Klaim</li>
-            </ol>
-        </nav>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Table Data File Upload </h5>
-            <div class="row">
-                <div class="col-md-9">
-                    @if (auth()->check())
-                        @if (auth()->user()->is_admin)
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#basicModal" title="upload FIle"><i class="fas fa-plus"></i>
-                                </button>
-                                <a href="{{ route('upload.index') }}" class="btn btn-warning"><i
-                                        class="fas fa-sync-alt"></i> </a>
-                                <a href="" class="btn btn-success"><i class="fas fa-download"></i></a>
-                            </div>
-                        @else
-                            <a href="{{ route('upload.index') }}" class="btn btn-warning"><i class="fas fa-sync-alt"></i>
-                            </a>
-                        @endif
-                    @endif
-                </div>
-                <div class="col-md-3">
-                    <form action="{{ route('upload.search') }}" method="GET">
-                        <input type="text" name="search" placeholder="Cari..." class="form-control">
-                        <button type="submit" hidden>Cari</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Table with hoverable rows -->
-            <table class="table table-hover table-responsive">
-                <thead>
-
-                    <tr class="text-center">
-                        <th scope="col">#</th>
-                        <th scope="col">Nama</th>
-                        <th scope="col">Alamat</th>
-                        <th scope="col">Usia</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($anaks as $anak)
-                        <tr class="text-center">
-                            <td scope="row">{{ $anaks->firstItem() + $loop->iteration - 1 }}</td>
-                            <td style="text-transform: capitalize;">{{ $anak->nama }}</td>
-                            <td style="text-transform: capitalize;">{{ $anak->alamat }}</td>
-                            <td style="text-transform: capitalize;">{{ $anak->usia }} Tahun</td>
-                            <td> - </td>
-                            <td>
-                                <div class="row justify-content-center">
-                                    <div class="col-md-3 px-0 col-sm-12">
-                                        <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
-                                            class="btn btn-primary d-inline-block mt-1">
-                                            <i class="fa fa-address-card-o"></i>
-                                        </a>
-                                    </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="row">
-                <div class="mx-auto mt-3">
-                    {{ $anaks->fragment('judul')->links() }}
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
+                // Kirim request AJAX untuk mengubah status anak
+                $.ajax({
+                    url: "{{ route('anak.status') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: anakId,
+                        status: state ? 'aktif' : 'nonaktif'
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Tampilkan SweetAlert jika sukses
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            // Tampilkan SweetAlert jika terjadi kesalahan
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat mengubah status anak.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Tampilkan SweetAlert untuk error
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan: ' + xhr.responseText,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

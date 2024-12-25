@@ -10,6 +10,7 @@ use App\Models\Terapis;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class KunjunganController extends Controller
@@ -43,7 +44,44 @@ class KunjunganController extends Controller
             'catatan' => '',
             'status' => 'required',
         ]);
-        $kunjungan = Kunjungan::create($validateData);
+
+
+        // fungsi validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x
+        $today = Carbon::today();
+        $cek = Kunjungan::where('anak_id', $request->anak_id)
+            ->whereDate('created_at', $today)
+            ->first();
+        if ($cek) {
+            // Jika sudah ada pendaftaran, return error
+            Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
+            return back();
+        }
+        // Cek apakah anak sudah pernah kunjungan sebelumnya
+        $kunjungan_data = Kunjungan::where('anak_id', $request->anak_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir
+        if ($kunjungan_data) {
+            $nextPertemuan = $kunjungan_data->pertemuan + 1;
+        } else {
+            // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 0
+            $nextPertemuan = 1;
+        }
+
+        $nullPertemuan = 'null';
+
+        $data['anak_id'] = $request->anak_id;
+        $data['terapis_id'] = $request->terapis_id;
+        $data['catatan'] = $request->catatan;
+        $data['status'] = $request->status;
+        if ($request->status == 'hadir') {
+            $data['pertemuan'] = $nextPertemuan;
+        } else {
+            $data['pertemuan'] = $nullPertemuan;
+        }
+
+        $kunjungan = Kunjungan::create($data);
         Alert::success('Berhasil', "Data Anak $request->nama berhasil didaftarkan");
         return redirect("/data");
     }
@@ -59,13 +97,23 @@ class KunjunganController extends Controller
      */
     public function show(Kunjungan $kunjungan)
     {
-        $riwayat = Pemeriksaan::whereHas('kunjungan', function ($query) use ($kunjungan) {
+        // dd($kunjungan->anak_id);
+        $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->get();
+        // dd($riwayat);
+        $jumlah_pemeriksaan = Pemeriksaan::select('created_at', DB::raw('count(id) as value'))->whereHas('kunjungan', function ($query) use ($kunjungan) {
             $query->where('anak_id', $kunjungan->anak->id);
-        })->orderBy('created_at', 'desc')->paginate(2);
+        })->groupBy('created_at')->get();
+
+        $jumlah_pemeriksaan = array_reduce($jumlah_pemeriksaan->toArray(), function ($hold_data, $item) {
+            $tanggal = strtotime($item['created_at']);
+            $hold_data[$tanggal] = $item['value'];
+            return $hold_data;
+        });
+
         $program = Program::all();
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());
-        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat'));
+        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'jumlah_pemeriksaan'));
     }
 
     /**

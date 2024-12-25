@@ -23,7 +23,7 @@ class TerapisController extends Controller
             $tanggal_lahir = Carbon::parse($t->tanggal_lahir);
             $t->usia = $tanggal_lahir->diffInYears(Carbon::now());
         }
-        return view('terapis.index', ['t' => $terapis]);
+        return view('terapis.index', ['terapis' => $terapis]);
     }
 
     /**
@@ -147,5 +147,26 @@ class TerapisController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $file->sertifikat . '"',
         ]);
+    }
+
+    public function ubahStatus(Request $request)
+    {
+        $terapis = Terapis::find($request->id);
+
+        // Toggle status between 'aktif' and 'nonaktif'
+        if ($terapis) {
+            $terapis->status = $terapis->status === 'aktif' ? 'nonaktif' : 'aktif';
+            $terapis->save();
+
+            return response()->json([
+                'status' => 'success',
+                'newStatus' => $terapis->status,
+                'message' => 'Status Terapis ' . $terapis->nama . ' berhasil diperbarui.',
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Terapis tidak ditemukan.',
+        ], 404);
     }
 }

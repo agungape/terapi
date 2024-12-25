@@ -24,29 +24,29 @@ class Kunjungan extends Model
         return $this->belongsTo('App\Models\Terapis');
     }
 
-    public function pemeriksaan(): HasOne
+    public function pemeriksaans(): HasMany
     {
-        return $this->hasOne('App\Models\Pemeriksaan');
+        return $this->hasMany('App\Models\Pemeriksaan');
     }
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        // Event 'creating' untuk menetapkan nomor pertemuan
-        static::creating(function ($kunjungan) {
-            // Cek apakah anak sudah pernah kunjungan sebelumnya
-            $lastVisit = Kunjungan::where('anak_id', $kunjungan->anak_id)
-                ->orderBy('created_at', 'desc')
-                ->first();
+    //     // Event 'creating' untuk menetapkan nomor pertemuan
+    //     static::creating(function ($kunjungan) {
+    //         // Cek apakah anak sudah pernah kunjungan sebelumnya
+    //         $lastVisit = Kunjungan::where('anak_id', $kunjungan->anak_id)
+    //             ->orderBy('created_at', 'desc')
+    //             ->first();
 
-            // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir
-            if ($lastVisit) {
-                $kunjungan->pertemuan = $lastVisit->pertemuan + 1;
-            } else {
-                // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 0
-                $kunjungan->pertemuan = 1;
-            }
-        });
-    }
+    //         // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir
+    //         if ($lastVisit) {
+    //             $kunjungan->pertemuan = $lastVisit->pertemuan + 1;
+    //         } else {
+    //             // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 0
+    //             $kunjungan->pertemuan = 1;
+    //         }
+    //     });
+    // }
 }

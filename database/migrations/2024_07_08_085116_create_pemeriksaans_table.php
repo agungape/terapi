@@ -15,10 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kunjungan_id')->constrained()->onDelete('cascade');
             $table->foreignId('program_id')->constrained()->onDelete('cascade');
-            $table->text('subjek');
-            $table->text('objek');
-            $table->text('assesment');
-            $table->text('planning');
+            $table->string('status');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }

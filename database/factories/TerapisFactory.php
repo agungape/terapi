@@ -17,7 +17,12 @@ class TerapisFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nib' => $this->faker->unique()->numerify('BSC##'),
+            'nama' => $this->faker->firstName() . " " . $this->faker->lastName(),
+            'tanggal_lahir' => $this->faker->dateTimeBetween('-30 years', '-18 years')->format('Y-m-d'),
+            'alamat' => $this->faker->address,
+            'telepon' => $this->faker->phoneNumber,
+            'status' => $this->faker->randomElement(['aktif']),
         ];
     }
 }

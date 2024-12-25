@@ -10,7 +10,7 @@ class Pemeriksaan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kunjungan_id', 'program_id', 'subjek', 'objek', 'assesment', 'planning'];
+    protected $fillable = ['kunjungan_id', 'program_id', 'status', 'keterangan'];
 
     public function kunjungan(): BelongsTo
     {

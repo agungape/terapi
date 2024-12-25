@@ -2,14 +2,20 @@
 
 use App\Http\Controllers\AnakController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KunjunganController;
 use App\Http\Controllers\ObservasiController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PencarianController;
 use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\TerapisController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserTerapisController;
+use App\Http\Controllers\UserAnakController;
 use App\Models\Kunjungan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -47,11 +53,34 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::resource('/user', UserController::class);
+    Route::resource('/userterapis', UserTerapisController::class);
+    Route::resource('/useranak', UserAnakController::class);
     Route::resource('/anak', AnakController::class);
     Route::resource('/terapis', TerapisController::class);
     Route::resource('/program', ProgramController::class);
     Route::resource('/pelatihan', PelatihanController::class);
     Route::resource('/observasi', ObservasiController::class);
+    Route::resource('/profile', ProfileController::class);
+    Route::resource('/jadwal', JadwalController::class);
+
+
+
+    Route::get('rekap-kas', [KeuanganController::class, 'rekap'])->name('keuangan.rekap');
+    Route::get('pemasukkan/json', [KeuanganController::class, 'pemasukkan_json'])->name('pemasukkan.json');
+    Route::get('pengeluaran/json', [KeuanganController::class, 'pengeluaran_json'])->name('pengeluaran.json');
+    Route::get('kategori', [KeuanganController::class, 'kategori'])->name('keuangan.kategori');
+    Route::post('/kategori/simpan', [KeuanganController::class, 'kategori_store'])->name('kategori.store');
+    Route::delete('/kategori/{kategori}', [KeuanganController::class, 'kategori_destroy'])->name('kategori.destroy');
+    Route::get('pemasukkan', [KeuanganController::class, 'pemasukkan'])->name('keuangan.pemasukkan');
+    Route::post('/pemasukkan/simpan', [KeuanganController::class, 'pemasukkan_store'])->name('pemasukkan.store');
+    Route::delete('/pemasukkan/{pemasukkan}', [KeuanganController::class, 'pemasukkan_destroy'])->name('pemasukkan.destroy');
+    Route::get('pengeluaran', [KeuanganController::class, 'pengeluaran'])->name('keuangan.pengeluaran');
+    Route::post('/pengeluaran/simpan', [KeuanganController::class, 'pengeluaran_store'])->name('pengeluaran.store');
+    Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
+
+
+
     Route::get('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
@@ -62,7 +91,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
-    Route::put('/anak/nonaktif/{anak}', [AnakController::class, 'nonaktif'])->name('anak.nonaktif');
-    Route::put('/anak/aktif/{anak}', [AnakController::class, 'aktif'])->name('anak.aktif');
+
+    Route::post('/ubah-status-anak', [AnakController::class, 'ubahStatus'])->name('anak.status');
+    Route::post('/ubah-status-terapis', [TerapisController::class, 'ubahStatus'])->name('terapis.status');
+
     Route::post('/observasi/wawancara', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
 });

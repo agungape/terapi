@@ -16,11 +16,7 @@ class ObservasiController extends Controller
     {
         $jenis = [
             'wawancara' => 'Wawancara',
-            'katolik' => 'Katolik',
-            'protestan' => 'Protestan',
-            'hindu' => 'Hindu',
-            'budha' => 'Budha',
-            'konghuchu' => 'Konghuchu'
+            'atec' => 'Atec'
         ];
         $anaks = Anak::all();
         $terapis = Terapis::all();
@@ -35,6 +31,10 @@ class ObservasiController extends Controller
             $jenis = $request->input('jenis');
 
             return view('observasi.wawancara', compact('anak', 'jenis'));
+        }
+
+        if ($request->jenis == 'atec') {
+            return view('observasi.atec');
         }
     }
 

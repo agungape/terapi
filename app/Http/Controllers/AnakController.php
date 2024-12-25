@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
+use function Symfony\Component\String\b;
+
 class AnakController extends Controller
 {
     /**
@@ -21,7 +23,13 @@ class AnakController extends Controller
         foreach ($anak as $a) {
             $tanggal_lahir = Carbon::parse($a->tanggal_lahir);
             $a->usia = $tanggal_lahir->diffInYears(Carbon::now());
+
+            $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'izin'])->count();
+
+            // Hitung progres berdasarkan jumlah kunjungan
+            $a->progresnilai = ($progres >= 20) ? 100 : ($progres * 5); // 5% untuk setiap kunjungan
         }
+
         return view('anak.index', ['anaks' => $anak]);
     }
 
@@ -70,6 +78,7 @@ class AnakController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // dd($request->tanggal_lahir);
 
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:6|unique:anaks,nib',
@@ -123,8 +132,11 @@ class AnakController extends Controller
 
     public function kunjungan(Anak $anak) {}
 
+
     public function edit(Anak $anak)
     {
+
+        // dd($anak->tanggal_lahir);
         $pendidikan = [
             'belum' => 'Belum Sekolah',
             'TK' => 'TK',
@@ -143,6 +155,15 @@ class AnakController extends Controller
             'S3' => 'S3',
             'Prof' => 'Prof'
         ];
+
+        // foreach ($anak as $a) {
+        //     if ($a->tanggal_lahir) {
+        //         // Mengubah format ke 'd/m/Y'
+        //         $a->tanggal_lahir = $a->tanggal_lahir->format('d/m/Y');
+        //     } else {
+        //         $a->tanggal_lahir = null; // Jika tanggal_lahir null, tetap null
+        //     }
+        // }
 
         $agama = ['islam' => 'Islam', 'katolik' => 'Katolik', 'protestan' => 'Protestan', 'hindu' => 'Hindu', 'budha' => 'Budha', 'konghuchu' => 'Konghuchu'];
         return view('anak.edit', compact('anak', 'pendidikan', 'pendidikan_orangtua', 'agama'));
@@ -201,22 +222,24 @@ class AnakController extends Controller
         return redirect("/anak");
     }
 
-    public function nonaktif($anak)
+    public function ubahStatus(Request $request)
     {
-        $anaks = Anak::findOrFail($anak);
-        $anaks->status = 'nonaktif';
-        $anaks->save();
-        Alert::success('Berhasil', "Data Anak $anaks->nama berhasil di Nonaktifkan");
-        return redirect()->back()->with('success', 'Data anak berhasil dinonaktifkan.');
-    }
+        $anak = Anak::find($request->id);
 
+        // Toggle status between 'aktif' and 'nonaktif'
+        if ($anak) {
+            $anak->status = $anak->status === 'aktif' ? 'nonaktif' : 'aktif';
+            $anak->save();
 
-    public function aktif($anak)
-    {
-        $anaks = Anak::findOrFail($anak);
-        $anaks->status = 'aktif';
-        $anaks->save();
-        Alert::success('Berhasil', "Data Anak $anaks->nama berhasil di Aktifkan");
-        return redirect()->back();
+            return response()->json([
+                'status' => 'success',
+                'newStatus' => $anak->status,
+                'message' => 'Status anak ' . $anak->nama . ' berhasil diperbarui.',
+            ]);
+        }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Anak tidak ditemukan.',
+        ], 404);
     }
 }

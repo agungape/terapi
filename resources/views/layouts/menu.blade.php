@@ -1,97 +1,210 @@
-    {{-- <li class="nav-item">
-        <a href="{{ route('home') }}" class="nav-link {{ Request::is('home') ? 'active' : 'collapsed' }}">
-            <i class="bi bi-grid"></i>
-            <span>Dashboard</span>
-        </a>
-    </li> --}}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+        <img src="{{ asset('assets') }}/adminlte/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+            class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a>
 
-    <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-            <li class="nav-item nav-profile">
-                <a href="#" class="nav-link">
-                    <div class="nav-profile-image">
-                        <img src="{{ asset('assets') }}/images/faces/face1.jpg" alt="profile" />
-                        <span class="login-status online"></span>
-                        <!--change to offline or busy as needed-->
-                    </div>
-                    <div class="nav-profile-text d-flex flex-column">
-                        <span class="font-weight-bold mb-2">Admin</span>
-                        <span class="text-secondary text-small">Super Admin</span>
-                    </div>
-                    <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
-                </a>
-            </li>
-            <li class="nav-item @yield('menuDashboard')">
-                <a class="nav-link" href="/home">
-                    <span class="menu-title">Dashboard</span>
-                    <i class="mdi mdi-home menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item @yield('menuMaster')">
-                <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
-                    aria-controls="ui-basic">
-                    <span class="menu-title">Master Data</span>
-                    <i class="menu-arrow"></i>
-                    <i class="fa fa-tasks menu-icon"></i>
-                </a>
-                <div class="collapse @yield('masterShow')" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{{ asset('assets') }}/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
+                    alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">Alexander Pierce</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="pages/calendar.html" class="nav-link @yield('menuDashboard')">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <p>
+                            Dashboard
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item @yield('masterShow')">
+                    <a href="#" class="nav-link @yield('menuMaster')">
+                        <i class="nav-icon fas fa-solid fa-bars"></i>
+                        <p>
+                            Master Data
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a class="nav-link @yield('menuAnak')" href="/anak">Anak</a>
+                            <a href="/anak" class="nav-link @yield('menuAnak')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Anak</p>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @yield('menuTerapis')" href="/terapis">Terapis</a>
+                            <a href="/terapis" class="nav-link @yield('menuTerapis')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Terapis</p>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @yield('menuProgram')" href="/program">Program Anak</a>
+                            <a href="/program" class="nav-link @yield('menuProgram')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Program Anak</p>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @yield('menuPelatihan')" href="/pelatihan">Pelatihan</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item @yield('menuObservasi')">
-                <a class="nav-link" href="/observasi">
-                    <span class="menu-title">Observasi</span>
-                    <i class="fa fa-file-powerpoint-o menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/kunjungan">
-                    <span class="menu-title">Registrasi</span>
-                    <i class="mdi mdi-contacts menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/data">
-                    <span class="menu-title">Data</span>
-                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#laporan" aria-expanded="false"
-                    aria-controls="ui-basic">
-                    <span class="menu-title">Laporan</span>
-                    <i class="menu-arrow"></i>
-                    <i class="mdi mdi-crosshairs-gps menu-icon"></i>
-                </a>
-                <div class="collapse" id="laporan">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/anak">Kehadiran Anak</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/terapis">Kinerja Terapis</a>
+                            <a href="/pelatihan" class="nav-link @yield('menuPelatihan')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pelatihan</p>
+                            </a>
                         </li>
                     </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/data">
-                    <span class="menu-title">Kasir</span>
-                    <i class="fa fa-money menu-icon"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                </li>
+
+                <li class="nav-item @yield('masterLogin')">
+                    <a href="#" class="nav-link @yield('menuLogin')">
+                        <i class="nav-icon fas fa-solid fa-users"></i>
+                        <p>
+                            User Login
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/user" class="nav-link @yield('menuUserlogin')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>User Management</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/useranak" class="nav-link @yield('menuAnaklogin')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Login Anak</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/userterapis" class="nav-link @yield('menuTerapislogin')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Login Terapis</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item @yield('masterKeuangan')">
+                    <a href="#" class="nav-link @yield('menuKeuangan')">
+                        <i class="nav-icon fas fa-money-bill"></i>
+                        <p>
+                            Keuangan
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('keuangan.rekap') }}" class="nav-link @yield('menuRekap')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Rekapan Kas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('keuangan.pemasukkan') }}" class="nav-link @yield('menuPemasukkan')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pemasukan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('keuangan.pengeluaran') }}" class="nav-link @yield('menuPengeluaran')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengeluaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('keuangan.kategori') }}" class="nav-link @yield('menuKategori')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kategori</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/observasi" class="nav-link @yield('menuObservasi')">
+                        <i class="nav-icon fa fa-address-book"></i>
+                        <p>
+                            Observasi
+                        </p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
+                        <i class="nav-icon fa fa-file-contract"></i>
+                        <p>
+                            Pendaftaran
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/data" class="nav-link @yield('menuRekammedis')">
+                        <i class="nav-icon fa fa-clipboard-list"></i>
+                        <p>
+                            Rekam Medis Anak
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/jadwal" class="nav-link @yield('menuJadwal')">
+                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        <p>
+                            Jadwal Anak
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/profile" class="nav-link @yield('menuProfile')">
+                        <i class="nav-icon fas fa-user-alt"></i>
+                        <p>
+                            Profile
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/profile" class="nav-link @yield('menuCareer')">
+                        <i class="nav-icon fas fa-solid fa-paperclip"></i>
+                        <p>
+                            Career
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/profile" class="nav-link @yield('menuBayar')">
+                        <i class="nav-icon fa fa-solid fa-file-invoice-dollar"></i>
+                        <p>
+                            Pembayaran
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/profile" class="nav-link @yield('menukontrak')">
+                        <i class="nav-icon fa fa-solid fa-handshake"></i>
+                        <p>
+                            Kontrak Karyawan
+                        </p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

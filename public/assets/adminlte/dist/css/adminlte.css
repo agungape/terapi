@@ -53009,4 +53009,54 @@ a.text-muted:hover {
 .dark-mode .border-dark {
   border-color: #4b545c !important;
 }
+
+.image-container {
+    margin: 20px
+}
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+.preview-container img {
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+}
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.image-preview {
+    position: relative;
+    display: inline-block;
+    border: 0px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background:#ffffff;
+}
+.image-preview img {
+    max-width: 150px;
+    max-height: 150px;
+    display:inline-block;
+}.remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.remove-btn:hover {
+    background: #cc0000;
+}
 /*# sourceMappingURL=adminlte.css.map */

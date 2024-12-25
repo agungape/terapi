@@ -19,16 +19,18 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'id' => 1,
             'name' => 'admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('admin123'),
-            'is_admin' => true
+            'username' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('admin1234'),
+            'role' => 'admin'
         ]);
 
 
-        // $faker = Faker::create('id_ID');
-        // $faker->seed(123);
-        // $this->call(AnakSeeder::class);
-        // $this->call(KunjunganSeeder::class);
-        // $this->call(ProgramSeeder::class);
+        $faker = Faker::create('id_ID');
+        $faker->seed(123);
+        $this->call(AnakSeeder::class);
+        $this->call(TerapisSeeder::class);
+        $this->call(ProgramSeeder::class);
+        $this->call(KunjunganSeeder::class);
     }
 }

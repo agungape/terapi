@@ -12,6 +12,6 @@ class TerapisSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\Terapis::factory()->count(5)->create();
     }
 }

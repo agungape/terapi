@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('menuMaster', 'active')
-@section('masterShow', 'show')
+@section('masterShow', 'menu-is-opening menu-open')
 @section('menuTerapis', 'active')
 @section('content')
 

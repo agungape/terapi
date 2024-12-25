@@ -26,4 +26,9 @@ class Terapis extends Model
     {
         return $this->hasMany('App\Models\Kunjungan');
     }
+
+    public function jadwals(): HasMany
+    {
+        return $this->hasMany('App\Models\Jadwal');
+    }
 }

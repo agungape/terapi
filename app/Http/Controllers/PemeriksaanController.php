@@ -29,16 +29,32 @@ class PemeriksaanController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $validateData = $request->validate([
             'kunjungan_id' => 'required|exists:App\Models\Kunjungan,id',
-            'program_id' => 'required|exists:App\Models\Program,id',
-            'subjek' => 'required',
-            'objek' => 'required',
-            'assesment' => 'required',
-            'planning' => 'required',
+            'program_id' => 'required|array',
+            'status' => 'required|array',
+            'keterangan' => 'nullable|string',
 
+            'program_id.*' => 'required|exists:App\Models\Program,id',
+            'status.*' => 'required',
         ]);
-        $pemeriksaan = Pemeriksaan::create($validateData);
+
+        // Ambil data dari input
+        $kunjunganId = $request->input('kunjungan_id');
+        $programId = $request->input('program_id'); // array program_id
+        $status = $request->input('status'); // array status
+        $keterangan = $request->input('keterangan');
+
+        foreach ($programId as $index => $idProgram) {
+            Pemeriksaan::create([
+                'kunjungan_id' => $kunjunganId,
+                'program_id' => $idProgram,
+                'status' => $status[$index],
+                'keterangan' => $keterangan,
+            ]);
+        }
+
         Alert::success('Berhasil', "Pemeriksaan berhasil ditambahkan");
         return redirect()->back();
     }

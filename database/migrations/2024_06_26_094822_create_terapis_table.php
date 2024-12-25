@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->text('alamat');
             $table->string('telepon');
-            $table->enum('status', ['aktif', 'tidak_aktif']);
+            $table->enum('status', ['aktif', 'nonaktif']);
             $table->timestamps();
         });
     }

@@ -84,7 +84,7 @@
     </script>
 
     {{-- script rekapkas --}}
-    <script>
+    {{-- <script>
         // Ambil data dari server (PHP)
         const chartData = @json($data);
 
@@ -156,6 +156,112 @@
                     pemasukanChart.data.labels = newLabels;
                     pemasukanChart.data.datasets[0].data = newDataSet;
                     pemasukanChart.update();
+                }
+            });
+        });
+    </script> --}}
+    <script>
+        // Data awal dari server
+        const pemasukanData = @json($data_pemasukkan);
+        const pengeluaranData = @json($data_pengeluaran);
+
+        // Array nama bulan
+        const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        // Fungsi untuk membuat chart
+        function createChart(ctx, label, data, bgColor, borderColor) {
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(item => monthNames[item.month - 1]),
+                    datasets: [{
+                        label: label,
+                        data: data.map(item => item.total),
+                        backgroundColor: bgColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 10000000 // Batas atas skala Y
+                        }
+                    }
+                }
+            });
+        }
+
+        // Buat chart pemasukan
+        const pemasukanCtx = document.getElementById('pemasukanChart').getContext('2d');
+        let pemasukanChart = createChart(
+            pemasukanCtx,
+            'Pemasukan',
+            pemasukanData,
+            'rgba(40, 167, 69, 0.5)',
+            'rgba(40, 167, 69, 1)'
+        );
+
+        // Buat chart pengeluaran
+        const pengeluaranCtx = document.getElementById('pengeluaranChart').getContext('2d');
+        let pengeluaranChart = createChart(
+            pengeluaranCtx,
+            'Pengeluaran',
+            pengeluaranData,
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(255, 99, 132, 1)'
+        );
+
+        $('#yearFilter_pemasukkan').on('change', function() {
+            const selectedYear = $(this).val();
+
+            // Lakukan AJAX request untuk pemasukan
+            $.ajax({
+                url: '{{ url('/rekap-kas') }}',
+                method: 'GET',
+                data: {
+                    year: selectedYear
+                },
+                success: function(response) {
+                    const newData = response.incomeData;
+
+                    // Update chart pemasukan
+                    pemasukanChart.data.labels = newData.map(item => monthNames[item.month - 1]);
+                    pemasukanChart.data.datasets[0].data = newData.map(item => item.total);
+                    pemasukanChart.update();
+                }
+            });
+        });
+
+        // Event listener untuk filter tahun pengeluaran
+        $('#yearFilter_pengeluaran').on('change', function() {
+            const selectedYear = $(this).val();
+
+            // Lakukan AJAX request untuk pengeluaran
+            $.ajax({
+                url: '{{ url('/rekap-kas') }}',
+                method: 'GET',
+                data: {
+                    year: selectedYear
+                },
+                success: function(response) {
+                    const newData = response.expenseData;
+
+                    // Update chart pengeluaran
+                    pengeluaranChart.data.labels = newData.map(item => monthNames[item.month - 1]);
+                    pengeluaranChart.data.datasets[0].data = newData.map(item => item.total);
+                    pengeluaranChart.update();
                 }
             });
         });

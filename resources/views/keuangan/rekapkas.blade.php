@@ -94,8 +94,7 @@
                                 </div>
                             </div>
                             <div class="card-body px-3">
-
-                                <table class="table table-bordered text-nowrap" id="data-tables">
+                                <table class="table table-bordered table-hover" id="data-tables">
                                     <thead>
                                         <tr>
                                             <th> No</th>
@@ -119,7 +118,6 @@
                                 <h3 class="card-title">
                                     <i class="far fa-chart-bar"></i>
                                     Grafik Pemasukkan
-
                                 </h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -128,9 +126,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <select name="year" id="yearFilter" class="form-control float-right"
+                                <select name="year_pemasukkan" id="yearFilter_pemasukkan" class="form-control float-right"
                                     style="width: auto;">
-                                    @foreach ($years as $year)
+                                    @foreach ($years_pemasukkan as $year)
                                         <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
                                             {{ $year }}
                                         </option>
@@ -144,11 +142,11 @@
                 </div>
                 <div class="row">
                     <section class="col-lg-5">
-                        <div class="card card-danger card-outline">
+                        <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <i class="far fa-chart-bar"></i>
-                                    Bar Chart
+                                    Grafik Pengeluaran
                                 </h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -157,7 +155,15 @@
                                 </div>
                             </div>
                             <div class="card-body">
-
+                                <select name="year_pengeluaran" id="yearFilter_pengeluaran" class="form-control float-right"
+                                    style="width: auto;">
+                                    @foreach ($years_pengeluaran as $year)
+                                        <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
+                                            {{ $year }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <canvas id="pengeluaranChart"></canvas>
                             </div>
                             <!-- /.card-body-->
                         </div>
@@ -173,7 +179,7 @@
                                 </div>
                             </div>
                             <div class="card-body px-3">
-                                <table class="table table-bordered text-nowrap" id="data-tables2">
+                                <table class="table table-bordered table-hover" id="data-tables2">
                                     <thead>
                                         <tr>
                                             <th> No</th>

@@ -43,12 +43,22 @@ class KeuanganController extends Controller
         $selectedYear = $request->input('year', date('Y'));
 
         // Ambil daftar tahun dari tabel pemasukan
-        $years = Pemasukkan::selectRaw('YEAR(tanggal) as year')
+        $years_pemasukkan = Pemasukkan::selectRaw('YEAR(tanggal) as year')
+            ->groupBy('year')
+            ->pluck('year');
+
+        $years_pengeluaran = Pengeluaran::selectRaw('YEAR(tanggal) as year')
             ->groupBy('year')
             ->pluck('year');
 
         // Ambil data pemasukan berdasarkan tahun yang dipilih
-        $data = Pemasukkan::selectRaw('MONTH(tanggal) as month, SUM(jumlah) as total')
+        $data_pemasukkan = Pemasukkan::selectRaw('MONTH(tanggal) as month, SUM(jumlah) as total')
+            ->whereYear('tanggal', $selectedYear)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $data_pengeluaran = Pengeluaran::selectRaw('MONTH(tanggal) as month, SUM(jumlah) as total')
             ->whereYear('tanggal', $selectedYear)
             ->groupBy('month')
             ->orderBy('month')
@@ -56,10 +66,10 @@ class KeuanganController extends Controller
 
         if ($request->ajax()) {
             return response()->json([
-                'chartData' => $data
+                'incomeData' => $data_pemasukkan,
+                'expenseData' => $data_pengeluaran,
             ]);
         }
-
 
 
         $saldoKas = SaldoKas::first();
@@ -71,7 +81,7 @@ class KeuanganController extends Controller
         $formattedPengeluaran = 'Rp ' . rtrim(rtrim(number_format($totalPengeluaran, 2, ',', '.'), '0'), ',');
 
 
-        return view('keuangan.rekapkas', compact('saldoKas', 'selectedYear', 'years', 'data', 'formattedPemasukan', 'formattedPengeluaran'));
+        return view('keuangan.rekapkas', compact('saldoKas', 'selectedYear', 'years_pemasukkan', 'years_pengeluaran', 'formattedPemasukan', 'formattedPengeluaran', 'data_pemasukkan', 'data_pengeluaran'));
     }
 
     public function kategori()

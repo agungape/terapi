@@ -52,13 +52,12 @@
                                 <table class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th> #</th>
-                                            {{-- <th> Foto</th> --}}
+                                            <th> Aksi</th>
                                             <th> No. Induk</th>
                                             <th> Nama </th>
                                             <th> Usia </th>
                                             <th> Alamat </th>
-                                            <th> Aksi </th>
+                                            <th> Status </th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -51,14 +51,13 @@
                                 <table class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th> #</th>
+                                            <th> Aksi</th>
                                             <th> Foto</th>
                                             <th> Nama </th>
                                             <th> Usia </th>
                                             <th> Progres </th>
                                             <th> Alamat </th>
                                             <th> status </th>
-                                            <th> Aksi </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -110,7 +109,6 @@
 
                                                 <td style="vertical-align: middle;"> {{ $anak->alamat }} </td>
 
-                                                <td style="vertical-align: middle;"> {{ $anak->status }} </td>
 
                                                 <td style="vertical-align: middle;">
                                                     <form action="{{ route('anak.status') }}" method="POST">

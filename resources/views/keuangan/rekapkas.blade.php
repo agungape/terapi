@@ -27,7 +27,14 @@
                         <!-- small box -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{ $saldoKas->saldo_awal }}</h3>
+                                @if ($saldoKas)
+                                    {
+                                    <h3>{{ $saldoKas->saldo_awal }}</h3>
+                                }@else{
+                                    <h3>0</h3>
+
+                                    }
+                                @endif
 
                                 <p>Saldo Kas</p>
                             </div>
@@ -42,8 +49,11 @@
                         <!-- small box -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ $formattedPemasukan }}</h3>
-
+                                @if ($formattedPemasukan)
+                                    <h3>{{ $formattedPemasukan }}</h3>
+                                @else
+                                    <h3>0</h3>
+                                @endif
                                 <p>Pemasukkan</p>
                             </div>
                             <div class="icon">
@@ -72,7 +82,11 @@
                         <!-- small box -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>{{ $formattedPengeluaran }}</h3>
+                                @if ($formattedPengeluaran)
+                                    <h3>{{ $formattedPengeluaran }}</h3>
+                                @else
+                                    <h3>0</h3>
+                                @endif
                                 <p>Pengeluaran</p>
                             </div>
                             <div class="icon">
@@ -142,7 +156,7 @@
                 </div>
                 <div class="row">
                     <section class="col-lg-5">
-                        <div class="card card-success card-outline">
+                        <div class="card card-danger card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <i class="far fa-chart-bar"></i>

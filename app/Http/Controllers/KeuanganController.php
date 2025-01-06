@@ -287,4 +287,24 @@ class KeuanganController extends Controller
         Alert::toast("data Pengeluaran berhasil di Tambahkan", 'success');
         return redirect()->back();
     }
+
+    public function pengeluaran_destroy(Pengeluaran $pengeluaran)
+    {
+        $saldoKas = SaldoKas::latest()->first();
+        $saldoAwal = (int) str_replace(['Rp', '.', ' '], '', $saldoKas->saldo_awal);
+
+        $formatjumlah = $pengeluaran->jumlah;
+        $saldoJumlah = (int) str_replace(['Rp', '.', ' '], '', $formatjumlah);
+        $saldo = $saldoAwal + $saldoJumlah;
+
+        $saldoKas->update([
+            'saldo_awal' => $saldo
+        ]);
+        $pengeluaran->delete();
+        if ($pengeluaran->gambar == true) {
+            Storage::delete('public/bukti-transfer/' . $pengeluaran->gambar);
+        }
+        Alert::success('Berhasil', "data telah di hapus");
+        return redirect()->back();
+    }
 }

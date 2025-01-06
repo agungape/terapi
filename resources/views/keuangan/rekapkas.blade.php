@@ -28,12 +28,9 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 @if ($saldoKas)
-                                    {
                                     <h3>{{ $saldoKas->saldo_awal }}</h3>
-                                }@else{
+                                @else
                                     <h3>0</h3>
-
-                                    }
                                 @endif
 
                                 <p>Saldo Kas</p>

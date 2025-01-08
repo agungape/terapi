@@ -43,4 +43,9 @@ class Anak extends Model
     {
         return $this->hasMany('App\Models\Jadwal');
     }
+
+    public function observasis(): HasMany
+    {
+        return $this->hasMany('App\Models\Observasi');
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('anak_id')->constrained()->onDelete('cascade');
             $table->string('jenis');
-            $table->text('deskripsi');
+            $table->string('gambar_atec')->nullable();
             $table->timestamps();
         });
     }

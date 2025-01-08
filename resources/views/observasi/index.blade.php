@@ -71,10 +71,69 @@
                     <div class="col-7">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Observasi </h4>
+                                <h4 class="card-title">Data Observasi Anak </h4>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <div id="observations">Silahkan klik mulai!!!</div>
+                                <table class="table table-bordered table-hover" id="data-tables">
+                                    <thead>
+                                        <tr>
+                                            <th> No</th>
+                                            <th> Nama Anak </th>
+                                            <th> Jenis </th>
+                                            <th> Tanggal Observasi </th>
+                                            <th> Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($observasi as $o)
+                                            <tr>
+                                                <td scope="row">{{ $observasi->firstItem() + $loop->iteration - 1 }}</td>
+                                                <td>{{ $o->anak->nama }}</td>
+                                                <td>{{ $o->jenis }}</td>
+                                                <td>{{ $o->created_at }}</td>
+                                                <td>
+                                                    @if ($o->jenis == 'atec')
+                                                        <button class="btn btn-outline-primary btn-sm" data-toggle="modal"
+                                                            data-target="#modalGambar{{ $o->id }}">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+
+                                                        <div class="modal fade" id="modalGambar{{ $o->id }}"
+                                                            tabindex="-1" aria-labelledby="modalLabel{{ $o->id }}"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="modalLabel{{ $o->id }}">
+                                                                            Hasil Atec</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center">
+                                                                        <img src="{{ asset('storage/atec/' . $o->gambar_atec) }}"
+                                                                            class="img-fluid" alt="Gambar">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5">data belum ada</td>
+                                            </tr>
+                                        @endforelse
+
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

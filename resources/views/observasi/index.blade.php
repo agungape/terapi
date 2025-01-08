@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-3">
-                                            @if ($anak)
+                                            @if ($anaks)
                                                 <button id="startButton" type="submit"
                                                     class="btn btn-sm btn-primary">Mulai</button>
                                             @else

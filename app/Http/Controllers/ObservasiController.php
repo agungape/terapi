@@ -16,7 +16,7 @@ class ObservasiController extends Controller
      */
     public function index()
     {
-        $observasi = Observasi::latest()->paginate(10);
+        $observasi = Observasi::latest()->paginate(4);
         $jenis = [
             'wawancara' => 'Wawancara',
             'atec' => 'Atec'

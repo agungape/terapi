@@ -60,8 +60,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-3">
-                                            <button id="startButton" type="submit"
-                                                class="btn btn-sm btn-primary">Mulai</button>
+                                            @if ($anak)
+                                                <button id="startButton" type="submit"
+                                                    class="btn btn-sm btn-primary">Mulai</button>
+                                            @else
+                                                <button id="startButton" type="submit" class="btn btn-sm btn-primary"
+                                                    disabled>Mulai</button>
+                                            @endif
+
                                         </div>
                                     </div>
                                 </form>
@@ -134,6 +140,10 @@
 
                                     </tbody>
                                 </table>
+                                <div class="mx-4 mt-3">
+                                    {{ $observasi->fragment('judul')->links() }}
+                                </div>
+
                             </div>
                         </div>
                     </div>

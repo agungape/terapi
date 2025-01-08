@@ -54,7 +54,7 @@
                                         <label for="inputPassword3" class="col-sm-3 col-form-label"></label>
                                         <div class="col-sm-9">
                                             <button type="submit" class="btn btn-primary">Submit</button>
-                                            <a href="{{ url()->previous() }}" class="btn btn-warning">Kembali</a>
+
                                         </div>
                                     </div>
                                 </form>

@@ -131,7 +131,6 @@ class KeuanganController extends Controller
 
     public function pemasukkan_store(Request $request)
     {
-
         $validateData = $request->validate([
             'tanggal' => 'required|date',
             'deskripsi' => 'required',

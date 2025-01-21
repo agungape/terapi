@@ -13,9 +13,15 @@ use function Symfony\Component\String\b;
 
 class AnakController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view anak', ['only' => ['index']]);
+        $this->middleware('permission:create anak', ['only' => ['create', 'store', 'show']]);
+        $this->middleware('permission:show anak', ['only' => ['show']]);
+        $this->middleware('permission:update anak', ['only' => ['update', 'edit', 'ubahStatus']]);
+        $this->middleware('permission:delete anak', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         $anak = Anak::orderBy('nib')->paginate(5);
@@ -125,12 +131,6 @@ class AnakController extends Controller
         $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->paginate(5);
         return view('anak.detail', compact('kunjungan', 'anak'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    public function kunjungan(Anak $anak) {}
 
 
     public function edit(Anak $anak)

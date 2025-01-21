@@ -29,22 +29,9 @@
                             <div class="card-header">
                                 @auth
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
+                                        data-target="#exampleModal"><i class="fa fa-plus pr-2"></i>Tambah Data
                                     </a>
                                 @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
@@ -54,6 +41,7 @@
                                             <th>#</th>
                                             <th>kategori</th>
                                             <th>Jenis</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>

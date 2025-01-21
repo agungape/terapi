@@ -14,7 +14,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Kategori</li>
+                            <li class="breadcrumb-item active">Data Pemasukkan</li>
                         </ol>
                     </div>
                 </div>
@@ -27,42 +27,31 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                @auth
-                                    <div class="input-group-prepend pl-4">
-                                        <button type="button" class="btn btn-success btn-sm dropdown-toggle"
-                                            data-toggle="dropdown"><i class="fa fa-plus pr-2"></i>
-                                            Tambah Data
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal1"><i
-                                                    class="fa fa-plus pr-2"></i>Pembayaran Anak
-                                            </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal2"><i
-                                                    class="fa fa-plus pr-2"></i>Pemasukkan
-                                                Lain</a>
-                                        </div>
-                                    </div>
-
-                                @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
+                                <div class="container-fluid">
+                                    @auth
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-success btn-sm dropdown-toggle"
+                                                data-toggle="dropdown">
+                                                <i class="fa fa-plus pr-2"></i> Tambah Data
                                             </button>
+                                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-left">
+                                                <a class="dropdown-item" href="#" data-toggle="modal"
+                                                    data-target="#modal1">
+                                                    <i class="fa fa-plus pr-2"></i>Pembayaran Anak
+                                                </a>
+                                                <a class="dropdown-item" href="#" data-toggle="modal"
+                                                    data-target="#modal2">
+                                                    <i class="fa fa-plus pr-2"></i>Pemasukkan Lain
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endauth
                                 </div>
                             </div>
-                            <div class="row pt-4 pl-5">
-                                <div class="col-lg-3 col-6">
-                                    <!-- small box -->
+                            <div class="row justify-content-md-start justify-content-center align-items-center p-4">
+                                <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-info">
-                                        <div class="inner">
+                                        <div class="inner text-center">
                                             @if ($saldoKas == true)
                                                 <h3>{{ $saldoKas->saldo_awal }}</h3>
                                             @else
@@ -73,13 +62,11 @@
                                         <div class="icon">
                                             <i class="ion ion-bag"></i>
                                         </div>
-
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-6">
-                                    <!-- small box -->
+                                <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-success">
-                                        <div class="inner">
+                                        <div class="inner text-center">
                                             @if ($formattedPemasukan == true)
                                                 <h3>{{ $formattedPemasukan }}</h3>
                                             @else
@@ -90,10 +77,11 @@
                                         <div class="icon">
                                             <i class="ion ion-bag"></i>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
+
+
 
                             <div class="card-body table-responsive px-5 pb-5">
                                 <table class="table table-hover text-nowrap">
@@ -109,22 +97,17 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @foreach ($pemasukkans as $pemasukkan)
                                             <tr>
-                                                <td scope="row">{{ $pemasukkans->firstItem() + $loop->iteration - 1 }}
-                                                </td>
+                                                <td>{{ $pemasukkans->firstItem() + $loop->iteration - 1 }}</td>
                                                 <td>{{ $pemasukkan->tanggal }}</td>
                                                 <td>{{ $pemasukkan->deskripsi }}</td>
-                                                <td> {{ $pemasukkan->kategori->nama }}</td>
-                                                <td><span class="badge bg-success">
-                                                        {{ $pemasukkan->jumlah }}</span>
-                                                </td>
-                                                <td><span class="badge bg-primary">
-                                                        {{ $pemasukkan->saldo_akhir }}</span>
+                                                <td>{{ $pemasukkan->kategori->nama }}</td>
+                                                <td><span class="badge bg-success">{{ $pemasukkan->jumlah }}</span></td>
+                                                <td><span class="badge bg-primary">{{ $pemasukkan->saldo_akhir }}</span>
                                                 </td>
                                                 <td>
-                                                    @if ($pemasukkan->gambar == true)
+                                                    @if ($pemasukkan->gambar)
                                                         <button class="btn btn-outline-primary btn-sm" data-toggle="modal"
                                                             data-target="#modalGambar{{ $pemasukkan->id }}">
                                                             <i class="fa fa-eye"></i>
@@ -134,7 +117,8 @@
                                                         <form
                                                             action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}"
                                                             method="POST" class="d-inline">
-                                                            @csrf @method('DELETE')
+                                                            @csrf
+                                                            @method('DELETE')
                                                             <button type="submit"
                                                                 class="btn btn-outline-danger btn-sm btn-hapus"
                                                                 title="Hapus Data" data-name="{{ $pemasukkan->deskripsi }}"
@@ -144,48 +128,20 @@
                                                         </form>
                                                     @endif
                                                 </td>
-
-                                                {{-- modal view gambar --}}
-
-
-                                                <div class="modal fade" id="modalGambar{{ $pemasukkan->id }}"
-                                                    tabindex="-1" aria-labelledby="modalLabel{{ $pemasukkan->id }}"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="modalLabel{{ $pemasukkan->id }}">
-                                                                    Bukti Transfer</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="{{ asset('storage/bukti-transfer/' . $pemasukkan->gambar) }}"
-                                                                    class="img-fluid" alt="Gambar">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </tr>
                                         @endforeach
-
                                     </tbody>
                                 </table>
-
                                 <div class="mx-4 mt-3">
                                     {{ $pemasukkans->fragment('judul')->links() }}
                                 </div>
-
-
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
         </section>
+
     </div>
 
     <form action="{{ route('pemasukkan.store') }}" method="POST" enctype="multipart/form-data">
@@ -204,7 +160,8 @@
                                 <div class="input-group date" id="reservationdate1" data-target-input="nearest">
                                     <input type="text"
                                         class="form-control @error('tanggal') is-invalid @enderror datetimepicker-input"
-                                        data-target="#reservationdate1" name="tanggal" value=" {{ old('tanggal') }}" />
+                                        data-target="#reservationdate1" name="tanggal" value=" {{ old('tanggal') }}"
+                                        id="tanggal" />
                                     <div class="input-group-append" data-target="#reservationdate1"
                                         data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i>
@@ -242,7 +199,7 @@
                             <label for="exampleInputMobile" class="col-sm-4 col-form-label">Kategori</label>
                             <div class="col-sm-8">
                                 @if ($kategori == true)
-                                    <input type="text" name="kategori_id" value="{{ $kategori->id }}" hidden>
+                                    <input type="hidden" name="kategori_id" value="{{ $kategori->id }}">
                                     <input type="text" class="form-control" value="{{ $kategori->nama }}" disabled>
                                 @else
                                     <input type="text" class="form-control" value="Silahkan inputkan data Kategori"
@@ -258,7 +215,7 @@
                                         <span class="input-group-text">Rp</span>
                                     </div>
                                     <input class="form-control" type="text" id="jumlah" name="jumlah"
-                                        placeholder="Masukkan jumlah pembayaran" oninput="formatRupiah(this)">
+                                        placeholder="Masukkan jumlah pembayaran" oninput="formatRupiah(this)" required>
                                 </div>
                                 @error('jenis')
                                     <span class="invalid-feedback" role="alert">
@@ -292,7 +249,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary me-2">Simpan</button>
+                        @if ($kategori == true)
+                            <button type="submit" class="btn btn-primary me-2">Simpan</button>
+                        @else
+                            <button type="submit" class="btn btn-primary me-2" disabled>Simpan</button>
+                        @endif
+
                     </div>
                 </div>
             </div>

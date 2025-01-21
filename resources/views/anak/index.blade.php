@@ -26,26 +26,13 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                @auth
+                            @can('create anak')
+                                <div class="card-header">
                                     <a href="{{ route('anak.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus">
                                         </i> Tambah data
                                     </a>
-                                @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
@@ -64,28 +51,30 @@
 
                                         @forelse ($anaks as  $anak)
                                             <tr>
-
                                                 <td style="vertical-align: middle;">
-                                                    <form action="{{ route('anak.destroy', ['anak' => $anak->id]) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                            title="Hapus Data" data-name="{{ $anak->nama }}"
-                                                            data-table="anak">
-                                                            <i class="fa fa-trash fa-fw"></i>
-                                                        </button>
-                                                    </form>
-                                                    <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fa fa-edit"></i></a>
-                                                    <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
-                                                        class="btn btn-info btn-sm">
-                                                        <i class="fas fa-address-card"></i>
-                                                    </a>
-
+                                                    @can('delete anak')
+                                                        <form action="{{ route('anak.destroy', ['anak' => $anak->id]) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
+                                                                title="Hapus Data" data-name="{{ $anak->nama }}"
+                                                                data-table="anak">
+                                                                <i class="fa fa-trash fa-fw"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
+                                                    @can('edit anak')
+                                                        <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            <i class="fa fa-edit"></i></a>
+                                                    @endcan
+                                                    @can('show anak')
+                                                        <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
+                                                            class="btn btn-info btn-sm">
+                                                            <i class="fas fa-address-card"></i>
+                                                        </a>
+                                                    @endcan
                                                 </td>
-
-
                                                 <td style="vertical-align: middle;"> <img
                                                         class="profile-user-img img-circle"
                                                         src="assets/images/faces/face1.jpg" alt="User profile picture">

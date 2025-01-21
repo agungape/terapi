@@ -7,11 +7,11 @@
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-sm-6">
+                    <div class="col-12 col-md-6">
                         <h1 class="m-0">Keuangan</h1>
                     </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
+                    <div class="col-12 col-md-6">
+                        <ol class="breadcrumb float-md-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">Rekap Saldo KAS</li>
                         </ol>
@@ -22,68 +22,47 @@
 
         <section class="content">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
+                <div class="row text-center">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-info">
                             <div class="inner">
-                                @if ($saldoKas)
-                                    <h3>{{ $saldoKas->saldo_awal }}</h3>
-                                @else
-                                    <h3>0</h3>
-                                @endif
-
+                                <h3>{{ $saldoKas ? $saldoKas->saldo_awal : 0 }}</h3>
                                 <p>Saldo Kas</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-card"></i>
                             </div>
-
                         </div>
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                @if ($formattedPemasukan)
-                                    <h3>{{ $formattedPemasukan }}</h3>
-                                @else
-                                    <h3>0</h3>
-                                @endif
+                                <h3>{{ $formattedPemasukan ?? 0 }}</h3>
                                 <p>Pemasukkan</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-stats-bars"></i>
                             </div>
-
                         </div>
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3>44</h3>
-
                                 <p>Keuntungan</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person-add"></i>
                             </div>
-
                         </div>
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                @if ($formattedPengeluaran)
-                                    <h3>{{ $formattedPengeluaran }}</h3>
-                                @else
-                                    <h3>0</h3>
-                                @endif
+                                <h3>{{ $formattedPengeluaran ?? 0 }}</h3>
                                 <p>Pengeluaran</p>
                             </div>
                             <div class="icon">
@@ -91,10 +70,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- ./col -->
                 </div>
+
                 <div class="row">
-                    <section class="col-lg-7">
+                    <section class="col-12 col-lg-7 mb-3">
                         <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">Rincian Pemasukkan</h3>
@@ -108,22 +87,21 @@
                                 <table class="table table-bordered table-hover" id="data-tables">
                                     <thead>
                                         <tr>
-                                            <th> No</th>
-                                            <th> Deskripsi </th>
-                                            <th> Kategori </th>
-                                            <th> Jumlah </th>
-                                            <th> Tanggal </th>
+                                            <th>No</th>
+                                            <th>Deskripsi</th>
+                                            <th>Kategori</th>
+                                            <th>Jumlah</th>
+                                            <th>Tanggal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                     </section>
-                    <section class="col-lg-5">
+
+                    <section class="col-12 col-lg-5 mb-3">
                         <div class="card card-success card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">
@@ -137,8 +115,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <select name="year_pemasukkan" id="yearFilter_pemasukkan" class="form-control float-right"
-                                    style="width: auto;">
+                                <select name="year_pemasukkan" id="yearFilter_pemasukkan" class="form-control mb-3">
                                     @foreach ($years_pemasukkan as $year)
                                         <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
                                             {{ $year }}
@@ -147,12 +124,12 @@
                                 </select>
                                 <canvas id="pemasukanChart"></canvas>
                             </div>
-                            <!-- /.card-body-->
                         </div>
                     </section>
                 </div>
+
                 <div class="row">
-                    <section class="col-lg-5">
+                    <section class="col-12 col-lg-5 mb-3">
                         <div class="card card-danger card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">
@@ -166,8 +143,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <select name="year_pengeluaran" id="yearFilter_pengeluaran" class="form-control float-right"
-                                    style="width: auto;">
+                                <select name="year_pengeluaran" id="yearFilter_pengeluaran" class="form-control mb-3">
                                     @foreach ($years_pengeluaran as $year)
                                         <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
                                             {{ $year }}
@@ -176,10 +152,10 @@
                                 </select>
                                 <canvas id="pengeluaranChart"></canvas>
                             </div>
-                            <!-- /.card-body-->
                         </div>
                     </section>
-                    <section class="col-lg-7">
+
+                    <section class="col-12 col-lg-7 mb-3">
                         <div class="card card-danger card-outline">
                             <div class="card-header">
                                 <h3 class="card-title">Rincian Pengeluaran</h3>
@@ -193,19 +169,17 @@
                                 <table class="table table-bordered table-hover" id="data-tables2">
                                     <thead>
                                         <tr>
-                                            <th> No</th>
-                                            <th> Deskripsi </th>
-                                            <th> Kategori </th>
-                                            <th> Jumlah </th>
-                                            <th> Tanggal </th>
+                                            <th>No</th>
+                                            <th>Deskripsi</th>
+                                            <th>Kategori</th>
+                                            <th>Jumlah</th>
+                                            <th>Tanggal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </section>
                 </div>

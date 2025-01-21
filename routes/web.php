@@ -10,8 +10,10 @@ use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PencarianController;
 use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTerapisController;
@@ -20,6 +22,8 @@ use App\Models\Kunjungan;
 use App\Models\Observasi;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,25 +50,31 @@ Route::get('/login', function () {
 
 Auth::routes();
 
-// Route::middleware(['admin'])->group(function () {
-//     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//     Route::resource('/upload', UploadController::class);
-//     Route::get('/upload/search', [UploadController::class, 'search'])->name('upload.search');
-// });
+Route::group(['middleware' => ['role:super-admin|admin|anak|terapis|keuangan']], function () {
 
-Route::middleware(['auth'])->group(function () {
+    Route::resource('/roles', RoleController::class);
+    Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::get('/manajemen-menu', [RoleController::class, 'manajemen_menu']);
+    Route::get('roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionToRole']);
+    Route::put('roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole']);
+
+    Route::resource('/permissions', App\Http\Controllers\PermissionController::class);
+    Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+
+    Route::resource('/users', UserController::class);
+    Route::post('/users/anak', [UserController::class, 'store_anak'])->name('usersanak.store');
+    Route::post('/users/terapis', [UserController::class, 'store_terapis'])->name('usersterapis.store');
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    Route::resource('/user', UserController::class);
-    Route::resource('/userterapis', UserTerapisController::class);
-    Route::resource('/useranak', UserAnakController::class);
-    Route::resource('/anak', AnakController::class);
     Route::resource('/terapis', TerapisController::class);
     Route::resource('/program', ProgramController::class);
     Route::resource('/pelatihan', PelatihanController::class);
+    Route::resource('/anak', AnakController::class);
     Route::resource('/profile', ProfileController::class);
     Route::resource('/jadwal', JadwalController::class);
-
-
+    Route::resource('/menu', JadwalController::class);
     Route::get('/observasi', [ObservasiController::class, 'index'])->name('observasi.index');
     Route::get('rekap-kas', [KeuanganController::class, 'rekap'])->name('keuangan.rekap');
     Route::get('pemasukkan/json', [KeuanganController::class, 'pemasukkan_json'])->name('pemasukkan.json');
@@ -78,8 +88,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pengeluaran', [KeuanganController::class, 'pengeluaran'])->name('keuangan.pengeluaran');
     Route::post('/pengeluaran/simpan', [KeuanganController::class, 'pengeluaran_store'])->name('pengeluaran.store');
     Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
-
-
 
     Route::get('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');

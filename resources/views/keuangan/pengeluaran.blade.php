@@ -14,7 +14,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Kategori</li>
+                            <li class="breadcrumb-item active">Data Pengeluaran</li>
                         </ol>
                     </div>
                 </div>
@@ -28,40 +28,23 @@
                         <div class="card">
                             <div class="card-header">
                                 @auth
-                                    <div class="input-group-prepend pl-4">
+                                    <div class="input-group-prepend">
                                         <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
-                                            data-toggle="dropdown"><i class="fa fa-plus pr-2"></i>
-                                            Tambah Data
+                                            data-toggle="dropdown">
+                                            <i class="fa fa-plus pr-2"></i> Tambah Data
                                         </button>
-                                        <div class="dropdown-menu">
-                                            {{-- <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal1"><i
-                                                    class="fa fa-plus pr-2"></i>Pembayaran Anak
-                                            </a> --}}
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal2"><i
-                                                    class="fa fa-plus pr-2"></i>Pengeluaran</a>
+                                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-left">
+                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal2">
+                                                <i class="fa fa-plus pr-2"></i>Pengeluaran
+                                            </a>
                                         </div>
                                     </div>
-
                                 @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="row pt-4 pl-5">
-                                <div class="col-lg-3 col-6">
-                                    <!-- small box -->
+                            <div class="row justify-content-md-start justify-content-center align-items-center p-4">
+                                <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-info">
-                                        <div class="inner">
+                                        <div class="inner text-center">
                                             @if ($saldoKas == true)
                                                 <h3>{{ $saldoKas->saldo_awal }}</h3>
                                             @else
@@ -72,13 +55,11 @@
                                         <div class="icon">
                                             <i class="ion ion-bag"></i>
                                         </div>
-
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-6">
-                                    <!-- small box -->
+                                <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-danger">
-                                        <div class="inner">
+                                        <div class="inner text-center">
                                             @if ($formattedPengeluaran == true)
                                                 <h3>{{ $formattedPengeluaran }}</h3>
                                             @else
@@ -89,12 +70,9 @@
                                         <div class="icon">
                                             <i class="ion ion-bag"></i>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class="card-body table-responsive px-5 pb-5">
                                 <table class="table table-hover text-nowrap">
                                     <thead>
@@ -109,7 +87,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @forelse ($pengeluarans as $pengeluaran)
                                             <tr>
                                                 <td scope="row">{{ $pengeluarans->firstItem() + $loop->iteration - 1 }}
@@ -174,137 +151,18 @@
                                                 <td colspan="7" class="text-center">data pengeluaran belum ada</td>
                                             </tr>
                                         @endforelse
-
-
                                     </tbody>
                                 </table>
-
                                 <div class="mx-4 mt-3">
                                     {{ $pengeluarans->fragment('judul')->links() }}
                                 </div>
-
-
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
         </section>
     </div>
-
-    {{-- <form action="{{ route('pengeluaran.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Pembayaran Anak</h5>
-                    </div>
-                    <div class="modal-body">
-
-                        <div class="form-group row mb-3">
-                            <label for="tambahInputMobile" class="col-sm-4 col-form-label">Tanggal</label>
-                            <div class="col-sm-4">
-                                <div class="input-group date" id="reservationdate1" data-target-input="nearest">
-                                    <input type="text"
-                                        class="form-control @error('tanggal') is-invalid @enderror datetimepicker-input"
-                                        data-target="#reservationdate1" name="tanggal" value=" {{ old('tanggal') }}" />
-                                    <div class="input-group-append" data-target="#reservationdate1"
-                                        data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
-                                        </div>
-                                    </div>
-                                    @error('tanggal')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Nama Anak</label>
-                            <div class="col-sm-8">
-                                <select class="form-control @error('deskripsi') is-invalid @enderror select2"
-                                    style="width:100%" name="deskripsi">
-                                    @forelse ($anaks as $anak)
-                                        <option value="Pembayaran Anak {{ $anak->nama }}">{{ $anak->nama }}
-                                        </option>
-                                    @empty
-                                        <option>tidak ada data</option>
-                                    @endforelse
-                                    @error('deskripsi')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Kategori</label>
-                            <div class="col-sm-8">
-                                @if ($kategori == true)
-                                    <input type="text" name="kategori_id" value="{{ $kategori->id }}" hidden>
-                                    <input type="text" class="form-control" value="{{ $kategori->nama }}" disabled>
-                                @else
-                                    <input type="text" class="form-control" value="Silahkan inputkan data Kategori"
-                                        disabled>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Jumlah Bayar</label>
-                            <div class="col-sm-8">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input class="form-control" type="text" id="jumlah" name="jumlah"
-                                        placeholder="Masukkan jumlah pembayaran" oninput="formatRupiah(this)">
-                                </div>
-                                @error('jenis')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="payment-method" class="col-sm-4 col-form-label">Metode Pembayaran</label>
-                            <div class="col-sm-3">
-                                <select id="metode-pembayaran1" class="form-control">
-                                    <option value="tunai">Tunai</option>
-                                    <option value="transfer">Transfer</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="bukti-transfer1" class="hidden">
-                            <div class="form-group row">
-                                <label for="exampleInputMobile" class="col-sm-4 col-form-label">Bukti Pembayaran</label>
-                                <div class="col-sm-8">
-                                    <button class="container-btn-file">
-                                        Upload Gambar
-                                        <input type="file" id="unggah-bukti1" name="gambar" accept="image/*">
-                                    </button>
-                                    <img id="preview1" src="#" alt="Preview Gambar" style="display: none;">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary me-2">Simpan</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </form> --}}
 
     <form action="{{ route('pengeluaran.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -371,7 +229,7 @@
                                         <span class="input-group-text">Rp</span>
                                     </div>
                                     <input class="form-control" type="text" id="jumlah" name="jumlah"
-                                        placeholder="Masukkan Jumlah" oninput="formatRupiah(this)">
+                                        placeholder="Masukkan Jumlah" oninput="formatRupiah(this)" required>
                                 </div>
                                 @error('jenis')
                                     <span class="invalid-feedback" role="alert">

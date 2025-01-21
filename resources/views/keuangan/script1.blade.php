@@ -12,7 +12,6 @@
             input.value = value || ''; // Set nilai input tanpa " Rupiah"
         }
 
-
         // modal 1
         document.addEventListener('DOMContentLoaded', () => {
             const metodePembayaran = document.getElementById('metode-pembayaran1');

@@ -6,49 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bright Star Of Child</title>
 
-    <!-- Google Font: Source Sans Pro -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets') }}/images/logo-1734059476.png">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- daterange picker -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/daterangepicker/daterangepicker.css">
-    <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/dist/css/adminlte.min.css">
-    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/dist/css/adminlte.css">
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/daterangepicker/daterangepicker.css">
-    <!-- Bootstrap Switch -->
-    <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-    <!-- summernote -->
+    <link rel="stylesheet"
+        href="{{ asset('assets') }}/adminlte/plugins/bootstrap-switch/css/bootstrap2/bootstrap-switch.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/summernote/summernote-bs4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/bs-stepper/css/bs-stepper.min.css">
-
-    <!-- Bootstrap Color Picker -->
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
-
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/select2/css/select2.min.css">
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-    <!-- Bootstrap4 Duallistbox -->
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
-    <!-- dropzonejs -->
     <link rel="stylesheet" href="{{ asset('assets') }}/adminlte/plugins/dropzone/min/dropzone.min.css">
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -56,7 +38,6 @@
         href="{{ asset('assets') }}/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-
     <style>
         .search-container button {
             margin-top: 4px;
@@ -133,6 +114,10 @@
             margin-top: 10px;
             max-width: 300px;
             max-height: 300px;
+        }
+
+        .list-group-item {
+            border: none;
         }
     </style>
 </head>
@@ -220,65 +205,31 @@
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
         </aside>
-        <!-- /.control-sidebar -->
     </div>
-    <!-- ./wrapper -->
 
-    <!-- jQuery -->
     <script src="{{ asset('assets') }}/adminlte/plugins/jquery/jquery.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
     <script src="{{ asset('assets') }}/adminlte/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.min.js"></script>
     <script>
         $.widget.bridge('uibutton', $.ui.button)
     </script>
-    <!-- Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- ChartJS -->
-    <script src="{{ asset('assets') }}/adminlte/plugins/chart.js/Chart.min.js"></script>
-    <!-- Sparkline -->
     <script src="{{ asset('assets') }}/adminlte/plugins/sparklines/sparkline.js"></script>
-    <!-- JQVMap -->
-    <script src="{{ asset('assets') }}/adminlte/plugins/jqvmap/jquery.vmap.min.js"></script>
-    <script src="{{ asset('assets') }}/adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-    <!-- jQuery Knob Chart -->
     <script src="{{ asset('assets') }}/adminlte/plugins/jquery-knob/jquery.knob.min.js"></script>
-    <!-- daterangepicker -->
     <script src="{{ asset('assets') }}/adminlte/plugins/moment/moment.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('assets') }}/adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js">
     </script>
-    <!-- Summernote -->
     <script src="{{ asset('assets') }}/adminlte/plugins/summernote/summernote-bs4.min.js"></script>
-    <!-- overlayScrollbars -->
     <script src="{{ asset('assets') }}/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-    <!-- AdminLTE App -->
-    {{-- <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.js"></script> --}}
-    <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.min.js"></script>
-
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset('assets') }}/adminlte/dist/js/demo.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('assets') }}/adminlte/dist/js/pages/dashboard.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/bs-stepper/js/bs-stepper.min.js"></script>
-    <!-- Select2 -->
     <script src="{{ asset('assets') }}/adminlte/plugins/select2/js/select2.full.min.js"></script>
-    <!-- Bootstrap4 Duallistbox -->
     <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js">
     </script>
-    <!-- InputMask -->
     <script src="{{ asset('assets') }}/adminlte/plugins/inputmask/jquery.inputmask.min.js"></script>
-    <!-- date-range-picker -->
-    <script src="{{ asset('assets') }}/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
-    <!-- bootstrap color picker -->
-    <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-    <!-- Bootstrap Switch -->
     <script src="{{ asset('assets') }}/adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-    <!-- dropzonejs -->
     <script src="{{ asset('assets') }}/adminlte/plugins/dropzone/min/dropzone.min.js"></script>
-
-    <!-- DataTables  & Plugins -->
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -298,7 +249,6 @@
     @yield('scripts')
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
-
     <script>
         let semuaTombol = document.querySelectorAll('.btn-hapus');
         semuaTombol.forEach(function(item) {
@@ -325,7 +275,6 @@
                     teksAlert = 'Hapus data <b>' + tombol.getAttribute('data-name') + '</b>';
                     break;
             }
-
             event.preventDefault();
             Swal.fire({
                     title: judulAlert,
@@ -343,11 +292,9 @@
                         tombol.parentElement.submit();
                     }
                 })
-
         }
 
         function showConfirmation() {
-
             Swal.fire({
                 title: 'Konfirmasi',
                 text: 'Apakah Anda yakin ingin mengkonfirmasi File?',
@@ -364,7 +311,6 @@
         }
 
         function showRejected() {
-
             Swal.fire({
                 title: 'Rejected',
                 text: 'Apakah Anda yakin ingin Menolak File?',
@@ -384,49 +330,38 @@
         $(function() {
             //Initialize Select2 Elements
             $('.select2').select2()
-
             //Initialize Select2 Elements
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
             })
-
             //Date picker
             $('#reservationdate').datetimepicker({
                 format: 'YYYY-MM-DD', // Format yang digunakan (misalnya: YYYY-MM-DD)
                 locale: 'id', // Opsional: Set locale (misalnya bahasa Indonesia)
             });
-
             $('#reservationdate1').datetimepicker({
                 format: 'YYYY-MM-DD', // Format yang digunakan (misalnya: YYYY-MM-DD)
                 locale: 'id', // Opsional: Set locale (misalnya bahasa Indonesia)
             });
-
             $('#reservationdate2').datetimepicker({
                 format: 'YYYY-MM-DD', // Format yang digunakan (misalnya: YYYY-MM-DD)
                 locale: 'id', // Opsional: Set locale (misalnya bahasa Indonesia)
             });
-
             //Date and time picker
             $('#reservationdatetime').datetimepicker({
                 icons: {
                     time: 'far fa-clock'
                 }
             });
-
             //Timepicker
             $('#timepicker').datetimepicker({
                 format: 'LT'
             })
-
             $("input[data-bootstrap-switch]").each(function() {
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             })
-
-
-
         });
     </script>
-
 </body>
 
 </html>

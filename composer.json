@@ -14,6 +14,7 @@
         "laravel/ui": "^4.2",
         "laravolt/indonesia": "^0.34.0",
         "realrashid/sweet-alert": "^6.0",
+        "spatie/laravel-permission": "^6.10",
         "yajra/laravel-datatables-oracle": "~10.1"
     },
     "require-dev": {

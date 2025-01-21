@@ -53059,4 +53059,43 @@ a.text-muted:hover {
 .remove-btn:hover {
     background: #cc0000;
 }
+
+@media (max-width: 768px)
+{
+    .input-group-prepend {
+        padding-left: 0 !important;
+        display: flex;
+        justify-content: left;
+    }
+
+    .dropdown-menu {
+        width: 100%; /* Supaya menu dropdown mengambil lebar penuh di perangkat kecil */
+    }
+
+    .dropdown-item {
+        text-align: center; /* Tengah untuk tampilan lebih rapi */
+    }
+}
+
+@media (max-width: 768px) {
+    .dropdown-menu-sm {
+        width: 200px; /* Sesuaikan ukuran menu */
+    }
+}
+
+@media (max-width: 576px) {
+    .main-footer {
+        display: flex;
+        flex-direction: column; /* Atur arah kolom pada layar kecil */
+        align-items: center;   /* Pusatkan konten */
+        text-align: center;    /* Atur teks agar rata tengah */
+    }
+
+    .main-footer .float-right {
+        display: block; /* Tampilkan elemen yang sebelumnya disembunyikan */
+        margin-top: 5px; /* Tambahkan jarak antar elemen jika diperlukan */
+    }
+}
+
+
 /*# sourceMappingURL=adminlte.css.map */

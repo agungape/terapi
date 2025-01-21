@@ -40,30 +40,41 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="/anak" class="nav-link @yield('menuAnak')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Anak</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/terapis" class="nav-link @yield('menuTerapis')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Terapis</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/program" class="nav-link @yield('menuProgram')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Program Anak</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/pelatihan" class="nav-link @yield('menuPelatihan')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Pelatihan</p>
-                            </a>
-                        </li>
+                        @can('view anak')
+                            <li class="nav-item">
+                                <a href="/anak" class="nav-link @yield('menuAnak')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Anak</p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('view terapis')
+                            <li class="nav-item">
+                                <a href="/terapis" class="nav-link @yield('menuTerapis')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Terapis</p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('view program anak')
+                            <li class="nav-item">
+                                <a href="/program" class="nav-link @yield('menuProgram')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Program Anak</p>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can('view program anak')
+                            <li class="nav-item">
+                                <a href="/pelatihan" class="nav-link @yield('menuPelatihan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pelatihan</p>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
 
@@ -71,31 +82,46 @@
                     <a href="#" class="nav-link @yield('menuLogin')">
                         <i class="nav-icon fas fa-solid fa-users"></i>
                         <p>
-                            User Login
+                            Manajemen User
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="/user" class="nav-link @yield('menuUserlogin')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>User Management</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/useranak" class="nav-link @yield('menuAnaklogin')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Login Anak</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/userterapis" class="nav-link @yield('menuTerapislogin')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Login Terapis</p>
-                            </a>
-                        </li>
+                        @can('view role')
+                            <li class="nav-item">
+                                <a href="/roles" class="nav-link @yield('menuRoles')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Roles/Group</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view permission')
+                            <li class="nav-item">
+                                <a href="/permissions" class="nav-link @yield('menuPermissions')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Permissions</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view user')
+                            <li class="nav-item">
+                                <a href="/users" class="nav-link @yield('menuUserlogin')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>User/Pengguna</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view manajemen menu')
+                            <li class="nav-item">
+                                <a href="/manajemen-menu" class="nav-link @yield('menuMenu')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Manajemen Menu</p>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
+
 
                 <li class="nav-item @yield('masterKeuangan')">
                     <a href="#" class="nav-link @yield('menuKeuangan')">

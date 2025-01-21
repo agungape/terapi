@@ -9,7 +9,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>User Management</h1>
+                        <h1>User</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -27,11 +27,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                @auth
-                                    {{-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambahModal"><i
+                                @can('create user')
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambahModal"><i
                                             class="fa fa-plus mr-1"></i>Tambah Data
-                                    </button> --}}
-                                @endauth
+                                    </button>
+                                @endcan
 
                             </div>
                             <!-- /.card-header -->
@@ -40,7 +40,6 @@
                                     <thead>
                                         <tr>
                                             <th> #</th>
-                                            <th> Nama </th>
                                             <th> Username </th>
                                             <th> Email </th>
                                             <th> Last Login </th>
@@ -55,9 +54,6 @@
                                                 <td scope="row">{{ $users->firstItem() + $loop->iteration - 1 }}
                                                 </td>
                                                 <td style="vertical-align: middle;">
-                                                    {{ $user->name }}
-                                                </td>
-                                                <td style="vertical-align: middle;">
                                                     {{ $user->username }}
                                                 </td>
                                                 <td style="vertical-align: middle;">
@@ -66,11 +62,13 @@
                                                 <td style="vertical-align: middle;">
                                                     {{ $user->last_login_duration }}
                                                 </td>
+                                                @if (!empty($user->getRoleNames()))
+                                                    @foreach ($user->getRoleNames() as $rolename)
+                                                        <label class="badge bg-primary mx-1">{{ $rolename }}</label>
+                                                    @endforeach
+                                                @endif
                                                 <td>
-                                                    {{ $user->role }}
-                                                </td>
-                                                <td>
-                                                    @if ($user->role->value == 'Admin')
+                                                    @can('update user')
                                                         <button type="button" class="btn btn-warning btn-sm"
                                                             data-toggle="modal" data-target="#editModal"
                                                             data-id="{{ $user->id }}" data-name="{{ $user->name }}"
@@ -79,7 +77,9 @@
                                                             data-role="{{ $user->role }}">
                                                             <i class="fa fa-edit"></i>
                                                         </button>
-                                                    @else
+                                                    @endcan
+
+                                                    @can('delete user')
                                                         <form action="{{ route('user.destroy', ['user' => $user->id]) }}"
                                                             method="POST" class="d-inline">
                                                             @csrf @method('DELETE')
@@ -89,15 +89,8 @@
                                                                 <i class="fa fa-trash fa-fw"></i>
                                                             </button>
                                                         </form>
-                                                        <button type="button" class="btn btn-warning btn-sm"
-                                                            data-toggle="modal" data-target="#editModal"
-                                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}"
-                                                            data-email="{{ $user->email }}"
-                                                            data-username="{{ $user->username }}"
-                                                            data-role="{{ $user->role }}">
-                                                            <i class="fa fa-edit"></i>
-                                                        </button>
-                                                    @endif
+                                                    @endcan
+
                                                 </td>
                                             </tr>
                                         @empty

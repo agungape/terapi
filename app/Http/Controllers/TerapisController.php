@@ -13,9 +13,15 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class TerapisController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view terapis', ['only' => ['index']]);
+        $this->middleware('permission:create terapis', ['only' => ['create', 'store']]);
+        $this->middleware('permission:show terapis', ['only' => ['show', 'terapis_pelatihan', 'pelatihan_store', 'sertifikat_show']]);
+        $this->middleware('permission:update terapis', ['only' => ['update', 'edit', 'ubahStatus']]);
+        $this->middleware('permission:delete terapis', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         $terapis = Terapis::orderBy('nib')->paginate(5);

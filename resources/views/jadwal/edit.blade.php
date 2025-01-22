@@ -23,11 +23,9 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-lg-4 col-md-12 mb-3">
                         <div class="card">
-                            <div class="card-header">
-                            </div>
-                            <!-- /.card-header -->
+                            <div class="card-header"></div>
                             <div class="card-body p-0">
                                 <form action="{{ route('jadwal.update', ['jadwal' => $jadwal->id]) }}" method="POST">
                                     @method('PATCH')
@@ -37,7 +35,7 @@
                                             <label for="tambahInputMobile" class="col-sm-4 col-form-label">Anak</label>
                                             <div class="col-sm-8">
                                                 <input type="text"
-                                                    class="form-control @error('anak_id') is-invalid @enderror" autofocus
+                                                    class="form-control @error('anak_id') is-invalid @enderror"
                                                     value="{{ old('anak_id') ?? ($jadwal->anak->nama ?? '') }}" readonly>
                                                 @error('anak_id')
                                                     <span class="invalid-feedback" role="alert">
@@ -52,15 +50,11 @@
                                                 <select
                                                     class="form-control @error('terapis_id') is-invalid @enderror select2"
                                                     style="width:100%" name="terapis_id">
-
                                                     @forelse ($terapis as $terapi)
-                                                        @if ($terapi->id == (old('terapis_id') ?? ($jadwal->terapis_id ?? '')))
-                                                            <option value="{{ $terapi->id }}" selected>{{ $terapi->nama }}
-                                                            </option>
-                                                        @else
-                                                            <option value="{{ $terapi->id }}">{{ $terapi->nama }}
-                                                            </option>
-                                                        @endif
+                                                        <option value="{{ $terapi->id }}"
+                                                            {{ $terapi->id == (old('terapis_id') ?? ($jadwal->terapis_id ?? '')) ? 'selected' : '' }}>
+                                                            {{ $terapi->nama }}
+                                                        </option>
                                                     @empty
                                                         <option>tidak ada data</option>
                                                     @endforelse
@@ -82,8 +76,7 @@
                                                         value="{{ old('tanggal', $jadwal->tanggal ? \Carbon\Carbon::parse($jadwal->tanggal)->format('Y-m-d') : '') }}" />
                                                     <div class="input-group-append" data-target="#reservationdate"
                                                         data-toggle="datetimepicker">
-                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
-                                                        </div>
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -109,28 +102,22 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <a href="{{ route('jadwal.index') }}" class="btn btn-success btn-sm"><i
-                                                class="fa fa-arrow-alt-circle-left"></i>
-                                            Kembali</a>
-                                        <button type="submit" class="btn btn-primary btn-sm">
-                                            Update Jadwal</button>
-
+                                        @can('create jadwal anak')
+                                            <a href="{{ route('jadwal.index') }}" class="btn btn-success btn-sm"><i
+                                                    class="fa fa-arrow-alt-circle-left"></i> Kembali</a>
+                                            <button type="submit" class="btn btn-primary btn-sm">Update Jadwal</button>
+                                        @endcan
                                     </div>
                                 </form>
-
                             </div>
                         </div>
-                        <!-- /.card -->
                     </div>
-                    <div class="col-8">
+
+                    <div class="col-lg-8 col-md-12">
                         <div class="card">
                             <div class="card-header">
-
-                                <div class="card-tools">
-
-                                </div>
+                                <div class="card-tools"></div>
                             </div>
-                            <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
                                     <thead>
@@ -138,33 +125,37 @@
                                             <th> Hari & Tanggal</th>
                                             <th> Waktu</th>
                                             <th> Nama Anak</th>
-                                            <th> Terapis </th>
-                                            <th> Pertemuan </th>
-                                            <th> Aksi </th>
+                                            <th> Terapis</th>
+                                            <th> Pertemuan</th>
+                                            <th> Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
-                                        @forelse  ($jadwals as $jadwal)
+                                        @forelse ($jadwals as $jadwal)
                                             <tr>
                                                 <td>{{ $jadwal->hari }}, {{ $jadwal->tanggal }}</td>
                                                 <td>{{ $jadwal->waktu }} Wita</td>
                                                 <td>{{ $jadwal->anak->nama }}</td>
                                                 <td>{{ $jadwal->terapis->nama }}</td>
-                                                <td> Pertemuan {{ $jadwal->pertemuan }}</td>
+                                                <td>Pertemuan {{ $jadwal->pertemuan }}</td>
                                                 <td>
-                                                    <form action="{{ route('jadwal.destroy', ['jadwal' => $jadwal->id]) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                            title="Hapus Data" data-table="jadwal"
-                                                            data-name="{{ $jadwal->anak->nama }}">
-                                                            <i class="fa fa-trash fa-fw"></i>
-                                                        </button>
-                                                    </form>
-                                                    <a href="{{ route('jadwal.edit', ['jadwal' => $jadwal->id]) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fa fa-edit"></i></a>
+                                                    @can('delete jadwal anak')
+                                                        <form action="{{ route('jadwal.destroy', ['jadwal' => $jadwal->id]) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
+                                                                title="Hapus Data" data-table="jadwal"
+                                                                data-name="{{ $jadwal->anak->nama }}">
+                                                                <i class="fa fa-trash fa-fw"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
+                                                    @can('create jadwal anak')
+                                                        <a href="{{ route('jadwal.edit', ['jadwal' => $jadwal->id]) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @empty
@@ -174,19 +165,15 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-
                                 <div class="mx-4 mt-3">
                                     {{ $jadwals->fragment('judul')->links() }}
                                 </div>
-
-
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
         </section>
+
     </div>
 @endsection

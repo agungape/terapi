@@ -25,11 +25,10 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-4 col-6">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{ $anak }} </h3>
-
                                 <p>Jumlah Anak</p>
                             </div>
                             <div class="icon">
@@ -38,11 +37,10 @@
                             <a href="/anak" class="small-box-footer">Detail <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-6">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>{{ $terapis }} </h3>
-
                                 <p>Jumlah Terapis</p>
                             </div>
                             <div class="icon">
@@ -51,7 +49,7 @@
                             <a href="/terapis" class="small-box-footer">Detail <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-6">
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3>{{ $user }}</h3>
@@ -83,5 +81,6 @@
                 </div>
             </div>
         </section>
+
     </div>
 @endsection

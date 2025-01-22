@@ -24,20 +24,18 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-lg-6 col-12">
                         <div class="card">
                             <div class="card-header">
-
                                 @can('create role')
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#exampleModal" class="btn btn-primary btn-sm"><i
-                                            class="fa fa-plus mx-1"></i>
-                                        Tambah Permission</a>
+                                        data-target="#exampleModal">
+                                        <i class="fa fa-plus mx-1"></i> Tambah Permission
+                                    </a>
                                 @endcan
-
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive pl-5">
+                            <div class="card-body table-responsive">
                                 <table class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
@@ -48,7 +46,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @foreach ($permissions as $permission)
                                             <tr>
                                                 <td scope="row">{{ $permissions->firstItem() + $loop->iteration - 1 }}
@@ -98,6 +95,8 @@
                 </div>
             </div>
         </section>
+
+
     </div>
 
 

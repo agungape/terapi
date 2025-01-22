@@ -10,12 +10,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Anak</h1>
+                        <h1>Pelatihan</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Terapis</li>
+                            <li class="breadcrumb-item active">Data Pelatihan</li>
                         </ol>
                     </div>
                 </div>
@@ -27,26 +27,14 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                @auth
+                            @can('create pelatihan')
+                                <div class="card-header">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
                                         data-target="#pelatihanModal"><i class="fa fa-plus"></i> Tambah Data
                                     </a>
-                                @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
+                            @endcan
+
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
@@ -65,21 +53,23 @@
                                                 <td>{{ $p->nama }}</td>
                                                 <td>{{ $p->instansi }}</td>
                                                 <td>
-                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                        {{-- <a href="{{ route('program.edit', ['program' => $p->id]) }}"
+                                                    @can('delete pelatihan')
+                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                                            {{-- <a href="{{ route('program.edit', ['program' => $p->id]) }}"
                                                 class="btn btn-gradient-warning btn-sm">
                                                 <i class="fa fa-edit"></i></a> --}}
-                                                        <form
-                                                            action="{{ route('pelatihan.destroy', ['pelatihan' => $p->id]) }}"
-                                                            method="POST">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $p->nama }}"
-                                                                data-table="pelatihan">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                            <form
+                                                                action="{{ route('pelatihan.destroy', ['pelatihan' => $p->id]) }}"
+                                                                method="POST">
+                                                                @csrf @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus"
+                                                                    title="Hapus Data" data-name="{{ $p->nama }}"
+                                                                    data-table="pelatihan">
+                                                                    <i class="fa fa-trash fa-fw"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach

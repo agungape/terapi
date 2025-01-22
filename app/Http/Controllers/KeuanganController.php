@@ -15,9 +15,20 @@ use Yajra\DataTables\DataTables;
 
 class KeuanganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view rekapan kas', ['only' => ['rekap', 'pemasukkan_json', 'pengeluaran_json']]);
+        $this->middleware('permission:view kategori', ['only' => ['kategori', 'kategori_store', 'kategori_destroy']]);
+        $this->middleware('permission:create kategori', ['only' => ['kategori_store']]);
+        $this->middleware('permission:delete kategori', ['only' => ['kategori_destroy']]);
+        $this->middleware('permission:view pemasukkan', ['only' => ['pemasukkan']]);
+        $this->middleware('permission:create pemasukkan', ['only' => ['pemasukkan_store']]);
+        $this->middleware('permission:delete pemasukkan', ['only' => ['pemasukkan_destroy']]);
+        $this->middleware('permission:view pengeluaran', ['only' => ['pengeluaran']]);
+        $this->middleware('permission:create pengeluaran', ['only' => ['pengeluaran_store']]);
+        $this->middleware('permission:delete pengeluaran', ['only' => ['pengeluaran_destroy']]);
+    }
+
     public function pemasukkan_json()
     {
         $pemasukkan = Pemasukkan::with('kategori')->select('pemasukkans.*');

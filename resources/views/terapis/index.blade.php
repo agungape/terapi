@@ -26,27 +26,14 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                @auth
+                            @can('create terapis')
+                                <div class="card-header">
                                     <a href="{{ route('terapis.create') }}" class="btn btn-primary btn-sm"><i
                                             class="fa fa-plus">
                                         </i> Tambah data
                                     </a>
-                                @endauth
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                            placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
@@ -66,22 +53,28 @@
                                             <tr>
 
                                                 <td style="vertical-align: middle;">
-                                                    <a href="{{ route('terapis.show', ['terapi' => $t->id]) }}"
-                                                        class="btn btn-info btn-sm">
-                                                        <i class="fas fa-address-card"></i>
-                                                    </a>
-                                                    <a href="{{ route('terapis.edit', ['terapi' => $t->id]) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('terapis.destroy', ['terapi' => $t->id]) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                            title="Hapus Data" data-name="{{ $t->nama }}"
-                                                            data-table="terapis">
-                                                            <i class="fa fa-trash fa-fw"></i>
-                                                        </button>
-                                                    </form>
+                                                    @can('show terapis')
+                                                        <a href="{{ route('terapis.show', ['terapi' => $t->id]) }}"
+                                                            class="btn btn-info btn-sm">
+                                                            <i class="fas fa-address-card"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can('update terapis')
+                                                        <a href="{{ route('terapis.edit', ['terapi' => $t->id]) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            <i class="fa fa-edit"></i></a>
+                                                    @endcan
+                                                    @can('delete terapis')
+                                                        <form action="{{ route('terapis.destroy', ['terapi' => $t->id]) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
+                                                                title="Hapus Data" data-name="{{ $t->nama }}"
+                                                                data-table="terapis">
+                                                                <i class="fa fa-trash fa-fw"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
                                                 </td>
 
                                                 {{-- <td style="vertical-align: middle;"> <img
@@ -99,15 +92,18 @@
 
 
                                                 <td style="vertical-align: middle;">
-                                                    <form action="{{ route('terapis.status') }}" method="POST">
-                                                        @csrf
-                                                        <input type="checkbox" class="status-checkbox"
-                                                            id="status-checkbox-{{ $t->id }}"
-                                                            data-id="{{ $t->id }}"
-                                                            {{ $t->status === 'aktif' ? 'checked' : '' }}
-                                                            data-bootstrap-switch data-off-color="danger"
-                                                            data-on-color="success">
-                                                    </form>
+                                                    @can('update terapis')
+                                                        <form action="{{ route('terapis.status') }}" method="POST">
+                                                            @csrf
+                                                            <input type="checkbox" class="status-checkbox"
+                                                                id="status-checkbox-{{ $t->id }}"
+                                                                data-id="{{ $t->id }}"
+                                                                {{ $t->status === 'aktif' ? 'checked' : '' }}
+                                                                data-bootstrap-switch data-off-color="danger"
+                                                                data-on-color="success">
+                                                        </form>
+                                                    @endcan
+
                                                 </td>
 
                                             </tr>

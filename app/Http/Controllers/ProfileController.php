@@ -9,9 +9,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view profile', ['only' => ['index', 'store', 'update']]);
+    }
+
     public function index()
     {
         $profile = Profile::first();

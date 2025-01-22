@@ -16,7 +16,7 @@ class AnakController extends Controller
     public function __construct()
     {
         $this->middleware('permission:view anak', ['only' => ['index']]);
-        $this->middleware('permission:create anak', ['only' => ['create', 'store', 'show']]);
+        $this->middleware('permission:create anak', ['only' => ['create', 'store']]);
         $this->middleware('permission:show anak', ['only' => ['show']]);
         $this->middleware('permission:update anak', ['only' => ['update', 'edit', 'ubahStatus']]);
         $this->middleware('permission:delete anak', ['only' => ['destroy']]);

@@ -26,106 +26,99 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header d-flex flex-wrap justify-content-start">
                                 @can('create user')
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambahModal"><i
-                                            class="fa fa-plus mr-1"></i>Tambah User
+                                    <button class="btn btn-primary btn-sm m-1" data-toggle="modal" data-target="#tambahModal">
+                                        <i class="fa fa-plus mr-1"></i> Tambah User
                                     </button>
                                 @endcan
 
                                 @can('create user anak')
-                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#tambahModalAnak"><i
-                                            class="fa fa-plus mr-1"></i>Tambah User Anak
+                                    <button class="btn btn-success btn-sm m-1" data-toggle="modal"
+                                        data-target="#tambahModalAnak">
+                                        <i class="fa fa-plus mr-1"></i> Tambah User Anak
                                     </button>
                                 @endcan
 
                                 @can('create user terapis')
-                                    <button class="btn btn-warning btn-sm" data-toggle="modal"
-                                        data-target="#tambahModalTerapis"><i class="fa fa-plus mr-1"></i>Tambah User Terapis
+                                    <button class="btn btn-warning btn-sm m-1" data-toggle="modal"
+                                        data-target="#tambahModalTerapis">
+                                        <i class="fa fa-plus mr-1"></i> Tambah User Terapis
                                     </button>
                                 @endcan
-
-
-
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-5">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th> #</th>
-                                            <th> Name</th>
-                                            <th> Username </th>
-                                            <th> Email </th>
-                                            <th> Last Login </th>
-                                            <th> Role </th>
-                                            <th> Aksi </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @forelse ($users as  $user)
-
-                                            <td scope="row">{{ $users->firstItem() + $loop->iteration - 1 }}
-                                            </td>
-                                            <td style="vertical-align: middle;">
-                                                {{ $user->name }}
-                                            </td>
-                                            <td style="vertical-align: middle;">
-                                                {{ $user->username }}
-                                            </td>
-                                            <td style="vertical-align: middle;">
-                                                {{ $user->email }}
-                                            </td>
-                                            <td style="vertical-align: middle;">
-                                                {{ $user->last_login_duration }}
-                                            </td>
-                                            <td>
-                                                @if (!empty($user->getRoleNames()))
-                                                    @foreach ($user->getRoleNames() as $rolename)
-                                                        <label class="badge bg-primary mx-1">{{ $rolename }}</label>
-                                                    @endforeach
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @can('update user')
-                                                    <button type="button" title="edit" class="btn btn-outline-info btn-sm"
-                                                        data-toggle="modal" data-target="#editModal"
-                                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
-                                                        data-email="{{ $user->email }}" data-username="{{ $user->username }}"
-                                                        data-role="{{ $user->getRoleNames()->implode(',') }}">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                @endcan
-
-                                                @can('delete user')
-                                                    <form action="{{ route('users.destroy', ['user' => $user->id]) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-hapus"
-                                                            title="Hapus Data" data-name="{{ $user->name }}"
-                                                            data-table="user">
-                                                            <i class="fa fa-trash fa-fw"></i>
-                                                        </button>
-                                                    </form>
-                                                @endcan
-
-                                            </td>
-                                            </tr>
-                                        @empty
+                            <div class="card-body p-3">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap">
+                                        <thead>
                                             <tr>
-                                                <td colspan="6" class="text-center"> data tidak ada...</td>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Last Login</th>
+                                                <th>Role</th>
+                                                <th>Aksi</th>
                                             </tr>
-                                        @endforelse
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($users as $user)
+                                                <tr>
+                                                    <td>{{ $users->firstItem() + $loop->iteration - 1 }}</td>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $user->username }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <td>{{ $user->last_login_duration }}</td>
+                                                    <td>
+                                                        @if (!empty($user->getRoleNames()))
+                                                            @foreach ($user->getRoleNames() as $rolename)
+                                                                <span
+                                                                    class="badge bg-primary mx-1">{{ $rolename }}</span>
+                                                            @endforeach
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex flex-wrap">
+                                                            @can('update user')
+                                                                <button type="button" class="btn btn-outline-info btn-sm m-1"
+                                                                    data-toggle="modal" data-target="#editModal"
+                                                                    data-id="{{ $user->id }}"
+                                                                    data-name="{{ $user->name }}"
+                                                                    data-email="{{ $user->email }}"
+                                                                    data-username="{{ $user->username }}"
+                                                                    data-role="{{ $user->getRoleNames()->implode(',') }}">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </button>
+                                                            @endcan
 
-                                    </tbody>
-                                </table>
-
-                                <div class="mx-4 mt-3">
+                                                            @can('delete user')
+                                                                <form
+                                                                    action="{{ route('users.destroy', ['user' => $user->id]) }}"
+                                                                    method="POST" class="d-inline m-1">
+                                                                    @csrf @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="btn btn-outline-danger btn-sm btn-hapus"
+                                                                        title="Hapus Data" data-name="{{ $user->name }}"
+                                                                        data-table="user">
+                                                                        <i class="fa fa-trash fa-fw"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endcan
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="text-center">Data tidak ada...</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
                                     {{ $users->fragment('judul')->links() }}
                                 </div>
-
-
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -134,6 +127,9 @@
                 </div>
             </div>
         </section>
+
+
+
     </div>
 
 

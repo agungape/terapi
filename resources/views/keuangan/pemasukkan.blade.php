@@ -26,9 +26,9 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="container-fluid">
-                                    @auth
+                            @can('create pemasukkan')
+                                <div class="card-header">
+                                    <div class="container-fluid">
                                         <div class="input-group-prepend">
                                             <button type="button" class="btn btn-success btn-sm dropdown-toggle"
                                                 data-toggle="dropdown">
@@ -45,9 +45,10 @@
                                                 </a>
                                             </div>
                                         </div>
-                                    @endauth
+                                    </div>
                                 </div>
-                            </div>
+                            @endcan
+
                             <div class="row justify-content-md-start justify-content-center align-items-center p-4">
                                 <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-info">
@@ -113,20 +114,22 @@
                                                             <i class="fa fa-eye"></i>
                                                         </button>
                                                     @endif
-                                                    @if ($pemasukkan->id == $dataTerakhir->id)
-                                                        <form
-                                                            action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-outline-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $pemasukkan->deskripsi }}"
-                                                                data-table="program">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                    @can('delete pemasukkan')
+                                                        @if ($pemasukkan->id == $dataTerakhir->id)
+                                                            <form
+                                                                action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-outline-danger btn-sm btn-hapus"
+                                                                    title="Hapus Data" data-name="{{ $pemasukkan->deskripsi }}"
+                                                                    data-table="program">
+                                                                    <i class="fa fa-trash fa-fw"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach

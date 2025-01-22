@@ -24,12 +24,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6 px-5">
+                            <!-- Kolom Kiri -->
+                            <div class="col-12 col-lg-6 px-3">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-12">
                                         <div class="form-group row">
-                                            <label class="col-sm-4 col-form-label">Tanggal / Waktu</label>
-                                            <div class="col-sm-8">
+                                            <label class="col-12 col-sm-4 col-form-label">Tanggal / Waktu</label>
+                                            <div class="col-12 col-sm-8">
                                                 <input type="text" class="form-control"
                                                     value="{{ Carbon\Carbon::now()->format('d/m/Y') }}" readonly />
                                             </div>
@@ -39,10 +40,10 @@
                                 <form class="form-sample" action="{{ url('/pencarian/proses') }}" method="GET">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-12">
                                             <div class="form-group row">
-                                                <label class="col-sm-4 col-form-label">Anak</label>
-                                                <div class="col-sm-8">
+                                                <label class="col-12 col-sm-4 col-form-label">Anak</label>
+                                                <div class="col-12 col-sm-8">
                                                     <input type="text" class="form-control"
                                                         placeholder="ENTER untuk cari data Anak" name="s"
                                                         id="s" value="{{ $s ?? '' }}" />
@@ -52,55 +53,51 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-md-6 px-5">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <table class="table table-hover text-nowrap" id="tabelHasilPencarian">
-                                            <thead>
-                                                <tr class="text-center">
-                                                    <th>NIB</th>
-                                                    <th>Nama</th>
-                                                    <th>Tanggal Lahir</th>
-                                                    <th>Aksi </th>
-                                                </tr>
-                                            </thead>
-                                            @isset($result)
-                                                @if (count($result) == 0)
-                                                    {{-- Artinya pencarian tidak ditemukan --}}
-                                                    <tbody>
+
+                            <!-- Kolom Kanan -->
+                            <div class="col-12 col-lg-6 px-3">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap" id="tabelHasilPencarian">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th>NIB</th>
+                                                <th>Nama</th>
+                                                <th>Tanggal Lahir</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        @isset($result)
+                                            @if (count($result) == 0)
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center" colspan="4">Maaf, hasil tidak ditemukan...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            @else
+                                                <tbody id="hasilPencarianBody">
+                                                    @foreach ($result as $anak)
                                                         <tr>
-                                                            <td class="text-center" colspan="4">Maaf, hasil tidak
-                                                                ditemukan...
+                                                            <th>{{ $anak->nib }}</th>
+                                                            <td>{{ $anak->nama }}</td>
+                                                            <td>{{ $anak->tanggal_lahir }}</td>
+                                                            <td class="text-center">
+                                                                @if ($anak->status == 'aktif')
+                                                                    <a href="#" data-id="{{ $anak->id }}"
+                                                                        data-nama="{{ $anak->nama }}"
+                                                                        class="btn btn-success btn-sm kirim-data">
+                                                                        <i class="fa fa-user-plus"></i>
+                                                                    </a>
+                                                                @else
+                                                                    <b>Nonaktif</b>
+                                                                @endif
                                                             </td>
                                                         </tr>
-                                                    </tbody>
-                                                @else
-                                                    <tbody id="hasilPencarianBody">
-
-                                                        @foreach ($result as $anak)
-                                                            <tr>
-                                                                <th>{{ $anak->nib }}</th>
-                                                                <td>{{ $anak->nama }}</td>
-                                                                <td>{{ $anak->tanggal_lahir }}</td>
-                                                                <td class="text-center">
-                                                                    @if ($anak->status == 'aktif')
-                                                                        <a href="#" data-id="{{ $anak->id }}"
-                                                                            data-nama="{{ $anak->nama }}"
-                                                                            class="btn btn-success btn-sm kirim-data">
-                                                                            <i class="fa fa-user-plus"></i>
-                                                                        </a>
-                                                                    @else
-                                                                        <b>Nonaktif</b>
-                                                                    @endif
-
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                @endif
-                                            @endisset
-                                        </table>
-                                    </div>
+                                                    @endforeach
+                                                </tbody>
+                                            @endif
+                                        @endisset
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -109,10 +106,11 @@
                         <form action="{{ route('kunjungan.store') }}" method="POST">
                             @csrf
                             <div class="row">
-                                <div class="col-md-6 px-5 py-4">
-                                    <div class="form-group row pb-4">
-                                        <label class="col-sm-3 col-form-label">Nama Anak</label>
-                                        <div class="col-sm-9">
+                                <!-- Kolom Form Kiri -->
+                                <div class="col-12 col-lg-6 px-3 py-3">
+                                    <div class="form-group row pb-3">
+                                        <label class="col-12 col-sm-3 col-form-label">Nama Anak</label>
+                                        <div class="col-12 col-sm-9">
                                             <input type="hidden" readonly name="anak_id">
                                             <input type="text" class="form-control" readonly name="nama" />
                                         </div>
@@ -142,35 +140,38 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 px-5 py-4">
-                                    <div class="form-group row pb-4">
-                                        <label class="col-sm-3 col-form-label">Terapis</label>
-                                        <div class="col-sm-9">
+
+                                <!-- Kolom Form Kanan -->
+                                <div class="col-12 col-lg-6 px-3 py-3">
+                                    <div class="form-group row pb-3">
+                                        <label class="col-12 col-sm-3 col-form-label">Terapis</label>
+                                        <div class="col-12 col-sm-9">
                                             <select class="form-control select2" style="width:100%" name="terapis_id">
                                                 @forelse ($terapis as $terapi)
                                                     <option value="{{ $terapi->id }}">{{ $terapi->nama }}</option>
                                                 @empty
                                                     <option>tidak ada data</option>
                                                 @endforelse
-
-
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Catatan</label>
-                                        <div class="col-sm-9">
+                                        <label class="col-12 col-sm-3 col-form-label">Catatan</label>
+                                        <div class="col-12 col-sm-9">
                                             <input type="text" class="form-control" name="catatan" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary me-2"> Daftar</button>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Daftar</button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
+
     </div>
 @endsection
 

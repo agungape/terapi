@@ -11,9 +11,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ObservasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view observasi', ['only' => ['index', 'observasi_mulai', 'observasi_atec']]);
+    }
+
+
     public function index()
     {
         $observasi = Observasi::latest()->paginate(4);

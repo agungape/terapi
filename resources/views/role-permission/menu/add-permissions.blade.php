@@ -24,11 +24,10 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    <!-- Card untuk List Role -->
                     <section class="col-12 col-lg-6 mb-3">
                         <div class="card">
-
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive px-5">
+                            <div class="card-body table-responsive px-3">
                                 <table class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
@@ -38,35 +37,32 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @foreach ($roles as $role)
                                             <tr>
-                                                <td scope="row">{{ $roles->firstItem() + $loop->iteration - 1 }}
-                                                </td>
+                                                <td scope="row">{{ $roles->firstItem() + $loop->iteration - 1 }}</td>
                                                 <td>{{ $role->name }}</td>
                                                 <td>
                                                     <a href="{{ url('roles/' . $role->id . '/give-permissions') }}"
                                                         class="btn btn-success btn-sm">
-                                                        Add / Edit Role Permission
+                                                        Add/Edit Permission
                                                     </a>
-
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <div class="mx-4 mt-3">
+                                <div class="d-flex justify-content-center mt-3">
                                     {{ $roles->fragment('judul')->links() }}
                                 </div>
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </section>
+
+                    <!-- Card untuk Edit Permission -->
                     <section class="col-12 col-lg-6 mb-3">
                         <div class="card">
                             <div class="card-header">
-                                <h4>Role : {{ $r->name }}</h4>
+                                <h4>Role: {{ $r->name }}</h4>
                             </div>
                             <div class="card-body">
                                 <form action="{{ url('roles/' . $r->id . '/give-permissions') }}" method="POST">
@@ -80,7 +76,7 @@
                                             </li>
                                             <div class="row">
                                                 @foreach ($menu->permissions as $permission)
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6 col-sm-12">
                                                         <li class="list-group-item border-0">
                                                             <div class="d-flex align-items-center">
                                                                 <input type="checkbox" class="permission-switch"
@@ -103,7 +99,7 @@
                                             </li>
                                             <div class="row">
                                                 @foreach ($otherPermissions as $permission)
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6 col-sm-12">
                                                         <li class="list-group-item border-0">
                                                             <div class="d-flex align-items-center">
                                                                 <input type="checkbox" class="permission-switch"
@@ -126,10 +122,7 @@
                                     </div>
                                 </form>
                             </div>
-
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </section>
                 </div>
             </div>

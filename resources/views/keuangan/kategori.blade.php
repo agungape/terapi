@@ -26,13 +26,14 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                @auth
+                            @can('create kategori')
+                                <div class="card-header">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
                                         data-target="#exampleModal"><i class="fa fa-plus pr-2"></i>Tambah Data
                                     </a>
-                                @endauth
-                            </div>
+                                </div>
+                            @endcan
+
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
@@ -60,23 +61,24 @@
                                                     </td>
                                                 @endif
                                                 <td>
-                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <form
-                                                            action="{{ route('kategori.destroy', ['kategori' => $kategori->id]) }}"
-                                                            method="POST">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-outline-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $kategori->nama }}"
-                                                                data-table="program">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                    @can('delete kategori')
+                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                                            <form
+                                                                action="{{ route('kategori.destroy', ['kategori' => $kategori->id]) }}"
+                                                                method="POST">
+                                                                @csrf @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-outline-danger btn-sm btn-hapus"
+                                                                    title="Hapus Data" data-name="{{ $kategori->nama }}"
+                                                                    data-table="program">
+                                                                    <i class="fa fa-trash fa-fw"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach
-
                                     </tbody>
                                 </table>
 

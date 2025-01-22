@@ -63,7 +63,7 @@
                                                             </button>
                                                         </form>
                                                     @endcan
-                                                    @can('edit anak')
+                                                    @can('update anak')
                                                         <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
                                                             class="btn btn-warning btn-sm">
                                                             <i class="fa fa-edit"></i></a>
@@ -100,15 +100,17 @@
 
 
                                                 <td style="vertical-align: middle;">
-                                                    <form action="{{ route('anak.status') }}" method="POST">
-                                                        @csrf
-                                                        <input type="checkbox" class="status-checkbox"
-                                                            id="status-checkbox-{{ $anak->id }}"
-                                                            data-id="{{ $anak->id }}"
-                                                            {{ $anak->status === 'aktif' ? 'checked' : '' }}
-                                                            data-bootstrap-switch data-off-color="danger"
-                                                            data-on-color="success">
-                                                    </form>
+                                                    @can('update anak')
+                                                        <form action="{{ route('anak.status') }}" method="POST">
+                                                            @csrf
+                                                            <input type="checkbox" class="status-checkbox"
+                                                                id="status-checkbox-{{ $anak->id }}"
+                                                                data-id="{{ $anak->id }}"
+                                                                {{ $anak->status === 'aktif' ? 'checked' : '' }}
+                                                                data-bootstrap-switch data-off-color="danger"
+                                                                data-on-color="success">
+                                                        </form>
+                                                    @endcan
                                                 </td>
 
                                             </tr>

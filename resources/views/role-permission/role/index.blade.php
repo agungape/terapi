@@ -26,59 +26,60 @@
                 <div class="row">
                     <section class="col-12 col-lg-6 mb-3">
                         <div class="card">
-                            <div class="card-header">
-
+                            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                                 @can('create role')
-                                    <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#exampleModal" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i>
-                                        Tambah Role</a>
+                                    <a href="#" class="btn btn-primary btn-sm m-1" data-toggle="modal"
+                                        data-target="#exampleModal">
+                                        <i class="fa fa-plus"></i> Tambah Role
+                                    </a>
                                 @endcan
-
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive px-5">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Role/Group</th>
-                                            <th width="40%">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @foreach ($roles as $role)
+                            <div class="card-body p-3">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap">
+                                        <thead>
                                             <tr>
-                                                <td scope="row">{{ $roles->firstItem() + $loop->iteration - 1 }}
-                                                </td>
-                                                <td>{{ $role->name }}</td>
-                                                <td>
-
-                                                    @can('update role')
-                                                        <button type="button" class="btn btn-outline-warning btn-sm"
-                                                            onclick="openEditModal({{ $role->id }}, '{{ $role->name }}')">
-                                                            <i class="fa fa-pencil-alt"></i>
-                                                        </button>
-                                                    @endcan
-
-                                                    @can('delete role')
-                                                        <form action="{{ route('roles.destroy', ['id' => $role->id]) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-outline-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $role->name }}"
-                                                                data-table="user">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endcan
-                                                </td>
+                                                <th>#</th>
+                                                <th>Role/Group</th>
+                                                <th>Aksi</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="mx-4 mt-3">
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($roles as $role)
+                                                <tr>
+                                                    <td scope="row">{{ $roles->firstItem() + $loop->iteration - 1 }}</td>
+                                                    <td>{{ $role->name }}</td>
+                                                    <td>
+                                                        <div class="d-flex flex-wrap">
+                                                            @can('update role')
+                                                                <button type="button"
+                                                                    class="btn btn-outline-warning btn-sm m-1"
+                                                                    onclick="openEditModal({{ $role->id }}, '{{ $role->name }}')">
+                                                                    <i class="fa fa-pencil-alt"></i>
+                                                                </button>
+                                                            @endcan
+                                                            @can('delete role')
+                                                                <form action="{{ route('roles.destroy', ['id' => $role->id]) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="btn btn-outline-danger btn-sm m-1 btn-hapus"
+                                                                        title="Hapus Data" data-name="{{ $role->name }}"
+                                                                        data-table="user">
+                                                                        <i class="fa fa-trash fa-fw"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endcan
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
                                     {{ $roles->fragment('judul')->links() }}
                                 </div>
                             </div>

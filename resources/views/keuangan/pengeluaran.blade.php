@@ -26,8 +26,8 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                @auth
+                            @can('create pengeluaran')
+                                <div class="card-header">
                                     <div class="input-group-prepend">
                                         <button type="button" class="btn btn-danger btn-sm dropdown-toggle"
                                             data-toggle="dropdown">
@@ -39,8 +39,9 @@
                                             </a>
                                         </div>
                                     </div>
-                                @endauth
-                            </div>
+                                </div>
+                            @endcan
+
                             <div class="row justify-content-md-start justify-content-center align-items-center p-4">
                                 <div class="col-lg-3 col-md-6 col-12">
                                     <div class="small-box bg-info">
@@ -107,20 +108,23 @@
                                                             <i class="fa fa-eye"></i>
                                                         </button>
                                                     @endif
-                                                    @if ($pengeluaran->id == $dataTerakhir->id)
-                                                        <form
-                                                            action="{{ route('pengeluaran.destroy', ['pengeluaran' => $pengeluaran->id]) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-outline-danger btn-sm btn-hapus"
-                                                                title="Hapus Data"
-                                                                data-name="{{ $pengeluaran->deskripsi }}"
-                                                                data-table="program">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                    @can('delete pengeluaran')
+                                                        @if ($pengeluaran->id == $dataTerakhir->id)
+                                                            <form
+                                                                action="{{ route('pengeluaran.destroy', ['pengeluaran' => $pengeluaran->id]) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-outline-danger btn-sm btn-hapus"
+                                                                    title="Hapus Data"
+                                                                    data-name="{{ $pengeluaran->deskripsi }}"
+                                                                    data-table="program">
+                                                                    <i class="fa fa-trash fa-fw"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @endcan
+
                                                 </td>
 
                                                 {{-- modal view gambar --}}

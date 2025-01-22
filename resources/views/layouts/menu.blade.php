@@ -67,7 +67,7 @@
                             </li>
                         @endcan
 
-                        @can('view program anak')
+                        @can('view pelatihan')
                             <li class="nav-item">
                                 <a href="/pelatihan" class="nav-link @yield('menuPelatihan')">
                                     <i class="far fa-circle nav-icon"></i>
@@ -132,75 +132,92 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('keuangan.rekap') }}" class="nav-link @yield('menuRekap')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Rekapan Kas</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('keuangan.pemasukkan') }}" class="nav-link @yield('menuPemasukkan')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Pemasukan</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('keuangan.pengeluaran') }}" class="nav-link @yield('menuPengeluaran')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Pengeluaran</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('keuangan.kategori') }}" class="nav-link @yield('menuKategori')">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Kategori</p>
-                            </a>
-                        </li>
+                        @can('view rekapan kas')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.rekap') }}" class="nav-link @yield('menuRekap')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Rekapan Kas</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view pemasukkan')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.pemasukkan') }}" class="nav-link @yield('menuPemasukkan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pemasukan</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view pengeluaran')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.pengeluaran') }}" class="nav-link @yield('menuPengeluaran')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pengeluaran</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view kategori')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.kategori') }}" class="nav-link @yield('menuKategori')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Kategori</p>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="/observasi" class="nav-link @yield('menuObservasi')">
-                        <i class="nav-icon fa fa-address-book"></i>
-                        <p>
-                            Observasi
-                        </p>
-                    </a>
-                </li>
+                @can('view observasi')
+                    <li class="nav-item">
+                        <a href="/observasi" class="nav-link @yield('menuObservasi')">
+                            <i class="nav-icon fa fa-address-book"></i>
+                            <p>
+                                Observasi
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view pendaftaran')
+                    <li class="nav-item">
+                        <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
+                            <i class="nav-icon fa fa-file-contract"></i>
+                            <p>
+                                Pendaftaran
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view rekammedis')
+                    <li class="nav-item">
+                        <a href="/data" class="nav-link @yield('menuRekammedis')">
+                            <i class="nav-icon fa fa-clipboard-list"></i>
+                            <p>
+                                Rekam Medis Anak
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view jadwal anak')
+                    <li class="nav-item">
+                        <a href="/jadwal" class="nav-link @yield('menuJadwal')">
+                            <i class="nav-icon fas fa-calendar-alt"></i>
+                            <p>
+                                Jadwal Anak
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view profile')
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link @yield('menuProfile')">
+                            <i class="nav-icon fas fa-user-alt"></i>
+                            <p>
+                                Profile
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
-
-                <li class="nav-item">
-                    <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
-                        <i class="nav-icon fa fa-file-contract"></i>
-                        <p>
-                            Pendaftaran
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/data" class="nav-link @yield('menuRekammedis')">
-                        <i class="nav-icon fa fa-clipboard-list"></i>
-                        <p>
-                            Rekam Medis Anak
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/jadwal" class="nav-link @yield('menuJadwal')">
-                        <i class="nav-icon fas fa-calendar-alt"></i>
-                        <p>
-                            Jadwal Anak
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/profile" class="nav-link @yield('menuProfile')">
-                        <i class="nav-icon fas fa-user-alt"></i>
-                        <p>
-                            Profile
-                        </p>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="/profile" class="nav-link @yield('menuCareer')">
                         <i class="nav-icon fas fa-solid fa-paperclip"></i>

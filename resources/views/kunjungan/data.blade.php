@@ -26,9 +26,8 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-
                                 <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
+                                    <div class="input-group input-group-sm w-100">
                                         <input type="text" name="table_search" class="form-control float-right"
                                             placeholder="Search">
 
@@ -45,61 +44,56 @@
                                 <table class="table table-hover text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th> No. Induk</th>
-                                            <th> Nama </th>
-                                            <th> Terapis </th>
-                                            <th> Pertemuan </th>
-                                            <th> Tanggal Daftar </th>
-                                            <th> Status </th>
-                                            <th> Aksi </th>
+                                            <th>No. Induk</th>
+                                            <th>Nama</th>
+                                            <th>Terapis</th>
+                                            <th>Pertemuan</th>
+                                            <th>Tanggal Daftar</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @foreach ($kunjungan as $kun)
                                             <tr>
                                                 <td>{{ $kun->anak->nib }}</td>
-                                                <td>{{ $kun->anak->nama }}
+                                                <td>{{ $kun->anak->nama }}</td>
+                                                <td>{{ $kun->terapis->nama }}</td>
+                                                <td>
+                                                    @if ($kun->pertemuan == 'null')
+                                                        -
+                                                    @else
+                                                        Pertemuan {{ $kun->pertemuan }}
+                                                    @endif
                                                 </td>
-                                                <td> {{ $kun->terapis->nama }} </td>
-                                                @if ($kun->pertemuan == 'null')
-                                                    <td>-</td>
-                                                @else
-                                                    <td> Pertemuan {{ $kun->pertemuan }} </td>
-                                                @endif
-
-                                                <td> {{ $kun->created_at }} </td>
+                                                <td>{{ $kun->created_at }}</td>
                                                 <td>
                                                     @if ($kun->status == 'hadir')
                                                         <label class="badge badge-success">{{ $kun->status }}</label>
-                                                    @endif
-                                                    @if ($kun->status == 'izin')
+                                                    @elseif ($kun->status == 'izin')
                                                         <label class="badge badge-warning">{{ $kun->status }}</label>
-                                                    @endif
-                                                    @if ($kun->status == 'sakit')
+                                                    @elseif ($kun->status == 'sakit')
                                                         <label class="badge badge-danger">{{ $kun->status }}</label>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($kun->status == 'hadir')
-                                                        <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
-                                                            class="btn
-                                                btn-primary btn-sm">
-                                                            <i class="fa fa-address-card"></i>
-                                                        </a>
-                                                    @endif
+                                                    @can('show rekammedis')
+                                                        @if ($kun->status == 'hadir')
+                                                            <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
+                                                                class="btn btn-primary btn-sm">
+                                                                <i class="fa fa-address-card"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach
-
                                     </tbody>
                                 </table>
 
                                 <div class="mx-4 mt-3">
                                     {{ $kunjungan->fragment('judul')->links() }}
                                 </div>
-
-
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -108,5 +102,6 @@
                 </div>
             </div>
         </section>
+
     </div>
 @endsection

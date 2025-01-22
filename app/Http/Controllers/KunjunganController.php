@@ -15,9 +15,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class KunjunganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view pendaftaran', ['only' => ['index']]);
+        $this->middleware('permission:view rekammedis', ['only' => ['riwayatAnak']]);
+        $this->middleware('permission:show rekammedis', ['only' => ['show']]);
+    }
+
     public function index()
     {
         $terapis = Terapis::all();

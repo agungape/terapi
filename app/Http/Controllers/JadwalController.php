@@ -12,9 +12,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class JadwalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view jadwal anak', ['only' => ['index']]);
+        $this->middleware('permission:create jadwal anak', ['only' => ['store', 'edit', 'update']]);
+        $this->middleware('permission:delete jadwal anak', ['only' => ['destroy']]);
+    }
+
 
     public function index()
     {

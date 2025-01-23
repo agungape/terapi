@@ -113,6 +113,29 @@
                                                             data-target="#modalGambar{{ $pemasukkan->id }}">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
+
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="modalGambar{{ $pemasukkan->id }}"
+                                                            tabindex="-1"
+                                                            aria-labelledby="modalLabel{{ $pemasukkan->id }}"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="modalLabel{{ $pemasukkan->id }}">
+                                                                            Bukti Bayar</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center">
+                                                                        <img src="{{ asset('storage/bukti-transfer/' . $pemasukkan->gambar) }}"
+                                                                            class="img-fluid rounded" alt="Gambar">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                     @can('delete pemasukkan')
                                                         @if ($pemasukkan->id == $dataTerakhir->id)

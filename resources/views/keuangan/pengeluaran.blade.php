@@ -107,6 +107,27 @@
                                                             data-target="#modalGambar{{ $pengeluaran->id }}">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
+                                                        <div class="modal fade" id="modalGambar{{ $pengeluaran->id }}"
+                                                            tabindex="-1"
+                                                            aria-labelledby="modalLabel{{ $pengeluaran->id }}"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title"
+                                                                            id="modalLabel{{ $pengeluaran->id }}">
+                                                                            Struk Transaksi</h5>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center">
+                                                                        <img src="{{ asset('storage/sturk-bayar/' . $pengeluaran->gambar) }}"
+                                                                            class="img-fluid" alt="Gambar">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                     @can('delete pengeluaran')
                                                         @if ($pengeluaran->id == $dataTerakhir->id)
@@ -127,28 +148,6 @@
 
                                                 </td>
 
-                                                {{-- modal view gambar --}}
-
-
-                                                <div class="modal fade" id="modalGambar{{ $pengeluaran->id }}"
-                                                    tabindex="-1" aria-labelledby="modalLabel{{ $pengeluaran->id }}"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="modalLabel{{ $pengeluaran->id }}">
-                                                                    Struk Transaksi</h5>
-                                                                <button type="button" class="btn-close"
-                                                                    data-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="{{ asset('storage/sturk-bayar/' . $pengeluaran->gambar) }}"
-                                                                    class="img-fluid" alt="Gambar">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </tr>
                                         @empty
                                             <tr>

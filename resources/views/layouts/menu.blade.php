@@ -32,13 +32,15 @@
                     </a>
                 </li>
                 <li class="nav-item @yield('masterShow')">
-                    <a href="#" class="nav-link @yield('menuMaster')">
-                        <i class="nav-icon fas fa-solid fa-bars"></i>
-                        <p>
-                            Master Data
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
+                    @canany(['view anak', 'view terapis', 'view program anak', 'view pelatihan'])
+                        <a href="#" class="nav-link @yield('menuMaster')">
+                            <i class="nav-icon fas fa-solid fa-bars"></i>
+                            <p>
+                                Master Data
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
                     <ul class="nav nav-treeview">
                         @can('view anak')
                             <li class="nav-item">
@@ -79,13 +81,15 @@
                 </li>
 
                 <li class="nav-item @yield('masterLogin')">
-                    <a href="#" class="nav-link @yield('menuLogin')">
-                        <i class="nav-icon fas fa-solid fa-users"></i>
-                        <p>
-                            Manajemen User
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
+                    @canany(['view role', 'view permission', 'view user', 'view manajemen menu'])
+                        <a href="#" class="nav-link @yield('menuLogin')">
+                            <i class="nav-icon fas fa-solid fa-users"></i>
+                            <p>
+                                Manajemen User
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
                     <ul class="nav nav-treeview">
                         @can('view role')
                             <li class="nav-item">
@@ -124,13 +128,15 @@
 
 
                 <li class="nav-item @yield('masterKeuangan')">
-                    <a href="#" class="nav-link @yield('menuKeuangan')">
-                        <i class="nav-icon fas fa-money-bill"></i>
-                        <p>
-                            Keuangan
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                    </a>
+                    @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
+                        <a href="#" class="nav-link @yield('menuKeuangan')">
+                            <i class="nav-icon fas fa-money-bill"></i>
+                            <p>
+                                Keuangan
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
                     <ul class="nav nav-treeview">
                         @can('view rekapan kas')
                             <li class="nav-item">
@@ -218,31 +224,36 @@
                     </li>
                 @endcan
 
-                <li class="nav-item">
-                    <a href="/profile" class="nav-link @yield('menuCareer')">
-                        <i class="nav-icon fas fa-solid fa-paperclip"></i>
-                        <p>
-                            Career
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/profile" class="nav-link @yield('menuBayar')">
-                        <i class="nav-icon fa fa-solid fa-file-invoice-dollar"></i>
-                        <p>
-                            Pembayaran
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/profile" class="nav-link @yield('menukontrak')">
-                        <i class="nav-icon fa fa-solid fa-handshake"></i>
-                        <p>
-                            Kontrak Karyawan
-                        </p>
-                    </a>
-                </li>
-
+                @can('view career')
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link @yield('menuCareer')">
+                            <i class="nav-icon fas fa-solid fa-paperclip"></i>
+                            <p>
+                                Career
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view pembayaran')
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link @yield('menuBayar')">
+                            <i class="nav-icon fa fa-solid fa-file-invoice-dollar"></i>
+                            <p>
+                                Pembayaran
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view kontrak')
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link @yield('menukontrak')">
+                            <i class="nav-icon fa fa-solid fa-handshake"></i>
+                            <p>
+                                Kontrak Karyawan
+                            </p>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

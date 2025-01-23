@@ -1,0 +1,80 @@
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/AnakFactory.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/AnakFactory.php on line 11
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/UserFactory.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/UserFactory.php on line 11
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ProgramFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ProgramFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ProfileFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ProfileFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/KunjunganFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/KunjunganFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/TerapisFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/TerapisFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/PelatihanFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/PelatihanFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ObservasiFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ObservasiFactory.php on line 10
+[31-Dec-2024 22:59:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/SubprogramFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/SubprogramFactory.php on line 10
+[31-Dec-2024 22:59:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/UploadFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/UploadFactory.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/SubprogramFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/SubprogramFactory.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/PelatihanFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/PelatihanFactory.php on line 10
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ProfileFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ProfileFactory.php on line 10
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/AnakFactory.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/AnakFactory.php on line 11
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ProgramFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ProgramFactory.php on line 10
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/KunjunganFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/KunjunganFactory.php on line 10
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/TerapisFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/TerapisFactory.php on line 10
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/UserFactory.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/UserFactory.php on line 11
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/ObservasiFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/ObservasiFactory.php on line 10
+[31-Dec-2024 22:59:45 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/digit493/agung/terapi/database/factories/UploadFactory.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/factories/UploadFactory.php on line 10

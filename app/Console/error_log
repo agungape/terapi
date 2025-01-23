@@ -1,0 +1,4 @@
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Console\Kernel" not found in /home/digit493/agung/terapi/app/Console/Kernel.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Console/Kernel.php on line 8

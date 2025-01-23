@@ -1,0 +1,72 @@
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Pemasukkan.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Pemasukkan.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Auth\User" not found in /home/digit493/agung/terapi/app/Models/User.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/User.php on line 13
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/SaldoKas.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/SaldoKas.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Pelatihan.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Pelatihan.php on line 9
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Program.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Program.php on line 9
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Jadwal.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Jadwal.php on line 11
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Kunjungan.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Kunjungan.php on line 11
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Profile.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Profile.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Anak.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Anak.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Pengeluaran.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Pengeluaran.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Pemeriksaan.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Pemeriksaan.php on line 9
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Terapis.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Terapis.php on line 10
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Subprogram.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Subprogram.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Upload.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Upload.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Kategori.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Kategori.php on line 9
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/TerapisPelatihan.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/TerapisPelatihan.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Observasi.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Observasi.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/digit493/agung/terapi/app/Models/Pendafatran.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/app/Models/Pendafatran.php on line 8

@@ -11,7 +11,8 @@ class ProfileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view profile', ['only' => ['index', 'store', 'update']]);
+        $this->middleware('permission:view profile', ['only' => ['index']]);
+        $this->middleware('permission:create profile', ['only' => ['store', 'update']]);
     }
 
     public function index()

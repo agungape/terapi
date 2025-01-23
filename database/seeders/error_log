@@ -1,0 +1,80 @@
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ProfileSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ProfileSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/DatabaseSeeder.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/DatabaseSeeder.php on line 15
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/DatabaseSeeder.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/DatabaseSeeder.php on line 15
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/KunjunganSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/KunjunganSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ProgramSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ProgramSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/SubprogramSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/SubprogramSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/AnakSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/AnakSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ProgramSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ProgramSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/AnakSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/AnakSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ObservasiSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ObservasiSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/PelatihanSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/PelatihanSeeder.php on line 8
+[31-Dec-2024 22:59:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/UploadSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/UploadSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/KunjunganSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/KunjunganSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/TerapisSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/TerapisSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/SubprogramSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/SubprogramSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ProfileSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ProfileSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/PelatihanSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/PelatihanSeeder.php on line 8
+[31-Dec-2024 22:59:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/ObservasiSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/ObservasiSeeder.php on line 8
+[31-Dec-2024 22:59:48 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/TerapisSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/TerapisSeeder.php on line 8
+[31-Dec-2024 22:59:49 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/digit493/agung/terapi/database/seeders/UploadSeeder.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/digit493/agung/terapi/database/seeders/UploadSeeder.php on line 8

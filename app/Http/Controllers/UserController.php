@@ -93,6 +93,31 @@ class UserController extends Controller
         Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
         return redirect('/users');
     }
+    
+    public function store_terapis(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:users,name',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'roles' => 'required',
+        ]);
+
+        $hashedPassword = Hash::make($request->password);
+
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => $hashedPassword,
+        ]);
+
+        $user->syncRoles($request->roles);
+
+        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
+        return redirect('/users');
+    }
 
     public function store_terapis(Request $request)
     {

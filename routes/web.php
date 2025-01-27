@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnakController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KeuanganController;
@@ -75,6 +76,7 @@ Route::group(['middleware' => ['role:super-admin|admin|anak|terapis|keuangan']],
     Route::resource('/profile', ProfileController::class);
     Route::resource('/jadwal', JadwalController::class);
     Route::resource('/menu', JadwalController::class);
+    Route::resource('/career', CareerController::class);
     Route::get('/observasi', [ObservasiController::class, 'index'])->name('observasi.index');
     Route::get('rekap-kas', [KeuanganController::class, 'rekap'])->name('keuangan.rekap');
     Route::get('pemasukkan/json', [KeuanganController::class, 'pemasukkan_json'])->name('pemasukkan.json');

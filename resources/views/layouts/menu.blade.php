@@ -226,7 +226,7 @@
 
                 @can('view career')
                     <li class="nav-item">
-                        <a href="/profile" class="nav-link @yield('menuCareer')">
+                        <a href="/career" class="nav-link @yield('menuCareer')">
                             <i class="nav-icon fas fa-solid fa-paperclip"></i>
                             <p>
                                 Career

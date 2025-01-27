@@ -10,6 +10,7 @@ class FrontendController extends Controller
     public function index()
     {
         $terapis = Terapis::all();
-        return view('frontend.index', compact('terapis'));
+        $profile = Terapis::first();
+        return view('frontend.master', compact('terapis', 'profile'));
     }
 }

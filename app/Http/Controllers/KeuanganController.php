@@ -9,6 +9,8 @@ use App\Models\Pemasukkan;
 use App\Models\Pengeluaran;
 use App\Models\SaldoKas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use PDF;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
@@ -316,5 +318,102 @@ class KeuanganController extends Controller
         }
         Alert::success('Berhasil', "data telah di hapus");
         return redirect()->back();
+    }
+
+    public function laporan_keuangan(Request $request)
+    {
+        $dateRange = $request->input('date_range');
+
+        // Pastikan date_range ada dan memiliki format yang benar
+        if ($dateRange) {
+            // Pisahkan tanggal mulai dan tanggal selesai
+            $dates = explode(' - ', $dateRange);
+
+            // Periksa apakah array dates memiliki dua elemen
+            if (count($dates) == 2) {
+                $startDate = $dates[0];
+                $endDate = $dates[1];
+            } else {
+                // Jika format tidak valid, set tanggal default
+                $startDate = now()->startOfMonth()->toDateString();
+                $endDate = now()->endOfMonth()->toDateString();
+            }
+        } else {
+            // Jika date_range kosong, set tanggal default
+            $startDate = now()->startOfMonth()->toDateString();
+            $endDate = now()->endOfMonth()->toDateString();
+        }
+
+
+
+        $financialReport = DB::table('pemasukkans')
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->unionAll(
+                DB::table('pengeluarans')
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+                    ->whereBetween('tanggal', [$startDate, $endDate])
+            )
+            ->unionAll(
+                DB::table('saldo_kas')
+                    ->select('created_at as tanggal', DB::raw('"saldo" as jenis'), DB::raw('NULL as jumlah'), DB::raw('NULL as deskripsi'), 'saldo_awal')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+            )
+            ->orderBy('tanggal')
+            ->get();
+
+        // Hitung saldo akhir
+        $currentBalance = 0;
+        $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
+            if ($item->jenis === 'pemasukkan') {
+                $currentBalance += $item->jumlah;
+            } elseif ($item->jenis === 'pengeluaran') {
+                $currentBalance -= $item->jumlah;
+            } elseif ($item->jenis === 'saldo') {
+                $currentBalance = $item->saldo_awal; // Update saldo berdasarkan data saldo_kas
+            }
+            $item->current_balance = $currentBalance;
+            return $item;
+        });
+        return view('keuangan.laporan', compact('financialReport', 'startDate', 'endDate'));
+    }
+
+
+    public function laporan_pdf(Request $request, $startDate, $endDate)
+    {
+        $financialReport = DB::table('pemasukkans')
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->unionAll(
+                DB::table('pengeluarans')
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+                    ->whereBetween('tanggal', [$startDate, $endDate])
+            )
+            ->unionAll(
+                DB::table('saldo_kas')
+                    ->select('created_at as tanggal', DB::raw('"saldo" as jenis'), DB::raw('NULL as jumlah'), DB::raw('NULL as deskripsi'), 'saldo_awal')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+            )
+            ->orderBy('tanggal')
+            ->get();
+
+        // Hitung saldo akhir
+        $currentBalance = 0;
+        $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
+            if ($item->jenis === 'pemasukkan') {
+                $currentBalance += $item->jumlah;
+            } elseif ($item->jenis === 'pengeluaran') {
+                $currentBalance -= $item->jumlah;
+            } elseif ($item->jenis === 'saldo') {
+                $currentBalance = $item->saldo_awal; // Update saldo berdasarkan data saldo_kas
+            }
+            $item->current_balance = $currentBalance;
+            return $item;
+        });
+
+
+        // Generate PDF
+        $pdf = PDF::loadView('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'));
+        return $pdf->stream('laporan_keuangan_' . $startDate . '_to_' . $endDate . '.pdf');
     }
 }

@@ -90,6 +90,8 @@ Route::group(['middleware' => ['role:super-admin|admin|anak|terapis|keuangan']],
     Route::get('pengeluaran', [KeuanganController::class, 'pengeluaran'])->name('keuangan.pengeluaran');
     Route::post('/pengeluaran/simpan', [KeuanganController::class, 'pengeluaran_store'])->name('pengeluaran.store');
     Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
+    Route::get('/laporan-keuangan', [KeuanganController::class, 'laporan_keuangan'])->name('keuangan.laporan');
+    Route::get('/laporan/pdf/{start_date}/{end_date}', [KeuanganController::class, 'laporan_pdf'])->name('laporan.pdf');
 
     Route::get('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');

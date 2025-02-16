@@ -353,6 +353,7 @@
                     time: 'far fa-clock'
                 }
             });
+
             //Timepicker
             $('#timepicker').datetimepicker({
                 format: 'LT'

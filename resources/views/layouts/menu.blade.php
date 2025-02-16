@@ -170,6 +170,14 @@
                                 </a>
                             </li>
                         @endcan
+                        @can('view laporan keuangan')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.laporan') }}" class="nav-link @yield('menuLaporanKeuangan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Laporan Keuangan</p>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
 

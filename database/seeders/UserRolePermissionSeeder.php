@@ -98,6 +98,7 @@ class UserRolePermissionSeeder extends Seeder
         $allPermissionNames = Permission::pluck('name')->toArray();
 
         $superAdminRole->givePermissionTo($allPermissionNames);
+        $adminRole->givePermissionTo($allPermissionNames);
 
         $superAdminUser = User::firstOrCreate([
             'email' => 'superadmin@gmail.com',

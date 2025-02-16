@@ -44,12 +44,15 @@ class ProfileController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $file = $request->file('logo');
-        $extFile = $file->getClientOriginalExtension();
-        $namaFile =
-            "logo-" . time() . "." . $extFile;
-        $path = 'logo/' . $namaFile;
-        Storage::disk('public')->put($path, file_get_contents($file));
+        if ($request->file('logo')) {
+            $file = $request->file('logo');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile =
+                "logo-" . time() . "." . $extFile;
+            $path = 'logo/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+            $data['logo'] = $namaFile;
+        }
 
         $data['nama'] = $request->nama;
         $data['nama_apk'] = $request->nama_apk;
@@ -57,7 +60,7 @@ class ProfileController extends Controller
         $data['telepon'] = $request->telepon;
         $data['email'] = $request->email;
         $data['ketua'] = $request->ketua;
-        $data['logo'] = $namaFile;
+
 
 
         $profile = Profile::create($data);

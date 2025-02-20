@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Throwable;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class Handler extends ExceptionHandler
 {
@@ -44,5 +47,23 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof UnauthorizedException) {
+            Auth::logout(); // Logout user
+
+            Alert::toast($exception->getMessage(), 'error');
+
+            // Cek apakah pengguna mengakses dari tampilan mobile atau admin
+            if ($request->session()->get('view', 'admin') === 'anak') {
+                return redirect()->route('mobile.login'); // Redirect ke login mobile
+            }
+
+            return redirect()->route('login'); // Redirect ke login admin
+        }
+
+        return parent::render($request, $exception);
     }
 }

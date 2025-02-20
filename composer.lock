@@ -9610,7 +9610,6 @@
         },
         {
             "name": "symfony/yaml",
-<<<<<<< HEAD
             "version": "v6.4.13",
             "source": {
                 "type": "git",
@@ -9621,18 +9620,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/yaml/zipball/e99b4e94d124b29ee4cf3140e1b537d2dad8cec9",
                 "reference": "e99b4e94d124b29ee4cf3140e1b537d2dad8cec9",
-=======
-            "version": "v7.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "ac238f173df0c9c1120f862d0f599e17535a87ec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/ac238f173df0c9c1120f862d0f599e17535a87ec",
-                "reference": "ac238f173df0c9c1120f862d0f599e17535a87ec",
->>>>>>> 89c1edda43b61f4290d1cb80741a7d8c4f5399ab
                 "shasum": ""
             },
             "require": {
@@ -9675,11 +9662,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-<<<<<<< HEAD
                 "source": "https://github.com/symfony/yaml/tree/v6.4.13"
-=======
-                "source": "https://github.com/symfony/yaml/tree/v7.2.3"
->>>>>>> 89c1edda43b61f4290d1cb80741a7d8c4f5399ab
             },
             "funding": [
                 {
@@ -9695,11 +9678,7 @@
                     "type": "tidelift"
                 }
             ],
-<<<<<<< HEAD
             "time": "2024-09-25T14:18:03+00:00"
-=======
-            "time": "2025-01-07T12:55:42+00:00"
->>>>>>> 89c1edda43b61f4290d1cb80741a7d8c4f5399ab
         },
         {
             "name": "theseer/tokenizer",

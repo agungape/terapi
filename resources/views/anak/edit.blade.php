@@ -24,7 +24,8 @@
 
         <section class="content">
             <div class="container-fluid">
-                <form method="POST" action="{{ route('anak.update', ['anak' => $anak->id]) }}">
+                <form method="POST" action="{{ route('anak.update', ['anak' => $anak->id]) }}"
+                    enctype="multipart/form-data">
                     @method('PATCH')
                     @include('anak.form', ['tombol' => 'Update'])
                 </form>
@@ -38,5 +39,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             window.stepper = new Stepper(document.querySelector('.bs-stepper'))
         })
+
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            document.getElementById('photoInput').click();
+        });
+
+        document.getElementById('photoInput').addEventListener('change', function(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById('previewImage').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
     </script>
 @endsection

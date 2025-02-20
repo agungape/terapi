@@ -7,6 +7,7 @@ use App\Models\Kunjungan;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
 use function Symfony\Component\String\b;
@@ -84,7 +85,6 @@ class AnakController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // dd($request->tanggal_lahir);
 
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:6|unique:anaks,nib',
@@ -117,7 +117,19 @@ class AnakController extends Controller
             'pernikahan_ibu' => 'nullable|numeric',
             'usia_saat_hamil_ayah' => 'nullable',
             'usia_saat_hamil_ibu' => 'nullable',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->file('foto')) {
+            $file = $request->file('foto');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile =
+                "anak-" . time() . "." . $extFile;
+            $path = 'anak/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+            $validateData['foto'] = $namaFile;
+        }
+
         $anak = Anak::create($validateData);
         Alert::success('Berhasil', "Data Anak $request->nama berhasil dibuat");
         return redirect("/anak#card-{$anak->id}");
@@ -205,18 +217,62 @@ class AnakController extends Controller
             'pernikahan_ibu' => 'nullable|numeric',
             'usia_saat_hamil_ayah' => 'nullable',
             'usia_saat_hamil_ibu' => 'nullable',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->file('foto')) {
+            // Hapus foto lama jika ada
+            if ($anak->foto) {
+                Storage::disk('public')->delete('anak/' . $anak->foto);
+            }
+
+            // Simpan foto baru
+            $file = $request->file('foto');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile = "anak-" . time() . "." . $extFile;
+            $path = 'anak/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+
+            // Update data foto
+            $validateData['foto'] = $namaFile;
+        }
+
         $anak->update($validateData);
         Alert::success('Berhasil', "Anak $request->nama telah di update");
         // Trik agar halaman kembali ke halaman asal
-        return redirect($request->url_asal);
+        return redirect('/anak');
     }
+
+    public function deleteFoto($id)
+    {
+        // Cari data anak berdasarkan ID
+        $anak = Anak::findOrFail($id);
+
+        // Pastikan anak memiliki foto sebelum menghapus
+        if ($anak->foto) {
+            // Hapus foto dari penyimpanan
+            Storage::disk('public')->delete('anak/' . $anak->foto);
+
+            // Update kolom foto di database menjadi null
+            $anak->update(['foto' => null]);
+
+            // Notifikasi sukses
+            Alert::success('Berhasil', "Foto Anak {$anak->nama} berhasil dihapus");
+        } else {
+            // Notifikasi jika tidak ada foto
+            Alert::warning('Gagal', "Anak {$anak->nama} tidak memiliki foto untuk dihapus");
+        }
+
+        return redirect()->back();
+    }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Anak $anak)
     {
+        Storage::disk('public')->delete('anak/' . $anak->foto);
         $anak->delete();
         Alert::success('Berhasil', "$anak->nama telah di hapus");
         return redirect("/anak");

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginController extends Controller
 {
@@ -45,5 +48,37 @@ class LoginController extends Controller
     public function username()
     {
         return 'username';
+    }
+
+
+    protected function authenticated(Request $request, $user)
+    {
+        // Ambil tampilan yang sedang digunakan dari session atau URL
+        $view = $request->session()->get('view', 'admin');
+
+        // Jika pengguna login dari tampilan mobile (anak)
+        if ($view === 'anak') {
+            if (!$user->hasRole('anak')) {
+                // Jika bukan anak, logout dan kembali ke login mobile
+                Auth::logout();
+                Alert::toast('Anda tidak memiliki akses ke tampilan Mobile.', 'error');
+                return redirect()->route('mobile.login');
+            }
+            return redirect('/app');
+        }
+
+        // Jika pengguna login dari tampilan admin
+        if ($view === 'admin' || $view === null) {
+            if ($user->hasRole('anak')) {
+                // Jika anak mencoba login ke tampilan admin, logout dan kembali ke login admin
+                Auth::logout();
+                Alert::toast('Anda tidak memiliki akses ke tampilan Website.', 'error');
+                return redirect()->route('login');
+            }
+            return redirect(RouteServiceProvider::HOME);
+        }
+
+        // Default redirect jika tidak ada tampilan yang sesuai
+        return redirect(RouteServiceProvider::HOME);
     }
 }

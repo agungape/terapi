@@ -134,6 +134,7 @@ class JadwalController extends Controller
 
         $jadwal = Jadwal::create($data);
         Alert::success('Berhasil', "Data Jadwal berhasil dibuat");
+
         return redirect()->back();
     }
 

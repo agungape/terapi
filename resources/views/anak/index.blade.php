@@ -75,9 +75,10 @@
                                                         </a>
                                                     @endcan
                                                 </td>
-                                                <td style="vertical-align: middle;"> <img
-                                                        class="profile-user-img img-circle"
-                                                        src="assets/images/faces/face1.jpg" alt="User profile picture">
+                                                <td style="vertical-align: middle;"><img
+                                                        class="profile-user-img img-circle fixed-size"
+                                                        src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}"
+                                                        alt="User profile picture">
                                                 </td>
                                                 <td style="vertical-align: middle;">
                                                     {{ $anak->nama }}

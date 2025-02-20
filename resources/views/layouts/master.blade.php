@@ -119,6 +119,15 @@
         .list-group-item {
             border: none;
         }
+
+        .fixed-size {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            /* Memastikan gambar memenuhi area tanpa distorsi */
+            border-radius: 50%;
+            /* Membuat gambar menjadi lingkaran */
+        }
     </style>
 </head>
 
@@ -171,7 +180,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a title="keluar" class="nav-link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -181,6 +190,15 @@
                         </form>
                     </a>
 
+                </li> --}}
+
+                <li class="nav-item">
+                    <a title="Keluar" class="nav-link" href="#" id="logout-btn">
+                        <i class="fa fa-power-off" data-feather="power"></i>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </li>
             </ul>
         </nav>
@@ -242,7 +260,7 @@
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     @include('sweetalert::alert')
@@ -250,6 +268,25 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
     <script>
+        document.getElementById("logout-btn").addEventListener("click", function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Anda akan keluar dari akun ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, Keluar",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("logout-form").submit();
+                }
+            });
+        });
+
+
         let semuaTombol = document.querySelectorAll('.btn-hapus');
         semuaTombol.forEach(function(item) {
             item.addEventListener('click', konfirmasi);

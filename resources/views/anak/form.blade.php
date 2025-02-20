@@ -34,7 +34,6 @@
                                             class="form-control @error('nib') is-invalid @enderror" name="nib"
                                             value="{{ old('nib') ?? ($anak->nib ?? '') }}" hidden>
                                     </div>
-
                                     {{-- nama --}}
                                     <div class="col-md-6">
                                         <div class="form-group row">
@@ -220,11 +219,45 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="card card-primary card-outline shadow-sm p-4">
+                                            <h4 class="text-center">Upload Foto Anak</h4>
+
+                                            <div class="mb-2 text-center">
+                                                <img id="previewImage"
+                                                    src="{{ asset($anak->foto ? 'storage/anak/' . $anak->foto : 'assets/images/faces/face1.jpg') }}"
+                                                    class="rounded-circle img-thumbnail"
+                                                    style="width: 150px; height: 150px; object-fit: cover;">
+                                            </div>
+
+
+                                            <div class="mb-3 text-center">
+                                                <input type="file" name="foto" id="photoInput"
+                                                    class="form-control d-none" accept="image/*">
+                                                <button type="button" id="uploadButton" class="btn btn-primary">
+                                                    <i class="bi bi-upload"></i>
+                                                    {{ $anak->foto ? 'Ubah Foto' : 'Upload Gambar' }}
+                                                </button>
+                                            </div>
+
+                                            <div class="text-center">
+                                                @if ($anak->foto)
+                                                    <button type="submit" class="btn btn-success">Simpan
+                                                        Foto</button>
+                                                    <a href="{{ route('delete.foto', $anak->id) }}"
+                                                        class="btn btn-danger">Hapus Foto</a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
                                 <a href="{{ route('anak.index') }}" class="btn btn-warning">
                                     Kembali</a>
                                 <button type="button" class="btn btn-primary" onclick="stepper.next()">Next</button>
                             </div>
+
                             <div id="information-part" class="content" role="tabpanel"
                                 aria-labelledby="information-part-trigger">
                                 <div class="row">
@@ -615,12 +648,15 @@
                                     onclick="stepper.previous()">Sebelumnya</button>
                                 <button type="submit" class="btn btn-primary me-2">{{ $tombol }}</button>
                             </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-            </div>
+        </div>
+        <div class="card-footer">
         </div>
     </div>
+</div>
 </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KunjunganController;
+use App\Http\Controllers\MobileController;
 use App\Http\Controllers\ObservasiController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
@@ -39,19 +40,20 @@ use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', [FrontendController::class, 'index']);
+Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 
 Route::get('/contact', function () {
     return view(('frontend.contact'));
 });
 Route::get('/login', function () {
-    return view(('auth.login'));
-});
+    return view('auth.login');
+})->name('login');
 
 
 
 Auth::routes();
 
-Route::group(['middleware' => ['role:super-admin|admin|anak|terapis|keuangan']], function () {
+Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], function () {
 
     Route::resource('/roles', RoleController::class);
     Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
@@ -109,4 +111,12 @@ Route::group(['middleware' => ['role:super-admin|admin|anak|terapis|keuangan']],
 
     Route::post('/observasi/mulai', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
     Route::post('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
+
+    Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
+    Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');
+});
+
+Route::group(['middleware' => ['role:anak']], function () {
+
+    Route::get('/app', [App\Http\Controllers\MobileController::class, 'app'])->name('app');
 });

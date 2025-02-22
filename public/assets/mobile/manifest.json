@@ -1,0 +1,15 @@
+{
+  "background_color": "var(--primary)",
+  "description": "Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone",
+  "display": "standalone",
+  "icons": [
+	{
+	  "src": "assets/images/app-logo/pwa150x150.png",
+	  "sizes": "150x150",
+	  "type": "image/png"
+	}
+  ],
+  "name": "Pixio - Ecommerce Fashion Mobile App Template",
+  "short_name": "Pixio",
+  "start_url": "index.html"
+}

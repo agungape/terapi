@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Anak;
+use App\Models\Kunjungan;
+use App\Models\Terapis;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use PhpParser\Builder\Function_;
 use PhpParser\Node\Expr\FuncCall;
@@ -19,12 +23,21 @@ class MobileController extends Controller
         } else {
             session(['view' => 'admin']);
         }
-        return view('mobile.master');
+        return view('mobile.login');
     }
 
     public function app()
     {
-        return "Login Berhasil";
+        $user = auth()->user();
+        $namaUser = $user->name;
+        $anak = Anak::where('nama', $namaUser)->first();
+        $terapis = Terapis::get();
+        foreach ($terapis as $t) {
+            $tanggal_lahir = Carbon::parse($t->tanggal_lahir);
+            $t->usia = $tanggal_lahir->diffInYears(Carbon::now());
+        }
+        $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+        return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan'));
     }
 
     /**

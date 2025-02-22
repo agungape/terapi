@@ -77,10 +77,11 @@
                                                     @endcan
                                                 </td>
 
-                                                {{-- <td style="vertical-align: middle;"> <img
-                                                        class="profile-user-img img-circle"
-                                                        src="assets/images/faces/face1.jpg" alt="User profile picture">
-                                                </td> --}}
+                                                <td style="vertical-align: middle;"><img
+                                                        class="profile-user-img img-circle fixed-size"
+                                                        src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/images/faces/face1.jpg') }}"
+                                                        alt="User profile picture">
+                                                </td>
                                                 <td style="vertical-align: middle;">{{ $t->nib }}</td>
                                                 <td style="vertical-align: middle;">
                                                     {{ $t->nama }}

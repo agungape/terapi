@@ -75,6 +75,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::resource('/program', ProgramController::class);
     Route::resource('/pelatihan', PelatihanController::class);
     Route::resource('/anak', AnakController::class);
+    Route::get('/profile-user', [ProfileController::class, 'profile_user'])->name('profile.user');
     Route::resource('/profile', ProfileController::class);
     Route::resource('/jadwal', JadwalController::class);
     Route::resource('/menu', JadwalController::class);
@@ -114,6 +115,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');
+    Route::get('/delete-fototerapis/{id}', [TerapisController::class, 'deletefoto'])->name('delete.fototerapis');
 });
 
 Route::group(['middleware' => ['role:anak']], function () {

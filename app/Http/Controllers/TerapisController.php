@@ -20,6 +20,7 @@ class TerapisController extends Controller
         $this->middleware('permission:show terapis', ['only' => ['show', 'terapis_pelatihan', 'pelatihan_store', 'sertifikat_show']]);
         $this->middleware('permission:update terapis', ['only' => ['update', 'edit', 'ubahStatus']]);
         $this->middleware('permission:delete terapis', ['only' => ['destroy']]);
+        $this->middleware('permission:delete foto terapis', ['only' => ['deleteFoto']]);
     }
 
     public function index()
@@ -92,12 +93,31 @@ class TerapisController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
             'alamat' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->file('foto')) {
+            // Hapus foto lama jika ada
+            if ($terapi->foto) {
+                Storage::disk('public')->delete('terapis/' . $terapi->foto);
+            }
+
+            // Simpan foto baru
+            $file = $request->file('foto');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile = "terapis-" . time() . "." . $extFile;
+            $path = 'terapis/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+
+            // Update data foto
+            $validateData['foto'] = $namaFile;
+        }
+
         $terapi->update($validateData);
         Alert::success('Berhasil', "Terapis $request->nama telah di update");
         // Trik agar halaman kembali ke halaman asal
-        return redirect($request->url_asal);
+        return redirect()->back();
     }
 
     /**
@@ -108,6 +128,29 @@ class TerapisController extends Controller
         $terapi->delete();
         Alert::success('Berhasil', "$terapi->nama telah di hapus");
         return redirect("/terapis");
+    }
+
+    public function deleteFoto($id)
+    {
+        // Cari data anak berdasarkan ID
+        $terapis = Terapis::findOrFail($id);
+
+        // Pastikan anak memiliki foto sebelum menghapus
+        if ($terapis->foto) {
+            // Hapus foto dari penyimpanan
+            Storage::disk('public')->delete('terapis/' . $terapis->foto);
+
+            // Update kolom foto di database menjadi null
+            $terapis->update(['foto' => null]);
+
+            // Notifikasi sukses
+            Alert::success('Berhasil', "Foto terapis {$terapis->nama} berhasil dihapus");
+        } else {
+            // Notifikasi jika tidak ada foto
+            Alert::warning('Gagal', "terapis {$terapis->nama} tidak memiliki foto untuk dihapus");
+        }
+
+        return redirect()->back();
     }
 
     public function terapis_pelatihan(Terapis $terapi)

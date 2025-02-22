@@ -1,235 +1,158 @@
 <!DOCTYPE html>
-<html lang="en" class=" ">
+<html lang="en">
 
 <head>
-    <!--
-         * @Package: Odis Mobile App
-         * @Author: themepassion
-         * @Version: 1.0
-        -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Odis Mobile App: Login</title>
-    <meta content="Odis Mobile App" name="description" />
-    <meta content="themepassion" name="author" />
 
+    <title>Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone</title>
 
-    <!-- App Icons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets') }}/mobile/images/icons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('assets') }}/mobile/images/icons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('assets') }}/mobile/images/icons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets') }}/mobile/images/icons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114"
-        href="{{ asset('assets') }}/mobile/images/icons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120"
-        href="{{ asset('assets') }}/mobile/images/icons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144"
-        href="{{ asset('assets') }}/mobile/images/icons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152"
-        href="{{ asset('assets') }}/mobile/images/icons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ asset('assets') }}/mobile/images/icons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"
-        href="{{ asset('assets') }}/mobile/images/icons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512"
-        href="{{ asset('assets') }}/mobile/images/icons/android-icon-512x512.png">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{{ asset('assets') }}/mobile/images/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96"
-        href="{{ asset('assets') }}/mobile/images/icons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{{ asset('assets') }}/mobile/images/icons/favicon-16x16.png">
-    <link rel="manifest" href="{{ asset('assets') }}/mobile/images/icons/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="{{ asset('assets') }}/mobile/images/icons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="DexignZone">
+    <meta name="robots" content="index, follow">
 
+    <meta name="keywords"
+        content="app, clothing, e-shop, ecommerce, ecommerce android app, ecommerce app, eCommerce Website, minimal shop, online shop, shop app, store, ui kit, woocommerce, mobile application, mobile app, mobile, android application, online shopping, pixio, user interface, user experience, App Design, Design Elements, Fashion App, fashion, Trendy, Stylish, User-Friendly, Navigation, Product Display, Branding, Development, Visual Design, Mobile UI Elements, Stylish Mobile Design, Mobile App Development, Fashion App Templates, Fashion App Prototypes, UI Kit for Online Store, Trendy Fashion App, Fashion App UX/UI, UI/UX, Website, Web Design">
 
+    <meta
+        name="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
 
+    <meta property="og:title" content="Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone">
+    <meta property="og:description"
+        content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
+    <meta property="og:image" content="social-image.html">
 
+    <meta name="format-detection" content="telephone=no">
 
+    <meta name="twitter:title" content="Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone">
+    <meta name="twitter:description"
+        content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
+    <meta name="twitter:image" content="social-image.html">
+    <meta name="twitter:card" content="summary_large_image">
 
-    <!-- CORE CSS FRAMEWORK - START -->
-    <link href="{{ asset('assets') }}/mobile/css/preloader.css" type="text/css" rel="stylesheet" media="screen" />
+    <!-- MOBILE SPECIFIC -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
-    <link href="{{ asset('assets') }}/mobile/modules/materialize/materialize.min.css" type="text/css" rel="stylesheet"
-        media="screen" />
-    <link href="{{ asset('assets') }}/mobile/modules/fonts/mdi/appicon/appicon.css" type="text/css" rel="stylesheet"
-        media="screen" />
-    <link href="{{ asset('assets') }}/mobile/modules/fonts/mdi/materialdesignicons.min.css" type="text/css"
-        rel="stylesheet" media="screen" />
-    <link href="{{ asset('assets') }}/mobile/modules/perfect-scrollbar/perfect-scrollbar.css" type="text/css"
-        rel="stylesheet" media="screen" />
+    <!-- Favicons Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/favicon.png">
 
+    <!-- PWA Version -->
+    <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
 
-    <!-- CORE CSS FRAMEWORK - END -->
+    <!-- Global CSS -->
+    <link href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css">
+    <link rel="stylesheet" href="{{ asset('assets') }}/mobile/pixio/vendor/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="{{ asset('assets') }}/mobile/pixio/vendor/grouploop-master/examples/css/styles.css">
 
-    <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
-    <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets') }}/mobile/pixio/css/style.css">
 
-    <!-- CORE CSS TEMPLATE - START -->
-
-
-    <link href="{{ asset('assets') }}/mobile/css/style.css" type="text/css" rel="stylesheet" media="screen"
-        id="main-style" />
-    <!-- CORE CSS TEMPLATE - END -->
-
-
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;800;900&amp;family=Roboto:wght@500;700&amp;display=swap"
+        rel="stylesheet">
 
 </head>
-<!-- END HEAD -->
 
-<!-- BEGIN BODY -->
+<body>
+    <div class="page-wrapper">
 
-
-<body class=" menu-full  isfullscreen  html" data-header="light" data-footer="light" data-header_align="app"
-    data-menu_type="left" data-menu="light" data-menu_icons="on" data-footer_type="left" data-site_mode="light"
-    data-footer_menu="show" data-footer_menu_style="light">
-    <div class="preloader-background">
-        <div class="preloader-wrapper">
+        <!-- Preloader -->
+        <div id="preloader">
             <div class="loader">
+                <div class="load-circle">
+                    <div class="circle-2">
+                        <img src="{{ asset('assets') }}/mobile/pixio/images/preloader/bsc.png" alt="">
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        <!-- Preloader end-->
 
+        <!-- Header -->
+        <header class="header header-fixed">
+            <div class="header-content">
+                <div class="left-content">
+                    <a href="javascript:void(0);" class="menu-toggler bg-white pe-2 rounded-xl">
+                        <div class="media">
+                            <div class="media-35 m-r10">
 
-
-    <!-- SIDEBAR - START -->
-
-    <!-- MAIN MENU - START -->
-
-
-
-    <!-- MAIN MENU - END -->
-
-
-
-    <!--  SIDEBAR - END --><!-- SIDEBAR - START -->
-
-    <!-- MAIN MENU - START -->
-
-
-
-    <!-- MAIN MENU - END -->
-
-
-
-    <!--  SIDEBAR - END -->
-
-    <!-- START navigation -->
-    <nav class="fix_topscroll logo_on_fixed  topbar navigation">
-        <div class="nav-wrapper container">
-            <a id="logo-container" href="index.html" class=" brand-logo "><svg xmlns="http://www.w3.org/2000/svg"
-                    width="400.000000pt" height="400.000000pt" viewBox="0 0 400.000000 400.000000"
-                    preserveAspectRatio="xMidYMid meet">
-                    <g transform="translate(0.000000,400.000000) scale(0.100000,-0.100000)" fill="#000000"
-                        stroke="none">
-                        <path
-                            d="M1810 3566 c0 -3 13 -24 29 -48 16 -24 34 -62 41 -84 l12 -42 101 -7 c248 -17 377 -112 444 -325 37 -121 43 -235 43 -931 l0 -676 49 -7 c27 -4 75
--15 107 -26 31 -11 59 -20 61 -20 2 0 2 343 0 763 -3 722 -5 766 -24 842 -45 182 -95 285 -182 374 -130 134 -294 191 -547 191 -74 0 -134 -2 -134 -4z" />
-                        <path
-                            d="M1482 3541 c-55 -14 -110 -58 -142 -114 -87 -152 22 -337 200 -337 133 0 230 99 230 234 0 138 -150 251 -288 217z" />
-                        <path
-                            d="M1226 3093 c-4 -9 -16 -62 -26 -118 -19 -94 -20 -148 -20 -971 0 -819 1 -876 19 -975 39 -208 90 -318 197 -425 76 -77 164 -127 279 -159 79 -22 361 -32 448 -16 79 15 167 42 167 51 0 3 -22 16 -48 28 -26 12 -71 41 -99 65 l-51 44 -64 -9 c-34 -5 -103 -6 -153 -3 -258 19 -391 134 -451 390 -18 75 -19 134 -19 995 0 503 3 931 6 950 6 33 5 36 -34 54 -22 11 -63 41 -91 68 -27 26 -51 48 -52 48 -1 0 -5 -8 -8 -17z" />
-                        <path
-                            d="M2356 1304 c-27 -9 -61 -23 -75 -31 -53 -33 -123 -110 -149 -163 -24 -48 -27 -67 -27 -155 0 -87 3 -107 26 -155 103 -215 370 -276 563 -129 86 66 136 170 136 284 0 98 -27 170 -90 238 -101 111 -246 153 -384 111z" />
-                    </g>
-                </svg>Odis</a>
-        </div>
-    </nav>
-
-
-
-
-    <div class="menu-close"><i class="mdi mdi-close"></i></div>
-
-    <div class="content-area">
-
-        <div class="login-bg access-login"></div>
-
-        <div class="container login-area">
-            <div class="section">
-                <h3 class="bot-20 center white-text">Login</h3>
-                <form action="{{ route('login') }}" method="post">
-                    @csrf
-                    <div class="row">
-                        <div class="input-field col s10 offset-s1">
-                            <input id="username" type="text" name="username"
-                                class="validate @error('username') is-invalid @enderror "
-                                value="{{ old('username') }}">
-                            <label for="username">Username</label>
-
-                            @error('username')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                                <img class="rounded-xl"
+                                    src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/1.png') }}"
+                                    alt="">
+                            </div>
+                            <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s10 offset-s1">
-                            <input id="password" type="password" name="password"
-                                class="validate @error('password') is-invalid @enderror "
-                                value="{{ old('password') }}">
-                            <label for="password">Password</label>
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row center">
-                        <button type="submit" class="waves-effect waves-light btn-large bg-primary">Masuk</button>
-                    </div>
-                </form>
+                    </a>
+                </div>
+                <div class="mid-content"></div>
+                <div class="right-content d-flex align-items-center gap-3">
+                    <a href="notification.html" class="notification-badge font-20">
+                        <i class="icon feather icon-bell"></i>
+                        <span class="badge badge-danger">14</span>
+                    </a>
+                    <a href="search.html" class="icon font-20">
+                        <i class="icon feather icon-search"></i>
+                    </a>
+                </div>
             </div>
+        </header>
+        <!-- Header -->
 
+        <!-- Sidebar -->
+        <div class="dark-overlay"></div>
+        @include('mobile.menu')
+
+        <!-- Sidebar End -->
+
+        <!-- Main Content Start -->
+        @yield('content')
+        <!-- Main Content End -->
+
+        <!-- Menubar -->
+        @include('mobile.menubar')
+        <!-- Menubar -->
+
+        <!-- PWA Offcanvas -->
+        <div class="offcanvas offcanvas-bottom pwa-offcanvas">
+            <div class="container">
+                <div class="offcanvas-body">
+                    <img class="logo dark" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"
+                        alt="">
+                    <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"
+                        alt="">
+                    <h5 class="title">Bright Star of Child </h5>
+                    <p class="pwa-text">Instal Aplikasi ke layar beranda Anda untuk akses mudah</p>
+                    <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">Install
+                        Aplikasi</button>
+                    <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">Install
+                        Nanti</button>
+                </div>
+            </div>
         </div>
+        <div class="offcanvas-backdrop pwa-backdrop"></div>
+        <!-- PWA Offcanvas End -->
+
     </div>
-
-
-
-
-
-
-
-    </div><!--.content-area-->
-
-
-
-
-
-
-
-    <script src="{{ asset('assets') }}/mobile/js/pwa.js"></script>
-
-    <!-- LOAD FILES AT PAGE END FOR FASTER LOADING -->
-
-    <!-- CORE JS FRAMEWORK - START -->
-    <script src="{{ asset('assets') }}/mobile/modules/jquery/jquery-2.2.4.min.js"></script>
-    <script src="{{ asset('assets') }}/mobile/modules/materialize/materialize.js"></script>
-    <script src="{{ asset('assets') }}/mobile/modules/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="{{ asset('assets') }}/mobile/js/variables.js"></script>
-    <!-- CORE JS FRAMEWORK - END -->
-
-
-    <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
-    <script src="{{ asset('assets') }}/mobile/js/common.js"></script><!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
-
-
-    <!-- CORE TEMPLATE JS - START -->
-    <script src="{{ asset('assets') }}/mobile/modules/app/init.js"></script>
-    <script src="{{ asset('assets') }}/mobile/modules/app/settings.js"></script>
-
-    <script src="{{ asset('assets') }}/mobile/modules/app/scripts.js"></script>
-
-    <!-- END CORE TEMPLATE JS - END -->
-
-
-    <script src="{{ asset('assets') }}/mobile/js/preloader.js"></script>
-
-    @include('sweetalert::alert')
+    <!--**********************************
+    Scripts
+***********************************-->
+    <script src="{{ asset('assets') }}/mobile/pixio/js/jquery.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js">
+    </script>
+    <script src="{{ asset('assets') }}/mobile/pixio/vendor/grouploop-master/dist/grouploop-1.0.3.min.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/js/dz.carousel.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/js/settings.js"></script>
+    <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
+    <script src="{{ asset('assets') }}/mobile/index.js"></script>
 </body>
 
 </html>

@@ -231,6 +231,16 @@
                         </a>
                     </li>
                 @endcan
+                @can('view profile user')
+                    <li class="nav-item">
+                        <a href="{{ route('profile.user') }}" class="nav-link @yield('menuProfileuser')">
+                            <i class="nav-icon fas fa-user-alt"></i>
+                            <p>
+                                Profile User
+                            </p>
+                        </a>
+                    </li>
+                @endcan
 
                 @can('view career')
                     <li class="nav-item">

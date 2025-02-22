@@ -61,10 +61,10 @@ class LoginController extends Controller
             if (!$user->hasRole('anak')) {
                 // Jika bukan anak, logout dan kembali ke login mobile
                 Auth::logout();
-                Alert::toast('Anda tidak memiliki akses ke tampilan Mobile.', 'error');
-                return redirect()->route('mobile.login');
+                // Alert::toast('', 'error');
+                return redirect()->route('mobile.login')->with('error', 'Anda tidak memiliki akses ke tampilan Mobile.');
             }
-            return redirect('/app');
+            return redirect()->route('app');
         }
 
         // Jika pengguna login dari tampilan admin

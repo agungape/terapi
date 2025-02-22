@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\Terapis;
+use DragonCode\Contracts\Cashier\Auth\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -67,6 +69,14 @@ class ProfileController extends Controller
         Alert::toast("data Profile $request->nama berhasil di Perbaharui", 'success')->timerProgressBar();
         // Trik agar halaman kembali ke halaman asal
         return redirect("/profile");
+    }
+
+    public function profile_user()
+    {
+        $user = auth()->user();
+        $namaUser = $user->name;
+        $terapis = Terapis::where('nama', $namaUser)->first();
+        return view('profile.profile-user', compact('terapis'));
     }
 
     /**

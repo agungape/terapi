@@ -15,7 +15,7 @@ class Terapis extends Model
         'status' => 'aktif',
     ];
 
-    protected $fillable = ['nama', 'nib', 'tanggal_lahir', 'alamat', 'telepon'];
+    protected $fillable = ['nama', 'foto', 'nib', 'tanggal_lahir', 'alamat', 'telepon'];
 
     public function pelatihans(): BelongsToMany
     {

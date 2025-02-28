@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone</title>
+    <title>Bright Star Of Child</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -17,14 +17,14 @@
     <meta
         name="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
 
-    <meta property="og:title" content="Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone">
+    <meta property="og:title" content="Bright Star Of Child App Template ( Bootstrap + PWA ) | DexignZone">
     <meta property="og:description"
         content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
     <meta property="og:image" content="social-image.html">
 
     <meta name="format-detection" content="telephone=no">
 
-    <meta name="twitter:title" content="Pixio - Ecommerce Fashion Mobile App Template ( Bootstrap + PWA ) | DexignZone">
+    <meta name="twitter:title" content="Bright Star Of Child App Template ( Bootstrap + PWA ) | DexignZone">
     <meta name="twitter:description"
         content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
     <meta name="twitter:image" content="social-image.html">
@@ -35,10 +35,10 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
     <!-- Favicons Icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
     <!-- PWA Version -->
-    <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
+    <link rel="manifest" href="manifest.json">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"

@@ -1,11 +1,12 @@
 <div class="sidebar">
     <a href="profile.html" class="author-box">
         <div class="dz-media">
-            <img src="{{ asset('assets') }}/mobile/pixio/images/avatar/small/2.png" alt="author-image">
+            <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/small/2.png') }}"
+                alt="author-image">
         </div>
         <div class="dz-info">
-            <h5 class="name">Roopa</h5>
-            <span class="mail">example@gmail.com</span>
+            <h5 class="name">{{ $anak->nama }}</h5>
+            <span class="mail">Bright Star of Child</span>
         </div>
     </a>
     <ul class="nav navbar-nav">

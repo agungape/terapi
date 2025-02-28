@@ -3,7 +3,7 @@ if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register('app.js')
 	.then(() => { console.log('Service Worker Registered'); });
 }
-  
+
 // Code to handle install prompt on desktop
 let deferredPrompt;
 const pwaBtn = document.querySelector('.pwa-btn');
@@ -14,8 +14,8 @@ var PwaValue = getCookie(PwaKey);
 
 /* for ios start*/
 function isThisDeviceRunningiOS(){
-  if (['iPad Simulator', 'iPhone Simulator','iPod Simulator', 'iPad','iPhone','iPod','ios'].includes(navigator.platform) || navigator.userAgent.indexOf('Mac OS X') != -1){ 
-	installText.innerHTML = 'Install "Pixio - Ecommerce Fashion Mobile App Template" to your home screen for easy access click to safari share option "Add to Home Screen".';
+  if (['iPad Simulator', 'iPhone Simulator','iPod Simulator', 'iPad','iPhone','iPod','ios'].includes(navigator.platform) || navigator.userAgent.indexOf('Mac OS X') != -1){
+	installText.innerHTML = 'Install "Bright Star Of Child App Template" to your home screen for easy access click to safari share option "Add to Home Screen".';
 	pwaBtn.remove();
 	return true;
   }

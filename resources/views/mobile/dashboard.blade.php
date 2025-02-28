@@ -111,9 +111,9 @@
                                         alt="">
                                 </div>
                                 <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Get Flat $75 Back</h6>
-                                    <span class="dz-status">Up to 40% Off</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Collect Now</a>
+                                    <h6 class="font-w500 font-14 mb-1">Paket A</h6>
+                                    <span class="dz-status">Terapi Perilaku</span>
+                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
                                 </div>
                             </div>
                         </div>
@@ -124,9 +124,9 @@
                                         alt="">
                                 </div>
                                 <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Get Flat $75 Back</h6>
-                                    <span class="dz-status">Up to 40% Off</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Collect Now</a>
+                                    <h6 class="font-w500 font-14 mb-1">Paket B</h6>
+                                    <span class="dz-status">Fisioterapi</span>
+                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
                                 </div>
                             </div>
                         </div>
@@ -137,9 +137,9 @@
                                         alt="">
                                 </div>
                                 <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Get Flat $75 Back</h6>
-                                    <span class="dz-status">Up to 40% Off</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Collect Now</a>
+                                    <h6 class="font-w500 font-14 mb-1">Paket C</h6>
+                                    <span class="dz-status">Perilaku & Fisioterapi</span>
+                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
                             <div class="swiper-slide">
                                 <div class="dz-card style-2">
                                     <div class="dz-media media-303">
-                                        <a href="product-detail.html">
+                                        <a href="#">
                                             <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/mobile/pixio/images/product/product1/pic1.png') }}"
                                                 alt="image" style="object-fit: cover;">
                                         </a>

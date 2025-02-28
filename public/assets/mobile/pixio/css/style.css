@@ -11607,11 +11607,20 @@ svg.text-dark path {
     position: relative;
     overflow: hidden;
 }
+
 .dz-media img,
 .dz-post-media img {
     max-width: 100%;
     height: auto;
     width: 100%;
+}
+
+.gambar-terapis2 img {
+    width: 100%; /* Agar gambar mengikuti lebar parent */
+    height: 100%; /* Agar gambar mengikuti tinggi parent */
+    object-fit: cover; /* Memastikan gambar memenuhi area tanpa distorsi */
+    object-position: center; /* Memotong bagian atas dan bawah secara seimbang jika terlalu tinggi */
+    display: block; /* Menghilangkan spasi ekstra di sekitar gambar */
 }
 
 .font-12 {
@@ -18872,6 +18881,9 @@ select {
     width: 70px;
     min-width: 70px;
     height: 70px;
+    object-fit: cover; /* Memastikan gambar memenuhi area tanpa distorsi */
+    display: block;
+    object-position: center; /* Memotong bagian atas dan bawah secara seimbang jika terlalu tinggi */
 }
 
 .media-75 {
@@ -18908,6 +18920,14 @@ select {
     width: 100px;
     min-width: 100px;
     height: 100px;
+}
+
+.media-303 {
+    width: 264px;
+    height: 303px;
+    object-fit: cover; /* Memastikan gambar memenuhi area tanpa distorsi */
+    display: block;
+    object-position: center;
 }
 
 .media {
@@ -22776,6 +22796,7 @@ label input {
     height: 34px;
     font-size: 13px;
 }
+
 .dz-product-detail .item-wrapper .color-filter .dz-color-picker {
     display: flex;
     align-items: center;

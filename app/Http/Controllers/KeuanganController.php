@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Anak;
 use App\Models\Kategori;
-use App\Models\Keuangan;
 use App\Models\Pemasukkan;
 use App\Models\Pengeluaran;
 use App\Models\SaldoKas;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PDF;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
@@ -29,6 +28,7 @@ class KeuanganController extends Controller
         $this->middleware('permission:view pengeluaran', ['only' => ['pengeluaran']]);
         $this->middleware('permission:create pengeluaran', ['only' => ['pengeluaran_store']]);
         $this->middleware('permission:delete pengeluaran', ['only' => ['pengeluaran_destroy']]);
+        $this->middleware('permission:view laporan keuangan', ['only' => ['laporan_keuangan', 'laporan_pdf']]);
     }
 
     public function pemasukkan_json()
@@ -347,19 +347,14 @@ class KeuanganController extends Controller
 
 
         $financialReport = DB::table('pemasukkans')
-            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->unionAll(
                 DB::table('pengeluarans')
-                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
-            ->unionAll(
-                DB::table('saldo_kas')
-                    ->select('created_at as tanggal', DB::raw('"saldo" as jenis'), DB::raw('NULL as jumlah'), DB::raw('NULL as deskripsi'), 'saldo_awal')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-            )
-            ->orderBy('tanggal')
+            ->orderBy('created_at')
             ->get();
 
         // Hitung saldo akhir
@@ -382,19 +377,14 @@ class KeuanganController extends Controller
     public function laporan_pdf(Request $request, $startDate, $endDate)
     {
         $financialReport = DB::table('pemasukkans')
-            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->unionAll(
                 DB::table('pengeluarans')
-                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'))
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
-            ->unionAll(
-                DB::table('saldo_kas')
-                    ->select('created_at as tanggal', DB::raw('"saldo" as jenis'), DB::raw('NULL as jumlah'), DB::raw('NULL as deskripsi'), 'saldo_awal')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-            )
-            ->orderBy('tanggal')
+            ->orderBy('created_at')
             ->get();
 
         // Hitung saldo akhir
@@ -413,7 +403,14 @@ class KeuanganController extends Controller
 
 
         // Generate PDF
-        $pdf = PDF::loadView('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'));
-        return $pdf->stream('laporan_keuangan_' . $startDate . '_to_' . $endDate . '.pdf');
+        $pdf = Pdf::loadView('keuangan.laporan_pdf', [
+            'financialReport' => $financialReport,
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ]);
+
+        // Menampilkan PDF langsung di browser
+        return response($pdf->stream('laporan_keuangan_' . $startDate . '_to_' . $endDate . '.pdf'))
+            ->header('Content-Type', 'application/pdf');
     }
 }

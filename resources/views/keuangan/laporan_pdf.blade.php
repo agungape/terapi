@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Keuangan</title>
     <style>
-        /* Reset margin and padding */
+        /* Reset margin & padding */
         body,
         h1,
         h2,
@@ -19,74 +19,65 @@
 
         /* Body styling */
         body {
-            padding: 40px;
-            position: relative;
-            overflow-x: hidden;
-            /* Prevent horizontal scroll */
+            padding: 20px;
             background-color: white;
-            /* Remove the gray background */
+            font-size: 12px;
+            /* Mengurangi ukuran font */
         }
 
         /* Watermark styling */
         .watermark {
             position: fixed;
-            /* Fixed position to stay on the page */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            /* Centered and rotated */
-            z-index: -1;
-            /* Ensures watermark is behind the content */
+            z-index: -10;
+            /* Membuat watermark di belakang */
             opacity: 0.1;
-            font-size: 120px;
+            font-size: 80px;
+            /* Diperkecil agar tidak mendominasi */
             color: #000;
             font-weight: bold;
             pointer-events: none;
-            /* Ensure watermark does not interfere with user interactions */
         }
 
         /* Header kop laporan */
         .kop-laporan {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .kop-laporan img {
-            max-width: 120px;
-            /* Logo width */
-            margin-bottom: 10px;
-        }
-
-        .kop-laporan h1 {
-            font-size: 28px;
-            color: #333;
+            max-width: 100px;
+            /* Diperkecil */
             margin-bottom: 5px;
         }
 
+        .kop-laporan h1 {
+            font-size: 20px;
+            /* Ukuran font lebih kecil */
+            color: #333;
+            margin-bottom: 3px;
+        }
+
         .kop-laporan p {
-            font-size: 16px;
+            font-size: 14px;
+            /* Diperkecil */
             color: #555;
         }
 
         /* Main content */
         .content {
             background-color: #fff;
-            /* Ensure clean white background */
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-            margin-left: -40px;
-            /* Shift content to the left */
-            margin-right: -40px;
-            /* Shift content to the right */
-            position: relative;
-            z-index: 1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .content h2 {
-            font-size: 24px;
+            font-size: 18px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #333;
         }
 
@@ -94,13 +85,14 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            table-layout: auto;
+            font-size: 12px;
+            /* Mengurangi ukuran font */
         }
 
         table th,
         table td {
-            padding: 12px 15px;
+            padding: 8px 10px;
+            /* Diperkecil */
             text-align: left;
         }
 
@@ -136,23 +128,9 @@
         /* Footer styling */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            font-size: 14px;
+            margin-top: 20px;
+            font-size: 12px;
             color: #777;
-        }
-
-        /* Additional modern touches */
-        .content::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(135deg, #4CAF50, #81C784);
-            z-index: -1;
-            border-radius: 15px;
-            opacity: 0.1;
         }
     </style>
 </head>
@@ -163,7 +141,8 @@
 
     <!-- Kop Laporan -->
     <div class="kop-laporan">
-        <img src="path_to_your_logo.png" alt="Logo Perusahaan"> <!-- Replace with actual logo path -->
+        <img src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="Logo Perusahaan">
+        <!-- Ganti dengan path logo yang benar -->
         <h1>Laporan Keuangan</h1>
         <p>Periode: {{ $startDate }} hingga {{ $endDate }}</p>
     </div>

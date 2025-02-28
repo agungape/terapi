@@ -39,13 +39,11 @@
                                             </span>
                                         </div>
                                         <input type="text" class="form-control" id="reservation" name="date_range">
+                                        <button type="submit" class="btn btn-primary ml-2 mb-2 mb-sm-0">Filter</button>
+                                        <a href="#" id="export-pdf" class="btn btn-success ml-sm-3"
+                                            target="_blank">Export
+                                            PDF</a>
                                     </div>
-                                </div>
-                                <div
-                                    class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mt-2 mt-sm-0">
-                                    <button type="submit" class="btn btn-primary mb-2 mb-sm-0">Filter</button>
-                                    <a href="#" id="export-pdf" class="btn btn-success ml-sm-3" target="_blank">Export
-                                        PDF</a>
                                 </div>
                             </form>
 
@@ -66,9 +64,18 @@
                                             <tr>
                                                 <td>{{ $report->tanggal }}</td>
                                                 <td>{{ $report->jenis }}</td>
-                                                <td>{{ number_format($report->jumlah, 2) }}</td>
+                                                <td>
+                                                    @if ($report->jenis == 'pemasukkan')
+                                                        <span
+                                                            class="badge bg-success">{{ number_format($report->jumlah, 2) }}</span>
+                                                    @else<span
+                                                            class="badge bg-danger">{{ number_format($report->jumlah, 2) }}</span>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $report->deskripsi }}</td>
-                                                <td>{{ number_format($report->current_balance, 2) }}</td>
+                                                <td><span
+                                                        class="badge bg-primary">{{ number_format($report->current_balance, 2) }}</span>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

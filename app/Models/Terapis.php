@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,6 +17,15 @@ class Terapis extends Model
     ];
 
     protected $fillable = ['nama', 'foto', 'nib', 'tanggal_lahir', 'alamat', 'telepon'];
+
+    // protected $casts = [
+    //     'tanggal_lahir' => 'date',
+    // ];
+
+    public function getUsiaAttribute()
+    {
+        return Carbon::parse($this->tanggal_lahir)->age; // Hitung umur berdasarkan tanggal lahir
+    }
 
     public function pelatihans(): BelongsToMany
     {

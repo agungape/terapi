@@ -143,6 +143,11 @@
     <!--**********************************
     Scripts
 ***********************************-->
+    <script>
+        document.getElementById('confirm-logout').addEventListener('click', function() {
+            document.getElementById('logout-form').submit();
+        });
+    </script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/jquery.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/vendor/swiper/swiper-bundle.min.js"></script>
@@ -153,6 +158,7 @@
     <script src="{{ asset('assets') }}/mobile/pixio/js/settings.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
     <script src="{{ asset('assets') }}/mobile/index.js"></script>
+
 </body>
 
 </html>

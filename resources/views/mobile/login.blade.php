@@ -125,67 +125,15 @@
                                         <i class="icon feather icon-eye eye-open"></i>
                                     </span>
                                 </div>
-                                <a href="forgot-password.html" class="btn-link text-end">Forgot password?</a>
+                                {{-- <a href="forgot-password.html" class="btn-link text-end">Forgot password?</a> --}}
                             </div>
-                            {{-- <a href="index.html"
-                                class="btn btn-thin btn-lg w-100 btn-primary rounded-xl btn-icon icon-start"><i
-                                    class="feather icon-arrow-right"></i>Sign In</a> --}}
+
                             <button type="submit"
                                 class="btn btn-thin btn-lg w-100 btn-primary rounded-xl btn-icon icon-start"><i
                                     class="feather icon-arrow-right"></i>Sign In</button>
                             <div class="dz-saprate">
-                                <span>Or Continue With</span>
+                                <span>Yayasan Plester Jiwa Indonesia</span>
                             </div>
-                            <a href="javascript:void(0);"
-                                class="btn gap-2 btn-thin btn-lg btn-light w-100 mb-2 rounded-xl">
-                                <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g clip-path="url(#clip0_54_4200)">
-                                        <path
-                                            d="M4.43242 12.5863L3.73625 15.1852L1.19176 15.239C0.431328 13.8286 0 12.2149 0 10.5C0 8.84179 0.403281 7.27804 1.11812 5.90112H1.11867L3.38398 6.31644L4.37633 8.56815C4.16863 9.17366 4.05543 9.82366 4.05543 10.5C4.05551 11.2341 4.18848 11.9374 4.43242 12.5863Z"
-                                            fill="#FBBB00" />
-                                        <path
-                                            d="M19.8253 8.63184C19.9401 9.23676 20 9.86148 20 10.5C20 11.2159 19.9247 11.9143 19.7813 12.5879C19.2945 14.8802 18.0225 16.8818 16.2605 18.2983L16.2599 18.2978L13.4066 18.1522L13.0028 15.6313C14.172 14.9456 15.0858 13.8725 15.5671 12.5879H10.2198V8.63184H15.6451H19.8253Z"
-                                            fill="#518EF8" />
-                                        <path
-                                            d="M16.2599 18.2978L16.2604 18.2984C14.5467 19.6758 12.3698 20.5 10 20.5C6.19177 20.5 2.8808 18.3715 1.19177 15.239L4.43244 12.5863C5.27693 14.8401 7.45111 16.4445 10 16.4445C11.0956 16.4445 12.122 16.1484 13.0027 15.6313L16.2599 18.2978Z"
-                                            fill="#28B446" />
-                                        <path
-                                            d="M16.3829 2.80219L13.1434 5.45437C12.2319 4.88461 11.1544 4.55547 9.99998 4.55547C7.39338 4.55547 5.17853 6.23348 4.37635 8.56812L1.11865 5.90109H1.1181C2.7824 2.6923 6.13513 0.5 9.99998 0.5C12.4263 0.5 14.6511 1.3643 16.3829 2.80219Z"
-                                            fill="#F14336" />
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_54_4200">
-                                            <rect width="20" height="20" fill="white"
-                                                transform="translate(0 0.5)" />
-                                        </clipPath>
-                                    </defs>
-                                </svg>
-                                <span>Sign in with google</span>
-                            </a>
-                            <a href="javascript:void(0);"
-                                class="btn gap-2 btn-thin btn-lg btn-light w-100 rounded-xl">
-                                <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g clip-path="url(#clip0_54_4189)">
-                                        <path
-                                            d="M13.8488 0.5C13.8954 0.5 13.9419 0.5 13.9911 0.5C14.1053 1.91044 13.5669 2.96432 12.9126 3.72751C12.2706 4.48542 11.3915 5.2205 9.96967 5.10897C9.87482 3.71872 10.4141 2.74301 11.0675 1.98158C11.6734 1.27197 12.7844 0.640517 13.8488 0.5Z"
-                                            fill="black" />
-                                        <path
-                                            d="M18.1531 15.1805C18.1531 15.1945 18.1531 15.2068 18.1531 15.22C17.7535 16.4302 17.1835 17.4674 16.4879 18.4299C15.853 19.3038 15.0748 20.4797 13.6855 20.4797C12.4849 20.4797 11.6875 19.7078 10.4571 19.6867C9.15555 19.6656 8.4398 20.3322 7.24979 20.4999C7.11366 20.4999 6.97754 20.4999 6.84405 20.4999C5.9702 20.3735 5.26498 19.6814 4.75122 19.0579C3.23626 17.2153 2.06558 14.8353 1.84778 11.7896C1.84778 11.491 1.84778 11.1933 1.84778 10.8947C1.93999 8.71493 2.99914 6.94266 4.40695 6.08374C5.14993 5.62706 6.17132 5.23801 7.30863 5.4119C7.79605 5.48742 8.29401 5.65429 8.73049 5.8194C9.14414 5.97836 9.66142 6.26027 10.1515 6.24534C10.4834 6.23568 10.8137 6.06267 11.1483 5.94059C12.1284 5.58667 13.0892 5.18092 14.3556 5.3715C15.8776 5.60159 16.9578 6.27783 17.6252 7.32118C16.3377 8.14057 15.3199 9.37536 15.4938 11.484C15.6483 13.3994 16.7619 14.5201 18.1531 15.1805Z"
-                                            fill="black" />
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_54_4189">
-                                            <rect width="20" height="20" fill="white"
-                                                transform="translate(0 0.5)" />
-                                        </clipPath>
-                                    </defs>
-                                </svg>
-                                <span>Sign in with apple</span>
-                            </a>
-                            <div class="text-center mt-3">Not a member? <a href="sign-up.html"
-                                    class="text-underline font-w600">Create an account</span></a>
                         </form>
                     </div>
                 </div>

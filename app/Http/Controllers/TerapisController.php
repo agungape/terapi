@@ -26,10 +26,6 @@ class TerapisController extends Controller
     public function index()
     {
         $terapis = Terapis::orderBy('nib')->paginate(5);
-        foreach ($terapis as $t) {
-            $tanggal_lahir = Carbon::parse($t->tanggal_lahir);
-            $t->usia = $tanggal_lahir->diffInYears(Carbon::now());
-        }
         return view('terapis.index', ['terapis' => $terapis]);
     }
 

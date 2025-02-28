@@ -10,111 +10,54 @@
     </a>
     <ul class="nav navbar-nav">
         <li>
-            <a class="nav-link active" href="index.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-home"></i>
+            <div class="mode">
+                <span class="dz-icon me-2">
+                    <i class="icon feather icon-moon"></i>
                 </span>
-                <span>Home</span>
-            </a>
+                <span>Dark Mode</span>
+                <div class="custom-switch">
+                    <input type="checkbox" class="switch-input theme-btn" id="toggle-dark-menu">
+                    <label class="custom-switch-label" for="toggle-dark-menu"></label>
+                </div>
+            </div>
         </li>
         <li>
-            <a class="nav-link" href="products.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-shopping-bag"></i>
-                </span>
-                <span>Products</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="components.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-apps-add"></i>
-                </span>
-                <span>Components</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="pages.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-diamond"></i>
-                </span>
-                <span>Pages</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="products.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-star"></i>
-                </span>
-                <span>Featured</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="wishlist.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-heart"></i>
-                </span>
-                <span>Wishlist</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="my-order.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-receipt"></i>
-                </span>
-                <span>Orders</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="chat-list.html">
-                <span class="dz-icon">
-                    <i class="feather icon-message-circle"></i>
-                </span>
-                <span>Chat List</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="cart.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-shopping-cart"></i>
-                </span>
-                <span>My Cart</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="profile.html">
-                <span class="dz-icon">
-                    <i class="fi fi-rr-user"></i>
-                </span>
-                <span>Profile</span>
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" href="welcome.html">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                 <span class="dz-icon">
                     <i class="feather icon-log-out"></i>
                 </span>
                 <span>Logout</span>
+
             </a>
         </li>
-    </ul>
-    <div class="sidebar-bottom">
-        <ul class="app-setting">
-            <li>
-                <div class="mode">
-                    <span class="dz-icon me-2">
-                        <i class="icon feather icon-moon"></i>
-                    </span>
-                    <span>Dark Mode</span>
-                    <div class="custom-switch">
-                        <input type="checkbox" class="switch-input theme-btn" id="toggle-dark-menu">
-                        <label class="custom-switch-label" for="toggle-dark-menu"></label>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+        <!-- Modal Konfirmasi Logout -->
+        <div class="modal fade" id="logoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="logoutModalLabel">Konfirmasi Logout</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah Anda yakin ingin keluar?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <a href="#" class="btn btn-sm btn-danger" id="confirm-logout">Logout</a>
                     </div>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
+
+
+    </ul>
+    <div class="sidebar-bottom">
         <div class="app-info">
-            <h6 class="name font-w400"><b>Pixio</b> Fashion Store</h6>
+            <h6 class="name font-w400"><b>Bright Star Of Child</b> </h6>
             <span class="ver-info">App Version 1.0</span>
         </div>
     </div>

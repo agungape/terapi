@@ -16,6 +16,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTerapisController;
@@ -80,6 +81,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::resource('/jadwal', JadwalController::class);
     Route::resource('/menu', JadwalController::class);
     Route::resource('/career', CareerController::class);
+    Route::resource('/tarif', TarifController::class);
+    Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
+    Route::delete('/tarif/hapus-gambar/{id}', [TarifController::class, 'hapusGambar'])->name('tarif.hapusGambar');
     Route::get('/observasi', [ObservasiController::class, 'index'])->name('observasi.index');
     Route::get('rekap-kas', [KeuanganController::class, 'rekap'])->name('keuangan.rekap');
     Route::get('pemasukkan/json', [KeuanganController::class, 'pemasukkan_json'])->name('pemasukkan.json');
@@ -121,4 +125,10 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
 Route::group(['middleware' => ['role:anak']], function () {
 
     Route::get('/app', [App\Http\Controllers\MobileController::class, 'app'])->name('app');
+    Route::get('/app/profile', [MobileController::class, 'profile'])->name('mobile.profile');
+    Route::get('/app/kunjungan', [MobileController::class, 'kunjungan'])->name('mobile.kunjungan');
+    Route::get('/app/kunjungan/{id}', [MobileController::class, 'kunjungan_detail'])->name('kunjunganmobile.detail');
+    Route::get('/app/paket/{id}', [MobileController::class, 'tarif_detail'])->name('tarifmobile.detail');
+    Route::get('/app/payment', [MobileController::class, 'payment'])->name('mobile.payment');
+    Route::get('/invoice/{id}/download', [MobileController::class, 'download_invoice'])->name('invoice.download');
 });

@@ -57,12 +57,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;800;900&amp;family=Roboto:wght@500;700&amp;display=swap"
         rel="stylesheet">
-
+    @yield('style')
 </head>
 
 <body>
     <div class="page-wrapper">
-
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
@@ -74,36 +73,6 @@
             </div>
         </div>
         <!-- Preloader end-->
-
-        <!-- Header -->
-        <header class="header header-fixed">
-            <div class="header-content">
-                <div class="left-content">
-                    <a href="javascript:void(0);" class="menu-toggler bg-white pe-2 rounded-xl">
-                        <div class="media">
-                            <div class="media-35 m-r10">
-
-                                <img class="rounded-xl"
-                                    src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/1.png') }}"
-                                    alt="">
-                            </div>
-                            <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
-                        </div>
-                    </a>
-                </div>
-                <div class="mid-content"></div>
-                <div class="right-content d-flex align-items-center gap-3">
-                    <a href="notification.html" class="notification-badge font-20">
-                        <i class="icon feather icon-bell"></i>
-                        <span class="badge badge-danger">14</span>
-                    </a>
-                    <a href="search.html" class="icon font-20">
-                        <i class="icon feather icon-search"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
-        <!-- Header -->
 
         <!-- Sidebar -->
         <div class="dark-overlay"></div>
@@ -118,36 +87,19 @@
         <!-- Menubar -->
         @include('mobile.menubar')
         <!-- Menubar -->
-
-        <!-- PWA Offcanvas -->
-        <div class="offcanvas offcanvas-bottom pwa-offcanvas">
-            <div class="container">
-                <div class="offcanvas-body">
-                    <img class="logo dark" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"
-                        alt="">
-                    <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"
-                        alt="">
-                    <h5 class="title">Bright Star of Child </h5>
-                    <p class="pwa-text">Instal Aplikasi ke layar beranda Anda untuk akses mudah</p>
-                    <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">Install
-                        Aplikasi</button>
-                    <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">Install
-                        Nanti</button>
-                </div>
-            </div>
-        </div>
-        <div class="offcanvas-backdrop pwa-backdrop"></div>
-        <!-- PWA Offcanvas End -->
+        @yield('canvas')
 
     </div>
     <!--**********************************
     Scripts
 ***********************************-->
+
     <script>
         document.getElementById('confirm-logout').addEventListener('click', function() {
             document.getElementById('logout-form').submit();
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/jquery.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/vendor/swiper/swiper-bundle.min.js"></script>
@@ -158,7 +110,7 @@
     <script src="{{ asset('assets') }}/mobile/pixio/js/settings.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
     <script src="{{ asset('assets') }}/mobile/index.js"></script>
-
+    @yield('scripts')
 </body>
 
 </html>

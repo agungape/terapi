@@ -18925,10 +18925,45 @@ select {
 .media-303 {
     width: 100%;
     max-width: 264px;
-    height: auto;
+    max-height: 302px;
     object-fit: cover;
     display: block;
     object-position: center;
+}
+@media (max-width: 600px) {
+    .media-303 {
+        max-height: 200px; /* Kurangi tinggi maksimum agar lebih proporsional */
+    }
+}
+
+/* Untuk layar sangat kecil (contoh: iPhone SE) */
+@media (max-width: 400px) {
+    .media-303 {
+        max-height: 170px; /* Sesuaikan tinggi untuk layar yang lebih kecil */
+    }
+}
+
+.media-304 {
+    width: 100%;
+    height: 100%;
+    max-height: 201px;
+    object-fit: cover;
+    display: block;
+    object-position: center;
+}
+
+/* Untuk layar kecil (handphone) dengan lebar maksimum 600px */
+@media (max-width: 600px) {
+    .media-304 {
+        max-height: 150px; /* Kurangi tinggi maksimum agar lebih proporsional */
+    }
+}
+
+/* Untuk layar sangat kecil (contoh: iPhone SE) */
+@media (max-width: 400px) {
+    .media-304 {
+        max-height: 120px; /* Sesuaikan tinggi untuk layar yang lebih kecil */
+    }
 }
 
 
@@ -21317,6 +21352,12 @@ label input {
 .dz-card .dz-quantity .quantity {
     font-weight: 700;
 }
+
+.dz-card .dz-quantity {
+    font-size: 14px;
+}
+
+
 .dz-card .dz-icon,
 .dz-card .item-bookmark {
     right: 8px;
@@ -21499,7 +21540,7 @@ label input {
     align-items: center;
     border-bottom: 1px solid var(--border-color);
     padding: 15px;
-    margin: 0 -15px;
+    /* margin: 0 -15px; */
 }
 .dz-card.list.list-style-3 .dz-media {
     margin-right: 12px;
@@ -21855,9 +21896,33 @@ label input {
     margin: 0 -15px;
     padding: 0 15px;
 }
+
+.icon-large {
+    font-size: 32px; /* Perbesar ikon */
+}
+
+.text-small {
+    font-size: 10px !important;
+    text-align: center;
+    display: block;
+}
 .dz-box .dz-product-swiper {
     margin: 0 -15px;
     padding: 0 15px;
+}
+
+.offer-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.offer-details p {
+    display: flex;
+}
+
+.offer-details span:first-child {
+    min-width: 60px; /* Sesuaikan dengan panjang teks terbesar */
+    text-align: left;
 }
 
 .offer-banner {
@@ -22961,6 +23026,42 @@ label input {
     gap: 5px;
     width: 100%;
 }
+
+.dz-content span {
+    display: block; /* Pastikan elemen span mengikuti aturan blok */
+    font-size: 16px; /* Ukuran font default */
+    font-weight: bold; /* Agar lebih terlihat */
+    text-align: center; /* Rata tengah */
+    max-width: 100%; /* Batasi lebar agar tidak melebar */
+    white-space: nowrap; /* Cegah teks menjadi banyak baris */
+    overflow: hidden; /* Sembunyikan teks yang berlebih */
+    text-overflow: ellipsis; /* Tambahkan titik-titik jika teks terlalu panjang */
+}
+
+/* Jika layar lebih kecil, perkecil ukuran font */
+@media (max-width: 600px) {
+    .dz-content span {
+        font-size: 14px;
+    }
+}
+
+.dz-content button {
+    font-size: 16px; /* Ukuran font default */
+    padding: 10px 15px; /* Padding agar tombol lebih proporsional */
+    max-width: 300px; /* Batasi lebar tombol */
+    margin: 0 auto; /* Pusatkan tombol */
+    display: block;
+}
+
+/* Sesuaikan ukuran tombol untuk tampilan mobile */
+@media (max-width: 600px) {
+    .dz-content button {
+        font-size: 14px; /* Kurangi ukuran font */
+        padding: 8px 12px; /* Kurangi padding */
+        max-width: 80%; /* Batasi lebar tombol di layar kecil */
+    }
+}
+
 .dz-cart-list .title {
     text-transform: capitalize;
     font-weight: 500;

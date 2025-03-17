@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Pemasukkan;
 use App\Models\Pengeluaran;
 use App\Models\SaldoKas;
+use App\Models\Tarif;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -133,13 +134,13 @@ class KeuanganController extends Controller
         $kategori = Kategori::where('nama', 'Pembayaran Anak')->first();
         $kategoris = Kategori::where('nama', '!=', 'Pembayaran Anak')->where('jenis', '!=', 'Pengeluaran')->get();
         $pemasukkans = Pemasukkan::latest()->paginate(10);
-
+        $tarif = Tarif::latest()->get();
         $dataTerakhir = Pemasukkan::latest('updated_at')->first();
         $totalPemasukan = Pemasukkan::getTotalPemasukan();
 
         $formattedPemasukan = 'Rp ' . rtrim(rtrim(number_format($totalPemasukan, 2, ',', '.'), '0'), ',');
 
-        return view('keuangan.pemasukkan', compact('pemasukkans', 'kategori', 'kategoris', 'anaks', 'saldoKas', 'dataTerakhir', 'formattedPemasukan'));
+        return view('keuangan.pemasukkan', compact('pemasukkans', 'kategori', 'kategoris', 'anaks', 'saldoKas', 'dataTerakhir', 'formattedPemasukan', 'tarif'));
     }
 
     public function pemasukkan_store(Request $request)
@@ -148,6 +149,7 @@ class KeuanganController extends Controller
             'tanggal' => 'required|date',
             'deskripsi' => 'required',
             'kategori_id' => 'required|exists:App\Models\Kategori,id',
+            'tarif_id' => 'nullable|exists:App\Models\Tarif,id',
             'jumlah' => 'required',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -188,6 +190,7 @@ class KeuanganController extends Controller
 
 
         $data['tanggal'] = $request->tanggal;
+        $data['tarif_id'] = $request->tarif_id;
         $data['deskripsi'] = $request->deskripsi;
         $data['kategori_id'] = $request->kategori_id;
         $data['jumlah'] = $jumlahPembayaranbaru;

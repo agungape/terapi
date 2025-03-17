@@ -123,7 +123,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Tanggal</th>
-                                                            <th colspan="2"> {{ $r->created_at->format('Y-m-d') }} </th>
+                                                            <th colspan="2"> {{ $r->created_at }} </th>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-center"> Program </th>

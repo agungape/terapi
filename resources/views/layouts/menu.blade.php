@@ -69,6 +69,15 @@
                             </li>
                         @endcan
 
+                        @can('view tarif')
+                            <li class="nav-item">
+                                <a href="/tarif" class="nav-link @yield('menuTarif')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Peket Terapi</p>
+                                </a>
+                            </li>
+                        @endcan
+
                         @can('view pelatihan')
                             <li class="nav-item">
                                 <a href="/pelatihan" class="nav-link @yield('menuPelatihan')">

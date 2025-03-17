@@ -11,7 +11,7 @@ class Pemasukkan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['jumlah', 'deskripsi', 'tanggal', 'saldo_akhir', 'gambar', 'kategori_id'];
+    protected $fillable = ['jumlah', 'tarif_id', 'deskripsi', 'tanggal', 'saldo_akhir', 'gambar', 'kategori_id'];
 
     protected function tanggal(): Attribute
     {
@@ -42,5 +42,10 @@ class Pemasukkan extends Model
     public function kategori(): BelongsTo
     {
         return $this->belongsTo('App\Models\Kategori');
+    }
+
+    public function Tarif(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\Tarif');
     }
 }

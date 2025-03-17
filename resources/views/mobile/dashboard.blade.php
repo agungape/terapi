@@ -1,24 +1,32 @@
 @extends('mobile.master')
 @section('mobileDashboard', 'active')
 @section('content')
+    <header class="header header-fixed">
+        <div class="header-content">
+            <div class="left-content">
+                <a href="javascript:void(0);" class="menu-toggler bg-white pe-2 rounded-xl">
+                    <div class="media">
+                        <div class="media-35 m-r10">
+
+                            <img class="rounded-xl"
+                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/1.png') }}"
+                                alt="">
+                        </div>
+                        <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="mid-content"></div>
+        </div>
+    </header>
     <main class="page-content space-top p-b40">
         <div class="container">
-
             <!-- profile anak -->
             <div class="dz-banner">
                 <div class="swiper banner-swiper">
                     <div class="swiper-wrapper">
-
                         <div class="swiper-slide">
                             <div class="inner-banner">
-                                {{-- <div class="vector-icon">
-                                    <svg width="32" height="36" viewBox="0 0 32 36" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M16 0L17.638 15.1629L31.5885 9L19.276 18L31.5885 27L17.638 20.8371L16 36L14.362 20.8371L0.411543 27L12.724 18L0.411543 9L14.362 15.1629L16 0Z"
-                                            fill="var(--primary)" />
-                                    </svg>
-                                </div> --}}
                                 <div class="left-content">
                                     <h4 class="title font-w500 text-capitalize mb-3" data-swiper-parallax="-100">
                                         {{ $anak->nama }}</h4>
@@ -54,7 +62,6 @@
             <div class="dz-category style-1">
                 <div class="title-bar align-items-start">
                     <h5 class="title mb-0">Riwayat Terapi </h5>
-                    <a href="products.html">See All</a>
                 </div>
                 <div class="swiper dz-featured-swiper mb-4">
                     <div class="swiper-wrapper">
@@ -71,7 +78,8 @@
                                         @endif
                                     </div>
                                     <div class="dz-content">
-                                        <h6 class="title"><a href="#">{{ $k->created_at }}</a>
+                                        <h6 class="title"><a
+                                                href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}">{{ $k->created_at }}</a>
                                         </h6>
                                         <ul class="dz-meta">
                                             <li class="dz-price">Pertemuan {{ $k->pertemuan }}</li>
@@ -99,50 +107,31 @@
                 </div>
 
                 <div class="title-bar align-items-start">
-                    <h5 class="title mb-0">Featured offer for you</h5>
-                    <a href="products.html">See All</a>
+                    <h5 class="title mb-0">Paket Terapi Anak</h5>
                 </div>
                 <div class="swiper dz-featured-swiper2">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="dz-card style-5">
-                                <div class="dz-media">
-                                    <img src="{{ asset('assets') }}/mobile/pixio/images/banner/offer/banner2.png"
-                                        alt="">
-                                </div>
-                                <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Paket A</h6>
-                                    <span class="dz-status">Terapi Perilaku</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="dz-card style-5">
-                                <div class="dz-media">
-                                    <img src="{{ asset('assets') }}/mobile/pixio/images/banner/offer/banner1.png"
-                                        alt="">
-                                </div>
-                                <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Paket B</h6>
-                                    <span class="dz-status">Fisioterapi</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
+                        @foreach ($tarif as $t)
+                            <div class="swiper-slide">
+                                <div class="dz-card style-5">
+                                    <div class="dz-media media-304">
+                                        <img src="  {{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}"
+                                            alt="" style="object-fit: cover;">
+                                    </div>
+                                    <div class="dz-content">
+                                        <span style=" padding-bottom: 10px;">{{ $t->nama }}</span>
+                                        <button type="button" class="btn btn-info rounded-xl w-100" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModalLong" data-id="{{ $t->id }}"
+                                            data-name="{{ $t->nama }}" data-description="{{ $t->deskripsi }}"
+                                            data-tarif="{{ $t->tarif }}"
+                                            data-image="{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}">
+                                            Selengkapnya
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="dz-card style-5">
-                                <div class="dz-media">
-                                    <img src="{{ asset('assets') }}/mobile/pixio/images/banner/offer/banner2.png"
-                                        alt="">
-                                </div>
-                                <div class="dz-content">
-                                    <h6 class="font-w500 font-14 mb-1">Paket C</h6>
-                                    <span class="dz-status">Perilaku & Fisioterapi</span>
-                                    <a href="javascript:void(0);" class="btn btn-primary rounded-xl w-100">Selengkapnya</a>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+
                     </div>
                 </div>
             </div>
@@ -151,8 +140,7 @@
             {{-- terapis view --}}
             <div class="dz-box style-2">
                 <div class="title-bar">
-                    <h5 class="title mb-0">Add To Your Wishlist</h5>
-                    <a href="products.html">See All</a>
+                    <h5 class="title mb-0">Terapis</h5>
                 </div>
                 <div class="swiper dz-product-swiper">
                     <div class="swiper-wrapper">
@@ -178,5 +166,107 @@
                 </div>
             </div>
             {{-- terapis view --}}
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalLong">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detail Paket Terapi</h5>
+                            <button class="btn-close" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container p-0">
+                                <div class="dz-product-preview">
+                                    <div class="swiper product-detail-swiper">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                                                <div class="dz-media">
+                                                    <img src="" alt="" class="product-image">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dz-product-detail">
+                                    <div class="detail-content">
+                                        <h4 class="title product-name text-center">
+                                        </h4>
+                                    </div>
+                                    <div class="item-wrapper">
+                                        <div class="dz-meta-items">
+                                            <div class="dz-price m-r60">
+                                                <h6 class="dz-name">Tarif:</h6>
+                                                <span class="product-tarif badge badge-sm badge-success"></span>
+                                            </div>
+                                            <div class="dz-price m-r60">
+                                                <h6 class="dz-name">Pertemuan:</h6>
+                                                <span class="badge badge-sm badge-warning">20x</span>
+                                            </div>
+                                        </div>
+                                        <div class="description">
+                                            <h6 class="title font-w600">Deskripsi:</h6>
+                                            <p class="product-description" style="text-align: justify"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-danger light"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
+
+
+@endsection
+{{-- @section('canvas')
+    <!-- PWA Offcanvas -->
+    <div class="offcanvas offcanvas-bottom pwa-offcanvas">
+        <div class="container">
+            <div class="offcanvas-body">
+                <img class="logo dark" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
+                <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
+                <h5 class="title">Bright Star of Child </h5>
+                <p class="pwa-text">Instal Aplikasi ke layar beranda Anda untuk akses mudah</p>
+                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">Install
+                    Aplikasi</button>
+                <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">Install
+                    Nanti</button>
+            </div>
+        </div>
+    </div>
+    <div class="offcanvas-backdrop pwa-backdrop"></div>
+    <!-- PWA Offcanvas End -->
+
+@endsection --}}
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            // Ketika tombol "Selengkapnya" diklik
+            $('.btn-info').on('click', function() {
+                // Ambil data dari atribut data-* pada tombol
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var description = $(this).data('description');
+                var tarif = $(this).data('tarif');
+                var image = $(this).data('image');
+
+                // Isi data ke dalam modal
+                $('.product-name').text(name);
+                $('.product-description').text(description);
+                $('.product-tarif').text('Rp ' + tarif);
+                $('.product-image').attr('src', image);
+
+                // Tampilkan modal
+                $('#exampleModalLong').modal('show');
+            });
+        });
+    </script>
 @endsection

@@ -58,12 +58,18 @@
                                             <tr>
                                                 <td>{{ $kun->anak->nib }}</td>
                                                 <td>{{ $kun->anak->nama }}</td>
-                                                <td>{{ $kun->terapis->nama }}</td>
                                                 <td>
-                                                    @if ($kun->pertemuan == 'null')
-                                                        -
+                                                    @if ($kun->status == 'hadir')
+                                                        {{ $kun->terapis->nama }}
                                                     @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($kun->status == 'hadir')
                                                         Pertemuan {{ $kun->pertemuan }}
+                                                    @else
+                                                        -
                                                     @endif
                                                 </td>
                                                 <td>{{ $kun->created_at }}</td>
@@ -73,7 +79,7 @@
                                                     @elseif ($kun->status == 'izin')
                                                         <label class="badge badge-warning">{{ $kun->status }}</label>
                                                     @elseif ($kun->status == 'sakit')
-                                                        <label class="badge badge-danger">{{ $kun->status }}</label>
+                                                        <label class="badge badge-danger">Absen</label>
                                                     @endif
                                                 </td>
                                                 <td>

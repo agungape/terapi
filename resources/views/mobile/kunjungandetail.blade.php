@@ -14,7 +14,7 @@
                     <h5 class="title">E-Book Terapi</h5>
                 </div>
                 <div class="right-content">
-                    <a href="index.html" class=""><i class="feather icon-home font-20"></i></a>
+                    <a href="{{ route('app') }}" class=""><i class="feather icon-home font-20"></i></a>
                 </div>
             </div>
         </header>

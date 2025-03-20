@@ -39,29 +39,37 @@
                                     <h6 class="title"><a
                                             href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}">{{ $k->created_at }}</a>
                                     </h6>
-                                    <ul class="dz-meta">
-                                        <li class="dz-price">Pertemuan {{ $k->pertemuan }}</li>
-                                        <li class="dz-review">
-                                            @if ($k->status == 'hadir')
-                                                <i class="feather icon-star-on"></i><span>({{ $k->status }})</span>
-                                            @else
-                                                <span>({{ $k->status }})</span>
-                                            @endif
-                                        </li>
-                                    </ul>
                                     @if ($k->status == 'hadir')
+                                        <ul class="dz-meta">
+                                            <li class="dz-price">Pertemuan {{ $k->pertemuan }}</li>
+                                            <li class="dz-review">
+                                                <i class="feather icon-star-on"></i><span>({{ $k->status }})</span>
+                                            </li>
+                                        </ul>
                                         <div class="dz-quantity">Terapis : {{ $k->terapis->nama }}
                                         </div>
                                     @else
+                                        <ul class="dz-meta">
+                                            <li class="dz-price">Pertemuan -</li>
+                                            <li class="dz-review">
+                                                @if ($k->status == 'sakit')
+                                                    <span>(absen)</span>
+                                                @else
+                                                    <span>({{ $k->status }})</span>
+                                                @endif
+                                            </li>
+                                        </ul>
                                         <div class="dz-quantity">Terapis : -
                                         </div>
                                     @endif
                                 </div>
                                 <div class="dz-quantity">
-                                    <a href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}"
-                                        class="btn btn-primary btn-sm rounded-xl btn-xs font-13 mt-3">
-                                        Lihat
-                                    </a>
+                                    @if ($k->status == 'hadir')
+                                        <a href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}"
+                                            class="btn btn-primary btn-sm rounded-xl btn-xs font-13 mt-3">
+                                            Lihat
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         @empty

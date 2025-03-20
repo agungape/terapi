@@ -83,7 +83,7 @@
                 <span class="icon">✅</span>
                 <div class="card-text">
                     <label>Total Kehadiran</label>
-                    <p class="number">12</p>
+                    <p class="number">{{ $hadir }}</p>
                 </div>
             </div>
 
@@ -91,7 +91,7 @@
                 <span class="icon">📄</span>
                 <div class="card-text">
                     <label>Total Izin</label>
-                    <p class="number">3</p>
+                    <p class="number">{{ $izin }}</p>
                 </div>
             </div>
 
@@ -99,7 +99,7 @@
                 <span class="icon">❌</span>
                 <div class="card-text">
                     <label>Total Absen</label>
-                    <p class="number">2</p>
+                    <p class="number">{{ $absen }}</p>
                 </div>
             </div>
 
@@ -107,7 +107,7 @@
                 <span class="icon">🎓</span>
                 <div class="card-text">
                     <label>Sisa Pertemuan Kelas</label>
-                    <p class="number">5</p>
+                    <p class="number">{{ $sisaPertemuan }}</p>
                 </div>
             </div>
         </div>

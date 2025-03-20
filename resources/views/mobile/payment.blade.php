@@ -198,7 +198,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-center">data program terapi tidak ada</p>
+                    <p class="text-center">data belum ada</p>
                 @endforelse
             </div>
         </div>

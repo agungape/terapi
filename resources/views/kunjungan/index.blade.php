@@ -134,7 +134,7 @@
                                         <div class="col-sm-3">
                                             <div class="icheck-primary">
                                                 <input type="radio" id="radioPrimary3" name="status" value="sakit">
-                                                <label for="radioPrimary3"> Sakit
+                                                <label for="radioPrimary3"> Absen
                                                 </label>
                                             </div>
                                         </div>

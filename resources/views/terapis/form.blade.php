@@ -90,13 +90,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                @isset($terapi)
-                                    <input type="hidden" name="url_asal"
-                                        value="{{ old('url_asal') ?? url()->previous() . '#row-' . $terapi->id }}">
-                                @else
-                                    <input type="hidden" name="url_asal"
-                                        value="{{ old('url_asal') ?? url()->previous() }}">
-                                @endisset
+
                                 <div class="form-group row">
                                     <div class="offset-sm-2 col-sm-10">
                                         <button type="submit"

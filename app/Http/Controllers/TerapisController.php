@@ -45,7 +45,7 @@ class TerapisController extends Controller
      */
     public function store(Request $request)
     {
-
+        dd($request);
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:5|unique:terapis,nib',
             'nama' => 'required',

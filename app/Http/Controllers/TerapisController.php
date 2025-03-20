@@ -45,7 +45,6 @@ class TerapisController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:5|unique:terapis,nib',
             'nama' => 'required',
@@ -53,7 +52,6 @@ class TerapisController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
         ]);
-        dd($validateData);
         $terapis = Terapis::create($validateData);
         Alert::success('Berhasil', "Data Terapis $request->nama berhasil dibuat");
         return redirect("/terapis#card-{$terapis->id}");

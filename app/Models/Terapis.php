@@ -24,7 +24,7 @@ class Terapis extends Model
 
     public function getUsiaAttribute()
     {
-        return Carbon::parse($this->tanggal_lahir)->age; // Hitung umur berdasarkan tanggal lahir
+        return Carbon::parse($this->tanggal_lahir)->age;
     }
 
     public function pelatihans(): BelongsToMany

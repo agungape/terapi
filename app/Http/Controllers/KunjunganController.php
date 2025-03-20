@@ -51,29 +51,29 @@ class KunjunganController extends Controller
 
 
         // fungsi validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x
-        $today = Carbon::today();
-        $cek = Kunjungan::where('anak_id', $request->anak_id)
-            ->whereDate('created_at', $today)
-            ->first();
-        if ($cek) {
-            // Jika sudah ada pendaftaran, return error
-            Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
-            return back();
-        }
+        // $today = Carbon::today();
+        // $cek = Kunjungan::where('anak_id', $request->anak_id)
+        //     ->whereDate('created_at', $today)
+        //     ->first();
+        // if ($cek) {
+        //     // Jika sudah ada pendaftaran, return error
+        //     Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
+        //     return back();
+        // }
+
         // Cek apakah anak sudah pernah kunjungan sebelumnya
         $kunjungan_data = Kunjungan::where('anak_id', $request->anak_id)
             ->orderBy('created_at', 'desc')
             ->first();
 
-        // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir
+        // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir dan jika pertemuan = 20 maka kemabli ke pertemuan 1
         if ($kunjungan_data) {
-            $nextPertemuan = $kunjungan_data->pertemuan + 1;
+            $nextPertemuan = ($kunjungan_data->pertemuan == 20) ? 1 : $kunjungan_data->pertemuan + 1;
+            $nullPertemuan = $kunjungan_data->pertemuan;
         } else {
-            // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 0
+            // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 1
             $nextPertemuan = 1;
         }
-
-        $nullPertemuan = 'null';
 
         $data['anak_id'] = $request->anak_id;
         $data['terapis_id'] = $request->terapis_id;

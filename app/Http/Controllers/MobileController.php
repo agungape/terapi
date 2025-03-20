@@ -36,7 +36,22 @@ class MobileController extends Controller
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
         $terapis = Terapis::get();
-        $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+
+        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($pertemuanAwal) {
+            // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)
+                ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
+                ->orderBy('pertemuan', 'asc')
+                ->get();
+        } else {
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+        }
+
+
         $tarif = Tarif::latest()->get();
         return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan', 'tarif'));
     }
@@ -55,7 +70,20 @@ class MobileController extends Controller
         $user = auth()->user();
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
-        $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+
+        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($pertemuanAwal) {
+            // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)
+                ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
+                ->orderBy('pertemuan', 'asc')
+                ->get();
+        } else {
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+        }
         return view('mobile.kunjungan', compact('anak', 'kunjungan'));
     }
 

@@ -183,7 +183,12 @@
                             </a>
                         </div>
                         <div class="offer-content">
-                            <h6>{{ $p->tarif->nama }}</h6>
+                            @if (!empty($p->tarif->nama))
+                                <h6>{{ $p->tarif->nama }}</h6>
+                            @else
+                                <h6>Terapi Perilaku</h6>
+                            @endif
+
                             <div class="offer-details">
                                 <p><span>Jumlah</span>: <span>
                                         {{ $p->jumlah }}</span></p>

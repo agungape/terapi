@@ -34,9 +34,28 @@ class TerapisController extends Controller
      */
     public function create()
     {
+        $lastTerapis = Terapis::orderBy('nib', 'desc')->first();
+
+        // Jika tidak ada terapis, mulai dengan BSC01
+        if ($lastTerapis) {
+            // Mengambil angka terakhir dari nib (kode terapis)
+            preg_match('/\d+/', $lastTerapis->nib, $matches);
+            $lastNumber = (int)$matches[0];
+
+            // Menambahkan 1 untuk kode baru
+            $newNumber = $lastNumber + 1;
+
+            // Format kode baru dengan menambahkan 0 di depan agar totalnya 5 karakter
+            $newKode = 'BSC' . str_pad($newNumber, 2, '0', STR_PAD_LEFT);  // Menggunakan 2 digit angka setelah BSC
+        } else {
+            // Jika belum ada terapis, mulai dengan BSC01
+            $newKode = 'BSC01';
+        }
+
+        // Membuat objek baru untuk terapis
         $terapi = new Terapis();
-        // buat kode barang BR005
-        $terapi->nib = 'BSC' . str_pad(Terapis::count() + 1, 2, '0', STR_PAD_LEFT);
+        $terapi->nib = $newKode;
+
         return view('terapis.create', compact('terapi'));
     }
 

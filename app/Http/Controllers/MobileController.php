@@ -117,20 +117,46 @@ class MobileController extends Controller
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
 
-        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        // $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+        //     ->orderBy('created_at', 'desc')
+        //     ->first();
 
-        if ($pertemuanAwal) {
-            // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
-            $kunjungan = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
-                ->orderBy('pertemuan', 'asc')
-                ->get();
-        } else {
-            $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+        // if ($pertemuanAwal) {
+        //     // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
+        //     $kunjungan = Kunjungan::where('anak_id', $anak->id)
+        //         ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
+        //         ->orderBy('pertemuan', 'asc')
+        //         ->get();
+        // } else {
+        //     $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+        // }
+        // return view('mobile.kunjungan', compact('anak', 'kunjungan'));
+        $kunjungan = Kunjungan::where('anak_id', $anak->id)
+            ->orderBy('created_at', 'asc') // Pastikan urutan sesuai waktu pembuatan
+            ->get();
+
+        $sesi = [];
+        $sesiIndex = 1;
+        $sesiTerakhir = null;
+        $lastCreatedAt = null;
+
+        foreach ($kunjungan as $index => $item) {
+            $sesiKey = $sesiIndex;
+            $sesi[$sesiKey][] = $item;
+
+            // Simpan sesi terakhir berdasarkan created_at terbaru
+            if (is_null($lastCreatedAt) || $item->tanggal > $lastCreatedAt) {
+                $sesiTerakhir = $sesiKey;
+                $lastCreatedAt = $item->tanggal;
+            }
+
+            if (($index + 1) % 20 == 0) {
+                $sesiIndex++;
+            }
         }
-        return view('mobile.kunjungan', compact('anak', 'kunjungan'));
+
+        // Kirim data kunjungan, sesi, dan sesi terakhir ke view
+        return view('mobile.kunjungan', compact('kunjungan', 'sesi', 'anak', 'sesiTerakhir'));
     }
 
     public function kunjungan_detail($id)

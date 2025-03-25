@@ -75,7 +75,7 @@
                         @if ($loop->last)
                             <div class="item-wrapper">
                                 <div class="description">
-                                    <h6 class="title font-w600">Deskripsi:</h6>
+                                    <h6 class="title font-w600">Keterangan:</h6>
                                     <div class="dz-offer-coupon">
                                         <div class="offer-content">
                                             <p>{{ $p->keterangan }}</p>

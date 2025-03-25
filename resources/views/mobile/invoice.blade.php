@@ -80,8 +80,6 @@
                 <td>: <span class="badge badge-sm badge-success">Diterima</span></td>
             </tr>
         </table>
-
-
         <table class="table">
             <thead>
                 <tr>
@@ -90,9 +88,12 @@
                 </tr>
             </thead>
             <tbody>
-
                 <tr>
-                    <td>{{ $invoice->tarif->nama }}</td>
+                    @if (!empty($p->tarif->nama))
+                        <td>{{ $invoice->tarif->nama }}</td>
+                    @else
+                        <td>Terapi Perilaku</td>
+                    @endif
                     <td>{{ $invoice->jumlah }}</td>
                 </tr>
             </tbody>

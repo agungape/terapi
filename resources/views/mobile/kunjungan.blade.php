@@ -23,60 +23,73 @@
         <div class="container">
             <div class="default-tab style-2 mt-1">
                 <div class="tab-content">
-                    <div class="tab-pane fade active show" id="home" role="tabpanel">
-                        @forelse ($kunjungan as $k)
-                            <div class="dz-card list list-style-3">
-                                <div class="dz-media media-75">
-                                    @if ($k->status == 'hadir')
-                                        <img
-                                            src=" {{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}">
-                                    @else
-                                        <img src="{{ asset('assets') }}/mobile/pixio/images/product/product1/pic1.png"
-                                            alt="">
-                                    @endif
-                                </div>
-                                <div class="dz-content d-flex flex-column">
-                                    <h6 class="title"><a
-                                            href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}">{{ $k->created_at }}</a>
-                                    </h6>
-                                    @if ($k->status == 'hadir')
-                                        <ul class="dz-meta">
-                                            <li class="dz-price">Pertemuan {{ $k->pertemuan }}</li>
-                                            <li class="dz-review">
-                                                <i class="feather icon-star-on"></i><span>({{ $k->status }})</span>
-                                            </li>
-                                        </ul>
-                                        <div class="dz-quantity">Terapis : {{ $k->terapis->nama }}
+
+                    @foreach ($sesi as $sesiKey => $pertemuan)
+                        <div class="accordion dz-accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <div class="accordion-header acco-select" id="heading{{ $sesiKey }}">
+                                    <button class="accordion-button {{ $sesiTerakhir === $sesiKey ? '' : 'collapsed' }}"
+                                        type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ $sesiKey }}"
+                                        aria-expanded="{{ $sesiTerakhir === $sesiKey ? 'true' : 'false' }}"
+                                        aria-controls="collapse{{ $sesiKey }}">
+                                        <div class="dz-icon">
+                                            <i class="fi fi-rr-document"></i>
                                         </div>
-                                    @else
-                                        <ul class="dz-meta">
-                                            <li class="dz-price">Pertemuan -</li>
-                                            <li class="dz-review">
-                                                @if ($k->status == 'sakit')
-                                                    <span>(absen)</span>
-                                                @else
-                                                    <span>({{ $k->status }})</span>
-                                                @endif
-                                            </li>
-                                        </ul>
-                                        <div class="dz-quantity">Terapis : -
-                                        </div>
-                                    @endif
+                                        <h6 class="acco-title">Sesi {{ $sesiKey }}</h6>
+                                        <div class="checkmark"></div>
+                                    </button>
                                 </div>
-                                <div class="dz-quantity">
-                                    @if ($k->status == 'hadir')
-                                        <a href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}"
-                                            class="btn btn-primary btn-sm rounded-xl btn-xs font-13 mt-3">
-                                            Lihat
-                                        </a>
-                                    @endif
+                                <div id="collapse{{ $sesiKey }}"
+                                    class="accordion-collapse collapse {{ $sesiTerakhir === $sesiKey ? 'show' : '' }}"
+                                    aria-labelledby="heading{{ $sesiKey }}" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        @foreach ($pertemuan as $kunjungan)
+                                            <div class="dz-card list list-style-3">
+                                                <div class="dz-media media-75">
+                                                    <img
+                                                        src="{{ $kunjungan->anak->foto ? asset('storage/anak/' . $kunjungan->anak->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}">
+                                                </div>
+                                                <div class="dz-content d-flex flex-column">
+                                                    <h6 class="title">
+                                                        <a
+                                                            href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan->id]) }}">
+                                                            {{ $kunjungan->created_at }}
+                                                        </a>
+                                                    </h6>
+                                                    @if ($kunjungan->status == 'hadir')
+                                                        <ul class="dz-meta">
+                                                            <li class="dz-price">Pertemuan {{ $kunjungan->pertemuan }}</li>
+                                                            <li class="dz-review">
+                                                                <i class="feather icon-star-on"></i>
+                                                                <span>({{ $kunjungan->status == 'sakit' ? 'absen' : $kunjungan->status }})</span>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="dz-quantity">Terapis :
+                                                            {{ $kunjungan->terapis->nama ?? '-' }}</div>
+                                                        <div class="dz-quantity">
+                                                            <a href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan->id]) }}"
+                                                                class="btn btn-primary btn-sm rounded-xl btn-xs font-13 mt-3">
+                                                                Lihat
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <ul class="dz-meta">
+
+                                                            <li class="dz-review">
+                                                                <span>({{ $kunjungan->status == 'sakit' ? 'absen' : $kunjungan->status }})</span>
+                                                            </li>
+                                                        </ul>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
-                        @empty
-                        @endforelse
-                    </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        </div>
     </main>
 @endsection

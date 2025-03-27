@@ -28,7 +28,7 @@ class AnakController extends Controller
         $anak = Anak::orderBy('nib')->paginate(5);
 
         foreach ($anak as $a) {
-            $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'izin'])->count();
+            $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'sakit'])->count();
             // Hitung progres berdasarkan jumlah kunjungan
             $a->progresnilai = ($progres >= 20) ? 100 : ($progres * 5); // 5% untuk setiap kunjungan
         }

@@ -66,16 +66,16 @@
                                                             </li>
                                                         </ul>
                                                         <div class="dz-quantity">Terapis :
-                                                            {{ $kunjungan->terapis->nama ?? '-' }}</div>
+                                                            {{ $kunjungan->terapis->nama ?? '-' }}
+                                                        </div>
                                                         <div class="dz-quantity">
                                                             <a href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan->id]) }}"
-                                                                class="btn btn-primary btn-sm rounded-xl btn-xs font-13 mt-3">
-                                                                Lihat
+                                                                class="btn btn-primary rounded-xl btn-xs font-13 mt-3">
+                                                                <i class="fi fi-rr-eye"></i>
                                                             </a>
                                                         </div>
                                                     @else
                                                         <ul class="dz-meta">
-
                                                             <li class="dz-review">
                                                                 <span>({{ $kunjungan->status == 'sakit' ? 'absen' : $kunjungan->status }})</span>
                                                             </li>

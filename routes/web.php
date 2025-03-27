@@ -126,6 +126,7 @@ Route::group(['middleware' => ['role:anak']], function () {
 
     Route::get('/app', [App\Http\Controllers\MobileController::class, 'app'])->name('app');
     Route::get('/app/profile', [MobileController::class, 'profile'])->name('mobile.profile');
+    Route::get('/app/profile/edit', [MobileController::class, 'profile_edit'])->name('mobile.editprofile');
     Route::get('/app/kunjungan', [MobileController::class, 'kunjungan'])->name('mobile.kunjungan');
     Route::get('/app/kunjungan/{id}', [MobileController::class, 'kunjungan_detail'])->name('kunjunganmobile.detail');
     Route::get('/app/paket/{id}', [MobileController::class, 'tarif_detail'])->name('tarifmobile.detail');

@@ -68,6 +68,9 @@
                                                 <td>
                                                     @if ($kun->status == 'hadir')
                                                         Pertemuan {{ $kun->pertemuan }}
+                                                    @elseif ($kun->status == 'sakit')
+                                                        Pertemuan {{ $kun->pertemuan }} <span
+                                                            class="badge bg-danger">hangus</span>
                                                     @else
                                                         -
                                                     @endif

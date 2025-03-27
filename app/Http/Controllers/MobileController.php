@@ -63,33 +63,35 @@ class MobileController extends Controller
         $anak = Anak::where('nama', $namaUser)->first();
 
         $totalPertemuan = 20;
-        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 1)
             ->orderBy('created_at', 'desc')
             ->first();
 
         if ($pertemuanAwal) {
             // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
             $hadir = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id)
+                ->where('id', '>=', $pertemuanAwal->id)
                 ->where('status', 'hadir') // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->count();
             $izin = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id)
+                ->where('id', '>=', $pertemuanAwal->id)
                 ->where('status', 'izin') // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->count();
             $absen = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id)
+                ->where('id', '>=', $pertemuanAwal->id)
                 ->where('status', 'sakit') // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->count();
             $sisa = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id)  // Ambil data setelah pertemuan 20 terakhir
+                ->where('id', '>=', $pertemuanAwal->id)  // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->get();
 
-            $pertemuanSekarang = $sisa->max('pertemuan') ?? 1; // Jika tidak ada data, asumsikan pertemuan pertama
+            $pertemuanSekarang = $sisa->max('pertemuan') ?? 1;
+
+            // Jika tidak ada data, asumsikan pertemuan pertama
         } else {
             $hadir = Kunjungan::where('anak_id', $anak->id)
                 ->where('status', 'hadir')
@@ -108,8 +110,19 @@ class MobileController extends Controller
         }
 
         $sisaPertemuan = max(0, $totalPertemuan - $pertemuanSekarang);
-        return view('mobile.profile', compact('anak', 'hadir', 'izin', 'absen', 'sisaPertemuan'));
+        $progress = ($pertemuanSekarang / $totalPertemuan) * 100;
+        return view('mobile.profile', compact('anak', 'hadir', 'izin', 'absen', 'sisaPertemuan', 'progress'));
     }
+
+    public function profile_edit()
+    {
+        $user = auth()->user();
+        $namaUser = $user->name;
+        $anak = Anak::where('nama', $namaUser)->first();
+
+        return view('mobile.editprofile', compact('anak'));
+    }
+
 
     public function kunjungan()
     {

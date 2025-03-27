@@ -79,7 +79,7 @@ class KunjunganController extends Controller
         $data['terapis_id'] = $request->terapis_id;
         $data['catatan'] = $request->catatan;
         $data['status'] = $request->status;
-        if ($request->status == 'hadir') {
+        if ($request->status == 'hadir' || $request->status == 'sakit') {
             $data['pertemuan'] = $nextPertemuan;
         } else {
             $data['pertemuan'] = $nullPertemuan;

@@ -92,6 +92,25 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <label for="inputSkills" class="col-sm-2 col-form-label">Role</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control select2bs4" style="width: 100%;" name="role">
+                                            @foreach ($role as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $value == old('role', $terapi->role) ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('role')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <div class="offset-sm-2 col-sm-10">
                                         <button type="submit"
                                             class="btn btn-primary me-2">{{ $tombol }}</button>

@@ -30,107 +30,105 @@
             <div class="mid-content"></div>
         </div>
     </header>
-    <main class="page-content space-top element-area">
+    <main class="page-content space-top p-b80">
         <div class="container">
-            <div class="card dz-card style-1" style="background-image: url('assets/images/bg-shape.png');">
-                <div class="card-body">
-                    <div class="dz-media dz-flex-box">
-                        <img src="assets/images/bootstrap-logo.png" alt="">
-                    </div>
-                    <div class="dz-content">
-                        <h5 class="card-title">Bootstrap Elements</h5>
-                        <a href="#contentArea" class="element-name scroll">Tabs style</a>
-                    </div>
-                    <span class="version">BS - v5.3</span>
+            @if (session('success'))
+                <div class="alert alert-success solid alert-dismissible fade show" id="success-alert">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                        fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                        <polyline points="9 11 12 14 22 4"></polyline>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    <strong>Success!</strong> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                        <span><i class="icon feather icon-x"></i></span>
+                    </button>
                 </div>
-            </div>
 
-            <div class="row" id="contentArea">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="card-title">Custom Tab 1</h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Nav tabs -->
-                            <div class="custom-tab-1">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#profile1"
-                                            aria-selected="false" role="tab" tabindex="-1"><i
-                                                class="icon feather icon-user me-2"></i>Biodata</a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#home1" aria-selected="true"
-                                            role="tab"><i class="icon feather icon-home me-2"></i>Alamat</a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#contact1" aria-selected="false"
-                                            role="tab" tabindex="-1"><i class="icon feather icon-phone-call me-2"></i>
-                                            Kontak</a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#message1" aria-selected="false"
-                                            role="tab" tabindex="-1"><i
-                                                class="icon feather icon-mail me-2"></i>Message</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content">
-                                    <div class="tab-pane fade" id="home1" role="tabpanel">
-                                        <div class="pt-4">
-                                            <div class="form-group row mb-2">
-                                                <label for="exampleInputConfirmPassword2"
-                                                    class="col-sm-3 col-form-label">Nama</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control form-control-sm"
-                                                        id="exampleInputConfirmPassword2" name="tempat_lahir"
-                                                        value="Ki. Jend. Sudirman No. 422, Bandung 21101, Jabar">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade active show" id="profile1" role="tabpanel">
-                                        <div class="pt-4">
-                                            <h6>This is profile title</h6>
-                                            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt
-                                                tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                                            </p>
-                                            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt
-                                                tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="contact1" role="tabpanel">
-                                        <div class="pt-4">
-                                            <h4>This is contact title</h4>
-                                            <p>Far far away, behind the word mountains, far from the countries Vokalia and
-                                                Consonantia, there live the blind texts. Separated they live in
-                                                Bookmarksgrove.
-                                            </p>
-                                            <p>Far far away, behind the word mountains, far from the countries Vokalia and
-                                                Consonantia, there live the blind texts. Separated they live in
-                                                Bookmarksgrove.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="message1" role="tabpanel">
-                                        <div class="pt-4">
-                                            <h4>This is message title</h4>
-                                            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt
-                                                tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                                            </p>
-                                            <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt
-                                                tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor.
-                                            </p>
-                                        </div>
-                                    </div>
+                {{-- Auto hide alert after 3 seconds --}}
+                <script>
+                    setTimeout(function() {
+                        const alert = document.getElementById('success-alert');
+                        if (alert) {
+                            // Bootstrap fade-out animation
+                            alert.classList.remove('show');
+                            alert.classList.add('fade');
+                            setTimeout(() => alert.remove(), 500); // Remove from DOM after fade
+                        }
+                    }, 4000); // 3000ms = 3 seconds
+                </script>
+            @endif
+
+            <div class="edit-profile">
+                <form method="POST" action="{{ route('mobile.updateprofile', ['anak' => $anak->id]) }}"
+                    enctype="multipart/form-data">
+                    @method('PATCH')
+                    @csrf
+                    <div class="profile-image">
+                        <div class="avatar-upload">
+                            <div class="avatar-preview">
+                                <div class="text-center">
+                                    <img id="previewImage"
+                                        src="{{ asset($anak->foto ? 'storage/anak/' . $anak->foto : 'assets/images/faces/face1.jpg') }}"
+                                        class="rounded-circle img-thumbnail"
+                                        style="width: 150px; height: 150px; object-fit: cover;">
+                                </div>
+                                <div class="change-btn">
+                                    <input type='file' name="foto" id="imageUpload" class="form-control d-none"
+                                        accept="image/*">
+                                    <label for="imageUpload">
+                                        <i class="fi fi-rr-pencil"></i>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Nama</label>
+                        <input type="text" class="form-control" value="{{ old('nama') ?? ($anak->nama ?? '') }}"
+                            placeholder="Inputkan nama" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone">Alamat</label>
+                        <textarea class="form-control @error('alamat') is-invalid @enderror" rows="4" name="alamat" autofocus>{{ old('alamat') ?? ($anak->alamat ?? '') }}</textarea>
+                        @error('alamat')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="mb-5">
+                        <label class="form-label" for="address">Telepon</label>
+                        <input type="number" class="form-control @error('telepon_ibu') is-invalid @enderror"
+                            name="telepon_ibu" autofocus value="{{ old('telepon_ibu') ?? ($anak->telepon_ibu ?? '') }}"
+                            placeholder="08xxxxxxxxxx">
+                        @error('telepon_ibu')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-lg btn-thin rounded-xl btn-primary w-100"> Update
+                            Profile</button>
+                    </div>
+                </form>
             </div>
+
         </div>
     </main>
+    <script>
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 @endsection

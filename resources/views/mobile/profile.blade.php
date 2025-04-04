@@ -73,9 +73,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href="payment.html" class="item-content item-link">
+                            <a href="{{ route('mobile.ubahpassword') }}" class="item-content item-link">
                                 <div class="list-icon">
-                                    <i class="fi fi-rr-credit-card"></i>
+                                    <i class="fi fi-rr-unlock text-dark"></i>
                                 </div>
                                 <div class="dz-inner">
                                     <span class="title">Ubah Kata Sandi</span>

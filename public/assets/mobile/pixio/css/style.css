@@ -22689,7 +22689,7 @@ label input {
     margin: 0 auto;
     position: relative;
     border-radius: 50%;
-    border: 2px solid var(--primary);
+    /* border: 2px solid var(--primary); */
 }
 .edit-profile .avatar-upload .avatar-preview > #imagePreview {
     display: inline-block;

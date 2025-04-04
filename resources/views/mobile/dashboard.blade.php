@@ -56,6 +56,33 @@
                     </div>
                 </div>
             </div>
+            @if (in_array($sisaPertemuan, [4, 3, 2, 1]))
+                <div class="dz-category style-2 mb-3">
+                    <div class="alert alert-info solid alert-dismissible fade show">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <strong>Info!</strong> Pertemuan Kelas Sisa {{ $sisaPertemuan }} Yah!!!.
+
+                    </div>
+                </div>
+            @elseif (in_array($sisaPertemuan, [0]))
+                <div class="dz-category style-2 mb-3">
+                    <div class="alert alert-success solid alert-dismissible fade show">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <strong>Info!</strong> Pertemuan Kelas Telah Selesai.
+
+                    </div>
+                </div>
+            @endif
             {{-- profile anak --}}
 
             {{-- banner kelas dan riwayat terapi --}}
@@ -120,10 +147,10 @@
                                     </div>
                                     <div class="dz-content">
                                         <span style=" padding-bottom: 10px;">{{ $t->nama }}</span>
-                                        <button type="button" class="btn btn-info rounded-xl w-100" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalLong" data-id="{{ $t->id }}"
-                                            data-name="{{ $t->nama }}" data-description="{{ $t->deskripsi }}"
-                                            data-tarif="{{ $t->tarif }}"
+                                        <button type="button" class="btn btn-info rounded-xl w-100"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModalLong"
+                                            data-id="{{ $t->id }}" data-name="{{ $t->nama }}"
+                                            data-description="{{ $t->deskripsi }}" data-tarif="{{ $t->tarif }}"
                                             data-image="{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}">
                                             Selengkapnya
                                         </button>
@@ -156,7 +183,7 @@
                                     <div class="dz-content">
                                         <h6 class="title"><a href="product-detail.html">{{ $t->nama }}</a></h6>
                                         <ul class="dz-meta">
-                                            <li class="dz-status"><span>Terapis Perilaku</span></li>
+                                            <li class="dz-status">{{ $t->role }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -166,6 +193,7 @@
                 </div>
             </div>
             {{-- terapis view --}}
+
             <!-- Modal -->
             <div class="modal fade" id="exampleModalLong">
                 <div class="modal-dialog">
@@ -226,7 +254,7 @@
 
 
 @endsection
-{{-- @section('canvas')
+@section('canvas')
     <!-- PWA Offcanvas -->
     <div class="offcanvas offcanvas-bottom pwa-offcanvas">
         <div class="container">
@@ -245,7 +273,7 @@
     <div class="offcanvas-backdrop pwa-backdrop"></div>
     <!-- PWA Offcanvas End -->
 
-@endsection --}}
+@endsection
 @section('scripts')
     <script>
         $(document).ready(function() {

@@ -35,6 +35,10 @@ class TerapisController extends Controller
     public function create()
     {
         $lastTerapis = Terapis::orderBy('nib', 'desc')->first();
+        $role = [
+            'Terapi Perilaku' => 'Terapi Perilaku',
+            'Fisioterapi' => 'Fisioterapi'
+        ];
 
         // Jika tidak ada terapis, mulai dengan BSC01
         if ($lastTerapis) {
@@ -56,7 +60,7 @@ class TerapisController extends Controller
         $terapi = new Terapis();
         $terapi->nib = $newKode;
 
-        return view('terapis.create', compact('terapi'));
+        return view('terapis.create', compact('terapi', 'role'));
     }
 
     /**
@@ -70,6 +74,7 @@ class TerapisController extends Controller
             'alamat' => 'required',
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
+            'role' => 'nullable',
         ]);
 
         $terapis = Terapis::create($validateData);
@@ -95,7 +100,12 @@ class TerapisController extends Controller
      */
     public function edit(Terapis $terapi)
     {
-        return view('terapis.edit', compact('terapi'));
+        $role = [
+            'Terapi Perilaku' => 'Terapi Perilaku',
+            'Fisioterapi' => 'Fisioterapi'
+        ];
+
+        return view('terapis.edit', compact('terapi', 'role'));
     }
 
     /**
@@ -109,6 +119,7 @@ class TerapisController extends Controller
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
             'alamat' => 'required',
+            'role' => 'nullable',
             'status' => 'required',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

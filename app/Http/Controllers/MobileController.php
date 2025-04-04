@@ -9,10 +9,15 @@ use App\Models\Pemasukkan;
 use App\Models\Pemeriksaan;
 use App\Models\Tarif;
 use App\Models\Terapis;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Builder\Function_;
 use PhpParser\Node\Expr\FuncCall;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MobileController extends Controller
 {
@@ -37,23 +42,42 @@ class MobileController extends Controller
         $anak = Anak::where('nama', $namaUser)->first();
         $terapis = Terapis::get();
 
-        $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+        $totalPertemuan = 20;
+
+        $pertemuanAwal1 = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 1)
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if ($pertemuanAwal) {
+        $pertemuanAwal2 = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($pertemuanAwal2) {
             // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
             $kunjungan = Kunjungan::where('anak_id', $anak->id)
-                ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
+                ->where('id', '>', $pertemuanAwal2->id) // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->get();
         } else {
             $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+            $pertemuanSekarang = $kunjungan->max('pertemuan') ?? 1;
         }
 
-
+        if ($pertemuanAwal1) {
+            $sisa = Kunjungan::where('anak_id', $anak->id)
+                ->where('id', '>=', $pertemuanAwal1->id)  // Ambil data setelah pertemuan 20 terakhir
+                ->orderBy('pertemuan', 'asc')
+                ->get();
+            $pertemuanSekarang = $sisa->max('pertemuan') ?? 1;
+        } else {
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)
+                ->orderBy('pertemuan', 'asc')
+                ->get();
+            $pertemuanSekarang = $kunjungan->max('pertemuan') ?? 1;
+        }
+        $sisaPertemuan = max(0, $totalPertemuan - $pertemuanSekarang);
         $tarif = Tarif::latest()->get();
-        return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan', 'tarif'));
+        return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan', 'tarif', 'sisaPertemuan'));
     }
 
     public function profile()
@@ -122,6 +146,61 @@ class MobileController extends Controller
 
         return view('mobile.editprofile', compact('anak'));
     }
+
+    public function profile_update(Request $request, Anak $anak): RedirectResponse
+    {
+        $validateData = $request->validate([
+            'alamat' => 'required',
+            'telepon_ibu' => 'nullable|numeric',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->file('foto')) {
+            // Hapus foto lama jika ada
+            if ($anak->foto) {
+                Storage::disk('public')->delete('anak/' . $anak->foto);
+            }
+
+            // Simpan foto baru
+            $file = $request->file('foto');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile = "anak-" . time() . "." . $extFile;
+            $path = 'anak/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+
+            // Update data foto
+            $validateData['foto'] = $namaFile;
+        }
+
+        $anak->update($validateData);
+        return redirect()->back()->with('success', 'Data berhasil diperbaharui!');
+    }
+
+    public function ubah_password()
+    {
+        $user = auth()->user();
+        $namaUser = $user->name;
+        $anak = Anak::where('nama', $namaUser)->first();
+
+        return view('mobile.ubahpassword', compact('anak', 'user'));
+    }
+
+    public function update_password(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => 'nullable|min:8|confirmed',
+        ]);
+
+        $data = [
+            'password' => Hash::make($request->password),
+        ];
+
+        $user->update($data);
+        return redirect()->back()->with('success', 'kata sandi berhasil diperbaharui!');
+    }
+
+
+
 
 
     public function kunjungan()

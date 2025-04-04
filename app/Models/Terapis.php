@@ -16,7 +16,7 @@ class Terapis extends Model
         'status' => 'aktif',
     ];
 
-    protected $fillable = ['nama', 'foto', 'nib', 'tanggal_lahir', 'alamat', 'telepon'];
+    protected $fillable = ['nama', 'foto', 'nib', 'tanggal_lahir', 'alamat', 'telepon', 'role'];
 
     // protected $casts = [
     //     'tanggal_lahir' => 'date',

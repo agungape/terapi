@@ -40,10 +40,10 @@
                                     <thead>
                                         <tr>
                                             <th> Aksi</th>
-                                            <th> No. Induk</th>
+                                            <th> Foto</th>
                                             <th> Nama </th>
                                             <th> Usia </th>
-                                            <th> Alamat </th>
+                                            <th> Role </th>
                                             <th> Status </th>
                                         </tr>
                                     </thead>
@@ -82,13 +82,12 @@
                                                         src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/images/faces/face1.jpg') }}"
                                                         alt="User profile picture">
                                                 </td>
-                                                <td style="vertical-align: middle;">{{ $t->nib }}</td>
                                                 <td style="vertical-align: middle;">
                                                     {{ $t->nama }}
                                                 </td>
                                                 <td style="vertical-align: middle;"> {{ $t->usia }} Tahun </td>
 
-                                                <td style="vertical-align: middle;"> {{ $t->alamat }} </td>
+                                                <td style="vertical-align: middle;"> {{ $t->role }} </td>
 
 
 

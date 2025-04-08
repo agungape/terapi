@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AgeGroup;
 use App\Models\Anak;
 use App\Models\Observasi;
 use App\Models\Terapis;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -22,7 +24,8 @@ class ObservasiController extends Controller
         $observasi = Observasi::latest()->paginate(4);
         $jenis = [
             'wawancara' => 'Wawancara',
-            'atec' => 'Atec'
+            'atec' => 'Atec',
+            'penyimpangan pendengaran' => 'Deteksi Dini Penyimpangan Pendengaran'
         ];
         $anaks = Anak::all();
         $terapis = Terapis::all();
@@ -43,6 +46,15 @@ class ObservasiController extends Controller
             $anak = Anak::where('id', $request->anak_id)->first();
             $jenis = $request->jenis;
             return view('observasi.atec', compact('anak', 'jenis'));
+        }
+
+        if ($request->jenis == 'penyimpangan pendengaran') {
+            $anak = Anak::where('id', $request->anak_id)->first();
+            $umur = Carbon::parse($anak->tanggal_lahir)->age;
+            dd($umur);
+            $jenis = $request->jenis;
+            $ageGroups = AgeGroup::with('questions')->get();
+            return view('observasi.pendengaran', compact('anak', 'jenis', 'ageGroups'));
         }
     }
 

@@ -57,7 +57,7 @@
                 </div>
             </div>
             @if (in_array($sisaPertemuan, [4, 3, 2, 1]))
-                <div class="dz-category style-2 mb-3">
+                <div class="dz-category style-2">
                     <div class="alert alert-info solid alert-dismissible fade show">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
                             fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
@@ -66,20 +66,34 @@
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
                         <strong>Info!</strong> Pertemuan Kelas Sisa {{ $sisaPertemuan }} Yah!!!.
-
                     </div>
                 </div>
             @elseif (in_array($sisaPertemuan, [0]))
-                <div class="dz-category style-2 mb-3">
+                <div class="dz-category style-2">
                     <div class="alert alert-success solid alert-dismissible fade show">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                            <polyline points="9 11 12 14 22 4"></polyline>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                        <strong>Success!</strong> Pertemuan Kelas Telah Selesai.
+                        <hr>
+                        Hubungi <strong>Admin <a href="https://wa.me/+6285123238404"
+                                target="_blank">085123238404</a></strong> untuk melanjutkan sesi
+                    </div>
+                </div>
+            @endif
+            @if ($informasi)
+                <div class="dz-category style-2">
+                    <div class="alert alert-info solid alert-dismissible fade show">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
                             fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="16" x2="12" y2="12"></line>
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
-                        <strong>Info!</strong> Pertemuan Kelas Telah Selesai.
-
+                        <strong>Informasi Pelayanan!</strong>
+                        <hr> {!! $informasi->informasi !!}
                     </div>
                 </div>
             @endif
@@ -129,6 +143,13 @@
                                 </div>
                             </div>
                         @empty
+                            <a href="{{ route('mobile.kunjungan') }}"> <span class="badge bg-success"> <svg
+                                        viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"
+                                        stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                        class="me-2">
+                                        <polyline points="9 11 12 14 22 4"></polyline>
+                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                    </svg>terapi telah selesai</span></a>
                         @endforelse
                     </div>
                 </div>
@@ -297,4 +318,5 @@
             });
         });
     </script>
+
 @endsection

@@ -38,7 +38,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
     <!-- PWA Version -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#0d6efd">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"
@@ -111,6 +112,39 @@
     <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
     <script src="{{ asset('assets') }}/mobile/index.js"></script>
     @yield('scripts')
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered:', reg))
+                .catch(err => console.error('Service Worker error:', err));
+        }
+    </script>
+    <script>
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Simpan event
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Tampilkan tombol install
+            const installBtn = document.getElementById('install-btn');
+            installBtn.style.display = 'inline-block';
+
+            installBtn.addEventListener('click', async () => {
+                installBtn.style.display = 'none';
+                deferredPrompt.prompt();
+
+                const {
+                    outcome
+                } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                deferredPrompt = null;
+            });
+        });
+    </script>
+
 </body>
 
 </html>

@@ -166,7 +166,8 @@
                         </ul>
                     </div>
 
-                    <p class="contact-info">📞 Jika ada pertanyaan, hubungi admin <strong>085123238404</strong>.</p>
+                    <p class="contact-info">📞 Jika ada pertanyaan, hubungi admin <strong><a
+                                href="https://wa.me/+6285123238404" target="_blank">085123238404</a></strong>.</p>
                 </div>
             </div>
             <div class="dz-product-detail">

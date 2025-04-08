@@ -12,7 +12,6 @@
                 </div>
                 <div class="section-head">
                     <h3 class="title">Masukkan Password Baru</h3>
-                    <p>Kata sandi baru Anda harus berbeda dari kata sandi yang digunakan sebelumnya.</p>
                 </div>
                 <div class="account-section">
                     <form method="POST" action="{{ route('mobile.updatepassword', ['user' => $user->id]) }}"
@@ -32,8 +31,6 @@
                                     <span><i class="icon feather icon-x"></i></span>
                                 </button>
                             </div>
-
-                            {{-- Auto hide alert after 3 seconds --}}
                             <script>
                                 setTimeout(function() {
                                     const alert = document.getElementById('success-alert');
@@ -46,10 +43,38 @@
                                 }, 4000); // 3000ms = 3 seconds
                             </script>
                         @endif
+                        @error('password')
+                            <div class="alert alert-danger solid alert-dismissible fade show" id="error-alert">
+                                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12" y2="16"></line>
+                                </svg>
+                                <strong>Error!</strong> {{ $message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                                    <span><i class="icon feather icon-x"></i></span>
+                                </button>
+                            </div>
+                            {{-- Auto hide alert after 3 seconds --}}
+                            <script>
+                                setTimeout(() => {
+                                    const alert = document.getElementById('error-alert');
+                                    if (alert) {
+                                        alert.classList.remove('show');
+                                        alert.classList.add('fade');
+                                        setTimeout(() => alert.remove(), 500);
+                                    }
+                                }, 10000);
+                            </script>
+                        @enderror
+
+
                         <div class="alert alert-danger alert-dismissible alert-alt fade show">
                             <strong>perhatian!</strong>
                             <ul>
-                                <li> Kata sandi harus memiliki minimal 8 karakter, mengandung huruf besar, huruf kecil.
+                                <li>Kata sandi baru Anda harus berbeda dari kata sandi yang digunakan sebelumnya.</li>
+                                <li>Kata sandi harus memiliki minimal 8 karakter, mengandung huruf besar, huruf kecil.
                                 </li>
                             </ul>
                         </div>

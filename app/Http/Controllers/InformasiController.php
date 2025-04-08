@@ -4,62 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\informasi;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class InformasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:view informasi', ['only' => ['index']]);
+        $this->middleware('permission:update informasi', ['only' => ['update']]);
+    }
+
     public function index()
     {
-        //
+        $informasi = Informasi::first();
+        return view('informasi.index', compact('informasi'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(informasi $informasi)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(informasi $informasi)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, informasi $informasi)
     {
-        //
-    }
+        $request->validate([
+            'informasi' => 'nullable',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(informasi $informasi)
-    {
-        //
+        $informasi->update([
+            'informasi' => $request->informasi,
+        ]);
+
+        Alert::success('Berhasil', "Informasi telah di update");
+        return redirect()->back();
     }
 }

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('informasis', function (Blueprint $table) {
+        Schema::create('age_groups', function (Blueprint $table) {
             $table->id();
-            $table->longText('informasi')->nullable();
+            $table->string('nama'); // contoh: "0-6 bulan"
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('informasis');
+        Schema::dropIfExists('age_groups');
     }
 };

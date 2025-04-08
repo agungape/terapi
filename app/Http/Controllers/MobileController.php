@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
+use App\Models\informasi;
 use App\Models\Jadwal;
 use App\Models\Kunjungan;
 use App\Models\Pemasukkan;
@@ -41,6 +42,7 @@ class MobileController extends Controller
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
         $terapis = Terapis::get();
+        $informasi = Informasi::where('informasi', '!=', '')->first();
 
         $totalPertemuan = 20;
 
@@ -77,7 +79,7 @@ class MobileController extends Controller
         }
         $sisaPertemuan = max(0, $totalPertemuan - $pertemuanSekarang);
         $tarif = Tarif::latest()->get();
-        return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan', 'tarif', 'sisaPertemuan'));
+        return view('mobile.dashboard', compact('anak', 'terapis', 'kunjungan', 'tarif', 'sisaPertemuan', 'informasi'));
     }
 
     public function profile()
@@ -188,20 +190,15 @@ class MobileController extends Controller
     public function update_password(Request $request, User $user)
     {
         $request->validate([
-            'password' => 'nullable|min:8|confirmed',
+            'password' => 'required|min:8|confirmed',
         ]);
 
-        $data = [
+        $user->update([
             'password' => Hash::make($request->password),
-        ];
+        ]);
 
-        $user->update($data);
-        return redirect()->back()->with('success', 'kata sandi berhasil diperbaharui!');
+        return redirect()->back()->with('success', 'Kata sandi berhasil diperbarui!');
     }
-
-
-
-
 
     public function kunjungan()
     {

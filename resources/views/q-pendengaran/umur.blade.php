@@ -1,7 +1,8 @@
 @extends('layouts.master')
 @section('menuMaster', 'active')
 @section('masterShow', 'menu-is-opening menu-open')
-@section('menuProgram', 'active')
+@section('deteksiShow', 'menu-is-opening menu-open')
+@section('deteksiUmur', 'active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -9,12 +10,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Program Terapi</h1>
+                        <h1>Data Umur Deteksi Pendengaran</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Terapis</li>
+                            <li class="breadcrumb-item active">Data Umur</li>
                         </ol>
                     </div>
                 </div>
@@ -24,9 +25,9 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="card">
-                            @can('create program anak')
+                            @can('create deteksi umur')
                                 <div class="card-header">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
                                         data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
@@ -37,26 +38,25 @@
                             <div class="card-body table-responsive p-0">
                                 <table class="table table-hover text-nowrap">
                                     <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Program</th>
+                                        <tr class="text-center">
+                                            <th>Data Umur</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                        @foreach ($program as $p)
-                                            <tr>
-                                                <td scope="row">{{ $program->firstItem() + $loop->iteration - 1 }}</td>
-                                                <td>{{ $p->deskripsi }}</td>
+                                        @foreach ($ageGroups as $age)
+                                            <tr class="text-center">
+
+                                                <td>{{ $age->nama }}</td>
                                                 <td>
                                                     @can('delete program anak')
                                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <form action="{{ route('program.destroy', ['program' => $p->id]) }}"
+                                                            <form action="{{ route('age.destroy', ['id' => $age->id]) }}"
                                                                 method="POST">
                                                                 @csrf @method('DELETE')
                                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                                    title="Hapus Data" data-name="{{ $p->nama }}"
+                                                                    title="Hapus Data" data-name="{{ $age->nama }}"
                                                                     data-table="program">
                                                                     <i class="fa fa-trash fa-fw"></i>
                                                                 </button>
@@ -70,11 +70,6 @@
                                     </tbody>
                                 </table>
 
-                                <div class="mx-4 mt-3">
-                                    {{ $program->fragment('judul')->links() }}
-                                </div>
-
-
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -86,19 +81,19 @@
     </div>
 
 
-    <form action="{{ route('program.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('age.store') }}" method="POST">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tambah Program</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Tambah Umur</h5>
                     </div>
                     <div class="modal-body">
                         <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Nama Program</label>
+                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Nama</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="deskripsi">
+                                <input type="text" class="form-control" name="nama">
                             </div>
                         </div>
                     </div>

@@ -268,6 +268,17 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
     <script>
+        $(function() {
+            // Summernote
+            $('#summernote').summernote()
+            // CodeMirror
+            CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+                mode: "htmlmixed",
+                theme: "monokai"
+            });
+        })
+    </script>
+    <script>
         document.getElementById("logout-btn").addEventListener("click", function(event) {
             event.preventDefault();
             Swal.fire({

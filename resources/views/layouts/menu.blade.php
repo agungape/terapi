@@ -86,6 +86,54 @@
                                 </a>
                             </li>
                         @endcan
+
+                        <li class="nav-item @yield('deteksiShow')">
+                            <a href="#" class="nav-link @yield('menuDeteksi')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Deteksi Dini
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('question.umur') }}" class="nav-link @yield('deteksiUmur')">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Master Umur</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('question.pendengaran') }}" class="nav-link @yield('deteksiPendengaran')">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Pendengaran</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Penglihatan</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Perilaku</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Autis</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>GPPH</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 
@@ -226,6 +274,16 @@
                             <i class="nav-icon fas fa-calendar-alt"></i>
                             <p>
                                 Jadwal Anak
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view informasi')
+                    <li class="nav-item">
+                        <a href="/informasi" class="nav-link @yield('menuInformasi')">
+                            <i class="nav-icon fas fa-calendar-alt"></i>
+                            <p>
+                                Informasi
                             </p>
                         </a>
                     </li>

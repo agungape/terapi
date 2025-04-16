@@ -85,12 +85,24 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::resource('/career', CareerController::class);
     Route::resource('/tarif', TarifController::class);
     Route::resource('/informasi', InformasiController::class);
+
     Route::get('/q-pendengaran', [QuestionController::class, 'index'])->name('question.pendengaran');
     Route::post('/q-pendengaran/simpan', [QuestionController::class, 'pendengaran_store'])->name('pendengaran.store');
-    Route::delete('/q-pendengaran/{id}', [QuestionController::class, 'hapus_pendengaran'])->name('pendengaran.destroy');
+    Route::delete('/q-pendengaran/{id}', [QuestionController::class, 'hapus_pendengaran'])->name('qpendengaran.destroy');
     Route::get('/q-umur', [QuestionController::class, 'umur'])->name('question.umur');
     Route::delete('/q-umur/{id}', [QuestionController::class, 'hapus_umur'])->name('age.destroy');
     Route::post('/q-umur/simpan', [QuestionController::class, 'umur_store'])->name('age.store');
+    Route::get('/q-penglihatan', [QuestionController::class, 'q_penglihatan'])->name('question.penglihatan');
+    Route::post('/q-penglihatan/simpan', [QuestionController::class, 'penglihatan_store'])->name('qpenglihatan.store');
+    Route::delete('/q-penglihatan/{id}', [QuestionController::class, 'penglihatan_destroy'])->name('qpenglihatan.destroy');
+    Route::get('/q-perilaku', [QuestionController::class, 'q_perilaku'])->name('question.perilaku');
+    Route::post('/q-perilaku/simpan', [QuestionController::class, 'perilaku_store'])->name('qperilaku.store');
+    Route::delete('/q-perilaku/{id}', [QuestionController::class, 'perilaku_destroy'])->name('qperilaku.destroy');
+
+
+
+
+
     Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
     Route::delete('/tarif/hapus-gambar/{id}', [TarifController::class, 'hapusGambar'])->name('tarif.hapusGambar');
     Route::get('/observasi', [ObservasiController::class, 'index'])->name('observasi.index');
@@ -109,7 +121,6 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::get('/laporan-keuangan', [KeuanganController::class, 'laporan_keuangan'])->name('keuangan.laporan');
     Route::get('/laporan/pdf/{start_date}/{end_date}', [KeuanganController::class, 'laporan_pdf'])->name('laporan.pdf');
 
-    Route::get('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
     Route::post('/terapis/pelatihan', [TerapisController::class, 'pelatihan_store'])->name('pelatihans.store');
@@ -123,8 +134,12 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/ubah-status-anak', [AnakController::class, 'ubahStatus'])->name('anak.status');
     Route::post('/ubah-status-terapis', [TerapisController::class, 'ubahStatus'])->name('terapis.status');
 
+    Route::get('/observasi/{anak}', [ObservasiController::class, 'show'])->name('observasi.show');
     Route::post('/observasi/mulai', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
     Route::post('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
+    Route::post('/observasi-pendengaran/simpan', [ObservasiController::class, 'observasi_pendengaran'])->name('obpendengaran.store');
+    Route::post('/observasi-penglihatan/simpan', [ObservasiController::class, 'observasi_penglihatan'])->name('observasi.penglihatan');
+
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

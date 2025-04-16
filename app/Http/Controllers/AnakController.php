@@ -136,7 +136,7 @@ class AnakController extends Controller
      */
     public function show(Anak $anak)
     {
-        $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->paginate(5);
+        $kunjungan = Kunjungan::where('anak_id', $anak->id)->latest()->paginate(5);
         return view('anak.detail', compact('kunjungan', 'anak'));
     }
 

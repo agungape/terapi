@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_responses', function (Blueprint $table) {
+        Schema::create('question_response_perilakus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('anak_id')->constrained()->onDelete('cascade'); // default Laravel users
-            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->foreignId('question_perilaku_id')->constrained('question_perilakus')->onDelete('cascade');
             $table->enum('answer', ['ya', 'tidak']);
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_responses');
+        Schema::dropIfExists('question_response_perilakus');
     }
 };

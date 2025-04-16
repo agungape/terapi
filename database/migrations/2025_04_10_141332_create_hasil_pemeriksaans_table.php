@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_responses', function (Blueprint $table) {
+        Schema::create('hasil_pemeriksaans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('anak_id')->constrained()->onDelete('cascade'); // default Laravel users
-            $table->foreignId('question_id')->constrained()->onDelete('cascade');
-            $table->enum('answer', ['ya', 'tidak']);
+            $table->foreignId('anak_id')->constrained()->onDelete('cascade');
+            $table->string('jenis'); // contoh: 'pendengaran', 'penglihatan', dll.
+            $table->string('hasil'); // contoh: 'Sesuai Umur', 'Penyimpangan'
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_responses');
+        Schema::dropIfExists('hasil_pemeriksaans');
     }
 };

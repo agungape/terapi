@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AgeGroup;
 use App\Models\Question;
+use App\Models\QuestionPenglihatan;
+use App\Models\QuestionPerilaku;
+use App\Models\QuestionResponse;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -54,6 +57,60 @@ class QuestionController extends Controller
     {
         $id->delete();
         Alert::success('Berhasil', "$id->nama telah di hapus");
+        return redirect()->back();
+    }
+
+    public function q_penglihatan()
+    {
+        $penglihatan = QuestionPenglihatan::latest()->paginate(10);
+        $interpretasi = [
+            'normal' => 'Normal',
+            'gangguan' => 'Gangguan',
+        ];
+
+        return view('q-penglihatan.index', compact('penglihatan', 'interpretasi'));
+    }
+
+    public function penglihatan_store(Request $request)
+    {
+        $validateData = $request->validate([
+            'question_text' => 'required',
+            'interpretasi' => 'required',
+        ]);
+
+        $questions = QuestionPenglihatan::create($validateData);
+        Alert::success('Berhasil', "Data Question berhasil dibuat");
+        return redirect()->back();
+    }
+
+    public function penglihatan_destroy(QuestionPenglihatan $id)
+    {
+        $id->delete();
+        Alert::success('Berhasil', "questions di hapus");
+        return redirect()->back();
+    }
+
+    public function q_perilaku()
+    {
+        $perilaku = QuestionPerilaku::get();
+        return view('q-perilaku.index', compact('perilaku'));
+    }
+
+    public function perilaku_store(Request $request)
+    {
+        $validateData = $request->validate([
+            'question_text' => 'required',
+        ]);
+
+        $questions = QuestionPerilaku::create($validateData);
+        Alert::success('Berhasil', "Data Question berhasil dibuat");
+        return redirect()->back();
+    }
+
+    public function perilaku_destroy(QuestionPerilaku $id)
+    {
+        $id->delete();
+        Alert::success('Berhasil', "questions di hapus");
         return redirect()->back();
     }
 }

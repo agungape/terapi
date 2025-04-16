@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            @can('create deteksi pendengaran')
+                            @can('create deteksi qpendengaran')
                                 <div class="card-header">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
                                         data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
@@ -37,24 +37,28 @@
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
                                 @foreach ($ageGroups as $group)
-                                    <table class="table table-hover text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th>Kelompok Umur: {{ $group->nama }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                            @foreach ($group->questions as $q)
+                                    <div class="table-responsive mb-4">
+                                        <table class="table table-hover text-nowrap">
+                                            <thead class="bg-light">
                                                 <tr>
-                                                    <td> {{ $q->question_text }} </td>
-                                                    <td>
-                                                        @can('delete deteksi pendengaran')
-                                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <th colspan="2">Kelompok Umur: {{ $group->nama }}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Pertanyaan</th>
+                                                    <th class="text-center" style="width: 120px;">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($group->questions as $q)
+                                                    <tr>
+                                                        <td>{{ $q->question_text }}</td>
+                                                        <td class="text-center">
+                                                            @can('delete qpendengaran')
                                                                 <form
                                                                     action="{{ route('pendengaran.destroy', ['id' => $q->id]) }}"
-                                                                    method="POST">
-                                                                    @csrf @method('DELETE')
+                                                                    method="POST" style="display:inline;">
+                                                                    @csrf
+                                                                    @method('DELETE')
                                                                     <button type="submit"
                                                                         class="btn btn-danger btn-sm btn-hapus"
                                                                         title="Hapus Data" data-table="program"
@@ -62,16 +66,16 @@
                                                                         <i class="fa fa-trash fa-fw"></i>
                                                                     </button>
                                                                 </form>
-                                                            </div>
-                                                        @endcan
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-                                        </tbody>
-                                    </table>
+                                                            @endcan
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 @endforeach
                             </div>
+
                             <!-- /.card-body -->
                         </div>
                         <!-- /.card -->

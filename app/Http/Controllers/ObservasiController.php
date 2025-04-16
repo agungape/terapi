@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\AgeGroup;
 use App\Models\Anak;
+use App\Models\HasilPemeriksaan;
 use App\Models\Observasi;
+use App\Models\QuestionPenglihatan;
+use App\Models\QuestionPerilaku;
+use App\Models\QuestionResponse;
 use App\Models\Terapis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,63 +31,128 @@ class ObservasiController extends Controller
             'atec' => 'Atec',
             'penyimpangan pendengaran' => 'Deteksi Dini Penyimpangan Pendengaran'
         ];
-        $anaks = Anak::all();
+        $anaks = Anak::latest()->paginate(10);
         $terapis = Terapis::all();
         return view('observasi.index', compact('anaks', 'terapis', 'jenis', 'observasi'));
     }
 
-    public function observasi_mulai(Request $request)
+    public function show(Anak $anak)
     {
-        if ($request->jenis == 'wawancara') {
-
-            $anak = Anak::where('id', $request->anak_id)->first();
-            $jenis = $request->input('jenis');
-
-            return view('observasi.wawancara', compact('anak', 'jenis'));
-        }
-
-        if ($request->jenis == 'atec') {
-            $anak = Anak::where('id', $request->anak_id)->first();
-            $jenis = $request->jenis;
-            return view('observasi.atec', compact('anak', 'jenis'));
-        }
-
-        if ($request->jenis == 'penyimpangan pendengaran') {
-            $anak = Anak::where('id', $request->anak_id)->first();
-            $umur = Carbon::parse($anak->tanggal_lahir)->age;
-            dd($umur);
-            $jenis = $request->jenis;
-            $ageGroups = AgeGroup::with('questions')->get();
-            return view('observasi.pendengaran', compact('anak', 'jenis', 'ageGroups'));
-        }
+        $ageGroups = AgeGroup::with('questions')->get();
+        // hitung umur
+        $tanggalLahir = Carbon::parse($anak->tanggal_lahir);
+        $sekarang = Carbon::now();
+        // Hitung total bulan
+        $bulan = $tanggalLahir->diffInMonths($sekarang);
+        // Tambahkan jumlah bulan ke tanggal lahir untuk menghitung sisa harinya
+        $tanggalSetelahBulan = $tanggalLahir->addMonthsNoOverflow($bulan);
+        $hari = $tanggalSetelahBulan->diffInDays($sekarang);
+        // Format hasil
+        $umur = "{$bulan} bulan {$hari} hari";
+        // hitung umur
+        $hasil = $anak->hasilPemeriksaans; // relasi hasMany
+        $sesuaiUmur = "  Puji Keberhasilan Orangtua/Pengasuh. Lanjutkan Stimulasi Sesuai Umur. Jadwalkan Kunjungan Berikutnya";
+        $penyimpangan = "RS Rujukan Tumbuh Kembang Level 1";
+        $qpenglihatan = QuestionPenglihatan::get();
+        $qperilaku = QuestionPerilaku::latest()->get();
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku'));
     }
+
 
     public function observasi_atec(Request $request)
     {
         $validateData = $request->validate([
             'anak_id' => 'required|exists:App\Models\Anak,id',
-            'jenis' => 'required',
-            'gambar_atec' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'hasil' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // upload gambar hasil atec
-        if ($request->file('gambar_atec')) {
-            $file = $request->file('gambar_atec');
+        if ($request->file('hasil')) {
+            $file = $request->file('hasil');
             $extFile = $file->getClientOriginalExtension();
             $namaFile =
                 "gambar-" . time() . "." . $extFile;
             $path = 'atec/' . $namaFile;
             Storage::disk('public')->put($path, file_get_contents($file));
-            $data['gambar_atec'] = $namaFile;
+            $data['hasil'] = $namaFile;
         }
 
 
         $data['anak_id'] = $request->anak_id;
-        $data['jenis'] = $request->jenis;
+        $data['jenis'] = 'ATEC';
 
-        $atec = Observasi::create($data);
+        $atec = HasilPemeriksaan::create($data);
         Alert::toast("data Observasi berhasil di Tambahkan", 'success');
-        return redirect()->route('observasi.index');
+        return redirect()->back();
+    }
+
+
+    public function observasi_pendengaran(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $answers = $request->input('answers');
+
+        $isPenyimpangan = false;
+
+        foreach ($answers as $questionId => $answer) {
+            if ($answer === 'tidak') {
+                $isPenyimpangan = true;
+            }
+
+            QuestionResponse::create([
+                'anak_id' => $anakId,
+                'question_id' => $questionId,
+                'answer' => $answer,
+            ]);
+        }
+
+        // Tentukan hasil akhir
+        $hasil = $isPenyimpangan ? 'Penyimpangan' : 'Sesuai Umur';
+
+        // Simpan ke tabel hasil pemeriksaan
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'penyimpangan pendengaran',
+            'hasil' => $hasil,
+        ]);
+
+        Alert::toast("data Observasi Penngengaran berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
+
+    public function observasi_penglihatan(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'hasil' => 'required|string',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $hasilInput = strtolower($request->input('hasil'));
+
+        // Konversi hasil sesuai ketentuan
+        if ($hasilInput === 'normal') {
+            $hasil = 'Normal';
+        } elseif ($hasilInput === 'gangguan') {
+            $hasil = 'Curiga Gangguan Penglihatan';
+        } else {
+            $hasil = $request->input('hasil'); // fallback jika bukan normal/gangguan
+        }
+
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'penyimpangan penglihatan',
+            'hasil' => $hasil,
+        ]);
+
+
+        Alert::toast("data Observasi Penglihatan berhasil di Tambahkan", 'success');
+        return redirect()->back();
     }
 
 
@@ -103,17 +172,7 @@ class ObservasiController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //

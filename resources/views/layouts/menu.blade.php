@@ -109,13 +109,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('question.penglihatan') }}" class="nav-link @yield('deteksiPenglihatan')">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Penglihatan</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('question.perilaku') }}" class="nav-link @yield('deteksiPerilaku')">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Perilaku</p>
                                     </a>
@@ -339,6 +339,59 @@
                         </a>
                     </li>
                 @endcan
+                <li class="nav-item @yield('masterWebsite')">
+                    @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
+                        <a href="#" class="nav-link @yield('menuKeuangan')">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>
+                                Pengaturan Website
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
+                    <ul class="nav nav-treeview">
+                        @can('view rekapan kas')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.rekap') }}" class="nav-link @yield('menuRekap')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Rekapan Kas</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view pemasukkan')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.pemasukkan') }}" class="nav-link @yield('menuPemasukkan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pemasukan</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view pengeluaran')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.pengeluaran') }}" class="nav-link @yield('menuPengeluaran')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pengeluaran</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view kategori')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.kategori') }}" class="nav-link @yield('menuKategori')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Kategori</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view laporan keuangan')
+                            <li class="nav-item">
+                                <a href="{{ route('keuangan.laporan') }}" class="nav-link @yield('menuLaporanKeuangan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Laporan Keuangan</p>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

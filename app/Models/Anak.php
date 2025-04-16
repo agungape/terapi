@@ -40,4 +40,10 @@ class Anak extends Model
     {
         return $this->hasMany('App\Models\Observasi');
     }
+
+
+    public function hasilPemeriksaans()
+    {
+        return $this->hasMany(HasilPemeriksaan::class);
+    }
 }

@@ -26,7 +26,7 @@
                 <div class="login-logo">
                     <img src="{{ asset('assets') }}/images/bsc.png" class="img-fluid">
                 </div>
-                <p class="login-box-msg">{{ __('Masukkan Username & Password untuk Masuk tetsdfgshs') }}</p>
+                <p class="login-box-msg">{{ __('Masukkan Username & Password untuk Masuk') }}</p>
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">

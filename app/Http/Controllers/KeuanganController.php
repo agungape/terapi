@@ -133,7 +133,7 @@ class KeuanganController extends Controller
         $anaks = Anak::where('status', 'aktif')->get();
         $kategori = Kategori::where('nama', 'Pembayaran Anak')->first();
         $kategoris = Kategori::where('nama', '!=', 'Pembayaran Anak')->where('jenis', '!=', 'Pengeluaran')->get();
-        $pemasukkans = Pemasukkan::latest()->paginate(10);
+        $pemasukkans = Pemasukkan::orderBy('tanggal', 'DESC')->paginate(10);
         $tarif = Tarif::latest()->get();
         $dataTerakhir = Pemasukkan::latest('updated_at')->first();
         $totalPemasukan = Pemasukkan::getTotalPemasukan();

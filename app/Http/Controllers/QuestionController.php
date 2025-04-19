@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AgeGroup;
 use App\Models\Question;
+use App\Models\QuestionAutis;
 use App\Models\QuestionPenglihatan;
 use App\Models\QuestionPerilaku;
 use App\Models\QuestionResponse;
@@ -108,6 +109,35 @@ class QuestionController extends Controller
     }
 
     public function perilaku_destroy(QuestionPerilaku $id)
+    {
+        $id->delete();
+        Alert::success('Berhasil', "questions di hapus");
+        return redirect()->back();
+    }
+
+    public function q_autis()
+    {
+        $autis = QuestionAutis::orderBy('no_urut')->get();
+        return view('q-autis.index', compact('autis'));
+    }
+
+    public function autis_store(Request $request)
+    {
+        $validateData = $request->validate([
+            'question_text' => 'required',
+            'no_urut' => 'required|integer|min:1',
+        ]);
+
+        // Geser urutan setelahnya
+        QuestionAutis::where('no_urut', '>=', $validateData['no_urut'])->increment('no_urut');
+
+        $questions = QuestionAutis::create($validateData);
+
+        Alert::success('Berhasil', "Data Question berhasil dibuat");
+        return redirect()->back();
+    }
+
+    public function autis_destroy(QuestionAutis $id)
     {
         $id->delete();
         Alert::success('Berhasil', "questions di hapus");

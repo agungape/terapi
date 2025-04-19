@@ -6,9 +6,12 @@ use App\Models\AgeGroup;
 use App\Models\Anak;
 use App\Models\HasilPemeriksaan;
 use App\Models\Observasi;
+use App\Models\QuestionAutis;
 use App\Models\QuestionPenglihatan;
 use App\Models\QuestionPerilaku;
 use App\Models\QuestionResponse;
+use App\Models\QuestionResponseAutis;
+use App\Models\QuestionResponsePerilaku;
 use App\Models\Terapis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -53,9 +56,12 @@ class ObservasiController extends Controller
         $hasil = $anak->hasilPemeriksaans; // relasi hasMany
         $sesuaiUmur = "  Puji Keberhasilan Orangtua/Pengasuh. Lanjutkan Stimulasi Sesuai Umur. Jadwalkan Kunjungan Berikutnya";
         $penyimpangan = "RS Rujukan Tumbuh Kembang Level 1";
+        $interPerilaku = "Kemungkinan anak mengalami masalah mental emosional";
+        $penyimpanganPerilaku = "Konseling kepada orang tua jadwalkan kunjungan berikutnya 3 bulan lagi";
         $qpenglihatan = QuestionPenglihatan::get();
         $qperilaku = QuestionPerilaku::latest()->get();
-        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku'));
+        $qautis = QuestionAutis::orderBy('no_urut')->get();
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku'));
     }
 
 
@@ -155,6 +161,90 @@ class ObservasiController extends Controller
         return redirect()->back();
     }
 
+    public function observasi_perilaku(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $answers = $request->input('answers');
+
+        $isPenyimpangan = false;
+
+        foreach ($answers as $questionId => $answer) {
+            if ($answer === 'ya') {
+                $isPenyimpangan = true;
+            }
+
+            QuestionResponsePerilaku::create([
+                'anak_id' => $anakId,
+                'question_perilaku_id' => $questionId,
+                'answer' => $answer,
+            ]);
+        }
+
+        // Tentukan hasil akhir
+        $hasil = $isPenyimpangan ? 'Penyimpangan' : 'Normal';
+
+        // Simpan ke tabel hasil pemeriksaan
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'Penyimpangan Perilaku',
+            'hasil' => $hasil,
+        ]);
+
+        Alert::toast("data Observasi Perilaku berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
+
+    public function observasi_autis(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $answers = $request->input('answers');
+
+        // Critical item berdasarkan no_urut
+        $criticalNoUrut = [2, 7, 9, 13, 14, 15];
+
+        // Ambil ID pertanyaan critical dari tabel question_autis
+        $criticalQuestionIds = QuestionAutis::whereIn('no_urut', $criticalNoUrut)
+            ->pluck('id')
+            ->toArray();
+
+        $jumlahTidak = 0;
+
+        foreach ($answers as $questionId => $answer) {
+            // Cek apakah pertanyaan ini termasuk critical dan jawabannya TIDAK
+            if (in_array($questionId, $criticalQuestionIds) && strtolower($answer) === 'tidak') {
+                $jumlahTidak++;
+            }
+
+            QuestionResponseAutis::create([
+                'anak_id' => $anakId,
+                'question_autis_id' => $questionId,
+                'answer' => $answer,
+            ]);
+        }
+
+        // Tentukan hasil akhir berdasarkan jumlah 'tidak' pada critical item
+        $hasil = $jumlahTidak >= 2 ? 'Risiko Autisme' : 'Tidak Berisiko';
+
+        // Simpan ke tabel hasil pemeriksaan
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'Autisme',
+            'hasil' => $hasil,
+        ]);
+
+        Alert::toast("data Observasi Autism berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
 
     /**
      * Show the form for creating a new resource.

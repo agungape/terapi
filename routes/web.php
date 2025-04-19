@@ -87,7 +87,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::resource('/informasi', InformasiController::class);
 
     Route::get('/q-pendengaran', [QuestionController::class, 'index'])->name('question.pendengaran');
-    Route::post('/q-pendengaran/simpan', [QuestionController::class, 'pendengaran_store'])->name('pendengaran.store');
+    Route::post('/q-pendengaran/simpan', [QuestionController::class, 'pendengaran_store'])->name('qpendengaran.store');
     Route::delete('/q-pendengaran/{id}', [QuestionController::class, 'hapus_pendengaran'])->name('qpendengaran.destroy');
     Route::get('/q-umur', [QuestionController::class, 'umur'])->name('question.umur');
     Route::delete('/q-umur/{id}', [QuestionController::class, 'hapus_umur'])->name('age.destroy');
@@ -98,9 +98,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::get('/q-perilaku', [QuestionController::class, 'q_perilaku'])->name('question.perilaku');
     Route::post('/q-perilaku/simpan', [QuestionController::class, 'perilaku_store'])->name('qperilaku.store');
     Route::delete('/q-perilaku/{id}', [QuestionController::class, 'perilaku_destroy'])->name('qperilaku.destroy');
-
-
-
+    Route::get('/q-autis', [QuestionController::class, 'q_autis'])->name('question.autis');
+    Route::post('/q-autis/simpan', [QuestionController::class, 'autis_store'])->name('qautis.store');
+    Route::delete('/q-autis/{id}', [QuestionController::class, 'autis_destroy'])->name('qautis.destroy');
 
 
     Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
@@ -139,6 +139,8 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
     Route::post('/observasi-pendengaran/simpan', [ObservasiController::class, 'observasi_pendengaran'])->name('obpendengaran.store');
     Route::post('/observasi-penglihatan/simpan', [ObservasiController::class, 'observasi_penglihatan'])->name('observasi.penglihatan');
+    Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
+    Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
 
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');

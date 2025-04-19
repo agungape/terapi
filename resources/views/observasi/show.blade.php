@@ -27,9 +27,6 @@
                                     <label>Umur</label>
                                     <input type="text" class="form-control" disabled value="{{ $umur }}">
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -70,7 +67,6 @@
 
                                     {{-- hasil observasi --}}
                                     <div class="active tab-pane" id="hasil">
-
                                         <div class="card-body table-responsive p-0">
                                             <table class="table table-hover text-nowrap">
                                                 <thead>
@@ -118,8 +114,10 @@
                                                                                         class="img-fluid w-100 rounded"
                                                                                         style="max-height: 500px; object-fit: contain;"
                                                                                         alt="Gambar">
-                                                                                @elseif ($h->jenis == 'penyimpangan pendengaran')
+                                                                                @elseif ($h->jenis == 'Penyimpangan Pendengaran')
                                                                                     <div class="text-left">
+                                                                                        <h6 class="mt-3">Interpretasi:
+                                                                                        </h6>
                                                                                         <h5 class="font-weight-bold">
                                                                                             {{ $h->hasil }}</h5>
                                                                                         <h6 class="mt-3">Tindakan:</h6>
@@ -132,14 +130,58 @@
                                                                                             </p>
                                                                                         @endif
                                                                                     </div>
-                                                                                @elseif ($h->jenis == 'penyimpangan penglihatan')
+                                                                                @elseif ($h->jenis == 'Penyimpangan Penglihatan')
                                                                                     <div class="text-left">
+                                                                                        <h6 class="mt-3">Interpretasi:
+                                                                                        </h6>
                                                                                         <h5 class="font-weight-bold">
                                                                                             {{ $h->hasil }}</h5>
                                                                                         <h6 class="mt-3">Tindakan:</h6>
                                                                                         @if ($h->hasil == 'Curiga Gangguan Penglihatan')
                                                                                             <p class="text-danger">Rujuk ke
                                                                                                 {{ $penyimpangan }}</p>
+                                                                                        @else
+                                                                                            <p class="text-success">
+                                                                                                {{ $sesuaiUmur }}
+                                                                                            </p>
+                                                                                        @endif
+                                                                                    </div>
+                                                                                @elseif ($h->jenis == 'Penyimpangan Perilaku')
+                                                                                    <div class="text-left">
+                                                                                        <h6 class="mt-3">Interpretasi:
+                                                                                        </h6>
+                                                                                        <h5 class="font-weight-bold">
+                                                                                            @if ($h->hasil == 'Penyimpangan')
+                                                                                                {{ $interPerilaku }}
+                                                                                            @else
+                                                                                                {{ $h->hasil }}
+                                                                                            @endif
+                                                                                        </h5>
+
+                                                                                        <h6 class="mt-3">Tindakan:</h6>
+                                                                                        @if ($h->hasil == 'Penyimpangan')
+                                                                                            <p class="text-danger">
+                                                                                                {{ $penyimpanganPerilaku }}
+                                                                                            </p>
+                                                                                        @else
+                                                                                            <p class="text-success">
+                                                                                                {{ $sesuaiUmur }}
+                                                                                            </p>
+                                                                                        @endif
+                                                                                    </div>
+                                                                                @elseif ($h->jenis == 'Autisme')
+                                                                                    <div class="text-left">
+                                                                                        <h6 class="mt-3">Interpretasi:
+                                                                                        </h6>
+                                                                                        <h5 class="font-weight-bold">
+                                                                                            {{ $h->hasil }}
+                                                                                        </h5>
+
+                                                                                        <h6 class="mt-3">Tindakan:</h6>
+                                                                                        @if ($h->hasil == 'Risiko Autisme')
+                                                                                            <p class="text-danger">
+                                                                                                {{ $penyimpangan }}
+                                                                                            </p>
                                                                                         @else
                                                                                             <p class="text-success">
                                                                                                 {{ $sesuaiUmur }}
@@ -196,7 +238,7 @@
                                                         <label for="inputPassword3"
                                                             class="col-sm-3 col-form-label"></label>
                                                         <div class="col-sm-9">
-                                                            <button type="submit" class="btn btn-primary btn-sm"> <i
+                                                            <button type="submit" class="btn btn-success btn-sm"> <i
                                                                     class="fa fa-save mr-1"></i>Simpan
                                                                 Hasil</button>
                                                         </div>
@@ -296,7 +338,7 @@
                                                     </div>
 
                                                     <div class="text-center mt-4 mb-5">
-                                                        <button type="submit" class="btn btn-primary btn-sm"> <i
+                                                        <button type="submit" class="btn btn-success btn-sm"> <i
                                                                 class="fa fa-save mr-1"></i>Simpan
                                                             Hasil</button>
                                                     </div>
@@ -334,7 +376,7 @@
                                                         <label for="inputPassword3"
                                                             class="col-sm-2 col-form-label"></label>
                                                         <div class="col-sm-10">
-                                                            <button type="submit" class="btn btn-primary btn-sm"> <i
+                                                            <button type="submit" class="btn btn-success btn-sm"> <i
                                                                     class="fa fa-save mr-1"></i>Simpan
                                                                 Hasil</button>
                                                         </div>
@@ -347,9 +389,8 @@
 
                                     {{-- observasi perilaku --}}
                                     <div class="tab-pane" id="perilaku">
-                                        <form action="{{ route('obpendengaran.store') }}" method="POST">
+                                        <form action="{{ route('observasi.perilaku') }}" method="POST">
                                             @csrf
-
                                             <input type="text" name="anak_id" class="form-control" hidden
                                                 value="{{ $anak->id }}">
                                             {{-- DAFTAR PERTANYAAN --}}
@@ -407,7 +448,78 @@
 
                                                             <div
                                                                 class="d-flex justify-content-between align-items-center mt-3">
+                                                                <button type="submit" class="btn btn-success btn-sm">
+                                                                    <i class="fa fa-save mr-1"></i>Simpan Hasil
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
 
+                                    {{-- observasi autis --}}
+                                    <div class="tab-pane" id="autis">
+                                        <form action="{{ route('observasi.autis') }}" method="POST">
+                                            @csrf
+                                            <input type="text" name="anak_id" class="form-control" hidden
+                                                value="{{ $anak->id }}">
+                                            {{-- DAFTAR PERTANYAAN --}}
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-10">
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-header bg-primary text-white text-center">
+                                                            <h6 class="mb-0">INSTRUMEN PEMERIKSAAN MODIFIED CHECKLIST FOR
+                                                                AUTISM IN TOODLER (M-CHAT)</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover table-sm">
+                                                                    <thead class="thead-light">
+                                                                        <tr class="text-center">
+                                                                            <th style="width: 5%;">No</th>
+                                                                            <th>Pertanyaan</th>
+                                                                            <th style="width: 30%;">Jawaban</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($qautis as $index => $q)
+                                                                            <tr>
+                                                                                <td class="text-center align-middle">
+                                                                                    {{ $index + 1 }}</td>
+                                                                                <td class="align-middle">
+                                                                                    {{ $q->question_text }}</td>
+                                                                                <td class="text-center">
+                                                                                    <div
+                                                                                        class="form-check form-check-inline">
+                                                                                        <input class="form-check-input"
+                                                                                            type="radio"
+                                                                                            name="answers[{{ $q->id }}]"
+                                                                                            id="ya{{ $q->id }}"
+                                                                                            value="ya">
+                                                                                        <label class="form-check-label"
+                                                                                            for="ya{{ $q->id }}">Ya</label>
+                                                                                    </div>
+                                                                                    <div
+                                                                                        class="form-check form-check-inline">
+                                                                                        <input class="form-check-input"
+                                                                                            type="radio"
+                                                                                            name="answers[{{ $q->id }}]"
+                                                                                            id="tidak{{ $q->id }}"
+                                                                                            value="tidak">
+                                                                                        <label class="form-check-label"
+                                                                                            for="tidak{{ $q->id }}">Tidak</label>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center mt-3">
                                                                 <button type="submit" class="btn btn-success btn-sm">
                                                                     <i class="fa fa-save mr-1"></i>Simpan Hasil
                                                                 </button>

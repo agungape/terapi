@@ -55,7 +55,7 @@
                                                         <td class="text-center">
                                                             @can('delete qpendengaran')
                                                                 <form
-                                                                    action="{{ route('pendengaran.destroy', ['id' => $q->id]) }}"
+                                                                    action="{{ route('qpendengaran.destroy', ['id' => $q->id]) }}"
                                                                     method="POST" style="display:inline;">
                                                                     @csrf
                                                                     @method('DELETE')
@@ -86,7 +86,7 @@
     </div>
 
 
-    <form action="{{ route('pendengaran.store') }}" method="POST">
+    <form action="{{ route('qpendengaran.store') }}" method="POST">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">

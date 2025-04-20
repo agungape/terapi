@@ -121,13 +121,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('question.autis') }}" class="nav-link">
+                                    <a href="{{ route('question.autis') }}" class="nav-link @yield('deteksiAutis')">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Autis</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('question.gpph') }}" class="nav-link @yield('deteksiGpph')">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>GPPH</p>
                                     </a>

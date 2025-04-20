@@ -13,7 +13,7 @@
                     <div class="col-12 col-md-4">
                         <div class="card mt-4">
                             <div class="card-header">
-                                <h4 class="card-title">Deteksi Dini Penyimpangan Pendengaran</h4>
+                                <h4 class="card-title">Observasi Anak</h4>
                             </div>
                             <div class="card-body">
                                 {{-- Data Anak --}}
@@ -188,6 +188,25 @@
                                                                                             </p>
                                                                                         @endif
                                                                                     </div>
+                                                                                @elseif ($h->jenis == 'GPPH')
+                                                                                    <div class="text-left">
+                                                                                        <h6 class="mt-3">Interpretasi:
+                                                                                        </h6>
+                                                                                        <h5 class="font-weight-bold">
+                                                                                            {{ $h->hasil }}
+                                                                                        </h5>
+
+                                                                                        <h6 class="mt-3">Tindakan:</h6>
+                                                                                        @if ($h->hasil == 'Kemungkinan GPPH')
+                                                                                            <p class="text-danger">
+                                                                                                {{ $penyimpangan }}
+                                                                                            </p>
+                                                                                        @else
+                                                                                            <p class="text-success">
+                                                                                                {{ $sesuaiUmur }}
+                                                                                            </p>
+                                                                                        @endif
+                                                                                    </div>
                                                                                 @endif
                                                                             </div>
                                                                         </div>
@@ -199,57 +218,85 @@
                                                     @endforeach
                                                 </tbody>
                                             </table>
-
+                                            <form action="{{ route('observasi.cetakHasilTanggal') }}" method="GET"
+                                                target="_blank" class="mb-3">
+                                                <input type="hidden" name="anak_id" value="{{ $anak->id }}">
+                                                <div class="input-group" style="max-width: 300px;">
+                                                    <input type="date" name="tanggal" class="form-control" required>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-primary" type="submit">
+                                                            <i class="fa fa-print"></i> Cetak Hasil
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
 
                                     {{-- observasi atec --}}
                                     <div class="tab-pane" id="atec">
-                                        <div class="row mt-2">
-                                            <div class="col-12 col-md-6">
-                                                <form action="{{ route('observasi.atec') }}" method="POST"
-                                                    enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="form-group row">
-                                                        <label for="inputPassword3" class="col-sm-3 col-form-label">Upload
-                                                            Hasil</label>
-                                                        <input type="text" name="anak_id" class="form-control" hidden
-                                                            value="{{ $anak->id }}">
-                                                        <div class="col-sm-9">
-                                                            <div class="input-group">
-                                                                <div class="custom-file">
-                                                                    <input type="file"
-                                                                        class="custom-file-input @error('hasil') is-invalid @enderror"
-                                                                        name="hasil" id="gambar_atec" accept="image/*"
-                                                                        required autofocus>
-                                                                    <label class="custom-file-label"
-                                                                        for="exampleInputFile">Pilih
-                                                                        file</label>
+                                        <div class="row justify-content-center mt-2"> <!-- Added justify-content-center -->
+                                            <div class="col-lg-10"> <!-- Changed to col-lg-10 -->
+                                                <div class="card"> <!-- Added card for better visual grouping -->
+                                                    <div class="card-body">
+                                                        <form action="{{ route('observasi.atec') }}" method="POST"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="row"> <!-- Nested row for proper form layout -->
+                                                                <div class="col-12"> <!-- Full width column -->
+                                                                    <div class="form-group row">
+                                                                        <label for="inputPassword3"
+                                                                            class="col-sm-3 col-form-label">Upload
+                                                                            Hasil</label>
+                                                                        <input type="text" name="anak_id"
+                                                                            class="form-control" hidden
+                                                                            value="{{ $anak->id }}">
+                                                                        <div class="col-sm-9">
+                                                                            <div class="input-group">
+                                                                                <div class="custom-file">
+                                                                                    <input type="file"
+                                                                                        class="custom-file-input @error('hasil') is-invalid @enderror"
+                                                                                        name="hasil" id="gambar_atec"
+                                                                                        accept="image/*" required
+                                                                                        autofocus>
+                                                                                    <label class="custom-file-label"
+                                                                                        for="exampleInputFile">Pilih
+                                                                                        file</label>
+                                                                                </div>
+                                                                                @error('hasil')
+                                                                                    <span class="invalid-feedback"
+                                                                                        role="alert">
+                                                                                        <strong>{{ $message }}</strong>
+                                                                                    </span>
+                                                                                @enderror
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <div class="col-sm-9 offset-sm-3">
+                                                                            <!-- Added offset for alignment -->
+                                                                            <button type="submit"
+                                                                                class="btn btn-success btn-sm">
+                                                                                <i class="fa fa-save mr-1"></i> Simpan
+                                                                                Hasil
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                @error('hasil')
-                                                                    <span class="invalid-feedback" role="alert">
-                                                                        <strong>{{ $message }}</strong>
-                                                                    </span>
-                                                                @enderror
                                                             </div>
-                                                        </div>
+                                                        </form>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="inputPassword3"
-                                                            class="col-sm-3 col-form-label"></label>
-                                                        <div class="col-sm-9">
-                                                            <button type="submit" class="btn btn-success btn-sm"> <i
-                                                                    class="fa fa-save mr-1"></i>Simpan
-                                                                Hasil</button>
-                                                        </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-12">
+                                                        <a href="https://atec.jatmika.com/" target="_blank"
+                                                            class="btn btn-primary btn-block">
+                                                            <i class="fas fa-external-link-alt mr-2"></i> Buka ATEC di
+                                                            Jendela Baru
+                                                        </a>
                                                     </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 mt-5">
-                                                <iframe src="https://atec.jatmika.com/" width="100%"
-                                                    height="600px"></iframe>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -350,42 +397,50 @@
 
                                     {{-- observasi penglihatan --}}
                                     <div class="tab-pane" id="penglihatan">
-                                        <div class="row mt-2">
-                                            <div class="col-12 col-md-12">
-                                                <form action="{{ route('observasi.penglihatan') }}" method="POST"
-                                                    enctype="multipart/form-data">
-                                                    @csrf
-                                                    <input type="text" name="anak_id" class="form-control" hidden
-                                                        value="{{ $anak->id }}">
-                                                    <div class="form-group row">
-                                                        <label for="exampleInputMobile"
-                                                            class="col-sm-2 col-form-label">Hasil Pemeriksaan</label>
-                                                        <div class="col-sm-10">
-                                                            <select class="form-control select2" style="width:100%"
-                                                                name="hasil">
-                                                                @forelse ($qpenglihatan as $p)
-                                                                    <option value="{{ $p->interpretasi }}">
-                                                                        {{ $p->question_text }}</option>
-                                                                @empty
-                                                                    <option>tidak ada data</option>
-                                                                @endforelse
-                                                            </select>
-                                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-lg-10">
+                                                <div class="card">
+                                                    <div class="card-header bg-primary text-white">
+                                                        <h6 class="mb-0 text-center">PEMERIKSAAN PENYIMPANGAN PENGLIHATAN
+                                                        </h6>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="inputPassword3"
-                                                            class="col-sm-2 col-form-label"></label>
-                                                        <div class="col-sm-10">
-                                                            <button type="submit" class="btn btn-success btn-sm"> <i
-                                                                    class="fa fa-save mr-1"></i>Simpan
-                                                                Hasil</button>
-                                                        </div>
+                                                    <div class="card-body">
+                                                        <form action="{{ route('observasi.penglihatan') }}"
+                                                            method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input type="text" name="anak_id" class="form-control"
+                                                                hidden value="{{ $anak->id }}">
+
+                                                            <div class="form-group row">
+                                                                <label class="col-sm-2 col-form-label">Hasil
+                                                                    Pemeriksaan</label>
+                                                                <div class="col-sm-10">
+                                                                    <select class="form-control select2"
+                                                                        style="width:100%" name="hasil">
+                                                                        @forelse ($qpenglihatan as $p)
+                                                                            <option value="{{ $p->interpretasi }}">
+                                                                                {{ $p->question_text }}</option>
+                                                                        @empty
+                                                                            <option>tidak ada data</option>
+                                                                        @endforelse
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group row mb-0">
+                                                                <div class="col-sm-10 offset-sm-2">
+                                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                                        <i class="fa fa-save mr-1"></i> Simpan Hasil
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
-
                                     </div>
+
 
                                     {{-- observasi perilaku --}}
                                     <div class="tab-pane" id="perilaku">
@@ -530,6 +585,103 @@
                                             </div>
                                         </form>
                                     </div>
+
+                                    {{-- observasi GPPH --}}
+                                    <div class="tab-pane" id="gpph">
+                                        <form action="{{ route('observasi.gpph') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="anak_id" value="{{ $anak->id }}">
+
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-10">
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-header bg-primary text-white text-center">
+                                                            <h6 class="mb-0">INSTRUMEN PEMERIKSAAN GANGGUAN PEMUSATAN
+                                                                PERHATIAN DAN HIPERAKTIVITAS (GPPH)</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover">
+                                                                    <thead class="thead-light">
+                                                                        <tr class="text-center">
+                                                                            <th style="width: 5%;">No</th>
+                                                                            <th style="width: 55%;">Kegiatan yang Diamati
+                                                                            </th>
+                                                                            <th style="width: 10%;">0</th>
+                                                                            <th style="width: 10%;">1</th>
+                                                                            <th style="width: 10%;">2</th>
+                                                                            <th style="width: 10%;">3</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($qgpph as $index => $q)
+                                                                            <tr>
+                                                                                <td class="text-center align-middle">
+                                                                                    {{ $index + 1 }}</td>
+                                                                                <td class="align-middle">
+                                                                                    {{ $q->question_text }}</td>
+
+                                                                                <!-- Radio Button for 0 -->
+                                                                                <td class="text-center align-middle radio-cell"
+                                                                                    onclick="selectRadio(this, '{{ $q->id }}', 0)">
+                                                                                    <input type="radio"
+                                                                                        name="answers[{{ $q->id }}]"
+                                                                                        value="0" required
+                                                                                        class="form-check-input">
+                                                                                </td>
+
+                                                                                <!-- Radio Button for 1 -->
+                                                                                <td class="text-center align-middle radio-cell"
+                                                                                    onclick="selectRadio(this, '{{ $q->id }}', 1)">
+                                                                                    <input type="radio"
+                                                                                        name="answers[{{ $q->id }}]"
+                                                                                        value="1"
+                                                                                        class="form-check-input">
+                                                                                </td>
+
+                                                                                <!-- Radio Button for 2 -->
+                                                                                <td class="text-center align-middle radio-cell"
+                                                                                    onclick="selectRadio(this, '{{ $q->id }}', 2)">
+                                                                                    <input type="radio"
+                                                                                        name="answers[{{ $q->id }}]"
+                                                                                        value="2"
+                                                                                        class="form-check-input">
+                                                                                </td>
+
+                                                                                <!-- Radio Button for 3 -->
+                                                                                <td class="text-center align-middle radio-cell"
+                                                                                    onclick="selectRadio(this, '{{ $q->id }}', 3)">
+                                                                                    <input type="radio"
+                                                                                        name="answers[{{ $q->id }}]"
+                                                                                        value="3"
+                                                                                        class="form-check-input">
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                        <tr class="table-secondary">
+                                                                            <td colspan="2"
+                                                                                class="text-right font-weight-bold">Total
+                                                                                Skor</td>
+                                                                            <td colspan="4"
+                                                                                class="text-center font-weight-bold"
+                                                                                id="totalScore">0</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center mt-3">
+                                                                <button type="submit" class="btn btn-success btn-sm">
+                                                                    <i class="fa fa-save mr-1"></i> Simpan Hasil
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -543,27 +695,66 @@
 
 @section('scripts')
     <script>
-        $('input[type="file"]').on('change', function() {
-            let filenames = [];
-            let files = document.getElementById('gambar_atec').files;
+        $(document).ready(function() {
+            // 1. Script untuk file upload
+            $('input[type="file"]').on('change', function() {
+                let filenames = [];
+                let files = this.files;
 
-            for (let i in files) {
-                if (files.hasOwnProperty(i)) {
-                    filenames.push(files[i].name);
+                for (let i in files) {
+                    if (files.hasOwnProperty(i)) {
+                        filenames.push(files[i].name);
+                    }
                 }
-            }
 
-            $(this).next('.custom-file-label').addClass("selected").html(filenames.join(', '));
-        });
+                $(this).next('.custom-file-label').addClass("selected").html(filenames.join(', '));
+            });
 
-        function resetRadioGroup(groupId) {
-            const collapseElement = document.getElementById('collapse' + groupId);
-            if (collapseElement) {
-                const radios = collapseElement.querySelectorAll('input[type="radio"]');
-                radios.forEach(radio => {
-                    radio.checked = false;
+            // 2. Script untuk reset radio group (VERSI PERBAIKAN)
+            window.resetRadioGroup = function(groupId) {
+                const selector = '#collapse' + groupId;
+                const $collapse = $(selector);
+
+                if ($collapse.length) {
+                    // Reset semua radio button dalam group
+                    $collapse.find('input[type="radio"]').prop('checked', false);
+
+                    // Trigger change event untuk update kalkulasi jika diperlukan
+                    $collapse.find('input[type="radio"]').trigger('change');
+
+                    // Feedback visual (opsional)
+                    $collapse.css('background-color', '#fff8e1')
+                        .animate({
+                            backgroundColor: '#fff'
+                        }, 500);
+                } else {
+                    console.error('Element tidak ditemukan:', selector);
+                }
+            };
+
+            // 3. Script untuk kalkulasi GPPH
+            $('input[type="radio"][name^="answers"]').change(function() {
+                let total = 0;
+                $('input[type="radio"][name^="answers"]:checked').each(function() {
+                    total += parseInt($(this).val());
                 });
-            }
-        }
+                $('#totalScore').text(total);
+            });
+
+            // 4. Script baru untuk cell-clickable radio buttons
+            $('.radio-cell').click(function(e) {
+                // Skip if click was directly on the radio button
+                if ($(e.target).is('input[type="radio"]')) return;
+
+                const radio = $(this).find('input[type="radio"]');
+                radio.prop('checked', true).trigger('change');
+
+                // Visual feedback
+                $(this).css('background-color', '#e6f7ff').delay(200).queue(function(next) {
+                    $(this).css('background-color', '');
+                    next();
+                });
+            });
+        });
     </script>
 @endsection

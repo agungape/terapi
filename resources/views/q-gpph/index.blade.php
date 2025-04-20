@@ -2,7 +2,7 @@
 @section('menuMaster', 'active')
 @section('masterShow', 'menu-is-opening menu-open')
 @section('deteksiShow', 'menu-is-opening menu-open')
-@section('deteksiAutis', 'active')
+@section('deteksiGpph', 'active')
 @section('content')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -10,7 +10,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Data Deteksi Autis</h1>
+                        <h1>Data Deteksi GPPH</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            @can('create deteksi qautis')
+                            @can('create deteksi qgpph')
                                 <div class="card-header">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
                                         data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
@@ -41,18 +41,16 @@
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>Pertanyaan</th>
-                                                <th>Nomor Urut</th>
                                                 <th class="text-center" style="width: 120px;">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($autis as $q)
+                                            @foreach ($gpph as $q)
                                                 <tr>
                                                     <td>{{ $q->question_text }}</td>
-                                                    <td>{{ $q->no_urut }}</td>
                                                     <td class="text-center">
-                                                        @can('delete qautis')
-                                                            <form action="{{ route('qautis.destroy', ['id' => $q->id]) }}"
+                                                        @can('delete qgpph')
+                                                            <form action="{{ route('qgpph.destroy', ['id' => $q->id]) }}"
                                                                 method="POST" style="display:inline;">
                                                                 @csrf
                                                                 @method('DELETE')
@@ -81,7 +79,7 @@
     </div>
 
 
-    <form action="{{ route('qautis.store') }}" method="POST">
+    <form action="{{ route('qgpph.store') }}" method="POST">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -94,25 +92,6 @@
                             <label for="exampleInputMobile" class="col-sm-2 col-form-label">Pertanyaan</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="question_text">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-2 col-form-label">Urutan</label>
-                            <div class="col-sm-10">
-                                <select name="no_urut"
-                                    class="form-control select2bs4 @error('no_urut') is-invalid @enderror" required>
-                                    @php
-                                        $jumlahPertanyaan = $autis->count();
-                                    @endphp
-                                    @for ($i = 1; $i <= $jumlahPertanyaan + 1; $i++)
-                                        <option value="{{ $i }}" {{ old('no_urut') == $i ? 'selected' : '' }}>
-                                            Posisi ke-{{ $i }}
-                                        </option>
-                                    @endfor
-                                </select>
-                                @error('no_urut')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                     </div>

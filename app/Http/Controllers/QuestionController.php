@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AgeGroup;
 use App\Models\Question;
 use App\Models\QuestionAutis;
+use App\Models\QuestionGpph;
 use App\Models\QuestionPenglihatan;
 use App\Models\QuestionPerilaku;
 use App\Models\QuestionResponse;
@@ -138,6 +139,31 @@ class QuestionController extends Controller
     }
 
     public function autis_destroy(QuestionAutis $id)
+    {
+        $id->delete();
+        Alert::success('Berhasil', "questions di hapus");
+        return redirect()->back();
+    }
+
+    public function q_gpph()
+    {
+        $gpph = QuestionGpph::latest()->get();
+        return view('q-gpph.index', compact('gpph'));
+    }
+
+    public function gpph_store(Request $request)
+    {
+        $validateData = $request->validate([
+            'question_text' => 'required',
+        ]);
+
+        $questions = QuestionGpph::create($validateData);
+
+        Alert::success('Berhasil', "Data Question berhasil dibuat");
+        return redirect()->back();
+    }
+
+    public function gpph_destroy(QuestionGpph $id)
     {
         $id->delete();
         Alert::success('Berhasil', "questions di hapus");

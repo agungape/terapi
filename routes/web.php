@@ -101,6 +101,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::get('/q-autis', [QuestionController::class, 'q_autis'])->name('question.autis');
     Route::post('/q-autis/simpan', [QuestionController::class, 'autis_store'])->name('qautis.store');
     Route::delete('/q-autis/{id}', [QuestionController::class, 'autis_destroy'])->name('qautis.destroy');
+    Route::get('/q-gpph', [QuestionController::class, 'q_gpph'])->name('question.gpph');
+    Route::post('/q-gpph/simpan', [QuestionController::class, 'gpph_store'])->name('qgpph.store');
+    Route::delete('/q-gpph/{id}', [QuestionController::class, 'gpph_destroy'])->name('qgpph.destroy');
 
 
     Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
@@ -141,6 +144,8 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/observasi-penglihatan/simpan', [ObservasiController::class, 'observasi_penglihatan'])->name('observasi.penglihatan');
     Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
+    Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
+    Route::get('/observasi/cetak-hasil-tanggal', [ObservasiController::class, 'cetakHasilTanggal'])->name('observasi.cetakHasilTanggal');
 
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');

@@ -7,16 +7,19 @@ use App\Models\Anak;
 use App\Models\HasilPemeriksaan;
 use App\Models\Observasi;
 use App\Models\QuestionAutis;
+use App\Models\QuestionGpph;
 use App\Models\QuestionPenglihatan;
 use App\Models\QuestionPerilaku;
 use App\Models\QuestionResponse;
 use App\Models\QuestionResponseAutis;
+use App\Models\QuestionResponseGpph;
 use App\Models\QuestionResponsePerilaku;
 use App\Models\Terapis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ObservasiController extends Controller
 {
@@ -61,7 +64,8 @@ class ObservasiController extends Controller
         $qpenglihatan = QuestionPenglihatan::get();
         $qperilaku = QuestionPerilaku::latest()->get();
         $qautis = QuestionAutis::orderBy('no_urut')->get();
-        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku'));
+        $qgpph = QuestionGpph::orderBy('created_at', 'ASC')->get();
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph'));
     }
 
 
@@ -91,7 +95,6 @@ class ObservasiController extends Controller
         Alert::toast("data Observasi berhasil di Tambahkan", 'success');
         return redirect()->back();
     }
-
 
     public function observasi_pendengaran(Request $request)
     {
@@ -123,7 +126,7 @@ class ObservasiController extends Controller
         // Simpan ke tabel hasil pemeriksaan
         HasilPemeriksaan::create([
             'anak_id' => $anakId,
-            'jenis' => 'penyimpangan pendengaran',
+            'jenis' => 'Penyimpangan Pendengaran',
             'hasil' => $hasil,
         ]);
 
@@ -152,7 +155,7 @@ class ObservasiController extends Controller
 
         HasilPemeriksaan::create([
             'anak_id' => $anakId,
-            'jenis' => 'penyimpangan penglihatan',
+            'jenis' => 'Penyimpangan Penglihatan',
             'hasil' => $hasil,
         ]);
 
@@ -246,41 +249,69 @@ class ObservasiController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function observasi_gpph(Request $request)
     {
-        //
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->anak_id;
+        $answers = $request->answers;
+
+        $totalScore = 0;
+
+        foreach ($answers as $questionId => $value) {
+            $score = (int)$value;
+            $totalScore += $score;
+
+            // Simpan setiap jawaban
+            QuestionResponseGpph::create([
+                'anak_id' => $anakId,
+                'question_gpph_id' => $questionId,
+                'answer' => $score,
+            ]);
+        }
+
+        // Hitung hasil GPPH
+        $hasil = $totalScore < 13 ? 'Normal' : 'Kemungkinan GPPH';
+
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'GPPH',
+            'hasil' => $hasil,
+        ]);
+
+        Alert::toast("data Observasi GPPH berhasil di Tambahkan", 'success');
+        return redirect()->back();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function cetakHasilTanggal(Request $request)
     {
-        //
-    }
+        dd($request);
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'tanggal' => 'required|date',
+        ]);
 
+        $anak = Anak::findOrFail($request->anak_id);
+        $tanggal = $request->tanggal;
 
-    public function edit(string $id)
-    {
-        //
-    }
+        // Ambil semua hasil pemeriksaan pada tanggal tersebut
+        $hasilPemeriksaans = HasilPemeriksaan::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($hasilPemeriksaans->isEmpty()) {
+            return back()->with('warning', 'Tidak ada hasil pemeriksaan pada tanggal tersebut.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $pdf = Pdf::loadView('observasi.pdf', [
+            'anak' => $anak,
+            'tanggal' => $tanggal,
+            'hasilPemeriksaans' => $hasilPemeriksaans,
+        ])->setPaper('A4', 'portrait');
+
+        return $pdf->stream("hasil-pemeriksaan-{$anak->nama}-{$tanggal}.pdf");
     }
 }

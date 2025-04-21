@@ -48,6 +48,26 @@ class LoginController extends Controller
         return 'username';
     }
 
+    public function logout(Request $request)
+    {
+        $user = auth()->user();
+        $roles = $user->getRoleNames(); // Mengembalikan koleksi nama role
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        if ($roles->contains('anak')) {
+            return redirect('/mobile'); // Redirect ke login admin
+        } else {
+            return redirect('/login'); // Redirect ke login anak
+        }
+
+        // Default redirect jika tidak ada user (fallback)
+        return redirect('/');
+    }
 
     protected function authenticated(Request $request, $user)
     {

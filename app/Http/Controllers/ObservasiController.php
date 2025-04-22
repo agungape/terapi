@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 
 class ObservasiController extends Controller
 {
@@ -286,32 +287,28 @@ class ObservasiController extends Controller
         return redirect()->back();
     }
 
-    public function cetakHasilTanggal(Request $request)
+    public function cetak_hasil(Request $request)
     {
         dd($request);
         $request->validate([
-            'anak_id' => 'required|exists:anaks,id',
+            'anak_id' => 'required|integer',
             'tanggal' => 'required|date',
         ]);
 
-        $anak = Anak::findOrFail($request->anak_id);
         $tanggal = $request->tanggal;
+        $anakId = $request->anak_id;
 
-        // Ambil semua hasil pemeriksaan pada tanggal tersebut
-        $hasilPemeriksaans = HasilPemeriksaan::where('anak_id', $anak->id)
+        $hasil = HasilPemeriksaan::where('anak_id', $anakId)
             ->whereDate('created_at', $tanggal)
-            ->get();
+            ->orderBy('jenis')
+            ->get()
+            ->groupBy('jenis');
 
-        if ($hasilPemeriksaans->isEmpty()) {
-            return back()->with('warning', 'Tidak ada hasil pemeriksaan pada tanggal tersebut.');
-        }
-
-        $pdf = Pdf::loadView('observasi.pdf', [
-            'anak' => $anak,
+        $pdf = Pdf::loadView('pdf.hasil-observasi', [
+            'hasil' => $hasil,
             'tanggal' => $tanggal,
-            'hasilPemeriksaans' => $hasilPemeriksaans,
         ])->setPaper('A4', 'portrait');
 
-        return $pdf->stream("hasil-pemeriksaan-{$anak->nama}-{$tanggal}.pdf");
+        return $pdf->stream("hasil-observasi-$tanggal.pdf");
     }
 }

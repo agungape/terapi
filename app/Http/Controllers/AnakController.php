@@ -25,7 +25,7 @@ class AnakController extends Controller
 
     public function index()
     {
-        $anak = Anak::orderBy('nib')->paginate(5);
+        $anak = Anak::latest()->paginate(5);
 
         foreach ($anak as $a) {
             $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'sakit'])->count();

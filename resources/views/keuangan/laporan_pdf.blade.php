@@ -1,185 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Keuangan</title>
     <style>
-        /* Reset margin & padding */
-        body,
-        h1,
-        h2,
-        p,
-        table {
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* Body styling */
         body {
-            padding: 20px;
-            background-color: white;
+            font-family: sans-serif;
             font-size: 12px;
-            /* Mengurangi ukuran font */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            position: relative;
         }
 
-        /* Watermark styling */
         .watermark {
             position: fixed;
-            top: 50%;
+            top: 40%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            z-index: -10;
-            /* Membuat watermark di belakang */
-            opacity: 0.1;
-            font-size: 80px;
-            /* Diperkecil agar tidak mendominasi */
-            color: #000;
-            font-weight: bold;
-            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            z-index: 0;
         }
 
-        /* Header kop laporan */
+        .watermark img {
+            width: 300px;
+        }
+
         .kop-laporan {
             text-align: center;
             margin-bottom: 20px;
-        }
-
-        .kop-laporan img {
-            max-width: 100px;
-            /* Diperkecil */
-            margin-bottom: 5px;
+            z-index: 2;
+            position: relative;
         }
 
         .kop-laporan h1 {
-            font-size: 20px;
-            /* Ukuran font lebih kecil */
-            color: #333;
-            margin-bottom: 3px;
+            margin: 5px 0;
         }
 
         .kop-laporan p {
-            font-size: 14px;
-            /* Diperkecil */
-            color: #555;
+            margin: 0;
+            font-size: 12px;
         }
 
-        /* Main content */
-        .content {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .content h2 {
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        /* Table Styling */
-        table {
+        .table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            /* Mengurangi ukuran font */
+            margin-top: 15px;
+            z-index: 2;
+            position: relative;
         }
 
-        table th,
-        table td {
-            padding: 8px 10px;
-            /* Diperkecil */
+        .table th,
+        .table td {
+            border: 1px solid #999;
+            padding: 6px;
             text-align: left;
-        }
-
-        table th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-        }
-
-        table td {
             background-color: #fff;
         }
 
-        /* Zebra stripes for rows */
-        table tr:nth-child(even) td {
-            background-color: #f9f9f9;
+        .table th {
+            background-color: #f2f2f2;
         }
 
-        /* Borders for table and cells */
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        /* Styling for amount columns */
-        td:nth-child(3),
-        td:nth-child(5) {
+        .amount {
             text-align: right;
-            font-weight: bold;
         }
 
-        /* Footer styling */
         .footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
+            font-size: 10px;
+            margin-top: 30px;
             color: #777;
+            position: relative;
+            z-index: 2;
         }
     </style>
 </head>
 
 <body>
     <!-- Watermark -->
-    <div class="watermark">Laporan Keuangan</div>
+    <div class="watermark">
+        {{-- <img src="{{ public_path('assets/mobile/pixio/images/app-logo/bsc.png') }}" alt="Watermark"> --}}
+    </div>
 
-    <!-- Kop Laporan -->
+    <!-- Header -->
     <div class="kop-laporan">
-        <img src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="Logo Perusahaan">
-        <!-- Ganti dengan path logo yang benar -->
         <h1>Laporan Keuangan</h1>
-        <p>Periode: {{ $startDate }} hingga {{ $endDate }}</p>
+        <p>Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} -
+            {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <h2>Detail Laporan Keuangan</h2>
-
-        <!-- Laporan Table -->
-        <table>
-            <thead>
+    <!-- Tabel -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Jumlah</th>
+                <th>Keterangan</th>
+                <th>Saldo Akhir</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($financialReport as $report)
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Jenis</th>
-                    <th>Jumlah</th>
-                    <th>Keterangan</th>
-                    <th>Saldo Akhir</th>
+                    <td>{{ \Carbon\Carbon::parse($report->tanggal)->format('d-m-Y') }}</td>
+                    <td>{{ ucfirst($report->jenis) }}</td>
+                    <td class="amount">Rp {{ number_format($report->jumlah, 0, ',', '.') }}</td>
+                    <td>{{ $report->deskripsi }}</td>
+                    <td class="amount">Rp {{ number_format($report->current_balance, 0, ',', '.') }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($financialReport as $report)
-                    <tr>
-                        <td>{{ $report->tanggal }}</td>
-                        <td>{{ $report->jenis }}</td>
-                        <td>{{ number_format($report->jumlah, 2) }}</td>
-                        <td>{{ $report->deskripsi }}</td>
-                        <td>{{ number_format($report->current_balance, 2) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+            @endforeach
+        </tbody>
+    </table>
 
     <!-- Footer -->
     <div class="footer">
-        <p>Dibuat oleh: Nama Perusahaan Anda</p>
-        <p>Tanggal Cetak: {{ now()->format('d F Y H:i:s') }}</p>
+        Dicetak pada: {{ \Carbon\Carbon::now()->format('d M Y H:i') }}
     </div>
 </body>
 

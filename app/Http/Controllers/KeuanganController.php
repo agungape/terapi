@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
+use Mpdf\Mpdf;
 
 class KeuanganController extends Controller
 {
@@ -390,30 +391,24 @@ class KeuanganController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        // Hitung saldo akhir
         $currentBalance = 0;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
                 $currentBalance += $item->jumlah;
-            } elseif ($item->jenis === 'pengeluaran') {
+            } else {
                 $currentBalance -= $item->jumlah;
-            } elseif ($item->jenis === 'saldo') {
-                $currentBalance = $item->saldo_awal; // Update saldo berdasarkan data saldo_kas
             }
             $item->current_balance = $currentBalance;
             return $item;
         });
 
+        // Render view to HTML
+        $html = view('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'))->render();
 
-        // Generate PDF
-        $pdf = Pdf::loadView('keuangan.laporan_pdf', [
-            'financialReport' => $financialReport,
-            'startDate' => $startDate,
-            'endDate' => $endDate
-        ]);
+        // Init mPDF
+        $mpdf = new Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
 
-        // Menampilkan PDF langsung di browser
-        return response($pdf->stream('laporan_keuangan_' . $startDate . '_to_' . $endDate . '.pdf'))
-            ->header('Content-Type', 'application/pdf');
+        $mpdf->WriteHTML($html);
+        return $mpdf->Output("laporan_keuangan_{$startDate}_{$endDate}.pdf", 'I'); // 'I' = inline
     }
 }

@@ -122,7 +122,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/pengeluaran/simpan', [KeuanganController::class, 'pengeluaran_store'])->name('pengeluaran.store');
     Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
     Route::get('/laporan-keuangan', [KeuanganController::class, 'laporan_keuangan'])->name('keuangan.laporan');
-    Route::get('/laporan/pdf/{start_date}/{end_date}', [KeuanganController::class, 'laporan_pdf'])->name('laporan.pdf');
+    Route::get('/keuangan/laporan/pdf/{startDate}/{endDate}', [KeuanganController::class, 'laporan_pdf'])->name('keuangan.laporan.pdf');
+
+
 
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
@@ -145,8 +147,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
     Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
-    Route::get('/observasi/cetak-hasil-tanggal', [ObservasiController::class, 'cetakHasilTanggal'])->name('observasi.cetakHasilTanggal');
-
+    Route::get('/observasi/cetak-hasil-tanggal', [ObservasiController::class, 'cetak_hasil'])->name('observasi.cetak');
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

@@ -24,7 +24,7 @@ class KunjunganController extends Controller
 
     public function index()
     {
-        $terapis = Terapis::all();
+        $terapis = Terapis::where('status', 'aktif')->get();
         return view('kunjungan.index', compact('terapis'));
     }
 
@@ -51,15 +51,15 @@ class KunjunganController extends Controller
 
 
         // fungsi validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x
-        // $today = Carbon::today();
-        // $cek = Kunjungan::where('anak_id', $request->anak_id)
-        //     ->whereDate('created_at', $today)
-        //     ->first();
-        // if ($cek) {
-        //     // Jika sudah ada pendaftaran, return error
-        //     Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
-        //     return back();
-        // }
+        $today = Carbon::today();
+        $cek = Kunjungan::where('anak_id', $request->anak_id)
+            ->whereDate('created_at', $today)
+            ->first();
+        if ($cek) {
+            // Jika sudah ada pendaftaran, return error
+            Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
+            return back();
+        }
 
         // Cek apakah anak sudah pernah kunjungan sebelumnya
         $kunjungan_data = Kunjungan::where('anak_id', $request->anak_id)

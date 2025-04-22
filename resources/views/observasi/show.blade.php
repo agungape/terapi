@@ -79,24 +79,24 @@
                                                 <tbody>
                                                     @foreach ($hasil as $h)
                                                         <tr>
-                                                            <td>{{ $h->created_at }}</td>
+                                                            <td>{{ \Carbon\Carbon::parse($h->created_at)->format('d M Y') }}
+                                                            </td>
                                                             <td>{{ $h->jenis }}</td>
                                                             <td>
-                                                                <!-- Tombol -->
+                                                                <!-- Tombol untuk menampilkan modal -->
                                                                 <button class="btn btn-outline-primary btn-sm"
                                                                     data-toggle="modal"
                                                                     data-target="#modalGambar{{ $h->id }}">
-                                                                    <i class="fa fa-eye"></i>
+                                                                    <i class="fa fa-eye"></i> Lihat Hasil
                                                                 </button>
 
-                                                                <!-- Modal -->
+                                                                <!-- Modal untuk menampilkan hasil -->
                                                                 <div class="modal fade" id="modalGambar{{ $h->id }}"
                                                                     tabindex="-1"
                                                                     aria-labelledby="modalLabel{{ $h->id }}"
                                                                     aria-hidden="true">
                                                                     <div
                                                                         class="modal-dialog modal-dialog-centered modal-lg">
-                                                                        {{-- modal-lg untuk tampilan lebar --}}
                                                                         <div class="modal-content">
                                                                             <div class="modal-header">
                                                                                 <h5 class="modal-title"
@@ -104,16 +104,15 @@
                                                                                     Pemeriksaan</h5>
                                                                                 <button type="button" class="close"
                                                                                     data-dismiss="modal" aria-label="Close">
-                                                                                    {{-- untuk Bootstrap 4 --}}
                                                                                     <span aria-hidden="true">&times;</span>
                                                                                 </button>
                                                                             </div>
-                                                                            <div class="modal-body text-center">
+                                                                            <div class="modal-body">
                                                                                 @if ($h->jenis == 'ATEC')
                                                                                     <img src="{{ asset('storage/atec/' . $h->hasil) }}"
                                                                                         class="img-fluid w-100 rounded"
                                                                                         style="max-height: 500px; object-fit: contain;"
-                                                                                        alt="Gambar">
+                                                                                        alt="Hasil ATEC">
                                                                                 @elseif ($h->jenis == 'Penyimpangan Pendengaran')
                                                                                     <div class="text-left">
                                                                                         <h6 class="mt-3">Interpretasi:
@@ -121,14 +120,10 @@
                                                                                         <h5 class="font-weight-bold">
                                                                                             {{ $h->hasil }}</h5>
                                                                                         <h6 class="mt-3">Tindakan:</h6>
-                                                                                        @if ($h->hasil == 'Penyimpangan')
-                                                                                            <p class="text-danger">Rujuk ke
-                                                                                                {{ $penyimpangan }}</p>
-                                                                                        @else
-                                                                                            <p class="text-success">
-                                                                                                {{ $sesuaiUmur }}
-                                                                                            </p>
-                                                                                        @endif
+                                                                                        <p
+                                                                                            class="{{ $h->hasil == 'Penyimpangan' ? 'text-danger' : 'text-success' }}">
+                                                                                            {{ $h->hasil == 'Penyimpangan' ? 'Rujuk ke ' . $penyimpangan : $sesuaiUmur }}
+                                                                                        </p>
                                                                                     </div>
                                                                                 @elseif ($h->jenis == 'Penyimpangan Penglihatan')
                                                                                     <div class="text-left">
@@ -137,89 +132,50 @@
                                                                                         <h5 class="font-weight-bold">
                                                                                             {{ $h->hasil }}</h5>
                                                                                         <h6 class="mt-3">Tindakan:</h6>
-                                                                                        @if ($h->hasil == 'Curiga Gangguan Penglihatan')
-                                                                                            <p class="text-danger">Rujuk ke
-                                                                                                {{ $penyimpangan }}</p>
-                                                                                        @else
-                                                                                            <p class="text-success">
-                                                                                                {{ $sesuaiUmur }}
-                                                                                            </p>
-                                                                                        @endif
+                                                                                        <p
+                                                                                            class="{{ $h->hasil == 'Curiga Gangguan Penglihatan' ? 'text-danger' : 'text-success' }}">
+                                                                                            {{ $h->hasil == 'Curiga Gangguan Penglihatan' ? 'Rujuk ke ' . $penyimpangan : $sesuaiUmur }}
+                                                                                        </p>
                                                                                     </div>
                                                                                 @elseif ($h->jenis == 'Penyimpangan Perilaku')
                                                                                     <div class="text-left">
                                                                                         <h6 class="mt-3">Interpretasi:
                                                                                         </h6>
                                                                                         <h5 class="font-weight-bold">
-                                                                                            @if ($h->hasil == 'Penyimpangan')
-                                                                                                {{ $interPerilaku }}
-                                                                                            @else
-                                                                                                {{ $h->hasil }}
-                                                                                            @endif
+                                                                                            {{ $h->hasil == 'Penyimpangan' ? $interPerilaku : $h->hasil }}
                                                                                         </h5>
-
                                                                                         <h6 class="mt-3">Tindakan:</h6>
-                                                                                        @if ($h->hasil == 'Penyimpangan')
-                                                                                            <p class="text-danger">
-                                                                                                {{ $penyimpanganPerilaku }}
-                                                                                            </p>
-                                                                                        @else
-                                                                                            <p class="text-success">
-                                                                                                {{ $sesuaiUmur }}
-                                                                                            </p>
-                                                                                        @endif
+                                                                                        <p
+                                                                                            class="{{ $h->hasil == 'Penyimpangan' ? 'text-danger' : 'text-success' }}">
+                                                                                            {{ $h->hasil == 'Penyimpangan' ? $penyimpanganPerilaku : $sesuaiUmur }}
+                                                                                        </p>
                                                                                     </div>
-                                                                                @elseif ($h->jenis == 'Autisme')
+                                                                                @elseif ($h->jenis == 'Autisme' || $h->jenis == 'GPPH')
                                                                                     <div class="text-left">
                                                                                         <h6 class="mt-3">Interpretasi:
                                                                                         </h6>
                                                                                         <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil }}
-                                                                                        </h5>
-
+                                                                                            {{ $h->hasil }}</h5>
                                                                                         <h6 class="mt-3">Tindakan:</h6>
-                                                                                        @if ($h->hasil == 'Risiko Autisme')
-                                                                                            <p class="text-danger">
-                                                                                                {{ $penyimpangan }}
-                                                                                            </p>
-                                                                                        @else
-                                                                                            <p class="text-success">
-                                                                                                {{ $sesuaiUmur }}
-                                                                                            </p>
-                                                                                        @endif
-                                                                                    </div>
-                                                                                @elseif ($h->jenis == 'GPPH')
-                                                                                    <div class="text-left">
-                                                                                        <h6 class="mt-3">Interpretasi:
-                                                                                        </h6>
-                                                                                        <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil }}
-                                                                                        </h5>
-
-                                                                                        <h6 class="mt-3">Tindakan:</h6>
-                                                                                        @if ($h->hasil == 'Kemungkinan GPPH')
-                                                                                            <p class="text-danger">
-                                                                                                {{ $penyimpangan }}
-                                                                                            </p>
-                                                                                        @else
-                                                                                            <p class="text-success">
-                                                                                                {{ $sesuaiUmur }}
-                                                                                            </p>
-                                                                                        @endif
+                                                                                        <p
+                                                                                            class="{{ $h->hasil == 'Risiko Autisme' || $h->hasil == 'Kemungkinan GPPH' ? 'text-danger' : 'text-success' }}">
+                                                                                            {{ $h->hasil == 'Risiko Autisme' || $h->hasil == 'Kemungkinan GPPH' ? $penyimpangan : $sesuaiUmur }}
+                                                                                        </p>
                                                                                     </div>
                                                                                 @endif
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </td>
+
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
-                                            <form action="{{ route('observasi.cetakHasilTanggal') }}" method="GET"
-                                                target="_blank" class="mb-3">
+
+                                            <!-- Form untuk cetak hasil berdasarkan tanggal -->
+                                            <form action="{{ route('observasi.cetak') }}" method="GET" class="mb-3" target="_blank">
                                                 <input type="hidden" name="anak_id" value="{{ $anak->id }}">
                                                 <div class="input-group" style="max-width: 300px;">
                                                     <input type="date" name="tanggal" class="form-control" required>
@@ -232,6 +188,7 @@
                                             </form>
                                         </div>
                                     </div>
+
 
                                     {{-- observasi atec --}}
                                     <div class="tab-pane" id="atec">

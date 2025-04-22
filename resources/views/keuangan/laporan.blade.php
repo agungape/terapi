@@ -94,47 +94,45 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            // Inisialisasi daterangepicker
+            // Inisialisasi Date Range Picker
             $('#reservation').daterangepicker({
                 locale: {
-                    format: 'YYYY-MM-DD', // Format tanggal
-                    separator: ' - ', // Pemisah antara tanggal mulai dan selesai
+                    format: 'YYYY-MM-DD',
+                    separator: ' - ',
                     applyLabel: 'Pilih',
                     cancelLabel: 'Batal',
                     customRangeLabel: 'Custom',
                     daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
-                        'September', 'Oktober', 'November', 'Desember'
+                    monthNames: [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
                     ],
                     firstDay: 1
                 }
             });
 
-            // Set nilai awal date range picker dari input tersembunyi
+            // Set nilai awal jika ada dari request
             @if (request('date_range'))
                 $('#reservation').val('{{ request('date_range') }}');
             @endif
 
-            // Update link Export PDF saat date range berubah
-            $('#reservation').on('apply.daterangepicker', function(ev, picker) {
-                var startDate = picker.startDate.format('YYYY-MM-DD');
-                var endDate = picker.endDate.format('YYYY-MM-DD');
-                var exportUrl =
-                    "{{ route('laporan.pdf', ['start_date' => ':start_date', 'end_date' => ':end_date']) }}";
-                exportUrl = exportUrl.replace(':start_date', startDate).replace(':end_date', endDate);
-                $('#export-pdf').attr('href', exportUrl);
-            });
+            // Event saat klik tombol Export PDF
+            $('#export-pdf').on('click', function(e) {
+                e.preventDefault();
 
-            // Set link Export PDF saat halaman dimuat
-            @if (request('date_range'))
-                var dates = '{{ request('date_range') }}'.split(' - ');
-                var startDate = dates[0];
-                var endDate = dates[1];
-                var exportUrl =
-                    "{{ route('laporan.pdf', ['start_date' => ':start_date', 'end_date' => ':end_date']) }}";
-                exportUrl = exportUrl.replace(':start_date', startDate).replace(':end_date', endDate);
-                $('#export-pdf').attr('href', exportUrl);
-            @endif
+                let dateRange = $('#reservation').val();
+                if (dateRange) {
+                    let dates = dateRange.split(' - ');
+                    let start = dates[0].trim();
+                    let end = dates[1].trim();
+
+                    // Ganti URL ke route yang sesuai manual
+                    let url = `/keuangan/laporan/pdf/${start}/${end}`;
+                    window.open(url, '_blank');
+                } else {
+                    alert('Silakan pilih rentang tanggal terlebih dahulu.');
+                }
+            });
         });
     </script>
 @endsection

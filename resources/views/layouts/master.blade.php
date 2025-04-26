@@ -269,9 +269,33 @@
             class="bi bi-arrow-up-short"></i></a>
     <script>
         $(function() {
-            // Summernote
-            $('#summernote').summernote()
-            // CodeMirror
+            $('#summernote').summernote({
+                height: 200,
+            });
+
+            // Inisialisasi summernote kedua
+            $('#summernote-perilaku').summernote({
+                height: 200,
+                placeholder: 'Masukkan hasil observasi perilaku...'
+            });
+
+            $('#summernote-perilaku-edit').summernote({
+                height: 200,
+                placeholder: 'Masukkan hasil observasi perilaku...'
+            });
+
+            // Inisialisasi summernote kedua
+            $('#summernote-sensorik').summernote({
+                height: 200,
+                placeholder: 'Masukkan hasil observasi sensorik...'
+            });
+
+            $('#summernote-sensorik-edit').summernote({
+                height: 200,
+                placeholder: 'Masukkan hasil observasi sensorik...'
+            });
+
+            // Inisialisasi CodeMirror
             CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
                 mode: "htmlmixed",
                 theme: "monokai"

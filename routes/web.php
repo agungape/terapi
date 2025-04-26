@@ -142,12 +142,14 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::get('/observasi/{anak}', [ObservasiController::class, 'show'])->name('observasi.show');
     Route::post('/observasi/mulai', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
     Route::post('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
+    Route::post('/observasi/hpperilaku', [ObservasiController::class, 'observasi_hpperilaku'])->name('observasi.hpperilaku');
+    Route::post('/observasi/hpsensorik', [ObservasiController::class, 'observasi_hpsensorik'])->name('observasi.hpsensorik');
     Route::post('/observasi-pendengaran/simpan', [ObservasiController::class, 'observasi_pendengaran'])->name('obpendengaran.store');
     Route::post('/observasi-penglihatan/simpan', [ObservasiController::class, 'observasi_penglihatan'])->name('observasi.penglihatan');
     Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
     Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
-    Route::get('/observasi/cetak-hasil-tanggal', [ObservasiController::class, 'cetak_hasil'])->name('observasi.cetak');
+    Route::post('/observasi/cetak', [ObservasiController::class, 'cetakObservasi'])->name('observasi.cetak');
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

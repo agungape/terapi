@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\AgeGroup;
 use App\Models\Anak;
 use App\Models\HasilPemeriksaan;
+use App\Models\HpPerilaku;
+use App\Models\HpSensorik;
 use App\Models\Observasi;
 use App\Models\QuestionAutis;
 use App\Models\QuestionGpph;
@@ -32,15 +34,8 @@ class ObservasiController extends Controller
 
     public function index()
     {
-        $observasi = Observasi::latest()->paginate(4);
-        $jenis = [
-            'wawancara' => 'Wawancara',
-            'atec' => 'Atec',
-            'penyimpangan pendengaran' => 'Deteksi Dini Penyimpangan Pendengaran'
-        ];
         $anaks = Anak::latest()->paginate(10);
-        $terapis = Terapis::all();
-        return view('observasi.index', compact('anaks', 'terapis', 'jenis', 'observasi'));
+        return view('observasi.index', compact('anaks'));
     }
 
     public function show(Anak $anak)
@@ -58,6 +53,8 @@ class ObservasiController extends Controller
         $umur = "{$bulan} bulan {$hari} hari";
         // hitung umur
         $hasil = $anak->hasilPemeriksaans; // relasi hasMany
+        $hpperilaku = HpPerilaku::latest()->get(); // relasi hasMany
+        $hpsensorik = HpSensorik::latest()->get(); // relasi hasMany
         $sesuaiUmur = "  Puji Keberhasilan Orangtua/Pengasuh. Lanjutkan Stimulasi Sesuai Umur. Jadwalkan Kunjungan Berikutnya";
         $penyimpangan = "RS Rujukan Tumbuh Kembang Level 1";
         $interPerilaku = "Kemungkinan anak mengalami masalah mental emosional";
@@ -66,7 +63,7 @@ class ObservasiController extends Controller
         $qperilaku = QuestionPerilaku::latest()->get();
         $qautis = QuestionAutis::orderBy('no_urut')->get();
         $qgpph = QuestionGpph::orderBy('created_at', 'ASC')->get();
-        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph'));
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph', 'hpperilaku', 'hpsensorik'));
     }
 
 
@@ -287,28 +284,96 @@ class ObservasiController extends Controller
         return redirect()->back();
     }
 
-    public function cetak_hasil(Request $request)
+    public function observasi_hpperilaku(Request $request)
     {
-        dd($request);
+        $validateData =  $request->validate([
+            'deskripsi' => 'required'
+        ]);
+
+        $hpperilaku = HpPerilaku::create($validateData);
+        Alert::toast("data Observasi Perilaku berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
+
+    public function observasi_hpsensorik(Request $request)
+    {
+        $validateData =  $request->validate([
+            'deskripsi' => 'required'
+        ]);
+
+        $hpperilaku = HpSensorik::create($validateData);
+        Alert::toast("data Observasi Sensorik berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
+
+
+    public function cetakObservasi(Request $request)
+    {
+
         $request->validate([
-            'anak_id' => 'required|integer',
+            'anak_id' => 'required|exists:anaks,id',
             'tanggal' => 'required|date',
         ]);
 
+        $anak = Anak::findOrFail($request->anak_id);
         $tanggal = $request->tanggal;
-        $anakId = $request->anak_id;
 
-        $hasil = HasilPemeriksaan::where('anak_id', $anakId)
+        $hasil = HasilPemeriksaan::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->orderBy('jenis')
             ->get()
             ->groupBy('jenis');
 
-        $pdf = Pdf::loadView('pdf.hasil-observasi', [
-            'hasil' => $hasil,
-            'tanggal' => $tanggal,
-        ])->setPaper('A4', 'portrait');
+        $penyimpangan_perilaku = "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE ";
+        $autis = "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT";
+        $gpph = "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH";
 
-        return $pdf->stream("hasil-observasi-$tanggal.pdf");
+
+        $jumlahJawabanYaPerilaku = QuestionResponsePerilaku::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->where('answer', 'YA')
+            ->count();
+
+        $jumlahJawabanTidakAutis = QuestionResponseAutis::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal) // filter tanggal observasi
+            ->where('answer', 'TIDAK')
+            ->count();
+
+        $totalNilaiGpph = QuestionResponseGpph::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal) // filter tanggal observasi
+            ->sum('answer'); // jumlahkan nilai jawaban
+
+        $html = view('observasi.pdf_hasil', compact(
+            'anak',
+            'hasil',
+            'tanggal',
+            'penyimpangan_perilaku',
+            'autis',
+            'gpph',
+            'jumlahJawabanYaPerilaku',
+            'jumlahJawabanTidakAutis',
+            'totalNilaiGpph'
+        ))->render();
+
+        $mpdf = new Mpdf([
+            'default_font' => 'times',
+            'margin_top' => 30,
+            'margin_bottom' => 25,
+        ]);
+
+        $mpdf->SetTitle("Laporan Observasi - {$anak->nama}");
+        $mpdf->SetHeader("Laporan Observasi||Halaman {PAGENO}");
+        $mpdf->SetFooter("||" . date('d-m-Y') . " | " . config('app.name'));
+        $mpdf->WriteHTML($html);
+
+        // Generate PDF
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
+        $filename = 'Laporan-Observasi-' . $anak->nama . '.pdf';
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+        ]);
     }
 }

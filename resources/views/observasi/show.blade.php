@@ -40,6 +40,10 @@
                                         <ul class="nav nav-pills">
                                             <li class="nav-item"><a class="nav-link active" href="#hasil"
                                                     data-toggle="tab">Hasil Observasi</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#hpperilaku"
+                                                    data-toggle="tab">Hasil Observasi Perilaku</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#hpsensorik"
+                                                    data-toggle="tab">Hasil Observasi Sensorik</a></li>
                                             <li class="nav-item"><a class="nav-link" href="#atec"
                                                     data-toggle="tab">Atec</a></li>
                                             <li class="nav-item"><a class="nav-link" href="#pendengaran"
@@ -68,127 +72,231 @@
                                     {{-- hasil observasi --}}
                                     <div class="active tab-pane" id="hasil">
                                         <div class="card-body table-responsive p-0">
-                                            <table class="table table-hover text-nowrap">
-                                                <thead>
-                                                    <tr>
-                                                        <th> Tanggal </th>
-                                                        <th> Jenis Observasi </th>
-                                                        <th> Hasil </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($hasil as $h)
-                                                        <tr>
-                                                            <td>{{ \Carbon\Carbon::parse($h->created_at)->format('d M Y') }}
-                                                            </td>
-                                                            <td>{{ $h->jenis }}</td>
-                                                            <td>
-                                                                <!-- Tombol untuk menampilkan modal -->
-                                                                <button class="btn btn-outline-primary btn-sm"
-                                                                    data-toggle="modal"
-                                                                    data-target="#modalGambar{{ $h->id }}">
-                                                                    <i class="fa fa-eye"></i> Lihat Hasil
-                                                                </button>
 
-                                                                <!-- Modal untuk menampilkan hasil -->
-                                                                <div class="modal fade" id="modalGambar{{ $h->id }}"
-                                                                    tabindex="-1"
-                                                                    aria-labelledby="modalLabel{{ $h->id }}"
-                                                                    aria-hidden="true">
-                                                                    <div
-                                                                        class="modal-dialog modal-dialog-centered modal-lg">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title"
-                                                                                    id="modalLabel{{ $h->id }}">Hasil
-                                                                                    Pemeriksaan</h5>
-                                                                                <button type="button" class="close"
-                                                                                    data-dismiss="modal" aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                @if ($h->jenis == 'ATEC')
-                                                                                    <img src="{{ asset('storage/atec/' . $h->hasil) }}"
-                                                                                        class="img-fluid w-100 rounded"
-                                                                                        style="max-height: 500px; object-fit: contain;"
-                                                                                        alt="Hasil ATEC">
-                                                                                @elseif ($h->jenis == 'Penyimpangan Pendengaran')
-                                                                                    <div class="text-left">
-                                                                                        <h6 class="mt-3">Interpretasi:
-                                                                                        </h6>
-                                                                                        <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil }}</h5>
-                                                                                        <h6 class="mt-3">Tindakan:</h6>
-                                                                                        <p
-                                                                                            class="{{ $h->hasil == 'Penyimpangan' ? 'text-danger' : 'text-success' }}">
-                                                                                            {{ $h->hasil == 'Penyimpangan' ? 'Rujuk ke ' . $penyimpangan : $sesuaiUmur }}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                @elseif ($h->jenis == 'Penyimpangan Penglihatan')
-                                                                                    <div class="text-left">
-                                                                                        <h6 class="mt-3">Interpretasi:
-                                                                                        </h6>
-                                                                                        <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil }}</h5>
-                                                                                        <h6 class="mt-3">Tindakan:</h6>
-                                                                                        <p
-                                                                                            class="{{ $h->hasil == 'Curiga Gangguan Penglihatan' ? 'text-danger' : 'text-success' }}">
-                                                                                            {{ $h->hasil == 'Curiga Gangguan Penglihatan' ? 'Rujuk ke ' . $penyimpangan : $sesuaiUmur }}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                @elseif ($h->jenis == 'Penyimpangan Perilaku')
-                                                                                    <div class="text-left">
-                                                                                        <h6 class="mt-3">Interpretasi:
-                                                                                        </h6>
-                                                                                        <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil == 'Penyimpangan' ? $interPerilaku : $h->hasil }}
-                                                                                        </h5>
-                                                                                        <h6 class="mt-3">Tindakan:</h6>
-                                                                                        <p
-                                                                                            class="{{ $h->hasil == 'Penyimpangan' ? 'text-danger' : 'text-success' }}">
-                                                                                            {{ $h->hasil == 'Penyimpangan' ? $penyimpanganPerilaku : $sesuaiUmur }}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                @elseif ($h->jenis == 'Autisme' || $h->jenis == 'GPPH')
-                                                                                    <div class="text-left">
-                                                                                        <h6 class="mt-3">Interpretasi:
-                                                                                        </h6>
-                                                                                        <h5 class="font-weight-bold">
-                                                                                            {{ $h->hasil }}</h5>
-                                                                                        <h6 class="mt-3">Tindakan:</h6>
-                                                                                        <p
-                                                                                            class="{{ $h->hasil == 'Risiko Autisme' || $h->hasil == 'Kemungkinan GPPH' ? 'text-danger' : 'text-success' }}">
-                                                                                            {{ $h->hasil == 'Risiko Autisme' || $h->hasil == 'Kemungkinan GPPH' ? $penyimpangan : $sesuaiUmur }}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                @endif
+                                            {{-- Tabel 1: Hasil Observasi Umum --}}
+                                            <div class="mb-5">
+                                                <h5 class="border-bottom pb-2 mb-3 font-weight-bold">Hasil Observasi</h5>
+                                                <table class="table table-hover text-nowrap table-bordered">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Tanggal</th>
+                                                            <th>Jenis Observasi</th>
+                                                            <th>Hasil</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($hasil as $h)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($h->created_at)->format('d M Y') }}
+                                                                </td>
+                                                                <td>{{ $h->jenis }}</td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-primary btn-sm"
+                                                                        data-toggle="modal"
+                                                                        data-target="#modalGambar{{ $h->id }}">
+                                                                        <i class="fa fa-eye"></i> Lihat Hasil
+                                                                    </button>
+
+                                                                    {{-- Modal --}}
+                                                                    <div class="modal fade"
+                                                                        id="modalGambar{{ $h->id }}" tabindex="-1"
+                                                                        aria-labelledby="modalLabel{{ $h->id }}"
+                                                                        aria-hidden="true">
+                                                                        <div
+                                                                            class="modal-dialog modal-dialog-centered modal-lg">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title"
+                                                                                        id="modalLabel{{ $h->id }}">
+                                                                                        Detail Hasil Pemeriksaan</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    @if ($h->jenis == 'ATEC')
+                                                                                        <img src="{{ asset('storage/atec/' . $h->hasil) }}"
+                                                                                            class="img-fluid w-100 rounded"
+                                                                                            style="max-height: 500px; object-fit: contain;"
+                                                                                            alt="Hasil ATEC">
+                                                                                    @else
+                                                                                        <div class="text-left">
+                                                                                            <h6 class="mt-3">
+                                                                                                Interpretasi:</h6>
+                                                                                            <h5 class="font-weight-bold">
+                                                                                                {{ $h->hasil }}</h5>
+                                                                                            <h6 class="mt-3">Tindakan:
+                                                                                            </h6>
+                                                                                            <p
+                                                                                                class="{{ in_array($h->hasil, ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH']) ? 'text-danger' : 'text-success' }}">
+                                                                                                {{ in_array($h->hasil, ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH']) ? $penyimpangan : $sesuaiUmur }}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    @endif
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
+                                            {{-- Tabel 2: Hasil Observasi Perilaku --}}
+                                            <div class="mb-5">
+                                                <h5 class="border-bottom pb-2 mb-3 font-weight-bold">Hasil Observasi
+                                                    Perilaku</h5>
+                                                <table class="table table-hover text-nowrap table-bordered">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Tanggal</th>
+                                                            <th>Hasil</th>
                                                         </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($hpperilaku as $hp)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($hp->created_at)->format('d M Y') }}
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-primary btn-sm"
+                                                                        data-toggle="modal"
+                                                                        data-target="#modalGambar{{ $hp->id }}">
+                                                                        <i class="fa fa-eye"></i> Lihat Hasil
+                                                                    </button>
 
-                                            <!-- Form untuk cetak hasil berdasarkan tanggal -->
-                                            <form action="{{ route('observasi.cetak') }}" method="GET" class="mb-3" target="_blank">
-                                                <input type="hidden" name="anak_id" value="{{ $anak->id }}">
-                                                <div class="input-group" style="max-width: 300px;">
-                                                    <input type="date" name="tanggal" class="form-control" required>
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-outline-primary" type="submit">
-                                                            <i class="fa fa-print"></i> Cetak Hasil
-                                                        </button>
+                                                                    {{-- Modal --}}
+                                                                    <div class="modal fade"
+                                                                        id="modalGambar{{ $hp->id }}"
+                                                                        tabindex="-1"
+                                                                        aria-labelledby="modalLabel{{ $hp->id }}"
+                                                                        aria-hidden="true">
+                                                                        <div
+                                                                            class="modal-dialog modal-dialog-centered modal-lg">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title"
+                                                                                        id="modalLabel{{ $hp->id }}">
+                                                                                        Detail Hasil Observasi Perilaku</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form
+                                                                                        action="{{ route('observasi.hpperilaku') }}"
+                                                                                        method="POST"
+                                                                                        enctype="multipart/form-data">
+                                                                                        @csrf
+                                                                                        <div class="row">
+                                                                                            <!-- Nested row for proper form layout -->
+                                                                                            <div class="col-12">
+                                                                                                <!-- Full width column -->
+                                                                                                <textarea class="summernote" name="deskripsi">{{ $hp->deskripsi }}</textarea>
+
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="text-center mt-4">
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-success btn-sm">
+                                                                                                <i
+                                                                                                    class="fa fa-save mr-1"></i>Simpan
+                                                                                                Hasil</button>
+                                                                                        </div>
+
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            {{-- Form Cetak PDF --}}
+                                            <div class="border-top pt-3">
+                                                <form action="{{ route('observasi.cetak') }}" method="POST"
+                                                    class="form-inline" target="_blank">
+                                                    @csrf
+                                                    <input type="hidden" name="anak_id" value="{{ $anak->id }}">
+                                                    <div class="input-group" style="max-width: 300px;">
+                                                        <input type="date" name="tanggal" class="form-control"
+                                                            required>
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-primary" type="submit">
+                                                                <i class="fa fa-print"></i> Cetak PDF
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- hasil observasi perilaku --}}
+                                    <div class="tab-pane" id="hpperilaku">
+                                        <div class="row justify-content-center mt-2"> <!-- Added justify-content-center -->
+                                            <div class="col-lg-10"> <!-- Changed to col-lg-10 -->
+                                                <div class="card"> <!-- Added card for better visual grouping -->
+                                                    <div class="card-body">
+                                                        <form action="{{ route('observasi.hpperilaku') }}" method="POST"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="row"> <!-- Nested row for proper form layout -->
+                                                                <div class="col-12"> <!-- Full width column -->
+                                                                    <textarea id="summernote-perilaku" name="deskripsi"></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="text-center mt-4">
+                                                                <button type="submit" class="btn btn-success btn-sm"> <i
+                                                                        class="fa fa-save mr-1"></i>Simpan
+                                                                    Hasil</button>
+                                                            </div>
+
+                                                        </form>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
 
+                                    {{-- hasil observasi sensorik --}}
+                                    <div class="tab-pane" id="hpsensorik">
+                                        <div class="row justify-content-center mt-2"> <!-- Added justify-content-center -->
+                                            <div class="col-lg-10"> <!-- Changed to col-lg-10 -->
+                                                <div class="card"> <!-- Added card for better visual grouping -->
+                                                    <div class="card-body">
+                                                        <form action="{{ route('observasi.hpsensorik') }}" method="POST"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="row"> <!-- Nested row for proper form layout -->
+                                                                <div class="col-12"> <!-- Full width column -->
+                                                                    <textarea id="summernote-sensorik" name="deskripsi"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     {{-- observasi atec --}}
                                     <div class="tab-pane" id="atec">
@@ -710,6 +818,25 @@
                 $(this).css('background-color', '#e6f7ff').delay(200).queue(function(next) {
                     $(this).css('background-color', '');
                     next();
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi semua Summernote sekaligus
+            $('.summernote').each(function() {
+                $(this).summernote({
+                    height: 200, // Tinggi editor
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']]
+                    ]
                 });
             });
         });

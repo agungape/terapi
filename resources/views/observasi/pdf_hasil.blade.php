@@ -1,130 +1,175 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Hasil Observasi - {{ \Carbon\Carbon::parse($tanggal)->format('d M Y') }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Laporan Hasil Observasi</title>
     <style>
+        @page {
+            margin: 50px;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 12pt;
+            line-height: 1.5;
             color: #333;
-            margin: 0;
-            padding: 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
         }
 
-        .header img {
-            max-width: 100px;
-            margin-bottom: 10px;
+        .header h1 {
+            font-size: 18pt;
+            margin: 5px 0;
+            color: #1a5f9c;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
         .header h2 {
+            font-size: 14pt;
             margin: 0;
-            font-size: 18px;
+            color: #333;
+            font-weight: normal;
         }
 
-        .header p {
-            margin: 5px 0;
-            font-size: 12px;
+        .header-address {
+            font-size: 10pt;
+            margin-top: 10px;
+            line-height: 1.3;
         }
 
-        .title {
-            font-weight: bold;
-            font-size: 16px;
+        .divider {
+            border-top: 1px solid #000;
+            margin: 15px 0;
+        }
+
+        .report-title {
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 20px 0;
+            text-decoration: underline;
         }
 
-        .table {
+        .child-name {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .observation-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin: 15px 0;
         }
 
-        .table th,
-        .table td {
-            border: 1px solid #ccc;
-            padding: 8px;
+        .observation-table th {
+            background-color: #f2f2f2;
+            padding: 10px;
             text-align: left;
-            font-size: 12px;
+            border: 1px solid #ddd;
+            font-weight: bold;
         }
 
-        .table th {
-            background-color: #f5f5f5;
-        }
-
-        .amount {
-            text-align: right;
+        .observation-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            vertical-align: top;
         }
 
         .footer {
-            text-align: center;
-            font-size: 10px;
-            color: #777;
             margin-top: 30px;
-        }
-
-        .footer p {
-            margin: 2px 0;
+            font-size: 10pt;
+            text-align: right;
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
+    <!-- Kop Surat -->
     <div class="header">
-        <img src="{{ public_path('assets/mobile/pixio/images/app-logo/bsc.png') }}" alt="Logo">
-        <h2>Hasil Observasi</h2>
-        <p>Periode: {{ \Carbon\Carbon::parse($tanggal)->format('d M Y') }}</p>
+        <img src="{{ public_path('assets/images/kop-surat.png') }}" alt="Kop Surat">
     </div>
 
-    <!-- Judul -->
-    <div class="title">
-        <p>Hasil Pemeriksaan Observasi</p>
-    </div>
 
-    <!-- Table for Results -->
-    <table class="table">
+    <!-- Judul Laporan -->
+    <div class="report-title">LAPORAN HASIL OBSERVASI</div>
+    <div class="child-name">ZAHIRA</div>
+
+    <!-- Tabel Hasil Observasi -->
+    <table class="observation-table">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Jenis Observasi</th>
-                <th>Hasil Pemeriksaan</th>
-                <th>Waktu</th>
+                <th width="40%">Alat Observasi</th>
+                <th width="60%">Hasil Observasi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($data as $jenis => $items)
+            @foreach ($hasil as $jenis => $items)
                 <tr>
-                    <td colspan="4" style="text-align: center; font-weight: bold; background-color: #f0f0f0;">
-                        {{ ucfirst($jenis) }}</td>
+                    <td>
+                        @if ($jenis === 'Penyimpangan Perilaku')
+                            {{ $penyimpangan_perilaku }}
+                        @elseif ($jenis === 'Autisme')
+                            {{ $autis }}
+                        @elseif ($jenis === 'GPPH')
+                            {{ $gpph }}
+                        @else
+                            {{ $jenis }}
+                        @endif
+                    </td>
+                    <td>
+                        @if ($jenis === 'Penyimpangan Perilaku')
+                            Dari 14 indikator, terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA".
+                            @if ($jumlahJawabanYaPerilaku >= 2)
+                                dimana ketentuannya jika terdapat 2 atau lebih jawaban "YA" pada indikator penentuan,
+                                Maka terdapat kemungkinan anak mengalami permasalahan mental emosional dan disarankan
+                                konsultasi lebih lanjut ke dokter atau psikolog dan terapi perilaku.
+                            @else
+                                Anak tidak menunjukkan tanda permasalahan mental emosional yang signifikan.
+                            @endif
+                        @elseif ($jenis === 'Autisme')
+                            Dari 23 indikator, terdapat {{ $jumlahJawabanTidakAutis }} jawaban "TIDAK".
+                            @if ($jumlahJawabanTidakAutis >= 2)
+                                dimana ketentuannya jika terdapat 2 atau lebih jawaban “TIDAK” pada indikator
+                                penentuan,Maka anak berisiko tinggi mengalami hambatan dalam komunikasi dan
+                                keterlambatan berbicara. Disarankan untuk mendapatkan penanganan dari dokter atau
+                                psikolog serta terapi perilaku.
+                            @else
+                                Anak tidak menunjukkan tanda hambatan komunikasi atau keterlambatan berbicara yang
+                                signifikan.
+                            @endif
+                        @elseif ($jenis === 'GPPH')
+                            Total nilai yang diperoleh dari 10 indikator pengukuran adalah {{ $totalNilaiGpph }}.
+                            @if ($totalNilaiGpph >= 13)
+                                Dimana ketentuannya jika total nilai 13 atau lebih Maka kemungkinan anak mengalami
+                                kesulitan dalam pemusatan perhatian dan hiperaktifitas. Disarankan untuk evaluasi lebih
+                                lanjut ke dokter atau psikolog serta terapi perilaku.
+                            @else
+                                Anak tidak menunjukkan kesulitan signifikan dalam pemusatan perhatian dan
+                                hiperaktifitas.
+                            @endif
+                        @else
+                            hasil belum dibuat
+                        @endif
+                    </td>
                 </tr>
-                @foreach ($items as $index => $item)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $item->jenis }}</td>
-                        <td>{{ $item->hasil }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }}</td>
-                    </tr>
-                @endforeach
-            @empty
-                <tr>
-                    <td colspan="4" style="text-align: center;">Tidak ada data hasil observasi pada tanggal ini.</td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 
+
     <!-- Footer -->
     <div class="footer">
-        <p>Dibuat oleh: Nama Perusahaan</p>
-        <p>Tanggal Cetak: {{ \Carbon\Carbon::now()->format('d M Y H:i') }}</p>
+        <div>Dicetak pada: {{ date('d F Y') }}</div>
     </div>
 </body>
 

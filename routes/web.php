@@ -150,6 +150,10 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
     Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
     Route::post('/observasi/cetak', [ObservasiController::class, 'cetakObservasi'])->name('observasi.cetak');
+    Route::patch('/observasi/hpperilaku/{id}', [ObservasiController::class, 'hpperilaku_update'])->name('hpperilaku.update');
+    Route::patch('/observasi/hpsensorik/{id}', [ObservasiController::class, 'hpsensorik_update'])->name('hpsensorik.update');
+
+
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

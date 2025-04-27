@@ -159,29 +159,29 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($hpperilaku as $hp)
+                                                        @foreach ($hpperilaku as $perilaku)
                                                             <tr>
-                                                                <td>{{ \Carbon\Carbon::parse($hp->created_at)->format('d M Y') }}
+                                                                <td>{{ \Carbon\Carbon::parse($perilaku->created_at)->format('d M Y') }}
                                                                 </td>
                                                                 <td>
                                                                     <button class="btn btn-outline-primary btn-sm"
                                                                         data-toggle="modal"
-                                                                        data-target="#modalGambar{{ $hp->id }}">
+                                                                        data-target="#modalGambar{{ $perilaku->id }}">
                                                                         <i class="fa fa-eye"></i> Lihat Hasil
                                                                     </button>
 
                                                                     {{-- Modal --}}
                                                                     <div class="modal fade"
-                                                                        id="modalGambar{{ $hp->id }}"
+                                                                        id="modalGambar{{ $perilaku->id }}"
                                                                         tabindex="-1"
-                                                                        aria-labelledby="modalLabel{{ $hp->id }}"
+                                                                        aria-labelledby="modalLabel{{ $perilaku->id }}"
                                                                         aria-hidden="true">
                                                                         <div
                                                                             class="modal-dialog modal-dialog-centered modal-lg">
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
                                                                                     <h5 class="modal-title"
-                                                                                        id="modalLabel{{ $hp->id }}">
+                                                                                        id="modalLabel{{ $perilaku->id }}">
                                                                                         Detail Hasil Observasi Perilaku</h5>
                                                                                     <button type="button" class="close"
                                                                                         data-dismiss="modal"
@@ -192,15 +192,16 @@
                                                                                 </div>
                                                                                 <div class="modal-body">
                                                                                     <form
-                                                                                        action="{{ route('observasi.hpperilaku') }}"
+                                                                                        action="{{ route('hpperilaku.update', ['id' => $perilaku->id]) }}"
                                                                                         method="POST"
                                                                                         enctype="multipart/form-data">
+                                                                                        @method('PATCH')
                                                                                         @csrf
                                                                                         <div class="row">
                                                                                             <!-- Nested row for proper form layout -->
                                                                                             <div class="col-12">
                                                                                                 <!-- Full width column -->
-                                                                                                <textarea class="summernote" name="deskripsi">{{ $hp->deskripsi }}</textarea>
+                                                                                                <textarea class="summernote" name="deskripsi">{{ $perilaku->deskripsi }}</textarea>
 
                                                                                             </div>
                                                                                         </div>
@@ -209,7 +210,87 @@
                                                                                             <button type="submit"
                                                                                                 class="btn btn-success btn-sm">
                                                                                                 <i
-                                                                                                    class="fa fa-save mr-1"></i>Simpan
+                                                                                                    class="fa fa-save mr-1"></i>Update
+                                                                                                Hasil</button>
+                                                                                        </div>
+
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            {{-- Tabel 2: Hasil Observasi Sensorik --}}
+                                            <div class="mb-5">
+                                                <h5 class="border-bottom pb-2 mb-3 font-weight-bold">Hasil Observasi
+                                                    Sensorik</h5>
+                                                <table class="table table-hover text-nowrap table-bordered">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Tanggal</th>
+                                                            <th>Hasil</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($hpsensorik as $sensorik)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($sensorik->created_at)->format('d M Y') }}
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-primary btn-sm"
+                                                                        data-toggle="modal"
+                                                                        data-target="#modalGambarSensorik{{ $sensorik->id }}">
+                                                                        <i class="fa fa-eye"></i> Lihat Hasil
+                                                                    </button>
+
+                                                                    {{-- Modal --}}
+                                                                    <div class="modal fade"
+                                                                        id="modalGambarSensorik{{ $sensorik->id }}"
+                                                                        tabindex="-1"
+                                                                        aria-labelledby="modalLabelSensorik{{ $sensorik->id }}"
+                                                                        aria-hidden="true">
+                                                                        <div
+                                                                            class="modal-dialog modal-dialog-centered modal-lg">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title"
+                                                                                        id="modalLabelSensorik{{ $sensorik->id }}">
+                                                                                        Detail Hasil Observasi Sensorik</h5>
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal"
+                                                                                        aria-label="Close">
+                                                                                        <span
+                                                                                            aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form
+                                                                                        action="{{ route('hpsensorik.update', ['id' => $sensorik->id]) }}"
+                                                                                        method="POST"
+                                                                                        enctype="multipart/form-data">
+                                                                                        @method('PATCH')
+                                                                                        @csrf
+                                                                                        <div class="row">
+                                                                                            <!-- Nested row for proper form layout -->
+                                                                                            <div class="col-12">
+                                                                                                <!-- Full width column -->
+                                                                                                <textarea class="summernote" name="deskripsi">{{ $sensorik->deskripsi }}</textarea>
+
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                        <div class="text-center mt-4">
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-success btn-sm">
+                                                                                                <i
+                                                                                                    class="fa fa-save mr-1"></i>Update
                                                                                                 Hasil</button>
                                                                                         </div>
 
@@ -247,7 +328,6 @@
                                         </div>
 
                                     </div>
-
 
                                     {{-- hasil observasi perilaku --}}
                                     <div class="tab-pane" id="hpperilaku">
@@ -290,6 +370,11 @@
                                                                 <div class="col-12"> <!-- Full width column -->
                                                                     <textarea id="summernote-sensorik" name="deskripsi"></textarea>
                                                                 </div>
+                                                            </div>
+                                                            <div class="text-center mt-4">
+                                                                <button type="submit" class="btn btn-success btn-sm"> <i
+                                                                        class="fa fa-save mr-1"></i>Simpan
+                                                                    Hasil</button>
                                                             </div>
                                                         </form>
                                                     </div>

@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Mpdf\Mpdf;
 
 class ObservasiController extends Controller
@@ -53,8 +54,8 @@ class ObservasiController extends Controller
         $umur = "{$bulan} bulan {$hari} hari";
         // hitung umur
         $hasil = $anak->hasilPemeriksaans; // relasi hasMany
-        $hpperilaku = HpPerilaku::latest()->get(); // relasi hasMany
-        $hpsensorik = HpSensorik::latest()->get(); // relasi hasMany
+        $hpperilaku = HpPerilaku::latest()->get();
+        $hpsensorik = HpSensorik::latest()->get();
         $sesuaiUmur = "  Puji Keberhasilan Orangtua/Pengasuh. Lanjutkan Stimulasi Sesuai Umur. Jadwalkan Kunjungan Berikutnya";
         $penyimpangan = "RS Rujukan Tumbuh Kembang Level 1";
         $interPerilaku = "Kemungkinan anak mengalami masalah mental emosional";
@@ -295,14 +296,25 @@ class ObservasiController extends Controller
         return redirect()->back();
     }
 
-    public function observasi_hpsensorik(Request $request)
+    public function hpperilaku_update(Request $request, HpPerilaku $id): RedirectResponse
     {
         $validateData =  $request->validate([
             'deskripsi' => 'required'
         ]);
 
-        $hpperilaku = HpSensorik::create($validateData);
-        Alert::toast("data Observasi Sensorik berhasil di Tambahkan", 'success');
+        $id->update($validateData);
+        Alert::toast("data Observasi Perilaku berhasil di Perbarui", 'success');
+        return redirect()->back();
+    }
+
+    public function hpsensorik_update(Request $request, HpSensorik $id): RedirectResponse
+    {
+        $validateData =  $request->validate([
+            'deskripsi' => 'required'
+        ]);
+
+        $id->update($validateData);
+        Alert::toast("data Observasi Sensorik berhasil di Perbarui", 'success');
         return redirect()->back();
     }
 

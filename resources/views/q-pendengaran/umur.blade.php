@@ -25,51 +25,50 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="card">
                             @can('create deteksi umur')
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
+                                        data-target="#exampleModal">
+                                        <i class="fa fa-plus"></i> Tambah Data
                                     </a>
                                 </div>
                             @endcan
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th>Data Umur</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
 
-                                        @foreach ($ageGroups as $age)
-                                            <tr class="text-center">
-
-                                                <td>{{ $age->nama }}</td>
-                                                <td>
-                                                    @can('delete program anak')
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap mb-0">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>Data Umur</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($ageGroups as $age)
+                                                <tr class="text-center">
+                                                    <td>{{ $age->nama }}</td>
+                                                    <td>
+                                                        @can('delete program anak')
                                                             <form action="{{ route('age.destroy', ['id' => $age->id]) }}"
-                                                                method="POST">
-                                                                @csrf @method('DELETE')
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
                                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus"
                                                                     title="Hapus Data" data-name="{{ $age->nama }}"
                                                                     data-table="program">
                                                                     <i class="fa fa-trash fa-fw"></i>
                                                                 </button>
                                                             </form>
-                                                        </div>
-                                                    @endcan
-                                                </td>
-                                            </tr>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
-
+                                                        @endcan
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -78,6 +77,7 @@
                 </div>
             </div>
         </section>
+
     </div>
 
 

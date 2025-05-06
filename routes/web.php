@@ -58,7 +58,7 @@ Route::get('/login', function () {
 
 Auth::routes();
 
-Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], function () {
+Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog']], function () {
 
     Route::resource('/roles', RoleController::class);
     Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');

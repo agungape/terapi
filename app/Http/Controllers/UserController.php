@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
+use App\Models\Psikolog;
 use App\Models\Terapis;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class UserController extends Controller
         $users = User::latest()->paginate(10);
         $terapis = Terapis::orderBy('nama')->get();
         $anaks = Anak::orderBy('nama')->get();
+        $psikologs = Psikolog::orderBy('nama')->get();
         $roles = Role::pluck('name', 'name')->all();
         foreach ($users as $user) {
             if ($user->last_login) {
@@ -34,7 +36,7 @@ class UserController extends Controller
                 $user->last_login_duration = 'Never logged in';
             }
         }
-        return view('role-permission.user.index', ['users' => $users, 'roles' => $roles, 'anaks' => $anaks, 'terapis' => $terapis]);
+        return view('role-permission.user.index', ['users' => $users, 'roles' => $roles, 'anaks' => $anaks, 'terapis' => $terapis,  'psikologs' => $psikologs]);
     }
 
     public function create()
@@ -110,6 +112,30 @@ class UserController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
+            'password' => $hashedPassword,
+        ]);
+
+        $user->syncRoles($request->roles);
+
+        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
+        return redirect('/users');
+    }
+
+    public function store_psikolog(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:users,name',
+            'username' => 'required|string|max:255|unique:users,username',
+            'password' => 'required|string|min:8|confirmed',
+            'roles' => 'required',
+        ]);
+
+        $hashedPassword = Hash::make($request->password);
+
+        $user = User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => 'psikolog@bright.com',
             'password' => $hashedPassword,
         ]);
 

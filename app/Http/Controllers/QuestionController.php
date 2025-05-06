@@ -9,6 +9,7 @@ use App\Models\QuestionGpph;
 use App\Models\QuestionPenglihatan;
 use App\Models\QuestionPerilaku;
 use App\Models\QuestionResponse;
+use App\Models\QuestionWawancara;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -168,5 +169,11 @@ class QuestionController extends Controller
         $id->delete();
         Alert::success('Berhasil', "questions di hapus");
         return redirect()->back();
+    }
+
+    public function q_wawancara()
+    {
+        $wawancara = QuestionWawancara::latest()->get();
+        return view('q-wawancara.index', compact('wawancara'));
     }
 }

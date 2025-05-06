@@ -261,7 +261,7 @@
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
                                                                                     <h5 class="modal-title"
-                                                                                        id="modalLabelSensorik{{ $sensorik->id }}">
+                                                                                        id="modalLabelSensorik                                      {{ $sensorik->id }}">
                                                                                         Detail Hasil Observasi Sensorik</h5>
                                                                                     <button type="button" class="close"
                                                                                         data-dismiss="modal"

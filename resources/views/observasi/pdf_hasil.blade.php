@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -171,6 +171,210 @@
     <div class="footer">
         <div>Dicetak pada: {{ date('d F Y') }}</div>
     </div>
+</body>
+
+</html> --}}
+
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Hasil Observasi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            font-size: 12pt;
+        }
+
+        .kop {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .kop img {
+            width: 90px;
+            height: 90px;
+            margin-right: 20px;
+        }
+
+        .kop-text {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .kop-text h1 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .kop-text h2 {
+            font-size: 14pt;
+            margin: 5px 0;
+        }
+
+        .kop-text p {
+            font-size: 10pt;
+            margin: 2px 0;
+        }
+
+        hr {
+            border: 1px solid black;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .judul-laporan {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            vertical-align: top;
+            padding: 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .section-title {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 14pt;
+        }
+
+        ol {
+            margin-top: 10px;
+        }
+
+        .footer {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="kop">
+        <img src="{{ public_path('logo.png') }}" alt="Logo">
+        <div class="kop-text">
+            <h1>BRIGHT STAR OF CHILD</h1>
+            <h2>Pusat Layanan Terapi Anak Istimewa</h2>
+            <p>Jl. Mokodompit, Kel. Inolobuno, Kec. Wawotobi, Kab. Konawe, Prov. Sulawesi Tenggara 93462</p>
+            <p>Contact: 082191084139</p>
+            <p>Email: <a href="mailto:brightstarofchild12@gmail.com">brightstarofchild12@gmail.com</a></p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="content">
+        <!-- Judul Umum -->
+        <div class="judul-laporan">LAPORAN HASIL OBSERVASI</div>
+        <div class="judul-laporan">{{ $anak->nama }}</div>
+
+        <!-- Tabel Hasil Observasi -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th width="40%">Alat Observasi</th>
+                    <th width="60%">Hasil Observasi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($hasil as $jenis => $items)
+                    <tr>
+                        <td>
+                            @if ($jenis === 'Penyimpangan Perilaku')
+                                {{ $penyimpangan_perilaku }}
+                            @elseif ($jenis === 'Autisme')
+                                {{ $autis }}
+                            @elseif ($jenis === 'GPPH')
+                                {{ $gpph }}
+                            @else
+                                {{ $jenis }}
+                            @endif
+                        </td>
+                        <td>
+                            @if ($jenis === 'Penyimpangan Perilaku')
+                                Dari 14 indikator, terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA".
+                                @if ($jumlahJawabanYaPerilaku >= 2)
+                                    Ketentuan menunjukkan kemungkinan masalah emosional, rujuk konsultasi lebih lanjut.
+                                @else
+                                    Tidak ada indikasi masalah emosional signifikan.
+                                @endif
+                            @elseif ($jenis === 'Autisme')
+                                Dari 23 indikator, terdapat {{ $jumlahJawabanTidakAutis }} jawaban "TIDAK".
+                                @if ($jumlahJawabanTidakAutis >= 2)
+                                    Berisiko hambatan komunikasi dan bicara, disarankan konsultasi lanjut.
+                                @else
+                                    Tidak ada indikasi hambatan komunikasi.
+                                @endif
+                            @elseif ($jenis === 'GPPH')
+                                Total nilai: {{ $totalNilaiGpph }}.
+                                @if ($totalNilaiGpph >= 13)
+                                    Kemungkinan mengalami kesulitan fokus dan hiperaktifitas.
+                                @else
+                                    Tidak ada kesulitan fokus/hiperaktifitas signifikan.
+                                @endif
+                            @else
+                                hasil belum dibuat
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <!-- Hasil Observasi Perilaku -->
+        <div class="section-title">HASIL OBSERVASI PERILAKU</div>
+        <ol>
+            {{-- @foreach ($perilaku as $item)
+                <li>{{ $item }}</li>
+            @endforeach --}}
+        </ol>
+
+        <!-- Hasil Observasi Sensorik -->
+        <div class="section-title">HASIL OBSERVASI SENSORIK</div>
+
+        <p><b>Observasi Profil Sensory</b></p>
+        {{-- <p>{{ $deskripsi_sensorik }}</p> --}}
+
+        <p><b>Gangguan Sensory yang Bermasalah :</b></p>
+        <ol>
+            {{-- @foreach ($sensorik_gangguan as $item)
+                <li>{{ $item }}</li>
+            @endforeach --}}
+        </ol>
+
+        <p><b>Rencana Terapi Sensory Integrasi :</b></p>
+        <ol>
+            {{-- @foreach ($rencana_terapi as $item)
+                <li>{{ $item }}</li>
+            @endforeach --}}
+        </ol>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Dicetak pada: {{ \Carbon\Carbon::now()->format('d F Y') }}
+    </div>
+
 </body>
 
 </html>

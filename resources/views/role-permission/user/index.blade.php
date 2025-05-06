@@ -46,6 +46,13 @@
                                         <i class="fa fa-plus mr-1"></i> Tambah User Terapis
                                     </button>
                                 @endcan
+
+                                @can('create user psikolog')
+                                    <button class="btn btn-danger btn-sm m-1" data-toggle="modal"
+                                        data-target="#tambahModalPsikolog">
+                                        <i class="fa fa-plus mr-1"></i> Tambah User Psikolog
+                                    </button>
+                                @endcan
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body p-3">
@@ -413,6 +420,93 @@
         </div>
     </div>
 
+    {{-- modal tambah user Psikolog --}}
+    <div class="modal fade" id="tambahModalPsikolog" tabindex="-1" aria-labelledby="tambahModalLabelPsikolog"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white d-flex justify-content-center">
+                    <h5 class="modal-title" id="tambahModalLabelPsikolog">Tambah User Psikolog</h5>
+                </div>
+                <form action="{{ route('userspsikolog.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group row mb-3">
+                            <label for="tambahInputMobilnama" class="col-sm-4 col-form-label">Psikolog</label>
+                            <div class="col-sm-8">
+                                <input type="hidden" name="formpsikolog" value="tambahpsikolog">
+                                <select class="form-control @error('name') is-invalid @enderror select2"
+                                    style="width:100%" name="name">
+                                    @forelse ($psikologs as $psikolog)
+                                        <option value="{{ $psikolog->nama }}">{{ $psikolog->nama }}
+                                        </option>
+                                    @empty
+                                        <option>tidak ada data</option>
+                                    @endforelse
+                                </select>
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="usernamepsikolog" class="col-sm-4 col-form-label">Username</label>
+                            <div class="col-sm-8">
+                                <input id="usernamepsikolog" type="text"
+                                    class="form-control @error('username') is-invalid @enderror" name="username"
+                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
+                                @error('username')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="passwordterapis" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
+                            <div class="col-sm-8">
+                                <input id="passwordterapis" type="password"
+                                    class="form-control @error('password') is-invalid @enderror" name="password" required
+                                    autocomplete="new-password">
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="password-confirmterapis"
+                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
+                            <div class="col-sm-8">
+                                <input id="password-confirmterapis" type="password" class="form-control"
+                                    name="password_confirmation" required autocomplete="new-password">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="roleterapis" class="col-sm-4 col-form-label">{{ __('Roles') }}</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" name="roles[]" multiple>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role }}">{{ $role }}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">
+                            {{ __('Register') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     {{-- modal edit --}}
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -554,6 +648,11 @@
         let isErrorTambahTerapis = @json($errors->any() && old('formterapis') == 'tambahterapis');
         if (isErrorTambahTerapis) {
             $('#isErrorTambahTerapis').modal('show');
+        }
+
+        let isErrorTambahPsikolog = @json($errors->any() && old('formpsikolog') == 'tambahpsikolog');
+        if (isErrorTambahPsikolog) {
+            $('#isErrorTambahPsikolog').modal('show');
         }
 
         let iserror_edit = @json ($errors->any() && old('form') == 'edit');

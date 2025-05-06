@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnakController;
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\InformasiController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\PsikologController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TarifController;
@@ -72,6 +74,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::resource('/users', UserController::class);
     Route::post('/users/anak', [UserController::class, 'store_anak'])->name('usersanak.store');
     Route::post('/users/terapis', [UserController::class, 'store_terapis'])->name('usersterapis.store');
+    Route::post('/users/psikolog', [UserController::class, 'store_psikolog'])->name('userspsikolog.store');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::resource('/terapis', TerapisController::class);
@@ -104,6 +107,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::get('/q-gpph', [QuestionController::class, 'q_gpph'])->name('question.gpph');
     Route::post('/q-gpph/simpan', [QuestionController::class, 'gpph_store'])->name('qgpph.store');
     Route::delete('/q-gpph/{id}', [QuestionController::class, 'gpph_destroy'])->name('qgpph.destroy');
+    Route::get('/q-wawancara', [QuestionController::class, 'q_wawancara'])->name('question.wawancara');
+    Route::post('/q-wawancara/simpan', [QuestionController::class, 'wawancara_store'])->name('qwawancara.store');
+    Route::delete('/q-wawancara/{id}', [QuestionController::class, 'wawancara_destroy'])->name('qwawancara.destroy');
 
 
     Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
@@ -158,7 +164,14 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan']], func
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');
     Route::get('/delete-fototerapis/{id}', [TerapisController::class, 'deletefoto'])->name('delete.fototerapis');
+
+    // route assessment
+    Route::resource('/assessment', AssessmentController::class);
+
+    // route psikolog
+    Route::resource('/psikolog', PsikologController::class);
 });
+
 
 Route::group(['middleware' => ['role:anak']], function () {
 

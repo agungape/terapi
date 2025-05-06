@@ -60,6 +60,15 @@
                             </li>
                         @endcan
 
+                        @can('view psikolog')
+                            <li class="nav-item">
+                                <a href="/psikolog" class="nav-link @yield('menuPsikolog')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Psikolog</p>
+                                </a>
+                            </li>
+                        @endcan
+
                         @can('view program anak')
                             <li class="nav-item">
                                 <a href="/program" class="nav-link @yield('menuProgram')">
@@ -130,6 +139,12 @@
                                     <a href="{{ route('question.gpph') }}" class="nav-link @yield('deteksiGpph')">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>GPPH</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('question.wawancara') }}" class="nav-link @yield('deteksiWawancara')">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Wawancara</p>
                                     </a>
                                 </li>
                             </ul>
@@ -244,6 +259,16 @@
                             <i class="nav-icon fa fa-address-book"></i>
                             <p>
                                 Observasi
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('view assessment')
+                    <li class="nav-item">
+                        <a href="/assessment" class="nav-link @yield('menuAssessment')">
+                            <i class="nav-icon fa fa-address-book"></i>
+                            <p>
+                                Assessment
                             </p>
                         </a>
                     </li>

@@ -7,6 +7,7 @@ use App\Models\Assessment;
 use App\Models\Psikolog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -20,9 +21,19 @@ class AssessmentController extends Controller
 
     public function create()
     {
+
+        $user = Auth::user();
+        $roles = $user->getRoleNames();
+
         $anaks = Anak::latest()->get();
-        $psikologs = Psikolog::latest()->get();
-        return view('assessment.create', compact('anaks', 'psikologs'));
+
+        if ($roles->contains('psikolog')) {
+            $psikologs = Psikolog::where('nama', $user->name)->first();
+            return view('assessment.create', compact('anaks', 'psikologs', 'roles'));
+        } else {
+            $psikologs = Psikolog::latest()->get();
+            return view('assessment.create', compact('anaks', 'psikologs', 'roles'));
+        }
     }
 
     public function store(Request $request): RedirectResponse

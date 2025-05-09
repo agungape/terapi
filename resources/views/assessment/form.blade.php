@@ -52,22 +52,31 @@
                                 <div class="form-group row">
                                     <label for="inputName" class="col-sm-2 col-form-label">Pilih Psikolog</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control @error('psikolog_id') is-invalid @enderror select2"
-                                            style="width:100%" name="psikolog_id">
-                                            @forelse ($psikologs as $psikolog)
-                                                <option value="{{ $psikolog->id }}"
-                                                    {{ old('psikolog_id') == $psikolog->id || (!old('psikolog_id') && isset($assessment) && $assessment->psikolog_id == $psikolog->id) ? 'selected' : '' }}>
-                                                    {{ $psikolog->nama }}
-                                                </option>
-                                            @empty
-                                                <option>tidak ada data</option>
-                                            @endforelse
-                                        </select>
-                                        @error('psikolog_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                        @if ($roles->contains('psikolog'))
+                                            <input type="hidden" class="form-control" name="psikolog_id"
+                                                value="{{ $psikologs->id }}">
+                                            <input type="text" class="form-control" value="{{ $psikologs->nama }}"
+                                                disabled>
+                                        @else
+                                            <select
+                                                class="form-control @error('psikolog_id') is-invalid @enderror select2"
+                                                style="width:100%" name="psikolog_id">
+                                                @forelse ($psikologs as $psikolog)
+                                                    <option value="{{ $psikolog->id }}"
+                                                        {{ old('psikolog_id') == $psikolog->id || (!old('psikolog_id') && isset($assessment) && $assessment->psikolog_id == $psikolog->id) ? 'selected' : '' }}>
+                                                        {{ $psikolog->nama }}
+                                                    </option>
+                                                @empty
+                                                    <option>tidak ada data</option>
+                                                @endforelse
+                                            </select>
+                                            @error('psikolog_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        @endif
+
                                     </div>
                                 </div>
 

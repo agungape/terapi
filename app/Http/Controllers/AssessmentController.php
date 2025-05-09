@@ -49,4 +49,50 @@ class AssessmentController extends Controller
         Alert::success('Berhasil', "Data Assessment $namaAnak->nama berhasil dibuat");
         return redirect("/assessment");
     }
+
+    public function edit(Assessment $assessment)
+    {
+        $anaks = Anak::latest()->get();
+        $psikologs = Psikolog::latest()->get();
+        return view('assessment.edit', compact('assessment', 'anaks', 'psikologs'));
+    }
+
+    public function update(Request $request, Assessment $assessment): RedirectResponse
+    {
+        $validateData = $request->validate([
+            'anak_id' => 'required|exists:App\Models\Anak,id',
+            'psikolog_id' => 'required|exists:App\Models\Psikolog,id',
+            'file_assessment' =>  'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        $namaAnak = Anak::findorFail($request->anak_id);
+
+        if ($request->hasFile('file_assessment')) {
+
+            if ($assessment->file_assessment) {
+                Storage::disk('public')->delete('hasil-assessment/' . $assessment->file_assessment);
+            }
+
+            $file = $request->file('file_assessment');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile =
+                "hasil-assessment-" . $namaAnak->nama . "." . $extFile;
+            $path = 'hasil-assessment/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+            $validateData['file_assessment'] = $namaFile;
+        } else {
+            $validatedData['file_assessment'] = $assessment->file_assessment;
+        }
+
+        $assessment->update($validateData);
+        Alert::success('Berhasil', "Data Assessment berhasil di Update");
+        return redirect("/assessment");
+    }
+    public function destroy(Assessment $assessment)
+    {
+        Storage::disk('public')->delete('hasil-assessment/' . $assessment->file_assessment);
+        $assessment->delete();
+        Alert::success('Berhasil', "Data Assessment berhasil di Hapus");
+        return redirect()->back();
+    }
 }

@@ -176,4 +176,23 @@ class QuestionController extends Controller
         $wawancara = QuestionWawancara::latest()->get();
         return view('q-wawancara.index', compact('wawancara'));
     }
+
+    public function wawancara_store(Request $request)
+    {
+        $validateData = $request->validate([
+            'question_text' => 'required',
+        ]);
+
+        $questions = QuestionWawancara::create($validateData);
+
+        Alert::success('Berhasil', "Data Question Wawancara berhasil dibuat");
+        return redirect()->back();
+    }
+
+    public function wawancara_destroy(QuestionWawancara $id)
+    {
+        $id->delete();
+        Alert::success('Berhasil', "Questions Wawancara di hapus");
+        return redirect()->back();
+    }
 }

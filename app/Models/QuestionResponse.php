@@ -13,9 +13,4 @@ class QuestionResponse extends Model
     {
         return $this->belongsTo(Question::class);
     }
-
-    public function anak()
-    {
-        return $this->belongsTo(Anak::class);
-    }
 }

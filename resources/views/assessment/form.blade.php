@@ -25,18 +25,17 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="tab-content">
+                                <!-- Pilih Anak -->
                                 <div class="form-group row">
                                     <label for="inputName" class="col-sm-2 col-form-label">Pilih Anak</label>
                                     <div class="col-sm-6">
                                         <select class="form-control @error('anak_id') is-invalid @enderror select2"
                                             style="width:100%" name="anak_id">
                                             @forelse ($anaks as $anak)
-                                                @if ($anak->id == old('anak_id'))
-                                                    <option value="{{ $anak->id }}" selected>{{ $anak->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $anak->id }}">{{ $anak->nama }}</option>
-                                                @endif
+                                                <option value="{{ $anak->id }}"
+                                                    {{ old('anak_id') == $anak->id || (!old('anak_id') && isset($assessment) && $assessment->anak_id == $anak->id) ? 'selected' : '' }}>
+                                                    {{ $anak->nama }}
+                                                </option>
                                             @empty
                                                 <option>tidak ada data</option>
                                             @endforelse
@@ -48,18 +47,18 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <!-- Pilih Psikolog -->
                                 <div class="form-group row">
                                     <label for="inputName" class="col-sm-2 col-form-label">Pilih Psikolog</label>
                                     <div class="col-sm-6">
                                         <select class="form-control @error('psikolog_id') is-invalid @enderror select2"
                                             style="width:100%" name="psikolog_id">
                                             @forelse ($psikologs as $psikolog)
-                                                @if ($psikolog->id == old('psikolog_id'))
-                                                    <option value="{{ $psikolog->id }}" selected>{{ $psikolog->nama }}
-                                                    </option>
-                                                @else
-                                                    <option value="{{ $psikolog->id }}">{{ $psikolog->nama }}</option>
-                                                @endif
+                                                <option value="{{ $psikolog->id }}"
+                                                    {{ old('psikolog_id') == $psikolog->id || (!old('psikolog_id') && isset($assessment) && $assessment->psikolog_id == $psikolog->id) ? 'selected' : '' }}>
+                                                    {{ $psikolog->nama }}
+                                                </option>
                                             @empty
                                                 <option>tidak ada data</option>
                                             @endforelse
@@ -72,27 +71,38 @@
                                     </div>
                                 </div>
 
+
                                 <div class="form-group row">
-                                    <label for="inputPassword3" class="col-sm-2 col-form-label">Upload
-                                        Hasil</label>
+                                    <label for="file_assessment" class="col-sm-2 col-form-label">Upload Hasil</label>
                                     <div class="col-sm-6">
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <input type="file"
                                                     class="custom-file-input @error('file_assessment') is-invalid @enderror"
-                                                    name="file_assessment" id="gambar_assessment"
-                                                    accept="application/pdf" required>
-                                                <label class="custom-file-label" for="exampleInputFile">Pilih
+                                                    name="file_assessment" id="file_assessment"
+                                                    accept="application/pdf">
+                                                <label class="custom-file-label" for="file_assessment">Pilih
                                                     file</label>
                                             </div>
-                                            @error('file_assessment')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
+                                        @error('file_assessment')
+                                            <span class="text-danger small d-block mt-1">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+
+                                        @if (!empty($assessment->file_assessment))
+                                            <div class="mt-3">
+                                                <a href="{{ asset('storage/hasil-assessment/' . $assessment->file_assessment) }}"
+                                                    target="_blank" class="btn btn-sm btn-primary">
+                                                    Lihat File: {{ basename($assessment->file_assessment) }}
+                                                </a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
+
+
 
                                 <div class="form-group row">
                                     <div class="offset-sm-2 col-sm-10">

@@ -56,6 +56,8 @@
                                                     data-toggle="tab">AUTIS</a></li>
                                             <li class="nav-item"><a class="nav-link" href="#gpph"
                                                     data-toggle="tab">GPPH</a></li>
+                                            <li class="nav-item"><a class="nav-link" href="#wawancara"
+                                                    data-toggle="tab">Wawancara</a></li>
                                         </ul>
                                     </div>
                                     <div class="col-md-1">
@@ -91,11 +93,20 @@
                                                                 </td>
                                                                 <td>{{ $h->jenis }}</td>
                                                                 <td>
-                                                                    <button class="btn btn-outline-primary btn-sm"
-                                                                        data-toggle="modal"
-                                                                        data-target="#modalGambar{{ $h->id }}">
-                                                                        <i class="fa fa-eye"></i> Lihat Hasil
-                                                                    </button>
+                                                                    @if ($h->jenis !== 'Wawancara')
+                                                                        <button class="btn btn-outline-primary btn-sm"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modalGambar{{ $h->id }}">
+                                                                            <i class="fa fa-eye"></i> Lihat Hasil
+                                                                        </button>
+                                                                    @endif
+                                                                    @if ($h->jenis !== 'Penyimpangan Penglihatan')
+                                                                        <a href="{{ route('observasi.detail', ['hasil' => $h->id]) }}"
+                                                                            class="btn btn-outline-success btn-sm">
+                                                                            <i class="fa fa-eye"></i> Lihat Jawaban</a>
+                                                                    @endif
+
+
 
                                                                     {{-- Modal --}}
                                                                     <div class="modal fade"
@@ -167,7 +178,8 @@
                                                                     <button class="btn btn-outline-primary btn-sm"
                                                                         data-toggle="modal"
                                                                         data-target="#modalGambar{{ $perilaku->id }}">
-                                                                        <i class="fa fa-eye"></i> Lihat Hasil
+                                                                        <i class="fa fa-eye"></i> Lihat
+                                                                        Hasil
                                                                     </button>
 
                                                                     {{-- Modal --}}
@@ -591,7 +603,6 @@
                                         </div>
                                     </div>
 
-
                                     {{-- observasi perilaku --}}
                                     <div class="tab-pane" id="perilaku">
                                         <form action="{{ route('observasi.perilaku') }}" method="POST">
@@ -832,6 +843,62 @@
                                             </div>
                                         </form>
                                     </div>
+
+                                    {{-- observasi wawancara --}}
+                                    <div class="tab-pane" id="wawancara">
+                                        <form action="{{ route('observasi.wawancara') }}" method="POST">
+                                            @csrf
+                                            <input type="text" name="anak_id" class="form-control" hidden
+                                                value="{{ $anak->id }}">
+                                            {{-- DAFTAR PERTANYAAN --}}
+                                            <div class="row justify-content-center">
+                                                <div class="col-lg-10">
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-header bg-primary text-white text-center">
+                                                            <h6 class="mb-0">INSTRUMEN WAWANCARA</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover table-sm">
+                                                                    <thead class="thead-light">
+                                                                        <tr class="text-center">
+                                                                            <th style="width: 5%;">No</th>
+                                                                            <th>Pertanyaan</th>
+                                                                            <th style="width: 65%;">Jawaban</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($qwawancara as $index => $q)
+                                                                            <tr>
+                                                                                <td class="text-center align-middle">
+                                                                                    {{ $index + 1 }}</td>
+                                                                                <td class="align-middle">
+                                                                                    {{ $q->question_text }}</td>
+                                                                                <td class="text-center">
+                                                                                    <input type="text"
+                                                                                        class="form-control"
+                                                                                        name="answers[{{ $q->id }}]"
+                                                                                        placeholder="isikan jawaban">
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center mt-3">
+                                                                <button type="submit" class="btn btn-success btn-sm">
+                                                                    <i class="fa fa-save mr-1"></i>Simpan Hasil
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

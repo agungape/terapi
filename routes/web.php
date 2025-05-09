@@ -155,10 +155,11 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
     Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
+    Route::post('/observasi-wawancara/simpan', [ObservasiController::class, 'observasi_wawancara'])->name('observasi.wawancara');
     Route::post('/observasi/cetak', [ObservasiController::class, 'cetakObservasi'])->name('observasi.cetak');
     Route::patch('/observasi/hpperilaku/{id}', [ObservasiController::class, 'hpperilaku_update'])->name('hpperilaku.update');
     Route::patch('/observasi/hpsensorik/{id}', [ObservasiController::class, 'hpsensorik_update'])->name('hpsensorik.update');
-
+    Route::get('/observasi/detail/{hasil}', [ObservasiController::class, 'detail'])->name('observasi.detail');
 
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');

@@ -7,7 +7,6 @@ use App\Models\Anak;
 use App\Models\HasilPemeriksaan;
 use App\Models\HpPerilaku;
 use App\Models\HpSensorik;
-use App\Models\Observasi;
 use App\Models\QuestionAutis;
 use App\Models\QuestionGpph;
 use App\Models\QuestionPenglihatan;
@@ -16,12 +15,12 @@ use App\Models\QuestionResponse;
 use App\Models\QuestionResponseAutis;
 use App\Models\QuestionResponseGpph;
 use App\Models\QuestionResponsePerilaku;
-use App\Models\Terapis;
+use App\Models\QuestionResponseWawancara;
+use App\Models\QuestionWawancara;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Mpdf\Mpdf;
 
@@ -64,7 +63,60 @@ class ObservasiController extends Controller
         $qperilaku = QuestionPerilaku::latest()->get();
         $qautis = QuestionAutis::orderBy('no_urut')->get();
         $qgpph = QuestionGpph::orderBy('created_at', 'ASC')->get();
-        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph', 'hpperilaku', 'hpsensorik'));
+        $qwawancara = QuestionWawancara::all();
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph', 'hpperilaku', 'hpsensorik', 'qwawancara'));
+    }
+
+    public function detail(HasilPemeriksaan $hasil)
+    {
+        $anak = Anak::where('id', $hasil->anak_id)->first();
+        $tanggalLahir = Carbon::parse($anak->tanggal_lahir);
+        $sekarang = Carbon::now();
+        $bulan = $tanggalLahir->diffInMonths($sekarang);
+        $tanggalSetelahBulan = $tanggalLahir->addMonthsNoOverflow($bulan);
+        $hari = $tanggalSetelahBulan->diffInDays($sekarang);
+        $umur = "{$bulan} bulan {$hari} hari";
+
+        if ($hasil->jenis == 'Penyimpangan Perilaku') {
+            $qrperilaku = QuestionResponsePerilaku::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                // ->pluck('question_perilaku_id', 'answer');
+                ->get();
+            return view('observasi.hasil.perilaku', compact('anak', 'umur', 'qrperilaku'));
+        }
+
+        if ($hasil->jenis == 'Penyimpangan Pendengaran') {
+            $qrpendengaran = QuestionResponse::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+            return view('observasi.hasil.pendengaran', compact('anak', 'umur', 'qrpendengaran'));
+        }
+
+        if ($hasil->jenis == 'GPPH') {
+            $qrgpph = QuestionResponseGpph::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+
+            $total = QuestionResponseGpph::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->sum('answer');
+
+            return view('observasi.hasil.gpph', compact('anak', 'umur', 'qrgpph', 'total'));
+        }
+
+        if ($hasil->jenis == 'Autisme') {
+            $qrautis = QuestionResponseAutis::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+            return view('observasi.hasil.autisme', compact('anak', 'umur', 'qrautis'));
+        }
+
+        if ($hasil->jenis == 'Wawancara') {
+            $qrwawancara = QuestionResponseWawancara::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+            return view('observasi.hasil.wawancara', compact('anak', 'umur', 'qrwawancara'));
+        }
     }
 
 
@@ -282,6 +334,35 @@ class ObservasiController extends Controller
         ]);
 
         Alert::toast("data Observasi GPPH berhasil di Tambahkan", 'success');
+        return redirect()->back();
+    }
+
+    public function observasi_wawancara(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $answers = $request->input('answers');
+
+        foreach ($answers as $questionId => $answer) {
+
+            QuestionResponseWawancara::create([
+                'anak_id' => $anakId,
+                'question_wawancara_id' => $questionId,
+                'answer' => $answer,
+            ]);
+        }
+
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'Wawancara',
+            'hasil' => 'Wawancara',
+        ]);
+
+        Alert::toast("data Observasi Wawancara berhasil di Tambahkan", 'success');
         return redirect()->back();
     }
 

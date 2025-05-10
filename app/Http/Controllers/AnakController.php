@@ -31,8 +31,8 @@ class AnakController extends Controller
 
         $aktif = Anak::where('status', 'aktif')->count();
         $nonaktif = Anak::where('status', 'nonaktif')->count();
-        $pria = Anak::where('status', 'nonaktif')->where('jenis_kelamin', 'L')->count();
-        $wanita = Anak::where('status', 'nonaktif')->where('jenis_kelamin', 'P')->count();
+        $pria = Anak::where('status', 'aktif')->where('jenis_kelamin', 'L')->count();
+        $wanita = Anak::where('status', 'aktif')->where('jenis_kelamin', 'P')->count();
 
         foreach ($anaks as $a) {
             $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'sakit'])->count();

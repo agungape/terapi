@@ -146,17 +146,59 @@
             object-fit: cover;
             object-position: center;
         }
+
+        /* Content Styling */
+        .content-header,
+        .content {
+            position: relative;
+            z-index: 1;
+            /* color: white; */
+        }
+
+
+
+
+        /* Card Styling */
+        .card {
+            /* background-color: rgba(255, 255, 255, 0.9); */
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+
+        .card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            /* background-color: rgba(255, 255, 255, 0.95); */
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        /* Small Box Styling */
+        .small-box {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            color: white !important;
+            overflow: hidden;
+        }
+
+        .small-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .small-box .inner h3,
+        .small-box .inner p {
+            /* color: white !important; */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .small-box .icon {
+            color: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-
-        <!-- Preloader -->
-        {{-- <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('assets') }}/adminlte/dist/img/AdminLTELogo.png"
-                alt="AdminLTELogo" height="60" width="60">
-        </div> --}}
 
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">

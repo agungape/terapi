@@ -16,22 +16,15 @@
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <style>
-        /* Smaller Video Background */
+        /* Video Container - Responsive */
         .video-container {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            /* Reduced width */
-            height: 100%;
-            /* Reduced height */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
             overflow: hidden;
-            border-radius: 15px;
-            /* Optional rounded corners */
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            /* Optional subtle shadow */
         }
 
         .video-background {
@@ -39,6 +32,18 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+        }
+
+        /* Responsive Overlay */
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            background-color: rgba(255, 253, 253, 0);
         }
 
         /* Dark overlay for better visibility */
@@ -49,8 +54,37 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -2;
+            background: rgba(255, 255, 255, 0);
+            z-index: -1;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+
+            /* Tablet styles */
+            .video-background {
+                object-position: 65% center;
+                /* Adjust focal point for mobile */
+            }
+
+            body::after {
+                background: rgba(0, 0, 0, 0);
+                /* Darker overlay for mobile */
+            }
+        }
+
+        @media (max-width: 576px) {
+
+            /* Mobile styles */
+            .video-container {
+                height: 120vh;
+                /* Extra height for mobile scrolling */
+            }
+
+            .video-background {
+                object-position: 75% center;
+                /* Further adjust focal point */
+            }
         }
     </style>
 </head>
@@ -128,13 +162,33 @@
     @yield('scripts')
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Optional video controls
             const video = document.getElementById('myVideo');
-            video.playbackRate = 1.0; // Normal speed
-            video.play(); // Ensure autoplay works
+
+            // Mobile-friendly video settings
+            video.playbackRate = 1.0;
+            video.playsInline = true; // Important for iOS
+            video.muted = true; // Required for autoplay on mobile
+
+            // Handle mobile orientation changes
+            function handleResize() {
+                if (window.innerWidth < 768) {
+                    video.playbackRate = 0.8; // Slower on mobile
+                } else {
+                    video.playbackRate = 1.0; // Normal on desktop
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial check
+
+            // Ensure video plays on iOS
+            document.body.addEventListener('touchstart', function() {
+                video.play().catch(e => console.log(e));
+            }, {
+                once: true
+            });
         });
     </script>
 </body>

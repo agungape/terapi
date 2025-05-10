@@ -100,11 +100,13 @@
                                                                             <i class="fa fa-eye"></i> Lihat Hasil
                                                                         </button>
                                                                     @endif
-                                                                    @if ($h->jenis !== 'Penyimpangan Penglihatan' || $h->jenis !== 'ATEC')
+                                                                    @if ($h->jenis !== 'Penyimpangan Penglihatan' && $h->jenis !== 'ATEC')
                                                                         <a href="{{ route('observasi.detail', ['hasil' => $h->id]) }}"
                                                                             class="btn btn-outline-success btn-sm">
-                                                                            <i class="fa fa-eye"></i> Lihat Jawaban</a>
+                                                                            <i class="fa fa-eye"></i> Lihat Jawaban
+                                                                        </a>
                                                                     @endif
+
 
                                                                     {{-- Modal --}}
                                                                     <div class="modal fade"

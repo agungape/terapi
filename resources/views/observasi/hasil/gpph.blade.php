@@ -99,11 +99,7 @@
                                                             </table>
                                                         </div>
 
-                                                        <div class="d-flex justify-content-between align-items-center mt-3">
-                                                            <button type="submit" class="btn btn-success btn-sm">
-                                                                <i class="fa fa-save mr-1"></i> Simpan Hasil
-                                                            </button>
-                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>

@@ -318,7 +318,7 @@
                         <a href="/profile" class="nav-link @yield('menuProfile')">
                             <i class="nav-icon fas fa-house-user"></i>
                             <p>
-                                Profile
+                                Profile Yayasan
                             </p>
                         </a>
                     </li>

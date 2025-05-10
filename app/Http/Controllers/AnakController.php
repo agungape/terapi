@@ -25,15 +25,22 @@ class AnakController extends Controller
 
     public function index()
     {
-        $anak = Anak::latest()->paginate(5);
+        $anaks = Anak::orderByRaw("status = 'aktif' DESC")
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
-        foreach ($anak as $a) {
+        $aktif = Anak::where('status', 'aktif')->count();
+        $nonaktif = Anak::where('status', 'nonaktif')->count();
+        $pria = Anak::where('status', 'nonaktif')->where('jenis_kelamin', 'L')->count();
+        $wanita = Anak::where('status', 'nonaktif')->where('jenis_kelamin', 'P')->count();
+
+        foreach ($anaks as $a) {
             $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'sakit'])->count();
             // Hitung progres berdasarkan jumlah kunjungan
             $a->progresnilai = ($progres >= 20) ? 100 : ($progres * 5); // 5% untuk setiap kunjungan
         }
 
-        return view('anak.index', ['anaks' => $anak]);
+        return view('anak.index', compact('anaks', 'aktif', 'nonaktif', 'pria', 'wanita'));
     }
 
     /**

@@ -13,7 +13,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Profile</li>
+                            <li class="breadcrumb-item active">Profile Yayasan</li>
                         </ol>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                                     </div>
                                     <!-- Ketua -->
                                     <div class="form-group row">
-                                        <label for="ketua" class="col-sm-4 col-form-label">Ketua</label>
+                                        <label for="ketua" class="col-sm-4 col-form-label">Kepala Yayasan</label>
                                         <div class="col-sm-8">
                                             <input type="text" id="ketua" name="ketua" class="form-control"
                                                 value="{{ $profile->ketua ?? '' }}" />
@@ -158,7 +158,7 @@
                                     </div>
                                     <!-- Ketua -->
                                     <div class="form-group row">
-                                        <label for="ketua" class="col-sm-4 col-form-label">Ketua</label>
+                                        <label for="ketua" class="col-sm-4 col-form-label">Kepala Yayasan</label>
                                         <div class="col-sm-8">
                                             <input type="text" id="ketua" name="ketua" class="form-control" />
                                         </div>

@@ -23,6 +23,57 @@
 
         <section class="content">
             <div class="container-fluid">
+                <div class="row text-center">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>{{ $aktif ?? 0 }}</h3>
+                                <p>Anak Aktif</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-android-notifications"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>{{ $nonaktif ?? 0 }}</h3>
+                                <p>Anak Tidak Aktif</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-android-notifications-off"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>{{ $pria }}</h3>
+                                <p>Anak Laki-Laki</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-male"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>{{ $wanita }}</h3>
+                                <p>Anak Perempuan</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-female"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card">

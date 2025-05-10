@@ -23,7 +23,7 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row text-center">
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{ $saldoKas ? $saldoKas->saldo_awal : 0 }}</h3>
@@ -35,38 +35,28 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>{{ $formattedPemasukan ?? 0 }}</h3>
                                 <p>Pemasukkan</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
+                                <i class="ion ion-android-arrow-down"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>44</h3>
-                                <p>Keuntungan</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person-add"></i>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>{{ $formattedPengeluaran ?? 0 }}</h3>
                                 <p>Pengeluaran</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
+                                <i class="ion ion-android-arrow-up"></i>
                             </div>
                         </div>
                     </div>

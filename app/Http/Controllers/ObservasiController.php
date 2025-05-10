@@ -34,7 +34,7 @@ class ObservasiController extends Controller
 
     public function index()
     {
-        $anaks = Anak::latest()->paginate(10);
+        $anaks = Anak::where('status', 'aktif')->latest()->paginate(10);
         return view('observasi.index', compact('anaks'));
     }
 

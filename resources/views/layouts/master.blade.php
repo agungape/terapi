@@ -128,6 +128,24 @@
             border-radius: 50%;
             /* Membuat gambar menjadi lingkaran */
         }
+
+        /* Video Background Styles */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
     </style>
 </head>
 
@@ -179,18 +197,6 @@
                         <i class="fas fa-expand-arrows-alt"></i>
                     </a>
                 </li>
-
-                {{-- <li class="nav-item">
-                    <a title="keluar" class="nav-link" href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                        <i class="fa fa-power-off" data-feather="power"></i>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </a>
-
-                </li> --}}
 
                 <li class="nav-item">
                     <a title="Keluar" class="nav-link" href="#" id="logout-btn">

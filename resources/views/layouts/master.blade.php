@@ -147,30 +147,7 @@
             object-position: center;
         }
 
-        /* Content Styling */
-        .content-header,
-        .content {
-            position: relative;
-            z-index: 1;
-            /* color: white; */
-        }
-
-
-
-
         /* Card Styling */
-        .card {
-            /* background-color: rgba(255, 255, 255, 0.9); */
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            border: none;
-        }
-
-        .card-header {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            /* background-color: rgba(255, 255, 255, 0.95); */
-            border-radius: 10px 10px 0 0 !important;
-        }
 
         /* Small Box Styling */
         .small-box {

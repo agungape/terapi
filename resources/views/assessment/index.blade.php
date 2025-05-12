@@ -74,7 +74,8 @@
                                                 </td>
                                                 <td style="vertical-align: middle;">
                                                     <a href="{{ asset('storage/hasil-assessment/' . $a->file_assessment) }}"
-                                                        target="_blank">
+                                                        target="_blank"
+                                                        onclick="window.open(this.href).print(); return false;">
                                                         {{ $a->file_assessment }}
                                                     </a>
                                                 </td>

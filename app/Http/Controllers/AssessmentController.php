@@ -81,7 +81,13 @@ class AssessmentController extends Controller
         $validateData = $request->validate([
             'anak_id' => 'required|exists:App\Models\Anak,id',
             'psikolog_id' => 'required|exists:App\Models\Psikolog,id',
-            'file_assessment' =>  'nullable|file|mimes:pdf|max:2048',
+            'file_assessment' =>  'nullable|file|mimes:pdf|max:5120',
+            'assessment_awal' => 'required|string',
+            'tanggal_assessment' => 'required|date',
+            'diagnosa' => 'nullable|string',
+            'rekomendasi' => 'nullable|string',
+            'catatan_tambahan' => 'nullable|string',
+            'tindak_lanjut' => 'nullable|string',
         ]);
 
         $namaAnak = Anak::findorFail($request->anak_id);

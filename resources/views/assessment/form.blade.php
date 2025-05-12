@@ -141,8 +141,7 @@
                                                             <input type="date"
                                                                 class="form-control @error('tanggal_assessment') is-invalid @enderror"
                                                                 name="tanggal_assessment" id="tanggal_assessment"
-                                                                value="{{ old('tanggal_assessment') ?? (isset($assessment) ? $assessment->tanggal_assessment : date('Y-m-d')) }}"
-                                                                required>
+                                                                value="{{ old('tanggal_assessment', isset($assessment) ? date('Y-m-d', strtotime($assessment->tanggal_assessment)) : '') }}">
                                                             @error('tanggal_assessment')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>

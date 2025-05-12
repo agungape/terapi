@@ -158,7 +158,7 @@
     <script src="{{ asset('assets') }}/adminlte/dist/js/adminlte.min.js"></script>
     <script src="{{ asset('assets') }}/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 
-
+    @include('sweetalert::alert')
     @yield('scripts')
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
@@ -190,6 +190,102 @@
                 once: true
             });
         });
+    </script>
+    <script>
+        document.getElementById("logout-btn").addEventListener("click", function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Anda akan keluar dari akun ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, Keluar",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("logout-form").submit();
+                }
+            });
+        });
+
+
+        let semuaTombol = document.querySelectorAll('.btn-hapus');
+        semuaTombol.forEach(function(item) {
+            item.addEventListener('click', konfirmasi);
+        })
+
+        function konfirmasi(event) {
+            // Buat pesan error untuk setiap tipe tabel
+            let tombol = event.currentTarget;
+            let judulAlert;
+            let teksAlert;
+            switch (tombol.getAttribute('data-table')) {
+                case 'terapis':
+                    judulAlert = 'Apakah anda yakin?';
+                    teksAlert = 'Hapus data terapis <b> ' + tombol.getAttribute('data-name') + '</b>';
+                    break;
+                case 'anak':
+                    judulAlert = 'Hapus anak ' + tombol.getAttribute('data-name') + '?';
+                    teksAlert = 'Semua data <b>Kunjungan</b> untuk anak ' +
+                        'ini juga akan terhapus!';
+                    break;
+                default:
+                    judulAlert = 'Apakah anda yakin?';
+                    teksAlert = 'Hapus data <b>' + tombol.getAttribute('data-name') + '</b>';
+                    break;
+            }
+            event.preventDefault();
+            Swal.fire({
+                    title: judulAlert,
+                    html: teksAlert,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonText: 'Tidak jadi',
+                    confirmButtonText: 'Ya, hapus!',
+                    reverseButtons: true,
+                })
+                .then((result) => {
+                    if (result.value) {
+                        tombol.parentElement.submit();
+                    }
+                })
+        }
+
+        function showConfirmation() {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin mengkonfirmasi File?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Konfirmasi!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('confirmationForm').submit();
+                }
+            });
+        }
+
+        function showRejected() {
+            Swal.fire({
+                title: 'Rejected',
+                text: 'Apakah Anda yakin ingin Menolak File?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Reject!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('rejectedForm').submit();
+                }
+            });
+        }
     </script>
 </body>
 

@@ -138,7 +138,7 @@
         <!-- Header Section with Logo -->
         <div class="header">
             <!-- Replace with your actual logo path -->
-            <img src="{{ asset('images/logo_bright_star.png') }}" alt="Bright Star Logo" class="logo">
+            <img src="{{ asset('images/logo_bright_star.jpg') }}" alt="Bright Star Logo" class="logo">
             <h1>BRIGHT STAR OF CHILD</h1>
             <h2>Pusat Layanan Terapi Anak Istimewa</h2>
             <div class="contact-info">

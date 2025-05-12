@@ -38,6 +38,7 @@
         href="{{ asset('assets') }}/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet"
         href="{{ asset('assets') }}/adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    @yield('style')
     <style>
         .search-container button {
             margin-top: 4px;

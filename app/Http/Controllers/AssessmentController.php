@@ -25,7 +25,7 @@ class AssessmentController extends Controller
         $user = Auth::user();
         $roles = $user->getRoleNames();
 
-        $anaks = Anak::where('status', 'aktif')->latest()->paginate(10);
+        $anaks = Anak::where('status', 'aktif')->latest()->get;
 
         if ($roles->contains('psikolog')) {
             $psikologs = Psikolog::where('nama', $user->name)->first();

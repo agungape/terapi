@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\RedirectResponse;
 use Mpdf\Mpdf;
+use Illuminate\Support\Str;
 
 class ObservasiController extends Controller
 {
@@ -402,7 +403,6 @@ class ObservasiController extends Controller
 
     public function cetakObservasi(Request $request)
     {
-
         $request->validate([
             'anak_id' => 'required|exists:anaks,id',
             'tanggal' => 'required|date',
@@ -411,62 +411,75 @@ class ObservasiController extends Controller
         $anak = Anak::findOrFail($request->anak_id);
         $tanggal = $request->tanggal;
 
+        // Ambil data hasil pemeriksaan
         $hasil = HasilPemeriksaan::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->orderBy('jenis')
             ->get()
             ->groupBy('jenis');
 
-        $penyimpangan_perilaku = "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE ";
-        $autis = "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT";
-        $gpph = "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH";
-
-
+        // Hitung jawaban untuk masing-masing tes
         $jumlahJawabanYaPerilaku = QuestionResponsePerilaku::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->where('answer', 'YA')
             ->count();
 
         $jumlahJawabanTidakAutis = QuestionResponseAutis::where('anak_id', $anak->id)
-            ->whereDate('created_at', $tanggal) // filter tanggal observasi
+            ->whereDate('created_at', $tanggal)
             ->where('answer', 'TIDAK')
             ->count();
 
         $totalNilaiGpph = QuestionResponseGpph::where('anak_id', $anak->id)
-            ->whereDate('created_at', $tanggal) // filter tanggal observasi
-            ->sum('answer'); // jumlahkan nilai jawaban
+            ->whereDate('created_at', $tanggal)
+            ->sum('answer');
 
-        $html = view('observasi.pdf_hasil', compact(
-            'anak',
-            'hasil',
-            'tanggal',
-            'penyimpangan_perilaku',
-            'autis',
-            'gpph',
-            'jumlahJawabanYaPerilaku',
-            'jumlahJawabanTidakAutis',
-            'totalNilaiGpph'
-        ))->render();
+        // Siapkan data untuk view
+        $data = [
+            'anak' => $anak,
+            'hasil' => $hasil,
+            'tanggal' => $tanggal,
+            'penyimpangan_perilaku' => "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE",
+            'autis' => "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT",
+            'gpph' => "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH",
+            'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,
+            'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
+            'totalNilaiGpph' => $totalNilaiGpph,
+        ];
 
+        // Render view ke HTML
+        $html = view('observasi.pdf_hasil', $data)->render();
+
+        // Konfigurasi MPDF
         $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
             'default_font' => 'times',
             'margin_top' => 30,
             'margin_bottom' => 25,
+            'margin_left' => 15,
+            'margin_right' => 15,
         ]);
 
+        // Atur metadata dan header/footer
         $mpdf->SetTitle("Laporan Observasi - {$anak->nama}");
+        $mpdf->SetAuthor(config('app.name'));
+        $mpdf->SetCreator(config('app.name'));
+
         $mpdf->SetHeader("Laporan Observasi||Halaman {PAGENO}");
         $mpdf->SetFooter("||" . date('d-m-Y') . " | " . config('app.name'));
+
+        // Tambahkan HTML ke PDF
         $mpdf->WriteHTML($html);
 
-        // Generate PDF
-        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+        // Generate nama file
+        $filename = 'Laporan-Observasi-' . Str::slug($anak->nama) . '.pdf';
 
-        $filename = 'Laporan-Observasi-' . $anak->nama . '.pdf';
-
-        return response($pdfContent, 200, [
+        // Output PDF ke browser untuk preview
+        return response($mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'Cache-Control' => 'public, must-revalidate, max-age=0',
+            'Pragma' => 'public',
         ]);
     }
 }

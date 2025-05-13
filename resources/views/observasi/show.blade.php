@@ -353,6 +353,9 @@
                                                             <div class="row"> <!-- Nested row for proper form layout -->
                                                                 <div class="col-12"> <!-- Full width column -->
                                                                     <textarea id="summernote-perilaku" name="deskripsi"></textarea>
+                                                                    <input type="text" name="anak_id"
+                                                                        class="form-control" hidden
+                                                                        value="{{ $anak->id }}">
                                                                 </div>
                                                             </div>
 
@@ -381,6 +384,9 @@
                                                             <div class="row"> <!-- Nested row for proper form layout -->
                                                                 <div class="col-12"> <!-- Full width column -->
                                                                     <textarea id="summernote-sensorik" name="deskripsi"></textarea>
+                                                                    <input type="text" name="anak_id"
+                                                                        class="form-control" hidden
+                                                                        value="{{ $anak->id }}">
                                                                 </div>
                                                             </div>
                                                             <div class="text-center mt-4">

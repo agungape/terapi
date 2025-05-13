@@ -9,5 +9,5 @@ class HpPerilaku extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['deskripsi'];
+    protected $fillable = ['deskripsi', 'anak_id'];
 }

@@ -54,8 +54,8 @@ class ObservasiController extends Controller
         $umur = "{$bulan} bulan {$hari} hari";
         // hitung umur
         $hasil = $anak->hasilPemeriksaans; // relasi hasMany
-        $hpperilaku = HpPerilaku::latest()->get();
-        $hpsensorik = HpSensorik::latest()->get();
+        $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->get();
+        $hpsensorik = HpSensorik::where('anak_id', $anak->id)->get();
         $sesuaiUmur = "  Puji Keberhasilan Orangtua/Pengasuh. Lanjutkan Stimulasi Sesuai Umur. Jadwalkan Kunjungan Berikutnya";
         $penyimpangan = "RS Rujukan Tumbuh Kembang Level 1";
         $interPerilaku = "Kemungkinan anak mengalami masalah mental emosional";
@@ -370,6 +370,7 @@ class ObservasiController extends Controller
     public function observasi_hpperilaku(Request $request)
     {
         $validateData =  $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
             'deskripsi' => 'required'
         ]);
 
@@ -386,6 +387,18 @@ class ObservasiController extends Controller
 
         $id->update($validateData);
         Alert::toast("data Observasi Perilaku berhasil di Perbarui", 'success');
+        return redirect()->back();
+    }
+
+    public function observasi_hpsensorik(Request $request)
+    {
+        $validateData =  $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'deskripsi' => 'required'
+        ]);
+
+        $hpsensorik = HpSensorik::create($validateData);
+        Alert::toast("data Observasi Sensorik berhasil di Tambahkan", 'success');
         return redirect()->back();
     }
 
@@ -418,6 +431,8 @@ class ObservasiController extends Controller
             ->get()
             ->groupBy('jenis');
 
+        $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
+        $hpsensorik = HpSensorik::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         // Hitung jawaban untuk masing-masing tes
         $jumlahJawabanYaPerilaku = QuestionResponsePerilaku::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
@@ -444,6 +459,8 @@ class ObservasiController extends Controller
             'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,
             'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
             'totalNilaiGpph' => $totalNilaiGpph,
+            'hpperilaku' => $hpperilaku,
+            'hpsensorik' => $hpsensorik,
         ];
 
         // Render view ke HTML
@@ -466,7 +483,7 @@ class ObservasiController extends Controller
         $mpdf->SetCreator(config('app.name'));
 
         $mpdf->SetHeader("Laporan Observasi||Halaman {PAGENO}");
-        $mpdf->SetFooter("||" . date('d-m-Y') . " | " . config('app.name'));
+        $mpdf->SetFooter("||" . $request->tanggal . " | " . config('app.name'));
 
         // Tambahkan HTML ke PDF
         $mpdf->WriteHTML($html);

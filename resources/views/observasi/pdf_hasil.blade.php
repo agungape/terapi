@@ -1,188 +1,238 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Observasi - {{ $anak->nama }}</title>
+    <title>Surat Keterangan Kesehatan Jiwa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
-            line-height: 1.5;
-            color: #333;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+        .logo {
+            width: 80px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 18pt;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            font-size: 12pt;
-        }
-
-        .info-box {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-
-        .info-box table {
-            width: 100%;
-        }
-
-        .info-box table td {
-            padding: 5px;
-            vertical-align: top;
-        }
-
-        .section {
+        .kop-border {
+            border-top: 3px double black;
             margin-bottom: 15px;
-            page-break-inside: avoid;
+        }
+
+        .qr {
+            width: 120px;
         }
 
         .section-title {
-            background-color: #f0f0f0;
-            padding: 5px 10px;
+            background-color: #2c7be5;
+            color: white;
+            padding: 8px 15px;
             font-weight: bold;
-            border-left: 4px solid #333;
-            margin-bottom: 10px;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 0;
         }
 
-        table.result-table {
+        .section-content {
+            border: 1px solid #e3ebf6;
+            border-top: none;
+            padding: 15px;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .result-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
         }
 
-        table.result-table th,
-        table.result-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        .result-table th,
+        .result-table td {
+            border: 1px solid #e3ebf6;
+            padding: 10px;
         }
 
-        table.result-table th {
-            background-color: #f2f2f2;
-        }
-
-        .signature {
-            margin-top: 50px;
-            text-align: right;
-        }
-
-        .page-break {
-            page-break-after: always;
+        .result-table th {
+            background-color: #f0f5ff;
         }
     </style>
 </head>
 
-<body>
-    <div class="header">
-        <h1>LAPORAN HASIL OBSERVASI</h1>
-        <p>BRIGHT STAR OF CHILD - Pusat Layanan Terapi Anak Istimewa</p>
+<body class="px-4 py-3">
+
+    <!-- Kop Surat -->
+    <div class="text-center">
+        <div class="row align-items-center mb-2">
+            <table border="0">
+                <tr class="text-center">
+                    <td>
+                        <div class="col-2">
+                            <img src="{{ public_path('assets/images/logo_bright_star.jpg') }}" alt="Logo"
+                                class="logo">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-10">
+                            <h5 class="mb-0 fw-bold">BRIGHT STAR OF CHILD </h5>
+                            <h5 class="mb-0 fw-bold">Pusat Layanan Terapi Anak Istimewa
+                            </h5>
+                            <p class="mb-0" style="font-size: 10pt;">
+                                Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
+                                Tenggara 93462<br>Telp 085123238404 | Website : https://brightchild.id | Email :
+                                brightstarofchild12@gmail.com
+
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+        <div class="kop-border"></div>
+        <h6 class="fw-bold text-decoration-underline">LAPORAN OBSERVASI</h6>
     </div>
 
-    <div class="info-box">
-        <table>
+    <!-- ISI SESUAI PERMINTAAN -->
+    <div class="info-box mb-4">
+        <table class="table table-borderless">
             <tr>
-                <td width="20%">Nama Anak</td>
+                <td width="20%"><strong>Nama Anak</strong></td>
                 <td width="30%">: {{ $anak->nama }}</td>
-                <td width="20%">Tanggal Lahir</td>
+                <td width="20%"><strong>Tanggal Lahir</strong></td>
                 <td width="30%">: {{ $anak->tanggal_lahir }}</td>
             </tr>
             <tr>
-                <td>Tanggal Observasi</td>
+                <td><strong>Tanggal Observasi</strong></td>
                 <td>: {{ date('d/m/Y', strtotime($tanggal)) }}</td>
-                <td>Usia Saat Observasi</td>
+                <td><strong>Usia Saat Observasi</strong></td>
                 <td>: {{ $anak->usia }} tahun</td>
             </tr>
         </table>
     </div>
 
-    <div class="section">
-        <div class="section-title">HASIL DETEKSI DINI</div>
-        <table class="result-table">
-            <thead>
-                <tr>
-                    <th width="40%">Jenis Pemeriksaan</th>
-                    <th width="30%">Hasil</th>
-                    <th width="30%">Interpretasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ $penyimpangan_perilaku }}</td>
-                    <td>{{ $jumlahJawabanYaPerilaku }} dari 14 indikator YA</td>
-                    <td>
-                        @if ($jumlahJawabanYaPerilaku >= 2)
-                            <strong>Risiko tinggi:</strong> Kemungkinan masalah mental emosional
-                        @else
-                            Tidak terdeteksi masalah
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td>{{ $autis }}</td>
-                    <td>{{ $jumlahJawabanTidakAutis }} dari 23 indikator TIDAK</td>
-                    <td>
-                        @if ($jumlahJawabanTidakAutis >= 2)
-                            <strong>Risiko tinggi:</strong> Hambatan komunikasi dan keterlambatan bicara
-                        @else
-                            Tidak terdeteksi masalah
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td>{{ $gpph }}</td>
-                    <td>Total nilai: {{ $totalNilaiGpph }}</td>
-                    <td>
-                        @if ($totalNilaiGpph >= 13)
-                            <strong>Risiko tinggi:</strong> Kesulitan pemusatan perhatian dan hiperaktifitas
-                        @else
-                            Tidak terdeteksi masalah
-                        @endif
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    @foreach ($hasil as $jenis => $items)
-        <div class="section">
-            <div class="section-title">HASIL OBSERVASI {{ strtoupper($jenis) }}</div>
+    <div class="section mb-4">
+        <div class="section-title">HASIL OBSERVASI</div>
+        <div class="section-content">
             <table class="result-table">
                 <thead>
                     <tr>
-                        <th width="80%">Aspek yang Diamati</th>
-                        <th width="20%">Hasil</th>
+                        <th width="40%">Jenis Pemeriksaan</th>
+                        <th width="60%">Hasil</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($items as $item)
-                        <tr>
-                            <td>{{ $item->aspek }}</td>
-                            <td>{{ $item->hasil }}</td>
-                        </tr>
+                    @foreach ($hasil as $jenis => $items)
+                        @if ($jenis == 'Penyimpangan Perilaku')
+                            <tr>
+                                <td> {{ $penyimpangan_perilaku }}</td>
+                                <td>
+                                    @if ($jumlahJawabanYaPerilaku >= 2)
+                                        Dari 14 indikator dimana terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA",
+                                        dimana
+                                        ketentuannya
+                                        jika terdapat 2 atau lebih jawaban "YA" pada indikator penentuan, maka
+                                        terdapat kemungkinan anak mengalami permasalahan mental emosional
+                                        yang berikutnya dapat di rujuk untuk konsultasi lebih lanjut ke dokter
+                                        atau psikolog dan terapi perilaku.
+                                    @else
+                                        Dari 14 indikator dimana terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA".
+                                        Maka
+                                        tidak
+                                        terdeteksi masalah mental emosional pada anak
+                                    @endif
+                                </td>
+                            </tr>
+                        @elseif ($jenis == 'Autisme')
+                            <tr>
+                                <td>{{ $autis }}</td>
+
+                                <td>
+                                    @if ($jumlahJawabanTidakAutis >= 2)
+                                        Dari 23 indikator dimana terdapat {{ $jumlahJawabanTidakAutis }} jawaban
+                                        "TIDAK",
+                                        dimana
+                                        ketentuannya jika terdapat 2 atau lebih jawaban "TIDAK" pada indikator
+                                        penentuan, maka <strong>beresiko tinggi</strong> anak mengalami hambatan dalam
+                                        komunikasi dan keterlambatan dalam berbicara yang berikutnya dapat di
+                                        rujuk untuk mendapatkan penanganan dokter atau psikolog dan terapi
+                                        perilaku.
+                                    @else
+                                        Dari 23 indikator dimana terdapat {{ $jumlahJawabanTidakAutis }} jawaban
+                                        "TIDAK".
+                                        Maka
+                                        <strong> tidak terdeteksi</strong> anak mengalami hambatan dalam
+                                        komunikasi dan keterlambatan dalam berbicara
+                                    @endif
+                                </td>
+                            </tr>
+                        @elseif ($jenis == 'GPPH')
+                            <tr>
+                                <td>{{ $gpph }}</td>
+                                <td>
+                                    @if ($totalNilaiGpph >= 13)
+                                        Total nilai yang diperoleh dari 10 indikator pengukuran yakni berjumlah
+                                        {{ $totalNilaiGpph }} . Dimana ketentuannya jika total nilai 13 atau lebih maka
+                                        kemungkinan
+                                        anak mengalami kesulitan dalam pemusatan perhatian dan hiperaktifitas.
+                                    @else
+                                        Total nilai yang diperoleh dari 10 indikator pengukuran yakni berjumlah
+                                        {{ $totalNilaiGpph }} . Maka
+                                        <strong> tidak terdeteksi</strong> anak mengalami kesulitan dalam pemusatan
+                                        perhatian dan
+                                        hiperaktifitas.
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
         </div>
-    @endforeach
+    </div>
 
-    <div class="signature">
-        <p>Mengetahui,</p>
-        <br><br><br>
-        <p><strong>Terapis Bright Star</strong></p>
+    <div class="section mb-4">
+        <div class="section-title">HASIL OBSERVASI PERILAKU</div>
+        <div class="section-content">
+            @if (!empty($hpperilaku))
+                {!! $hpperilaku->deskripsi !!}
+            @else
+                <div class="text-muted text-center py-3">
+                    <i class="fas fa-info-circle"></i> Tidak ada data observasi perilaku yang tercatat
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="section mb-5">
+        <div class="section-title">HASIL OBSERVASI SENSORIK</div>
+        <div class="section-content">
+            @if (!empty($hpsensorik))
+                {!! $hpsensorik->deskripsi !!}
+            @else
+                <div class="text-muted text-center py-3">
+                    <i class="fas fa-info-circle"></i> Tidak ada data observasi sensorik yang tercatat
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Tanda Tangan dan QR Code -->
+    <div class="row mt-5">
+        <div class="col-6"></div>
+        <div class="col-6 text-center">
+            <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}<br>
+                Dokter Pemeriksa</p>
+
+            {{-- QR code --}}
+            {{-- <img src="data:image/png;base64, {!! base64_encode(
+                QrCode::format('png')->size(150)->generate(route('laporan.ttd', ['id' => $anak->id])),
+            ) !!} " alt="QR Code" class="qr my-2"><br> --}}
+
+            <img src="{{ public_path('storage/ttd/ttd_dokter.png') }}" alt="Tanda Tangan" width="150"
+                class="mb-2"><br>
+
+            <p class="fw-bold mb-0">dr. ANDINY SYAMSINAR, Sp.KJ</p>
+            <p class="mb-0">NIP : 19810919 200804 2 004</p>
+        </div>
     </div>
 </body>
 

@@ -132,10 +132,12 @@
                                                     </td>
                                                     <td>{{ $anak->alamat }}</td>
                                                     <td>
-                                                        <span class="badge badge-pill badge-primary">5 Tahun</span>
+                                                        <span class="badge badge-pill badge-primary">{{ $anak->usia }}
+                                                            Tahun</span>
                                                     </td>
                                                     <td>
-                                                        <span class="badge badge-pill badge-success">Aktif</span>
+                                                        <span
+                                                            class="badge badge-pill badge-success">{{ $anak->status }}</span>
                                                     </td>
                                                 </tr>
                                             @empty

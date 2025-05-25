@@ -87,7 +87,7 @@
 @section('content')
     <div class="content-wrapper">
         <!-- Modern Minimalist Header -->
-        <section class="content-header">
+        <section class="content-header py-4">
             <div class="container-fluid">
                 <div class="row align-items-center">
                     <div class="col-md-6">
@@ -96,10 +96,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="float-md-right">
-                            <ol class="breadcrumb bg-transparent">
-                                <li class="breadcrumb-item"><a href="#" class="text-muted"><i
-                                            class="fas fa-home"></i></a></li>
-                                <li class="breadcrumb-item active text-primary">Kunjungan</li>
+                            <ol class="breadcrumb bg-transparent mb-0 p-0">
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}"><i class="fas fa-home"></i>
+                                        Home</a>
+                                </li>
+                                <li class="breadcrumb-item active">Kunjungan</li>
                             </ol>
                         </div>
                     </div>

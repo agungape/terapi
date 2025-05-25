@@ -43,13 +43,19 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-
+// route website
 Route::get('/', [FrontendController::class, 'index']);
+Route::get('/services', [FrontendController::class, 'services']);
+Route::get('/about', [FrontendController::class, 'about']);
+Route::get('/blog', [FrontendController::class, 'blog']);
+Route::get('/contact', [FrontendController::class, 'contact']);
+Route::get('/therapists', [FrontendController::class, 'therapists']);
+// akhir route website
+
+
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 
-Route::get('/contact', function () {
-    return view(('frontend.contact'));
-});
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');

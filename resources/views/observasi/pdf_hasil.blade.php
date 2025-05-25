@@ -220,18 +220,14 @@
         <div class="col-6"></div>
         <div class="col-6 text-center">
             <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}<br>
-                Dokter Pemeriksa</p>
+                Terapis</p>
 
             {{-- QR code --}}
-            {{-- <img src="data:image/png;base64, {!! base64_encode(
+            <img src="data:image/png;base64, {!! base64_encode(
                 QrCode::format('png')->size(150)->generate(route('laporan.ttd', ['id' => $anak->id])),
-            ) !!} " alt="QR Code" class="qr my-2"><br> --}}
+            ) !!} " alt="QR Code" class="qr my-2"><br>
 
-            <img src="{{ public_path('storage/ttd/ttd_dokter.png') }}" alt="Tanda Tangan" width="150"
-                class="mb-2"><br>
-
-            <p class="fw-bold mb-0">dr. ANDINY SYAMSINAR, Sp.KJ</p>
-            <p class="mb-0">NIP : 19810919 200804 2 004</p>
+            <p class="fw-bold mb-0">INNE PUSVITASARI. S.Psi.</p>
         </div>
     </div>
 </body>

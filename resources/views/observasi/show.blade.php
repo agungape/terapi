@@ -214,7 +214,6 @@
                                                                                             <div class="col-12">
                                                                                                 <!-- Full width column -->
                                                                                                 <textarea class="summernote" name="deskripsi">{{ $perilaku->deskripsi }}</textarea>
-
                                                                                             </div>
                                                                                         </div>
 

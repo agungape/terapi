@@ -243,7 +243,7 @@
     </section>
 
     <!-- Blog Section -->
-    <section class="blog-section py-5">
+    {{-- <section class="blog-section py-5">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Artikel Terbaru</h2>
@@ -305,7 +305,7 @@
                 <a href="/blog" class="btn btn-outline-primary">Lihat Semua Artikel</a>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- CTA Section -->
     <section class="cta-section py-5 bg-primary text-white">

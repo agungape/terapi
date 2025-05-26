@@ -45,14 +45,14 @@
                     <li class="nav-item">
                         <a class="nav-link @yield('menuTherapists')" href="/therapists">Terapis</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link @yield('menuBlog')" href="/blog">Blog</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link @yield('menuContact')" href="/contact">Kontak</a>
                     </li>
                 </ul>
-                <a href="/contact" class="btn btn-primary ms-lg-3">Janji Temu</a>
+                {{-- <a href="/contact" class="btn btn-primary ms-lg-3">Janji Temu</a> --}}
             </div>
         </div>
     </nav>

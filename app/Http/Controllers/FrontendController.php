@@ -48,7 +48,7 @@ class FrontendController extends Controller
     }
     public function therapists()
     {
-        $terapis = Terapis::all();
+        $terapis = Terapis::where('status', 'aktif')->paginate(3);
         $profile = Profile::first();
 
         return view('website.therapists', compact('terapis', 'profile'));

@@ -32,7 +32,7 @@
             </div>
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm service-card">
+                    <div class="card h-100 border-0 shadow-sm service-card pt-4">
                         <div class="card-body text-center p-4">
                             <div class="icon-box bg-primary-light text-primary mb-4">
                                 <i class="fas fa-comment-medical fa-2x"></i>
@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm service-card">
+                    <div class="card h-100 border-0 shadow-sm service-card pt-4">
                         <div class="card-body text-center p-4">
                             <div class="icon-box bg-success-light text-success mb-4">
                                 <i class="fas fa-hands-helping fa-2x"></i>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm service-card">
+                    <div class="card h-100 border-0 shadow-sm service-card pt-4">
                         <div class="card-body text-center p-4">
                             <div class="icon-box bg-warning-light text-warning mb-4">
                                 <i class="fas fa-brain fa-2x"></i>

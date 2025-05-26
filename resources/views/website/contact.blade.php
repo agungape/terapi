@@ -10,7 +10,7 @@
                     <h1 class="display-4 fw-bold">Kontak Kami</h1>
                     <nav aria-label="breadcrumb" class="d-flex justify-content-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html" class="text-white">Beranda</a></li>
+                            <li class="breadcrumb-item"><a href="/index" class="text-white">Beranda</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">Kontak</li>
                         </ol>
                     </nav>
@@ -26,7 +26,7 @@
                 <div class="col-lg-5">
                     <h2 class="fw-bold mb-4">Hubungi Kami</h2>
                     <p class="mb-4">Kami siap membantu menjawab pertanyaan Anda tentang layanan terapi kami. Silakan
-                        hubungi melalui informasi kontak berikut atau isi formulir di samping.</p>
+                        hubungi melalui informasi kontak berikut</p>
 
                     <div class="d-flex mb-4">
                         <div class="icon-box bg-primary-light text-primary me-4">
@@ -34,7 +34,7 @@
                         </div>
                         <div>
                             <h5 class="fw-bold">Alamat Kami</h5>
-                            <p class="text-muted mb-0">Jl. Terapi No. 123, Jakarta Selatan<br>DKI Jakarta, 12345</p>
+                            <p class="text-muted mb-0">{{ $profile->alamat }}</p>
                         </div>
                     </div>
 
@@ -44,7 +44,7 @@
                         </div>
                         <div>
                             <h5 class="fw-bold">Telepon</h5>
-                            <p class="text-muted mb-0">(021) 1234-5678<br>0812-3456-7890 (WhatsApp)</p>
+                            <p class="text-muted mb-0">{{ $profile->telepon }} (WhatsApp)</p>
                         </div>
                     </div>
 
@@ -54,7 +54,7 @@
                         </div>
                         <div>
                             <h5 class="fw-bold">Email</h5>
-                            <p class="text-muted mb-0">info@terapianakku.com<br>konsultasi@terapianakku.com</p>
+                            <p class="text-muted mb-0">{{ $profile->email }}</p>
                         </div>
                     </div>
 
@@ -64,7 +64,7 @@
                         </div>
                         <div>
                             <h5 class="fw-bold">Jam Operasional</h5>
-                            <p class="text-muted mb-0">Senin-Jumat: 08.00-17.00 WIB<br>Sabtu: 08.00-12.00 WIB</p>
+                            <p class="text-muted mb-0">Senin-Jumat: 09.00-17.00 WIB</p>
                         </div>
                     </div>
 
@@ -141,8 +141,9 @@
     <section class="py-0">
         <div class="container-fluid p-0">
             <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8191613506864!3d-6.194741395493371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5390917b759%3A0x9bf7e7a3545a5e08!2sMonumen%20Nasional!5e0!3m2!1sen!2sid!4v1623394253170!5m2!1sen!2sid"
-                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2092.6676644627596!2d122.11412577453203!3d-3.8650925503181672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2d984f00566d4c67%3A0xc374c04b7f4c6d23!2sTerapi%20Anak%20Berkebutuhan%20Khusus!5e1!3m2!1sen!2sid!4v1748236403190!5m2!1sen!2sid"
+                width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 

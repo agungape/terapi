@@ -42,107 +42,105 @@
                             <li><a class="dropdown-item" href="#" data-value="sensory">Terapi Sensori</a></li>
                         </ul>
                     </div>
-                    <a href="contact.html" class="btn btn-primary">Konsultasi dengan Terapis</a>
+                    <a href="/contact" class="btn btn-primary">Konsultasi dengan Terapis</a>
                 </div>
             </div>
 
             <div class="row g-4">
-                <div class="col-md-6 col-lg-4 therapist-card" data-specialty="speech">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="assets/images/therapist-1.jpg" class="card-img-top" alt="Therapist">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-1">Budi Santoso, S.Tr.Kes</h5>
-                            <p class="text-muted mb-3">Terapis Wicara</p>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="icon-box-sm bg-primary-light text-primary me-3">
-                                    <i class="fas fa-graduation-cap"></i>
+                @foreach ($terapis as $t)
+                    @if ($t->role === 'Terapi Perilaku')
+                        <div class="col-md-6 col-lg-4 therapist-card" data-specialty="speech">
+                            <div class="card border-0 shadow-sm h-100">
+                                <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
+                                    class="card-img-top" alt="Therapist">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-1">{{ $t->nama }}</h5>
+                                    <p class="text-muted mb-3">{{ $t->role }}</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-box-sm bg-primary-light text-primary me-3">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Pendidikan</small>
+                                            <p class="mb-0 small">Sarjana Psikologi Universitas Halu Oleo</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-box-sm bg-primary-light text-primary me-3">
+                                            <i class="fas fa-certificate"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Sertifikasi</small>
+                                            <p class="mb-0 small">
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box-sm bg-primary-light text-primary me-3">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Pengalaman</small>
+                                            <p class="mb-0 small">2 tahun menangani anak berkebutuhan khusus
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <small class="text-muted">Pendidikan</small>
-                                    <p class="mb-0 small">Sarjana Terapi Wicara - Universitas Indonesia</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="icon-box-sm bg-primary-light text-primary me-3">
-                                    <i class="fas fa-certificate"></i>
-                                </div>
-                                <div>
-                                    <small class="text-muted">Sertifikasi</small>
-                                    <p class="mb-0 small">Certified Speech Therapist (CST), DIR Floortime Provider</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="icon-box-sm bg-primary-light text-primary me-3">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div>
-                                    <small class="text-muted">Pengalaman</small>
-                                    <p class="mb-0 small">8 tahun menangani anak dengan gangguan bicara dan bahasa</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-white border-0">
-                            <a href="therapist-detail.html" class="btn btn-outline-primary w-100">Profil Lengkap</a>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-md-6 col-lg-4 therapist-card" data-specialty="occupational">
-                    <div class="card border-0 shadow-sm h-100">
-                        <img src="assets/images/therapist-2.jpg" class="card-img-top" alt="Therapist">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-1">Dewi Kurnia, Amd.OT</h5>
-                            <p class="text-muted mb-3">Terapis Okupasi</p>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="icon-box-sm bg-success-light text-success me-3">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <div>
-                                    <small class="text-muted">Pendidikan</small>
-                                    <p class="mb-0 small">Ahli Madya Okupasi Terapi - Poltekkes Kemenkes</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="icon-box-sm bg-success-light text-success me-3">
-                                    <i class="fas fa-certificate"></i>
-                                </div>
-                                <div>
-                                    <small class="text-muted">Sertifikasi</small>
-                                    <p class="mb-0 small">Sensory Integration Certified, Handwriting Without Tears</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <div class="icon-box-sm bg-success-light text-success me-3">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div>
-                                    <small class="text-muted">Pengalaman</small>
-                                    <p class="mb-0 small">6 tahun menangani anak dengan gangguan motorik dan sensori</p>
-                                </div>
                             </div>
                         </div>
-                        <div class="card-footer bg-white border-0">
-                            <a href="therapist-detail.html" class="btn btn-outline-success w-100">Profil Lengkap</a>
-                        </div>
-                    </div>
-                </div>
+                    @else
+                        <div class="col-md-6 col-lg-4 therapist-card" data-specialty="occupational">
+                            <div class="card border-0 shadow-sm h-100">
+                                <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
+                                    class="card-img-top" alt="Therapist">
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-1">{{ $t->nama }}</h5>
+                                    <p class="text-muted mb-3">{{ $t->role }}</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-box-sm bg-success-light text-success me-3">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Pendidikan</small>
+                                            <p class="mb-0 small">
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-box-sm bg-success-light text-success me-3">
+                                            <i class="fas fa-certificate"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Sertifikasi</small>
+                                            <p class="mb-0 small">Sensory Integration Certified, Handwriting Without Tears
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box-sm bg-success-light text-success me-3">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Pengalaman</small>
+                                            <p class="mb-0 small">6 tahun menangani anak dengan gangguan motorik dan sensori
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- Terapis lainnya dengan struktur serupa -->
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+
+
+
 
             </div>
 
             <nav aria-label="Page navigation" class="mt-5">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
+                {{ $terapis->fragment('judul')->links() }}
             </nav>
         </div>
     </section>

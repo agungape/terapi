@@ -183,9 +183,8 @@
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
                                 data-bs-parent="#faqAccordion">
                                 <div class="accordion-body">
-                                    Ya, kami menyediakan layanan terapi di rumah untuk area Jakarta dan sekitarnya
-                                    dengan biaya tambahan untuk transportasi terapis. Silakan hubungi kami untuk
-                                    informasi lebih lanjut.
+                                    Ya, kami menyediakan layanan terapi di rumah untuk area Khusus Kota Unaaha dan
+                                    sekitarnya. Silakan hubungi kami untuk informasi lebih lanjut.
                                 </div>
                             </div>
                         </div>

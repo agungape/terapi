@@ -234,7 +234,7 @@
                                 <i class="fas fa-star text-warning"></i>
                                 <i class="fas fa-star-half-alt text-warning"></i>
                             </div>
-                            <p class="mb-0">"Fasilitasnya lengkap dan nyaman. Terapisnya juga memberikan laporan
+                            <p class="mb-0">"Terapisnya memberikan laporan
                                 perkembangan anak setiap bulannya sehingga kami bisa memantau perkembangannya."</p>
                         </div>
                     </div>

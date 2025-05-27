@@ -106,7 +106,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
-                    <img src="assets/images/about.jpg" alt="Tentang Kami" class="img-fluid rounded shadow-lg">
+                    <img src="{{ asset('assets') }}/website/images/tentang-kami.png" alt="Tentang Kami"
+                        class="img-fluid rounded shadow-lg">
                 </div>
                 <div class="col-lg-6">
                     <h2 class="fw-bold mb-4">Tentang <span class="text-primary">Bright Star </span><span
@@ -173,8 +174,8 @@
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body p-4">
                             <div class="d-flex mb-3">
-                                <img src="assets/images/testimonial-1.jpg" alt="Testimoni" class="rounded-circle me-3"
-                                    width="60" height="60">
+                                <img src="{{ asset('assets') }}/website/images/family.png" alt="Testimoni"
+                                    class="rounded-circle me-3" width="60" height="60">
                                 <div>
                                     <h6 class="fw-bold mb-0">Ibu Siti</h6>
                                     <small class="text-muted">Orang Tua dari Ahmad</small>
@@ -196,8 +197,8 @@
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body p-4">
                             <div class="d-flex mb-3">
-                                <img src="assets/images/testimonial-2.jpg" alt="Testimoni" class="rounded-circle me-3"
-                                    width="60" height="60">
+                                <img src="{{ asset('assets') }}/website/images/family.png" alt="Testimoni"
+                                    class="rounded-circle me-3" width="60" height="60">
                                 <div>
                                     <h6 class="fw-bold mb-0">Budi Santoso</h6>
                                     <small class="text-muted">Orang Tua dari Dinda</small>
@@ -219,8 +220,8 @@
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body p-4">
                             <div class="d-flex mb-3">
-                                <img src="assets/images/testimonial-3.jpg" alt="Testimoni" class="rounded-circle me-3"
-                                    width="60" height="60">
+                                <img src="{{ asset('assets') }}/website/images/family.png" alt="Testimoni"
+                                    class="rounded-circle me-3" width="60" height="60">
                                 <div>
                                     <h6 class="fw-bold mb-0">Dewi Anggraeni</h6>
                                     <small class="text-muted">Orang Tua dari Raka</small>

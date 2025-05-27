@@ -10,7 +10,7 @@
                     <h1 class="display-4 fw-bold">Kontak Kami</h1>
                     <nav aria-label="breadcrumb" class="d-flex justify-content-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/index" class="text-white">Beranda</a></li>
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Beranda</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">Kontak</li>
                         </ol>
                     </nav>
@@ -92,26 +92,27 @@
                             <form id="contactForm">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="name" class="form-label">Nama Lengkap</label>
-                                        <input type="text" class="form-control" id="name" required>
+                                        <label for="name" class="form-label">Nama Orang Tua</label>
+                                        <input type="text" class="form-control" id="name" name="nama_org_tua"
+                                            required>
                                         <div class="invalid-feedback">
                                             Harap isi nama lengkap Anda.
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" required>
+                                        <label for="email" class="form-label">Nama Anak</label>
+                                        <input type="text" class="form-control" id="email" name="nama_anak" required>
                                         <div class="invalid-feedback">
-                                            Harap isi email yang valid.
+                                            Harap isi nama anak anda.
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label for="subject" class="form-label">Subjek</label>
-                                        <input type="text" class="form-control" id="subject" required>
+                                        <label for="subject" class="form-label">Telepon (Whatsapp)</label>
+                                        <input type="text" class="form-control" id="subject" name="telepon" required>
                                     </div>
                                     <div class="col-12">
                                         <label for="message" class="form-label">Pesan</label>
-                                        <textarea class="form-control" id="message" rows="5" required></textarea>
+                                        <textarea class="form-control" id="message" rows="5" name="pesan" required></textarea>
                                         <div class="invalid-feedback">
                                             Harap isi pesan Anda.
                                         </div>

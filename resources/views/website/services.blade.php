@@ -10,7 +10,7 @@
                     <h1 class="display-4 fw-bold">Layanan Kami</h1>
                     <nav aria-label="breadcrumb" class="d-flex justify-content-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/index" class="text-white">Beranda</a></li>
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Beranda</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">Layanan</li>
                         </ol>
                     </nav>

@@ -9,7 +9,7 @@
                     <h1 class="display-4 fw-bold">Terapis Kami</h1>
                     <nav aria-label="breadcrumb" class="d-flex justify-content-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html" class="text-white">Beranda</a></li>
+                            <li class="breadcrumb-item"><a href="/" class="text-white">Beranda</a></li>
                             <li class="breadcrumb-item active text-white" aria-current="page">Terapis</li>
                         </ol>
                     </nav>
@@ -28,7 +28,7 @@
                         Anda</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <div class="dropdown d-inline-block me-2">
+                    {{-- <div class="dropdown d-inline-block me-2">
                         <button class="btn btn-outline-primary dropdown-toggle" type="button" id="therapistFilter"
                             data-bs-toggle="dropdown">
                             Filter Spesialisasi
@@ -41,7 +41,7 @@
                             <li><a class="dropdown-item" href="#" data-value="behavior">Terapi Perilaku</a></li>
                             <li><a class="dropdown-item" href="#" data-value="sensory">Terapi Sensori</a></li>
                         </ul>
-                    </div>
+                    </div> --}}
                     <a href="/contact" class="btn btn-primary">Konsultasi dengan Terapis</a>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                                         </div>
                                         <div>
                                             <small class="text-muted">Pengalaman</small>
-                                            <p class="mb-0 small">6 tahun menangani anak dengan gangguan motorik dan sensori
+                                            <p class="mb-0 small">1 tahun menangani anak dengan gangguan motorik dan sensori
                                             </p>
                                         </div>
                                     </div>

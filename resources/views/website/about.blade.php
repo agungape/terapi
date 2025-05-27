@@ -24,7 +24,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
-                    <img src="{{ asset('assets/website/images/kepala-yayasan.png') }}" alt="Tentang Kami" class="img-fluid rounded shadow-lg">
+                    <img src="{{ asset('assets/website/images/kepala-yayasan.png') }}" alt="Tentang Kami"
+                        class="img-fluid rounded shadow-lg">
                 </div>
                 <div class="col-lg-6">
                     <h2 class="fw-bold mb-4">Visi & Misi Kami</h2>

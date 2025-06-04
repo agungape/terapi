@@ -67,22 +67,24 @@
                 <p class="text-muted">Bertemu dengan tim profesional kami yang berdedikasi</p>
             </div>
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100 p-4">
-                        <img src="{{ asset('assets/website/images/default-woman.png') }}" class="card-img-top"
-                            alt="Team Member">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold mb-1">{{ $psikolog->nama }}</h5>
-                            <p class="text-muted mb-3">Psikolog</p>
-                            <p class="card-text">Spesialis dalam assesmen psikologis dan terapi perilaku untuk anak
-                                dengan autisme.</p>
-                            <div class="social-links">
-                                <a href="#" class="text-primary me-2"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                @foreach ($psikolog as $p)
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100 p-4">
+                            <img src="{{ asset('assets/website/images/default-woman.png') }}" class="card-img-top"
+                                alt="Team Member">
+                            <div class="card-body text-center">
+                                <h5 class="fw-bold mb-1">{{ $p->nama }}</h5>
+                                <p class="text-muted mb-3">Psikolog</p>
+                                <p class="card-text">Spesialis dalam assesmen psikologis dan terapi perilaku untuk anak
+                                    dengan kebutuhan khusus.</p>
+                                <div class="social-links">
+                                    <a href="#" class="text-primary me-2"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#" class="text-primary"><i class="fas fa-envelope"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
                 @foreach ($terapis as $t)
                     <div class="col-md-4">
                         <div class="card border-0 shadow-sm h-100 p-4">

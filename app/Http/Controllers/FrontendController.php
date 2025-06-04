@@ -26,8 +26,8 @@ class FrontendController extends Controller
     }
     public function about()
     {
-        $terapis = Terapis::orderBy('created_at', 'asc')->take(2)->get();
-        $psikolog = Psikolog::first();
+        $terapis = Terapis::orderBy('created_at', 'asc')->take(3)->get();
+        $psikolog = Psikolog::orderBy('created_at', 'asc')->take(3)->get();
         $profile = Profile::first();
 
         return view('website.about', compact('terapis', 'profile', 'psikolog'));

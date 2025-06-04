@@ -70,8 +70,13 @@
                 @foreach ($psikolog as $p)
                     <div class="col-md-4">
                         <div class="card border-0 shadow-sm h-100 p-4">
-                            <img src="{{ asset('assets/website/images/default-woman.png') }}" class="card-img-top"
-                                alt="Team Member">
+                            @if ($p->nama == 'Wisnu Catur Bayu, P. M.Psi.,Psikolog')
+                                <img src="{{ asset('assets/website/images/default-man.png') }}" class="card-img-top"
+                                    alt="Team Member">
+                            @else
+                                <img src="{{ asset('assets/website/images/default-woman.png') }}" class="card-img-top"
+                                    alt="Team Member">
+                            @endif
                             <div class="card-body text-center">
                                 <h5 class="fw-bold mb-1">{{ $p->nama }}</h5>
                                 <p class="text-muted mb-3">Psikolog</p>
@@ -85,7 +90,7 @@
                         </div>
                     </div>
                 @endforeach
-                @foreach ($terapis as $t)
+                {{-- @foreach ($terapis as $t)
                     <div class="col-md-4">
                         <div class="card border-0 shadow-sm h-100 p-4">
                             <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
@@ -103,7 +108,7 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @endforeach --}}
 
 
             </div>

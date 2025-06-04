@@ -113,7 +113,7 @@
 
             </div>
             <div class="text-center mt-5">
-                <a href="/therapists" class="btn btn-primary">Lihat Semua Terapis</a>
+                <a href="/therapists" class="btn btn-primary">Lihat Terapis</a>
             </div>
         </div>
     </section>

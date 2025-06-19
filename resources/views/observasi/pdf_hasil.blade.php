@@ -223,9 +223,9 @@
                 Terapis</p>
 
             {{-- QR code --}}
-            <img src="data:image/png;base64, {!! base64_encode(
+            {{-- <img src="data:image/png;base64, {!! base64_encode(
                 QrCode::format('png')->size(150)->generate(route('laporan.ttd', ['id' => $anak->id])),
-            ) !!} " alt="QR Code" class="qr my-2"><br>
+            ) !!} " alt="QR Code" class="qr my-2"><br> --}}
 
             <p class="fw-bold mb-0">INNE PUSVITASARI. S.Psi.</p>
         </div>

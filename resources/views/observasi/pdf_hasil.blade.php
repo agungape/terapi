@@ -189,11 +189,11 @@
                         @elseif ($jenis == 'ATEC')
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    Autism treatment evaluation checklist (ATEC)
+                                    Autism Treatment Evaluation Checklist (ATEC)
                                 </td>
-                                <td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
                                     <img src="{{ asset('storage/atec/' . $atec->hasil) }}"
-                                        class="img-fluid w-100 rounded" style="max-height: 500px; object-fit: contain;"
+                                        style="width: 100%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
                                         alt="Hasil ATEC">
                                 </td>
                             </tr>

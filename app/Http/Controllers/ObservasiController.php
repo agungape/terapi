@@ -427,7 +427,7 @@ class ObservasiController extends Controller
         // Ambil data hasil pemeriksaan
         $hasil = HasilPemeriksaan::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
-            ->orderBy('jenis')
+            ->orderBy('created_at')
             ->get()
             ->groupBy('jenis');
         $atec = HasilPemeriksaan::where('anak_id', $anak->id)

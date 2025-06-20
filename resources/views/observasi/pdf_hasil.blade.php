@@ -193,7 +193,7 @@
                                 </td>
                                 <td style="padding: 10px; border: 1px solid #dee2e6;">
                                     <img src="{{ asset('storage/atec/' . $atec->hasil) }}"
-                                        style="width: 100%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
+                                        style="width: 50%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
                                         alt="Hasil ATEC">
                                 </td>
                             </tr>

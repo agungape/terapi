@@ -111,7 +111,7 @@
     <div class="section mb-4">
         <div class="section-title">HASIL OBSERVASI</div>
         <div class="section-content">
-            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">
+            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 16px;">
                 <thead>
                     <tr style="background-color: #8ccedf; color: #fff;">
                         <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">Alat
@@ -193,7 +193,7 @@
                                 </td>
                                 <td style="padding: 10px; border: 1px solid #dee2e6;">
                                     <img src="{{ asset('storage/atec/' . $atec->hasil) }}"
-                                        style="width: 60%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
+                                        style="width: 75%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
                                         alt="Hasil ATEC">
                                 </td>
                             </tr>

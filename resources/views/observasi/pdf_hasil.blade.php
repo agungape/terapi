@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Surat Keterangan Kesehatan Jiwa</title>
+    <title>Observasi_{{ $anak->nama }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -28,6 +28,7 @@
             color: white;
             padding: 8px 15px;
             font-weight: bold;
+            text-align: center;
             border-radius: 6px 6px 0 0;
             margin-bottom: 0;
         }
@@ -57,28 +58,26 @@
 </head>
 
 <body class="px-4 py-3">
-
     <!-- Kop Surat -->
     <div class="text-center">
-        <div class="row align-items-center mb-2">
+        <div class="row align-items-center">
             <table border="0">
-                <tr class="text-center">
+                <tr>
                     <td>
                         <div class="col-2">
                             <img src="{{ public_path('assets/images/logo_bright_star.jpg') }}" alt="Logo"
                                 class="logo">
                         </div>
                     </td>
-                    <td>
+                    <td class="text-center">
                         <div class="col-10">
-                            <h5 class="mb-0 fw-bold">BRIGHT STAR OF CHILD </h5>
-                            <h5 class="mb-0 fw-bold">Pusat Layanan Terapi Anak Istimewa
+                            <h5 style="font-weight: bold; margin: 0;">BRIGHT STAR OF CHILD</h5>
+                            <h5 style="font-weight: bold; margin: 0;">Pusat Layanan Terapi Anak Istimewa
                             </h5>
                             <p class="mb-0" style="font-size: 10pt;">
                                 Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
                                 Tenggara 93462<br>Telp 085123238404 | Website : https://brightchild.id | Email :
                                 brightstarofchild12@gmail.com
-
                             </p>
                         </div>
                     </td>
@@ -88,7 +87,7 @@
 
         </div>
         <div class="kop-border"></div>
-        <h6 class="fw-bold text-decoration-underline">LAPORAN OBSERVASI</h6>
+        <h6 class="text-decoration-underline" style="font-weight: bold">LAPORAN OBSERVASI</h6>
     </div>
 
     <!-- ISI SESUAI PERMINTAAN -->
@@ -96,14 +95,14 @@
         <table class="table table-borderless">
             <tr>
                 <td width="20%"><strong>Nama Anak</strong></td>
-                <td width="30%">: {{ $anak->nama }}</td>
+                <td width="40%">: {{ $anak->nama }}</td>
                 <td width="20%"><strong>Tanggal Lahir</strong></td>
-                <td width="30%">: {{ $anak->tanggal_lahir }}</td>
+                <td width="20%">: {{ \Carbon\Carbon::parse($anak->tanggal_lahir)->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
                 <td><strong>Tanggal Observasi</strong></td>
-                <td>: {{ date('d/m/Y', strtotime($tanggal)) }}</td>
-                <td><strong>Usia Saat Observasi</strong></td>
+                <td>: {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</td>
+                <td><strong>Usia</strong></td>
                 <td>: {{ $anak->usia }} tahun</td>
             </tr>
         </table>
@@ -112,108 +111,119 @@
     <div class="section mb-4">
         <div class="section-title">HASIL OBSERVASI</div>
         <div class="section-content">
-            <table class="result-table">
+            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12px;">
                 <thead>
-                    <tr>
-                        <th width="40%">Jenis Pemeriksaan</th>
-                        <th width="60%">Hasil</th>
+                    <tr style="background-color: #8ccedf; color: #fff;">
+                        <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">Alat
+                            Observasi</th>
+                        <th style="padding: 10px; border: 1px solid #dee2e6;" width="60%" class="text-center">Hasil
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($hasil as $jenis => $items)
                         @if ($jenis == 'Penyimpangan Perilaku')
                             <tr>
-                                <td> {{ $penyimpangan_perilaku }}</td>
-                                <td>
-                                    @if ($jumlahJawabanYaPerilaku >= 2)
-                                        Dari 14 indikator dimana terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA",
-                                        dimana
-                                        ketentuannya
-                                        jika terdapat 2 atau lebih jawaban "YA" pada indikator penentuan, maka
-                                        terdapat kemungkinan anak mengalami permasalahan mental emosional
-                                        yang berikutnya dapat di rujuk untuk konsultasi lebih lanjut ke dokter
-                                        atau psikolog dan terapi perilaku.
-                                    @else
-                                        Dari 14 indikator dimana terdapat {{ $jumlahJawabanYaPerilaku }} jawaban "YA".
-                                        Maka
-                                        tidak
-                                        terdeteksi masalah mental emosional pada anak
-                                    @endif
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $penyimpangan_perilaku }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    <div style="padding: 6px; color: #333;">
+                                        <b>Hasil Deteksi:</b><br>
+                                        Dari 14 indikator, terdapat <b>{{ $jumlahJawabanYaPerilaku }}</b> jawaban
+                                        <b>"YA"</b>.<br>
+                                        @if ($jumlahJawabanYaPerilaku >= 2)
+                                            Berdasarkan ketentuan, jika terdapat 2 atau lebih jawaban "YA",
+                                            maka:<br><br>
+                                            <b>➡ Kemungkinan anak mengalami permasalahan mental emosional</b><br>
+                                            Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
+                                            melakukan terapi perilaku.
+                                        @else
+                                            <b>✅ Tidak terdeteksi</b> masalah mental emosional pada anak.
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @elseif ($jenis == 'Autisme')
                             <tr>
-                                <td>{{ $autis }}</td>
-
-                                <td>
-                                    @if ($jumlahJawabanTidakAutis >= 2)
-                                        Dari 23 indikator dimana terdapat {{ $jumlahJawabanTidakAutis }} jawaban
-                                        "TIDAK",
-                                        dimana
-                                        ketentuannya jika terdapat 2 atau lebih jawaban "TIDAK" pada indikator
-                                        penentuan, maka <strong>beresiko tinggi</strong> anak mengalami hambatan dalam
-                                        komunikasi dan keterlambatan dalam berbicara yang berikutnya dapat di
-                                        rujuk untuk mendapatkan penanganan dokter atau psikolog dan terapi
-                                        perilaku.
-                                    @else
-                                        Dari 23 indikator dimana terdapat {{ $jumlahJawabanTidakAutis }} jawaban
-                                        "TIDAK".
-                                        Maka
-                                        <strong> tidak terdeteksi</strong> anak mengalami hambatan dalam
-                                        komunikasi dan keterlambatan dalam berbicara
-                                    @endif
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $autis }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    <div style="padding: 6px; color: #333;">
+                                        <b>Hasil Deteksi:</b><br>
+                                        Dari 23 indikator, terdapat <b>{{ $jumlahJawabanTidakAutis }}</b> jawaban
+                                        <b>"TIDAK"</b>.<br>
+                                        @if ($jumlahJawabanTidakAutis >= 2)
+                                            Jika terdapat 2 atau lebih jawaban "TIDAK", maka:<br><br>
+                                            <b>➡ Beresiko tinggi</b> anak mengalami hambatan komunikasi dan
+                                            keterlambatan bicara.<br>
+                                            Disarankan untuk konsultasi dengan dokter/psikolog dan melakukan
+                                            terapi perilaku.
+                                        @else
+                                            <b>✅ Tidak terdeteksi</b> hambatan komunikasi dan keterlambatan bicara.
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @elseif ($jenis == 'GPPH')
                             <tr>
-                                <td>{{ $gpph }}</td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $gpph }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    <div style="padding: 6px; color: #333;">
+                                        <b>Hasil Deteksi:</b><br>
+                                        Total nilai dari 10 indikator adalah <b>{{ $totalNilaiGpph }}</b>.<br>
+                                        @if ($totalNilaiGpph >= 13)
+                                            Jika total nilai 13 atau lebih, maka:<br><br>
+                                            <b>➡ Anak kemungkinan mengalami kesulitan dalam pemusatan perhatian dan
+                                                hiperaktifitas.</b>
+                                        @else
+                                            <b>✅ Tidak terdeteksi</b> kesulitan dalam pemusatan perhatian dan
+                                            hiperaktifitas.
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @elseif ($jenis == 'ATEC')
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    Autism treatment evaluation checklist (ATEC)
+                                </td>
                                 <td>
-                                    @if ($totalNilaiGpph >= 13)
-                                        Total nilai yang diperoleh dari 10 indikator pengukuran yakni berjumlah
-                                        {{ $totalNilaiGpph }} . Dimana ketentuannya jika total nilai 13 atau lebih maka
-                                        kemungkinan
-                                        anak mengalami kesulitan dalam pemusatan perhatian dan hiperaktifitas.
-                                    @else
-                                        Total nilai yang diperoleh dari 10 indikator pengukuran yakni berjumlah
-                                        {{ $totalNilaiGpph }} . Maka
-                                        <strong> tidak terdeteksi</strong> anak mengalami kesulitan dalam pemusatan
-                                        perhatian dan
-                                        hiperaktifitas.
-                                    @endif
+                                    <img src="{{ asset('storage/atec/' . $atec->hasil) }}"
+                                        class="img-fluid w-100 rounded" style="max-height: 500px; object-fit: contain;"
+                                        alt="Hasil ATEC">
                                 </td>
                             </tr>
                         @endif
                     @endforeach
                 </tbody>
             </table>
+
+
         </div>
     </div>
+    @if (!empty($hpperilaku))
+        <div class="section mb-4">
+            <div class="section-title">HASIL OBSERVASI PERILAKU</div>
+            <div class="section-content">
 
-    <div class="section mb-4">
-        <div class="section-title">HASIL OBSERVASI PERILAKU</div>
-        <div class="section-content">
-            @if (!empty($hpperilaku))
                 {!! $hpperilaku->deskripsi !!}
-            @else
-                <div class="text-muted text-center py-3">
-                    <i class="fas fa-info-circle"></i> Tidak ada data observasi perilaku yang tercatat
-                </div>
-            @endif
+            </div>
         </div>
-    </div>
+    @endif
 
-    <div class="section mb-5">
-        <div class="section-title">HASIL OBSERVASI SENSORIK</div>
-        <div class="section-content">
-            @if (!empty($hpsensorik))
+    @if (!empty($hpsensorik))
+        <div class="section mb-5">
+            <div class="section-title">HASIL OBSERVASI SENSORIK</div>
+            <div class="section-content">
                 {!! $hpsensorik->deskripsi !!}
-            @else
-                <div class="text-muted text-center py-3">
-                    <i class="fas fa-info-circle"></i> Tidak ada data observasi sensorik yang tercatat
-                </div>
-            @endif
+
+            </div>
         </div>
-    </div>
+    @endif
 
     <!-- Tanda Tangan dan QR Code -->
     <div class="row mt-5">

@@ -430,6 +430,10 @@ class ObservasiController extends Controller
             ->orderBy('jenis')
             ->get()
             ->groupBy('jenis');
+        $atec = HasilPemeriksaan::where('anak_id', $anak->id)
+            ->where('jenis', 'ATEC')
+            ->whereDate('created_at', $tanggal)
+            ->first();
 
         $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         $hpsensorik = HpSensorik::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
@@ -451,6 +455,7 @@ class ObservasiController extends Controller
         // Siapkan data untuk view
         $data = [
             'anak' => $anak,
+            'atec' => $atec,
             'hasil' => $hasil,
             'tanggal' => $tanggal,
             'penyimpangan_perilaku' => "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE",
@@ -471,8 +476,8 @@ class ObservasiController extends Controller
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'times',
-            'margin_top' => 30,
-            'margin_bottom' => 25,
+            'margin_top' => 18,
+            'margin_bottom' => 18,
             'margin_left' => 15,
             'margin_right' => 15,
         ]);
@@ -482,7 +487,7 @@ class ObservasiController extends Controller
         $mpdf->SetAuthor(config('app.name'));
         $mpdf->SetCreator(config('app.name'));
 
-        $mpdf->SetHeader("Laporan Observasi||Halaman {PAGENO}");
+        $mpdf->SetHeader("RAHASIA||Halaman {PAGENO}");
         $mpdf->SetFooter("||" . $request->tanggal . " | " . config('app.name'));
 
         // Tambahkan HTML ke PDF

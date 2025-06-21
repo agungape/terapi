@@ -167,7 +167,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::patch('/observasi/hpperilaku/{id}', [ObservasiController::class, 'hpperilaku_update'])->name('hpperilaku.update');
     Route::patch('/observasi/hpsensorik/{id}', [ObservasiController::class, 'hpsensorik_update'])->name('hpsensorik.update');
     Route::get('/observasi/detail/{hasil}', [ObservasiController::class, 'detail'])->name('observasi.detail');
-    Route::post('/barcode/scan', [ObservasiFactory::class, 'scanBarcode'])->name('barcode.scan');
+    Route::get('/barcode/scan', [ObservasiController::class, 'scanBarcode'])->name('barcode.scan');
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

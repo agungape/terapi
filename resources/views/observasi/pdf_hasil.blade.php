@@ -186,7 +186,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            {{-- @elseif ($jenis == 'ATEC')
+                        @elseif ($jenis == 'ATEC')
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
                                     Autism Treatment Evaluation Checklist (ATEC)
@@ -196,7 +196,7 @@
                                         style="width: 61%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
                                         alt="Hasil ATEC">
                                 </td>
-                            </tr> --}}
+                            </tr>
                         @endif
                     @endforeach
                 </tbody>

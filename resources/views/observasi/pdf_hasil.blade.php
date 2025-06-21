@@ -186,7 +186,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        @elseif ($jenis == 'ATEC')
+                            {{-- @elseif ($jenis == 'ATEC')
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
                                     Autism Treatment Evaluation Checklist (ATEC)
@@ -196,7 +196,7 @@
                                         style="width: 61%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
                                         alt="Hasil ATEC">
                                 </td>
-                            </tr>
+                            </tr> --}}
                         @endif
                     @endforeach
                 </tbody>
@@ -233,11 +233,9 @@
                 Terapis</p>
 
             {{-- QR code --}}
-            {{-- <img src="data:image/png;base64, {!! base64_encode(
-                QrCode::format('png')->size(150)->generate(route('laporan.ttd', ['id' => $anak->id])),
-            ) !!} " alt="QR Code" class="qr my-2"><br> --}}
+            <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" class="barcode"><br><br>
 
-            <p class="fw-bold mb-0">INNE PUSVITASARI. S.Psi.</p>
+            <p style="font-weight: bold; margin: 0;">Inne Pusvitasari, S.Psi.</p>
         </div>
     </div>
 </body>

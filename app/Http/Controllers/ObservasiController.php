@@ -24,6 +24,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\RedirectResponse;
 use Mpdf\Mpdf;
 use Illuminate\Support\Str;
+use Milon\Barcode\DNS2D;
 
 class ObservasiController extends Controller
 {
@@ -422,6 +423,7 @@ class ObservasiController extends Controller
         ]);
 
         $anak = Anak::findOrFail($request->anak_id);
+
         $tanggal = $request->tanggal;
 
         // Ambil data hasil pemeriksaan
@@ -430,6 +432,7 @@ class ObservasiController extends Controller
             ->orderBy('created_at')
             ->get()
             ->groupBy('jenis');
+
         $atec = HasilPemeriksaan::where('anak_id', $anak->id)
             ->where('jenis', 'ATEC')
             ->whereDate('created_at', $tanggal)
@@ -452,9 +455,26 @@ class ObservasiController extends Controller
             ->whereDate('created_at', $tanggal)
             ->sum('answer');
 
+        // Data yang akan diencode dalam barcode
+        $data = [
+            'nama' => $anak->nama,
+            'alamat' => $anak->alamat,
+            'tanggal_lahir' => $anak->tanggal_lahir,
+            // 'signature' => $->signature_image_path, // path ke gambar tanda tangan
+            'tanggal_observasi' => $request->tanggal
+        ];
+
+        $scanUrl = url('/barcode/scan?data=' . urlencode(json_encode($data)));
+
+        $dns2d = new DNS2D();
+
+        // Generate QR Code dengan data JSON
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 2, 2);
+
         // Siapkan data untuk view
         $data = [
             'anak' => $anak,
+            'barcode' => $barcode,
             'atec' => $atec,
             'hasil' => $hasil,
             'tanggal' => $tanggal,
@@ -477,7 +497,7 @@ class ObservasiController extends Controller
             'format' => 'A4',
             'default_font' => 'times',
             'margin_top' => 18,
-            'margin_bottom' => 18,
+            'margin_bottom' => 15,
             'margin_left' => 15,
             'margin_right' => 15,
         ]);
@@ -488,7 +508,7 @@ class ObservasiController extends Controller
         $mpdf->SetCreator(config('app.name'));
 
         $mpdf->SetHeader("RAHASIA||Halaman {PAGENO}");
-        $mpdf->SetFooter("||" . $request->tanggal . " | " . config('app.name'));
+        $mpdf->SetFooter("||Layanan Terapi Anak Spesial");
 
         // Tambahkan HTML ke PDF
         $mpdf->WriteHTML($html);
@@ -503,5 +523,17 @@ class ObservasiController extends Controller
             'Cache-Control' => 'public, must-revalidate, max-age=0',
             'Pragma' => 'public',
         ]);
+    }
+
+    public function scanBarcode(Request $request)
+    {
+        // Ambil data dari URL (contoh: ?data={"child_name":"Budi",...})
+        $scannedData = $request->input('data');
+
+        // Decode data JSON
+        $data = json_decode(urldecode($scannedData), true);
+
+        // Tampilkan view hasil scan
+        return view('observasi.barcode_hasil', compact('data'));
     }
 }

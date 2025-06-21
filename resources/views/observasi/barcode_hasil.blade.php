@@ -136,7 +136,7 @@
         }
 
         .signature-info {
-            margin-top: 10px;
+            /* margin-top: 10px; */
             font-style: italic;
             color: var(--secondary-color);
         }
@@ -185,7 +185,7 @@
             }
 
             .signature-img {
-                max-width: 150px;
+                max-width: 200px;
             }
         }
     </style>

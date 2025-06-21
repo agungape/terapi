@@ -131,7 +131,7 @@
         .signature-img {
             max-width: 200px;
             height: auto;
-            border: 1px solid #e5e7eb;
+            /* border: 1px solid #e5e7eb; */
             border-radius: 4px;
         }
 
@@ -198,7 +198,6 @@
             <img src="{{ asset('assets') }}/images/logo_bright_star.jpg" alt="Logo Institusi" class="kop-logo">
             <div class="kop-text">
                 <h2>BRIGHT STAR OF CHILD</h2>
-                <h4>BRIGHT STAR OF CHILD</h4>
                 <p> Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
                     Tenggara 93462</p>
                 <p>Telp:085123238404 | Email: brightstarofchild12@gmail.com | Website: www.brightchild.id
@@ -214,24 +213,24 @@
         <div class="child-info">
             <h3>Data Anak</h3>
             <div class="info-item">
-                <span class="info-label">Nama Lengkap:</span>
-                <span>:</span>
+                <span class="info-label">Nama Lengkap</span>
+                <span style="margin-right: 5px;margin-left: 5px;">:</span>
                 <span class="info-value">{{ $data['nama'] }}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Alamat</span>
-                <span>:</span>
-                <span class="info-value">{{ $data['alamat'] }}</span>
+                < style="margin-right: 5px;margin-left: 5px;">:</span>
+                    <span class="info-value">{{ $data['alamat'] }}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Tanggal Lahir</span>
-                <span>:</span>
+                <span style="margin-right: 5px;margin-left: 5px;">:</span>
                 <span
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_lahir'])->translatedFormat('d F Y') }}</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Tanggal Observasi</span>
-                <span>:</span>
+                <span style="margin-right: 5px;margin-left: 5px;">:</span>
                 <span
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_observasi'])->translatedFormat('d M Y') }}</span>
             </div>

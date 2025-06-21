@@ -93,6 +93,16 @@
             border-radius: 8px;
         }
 
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 10px 1fr;
+            gap: 8px 5px;
+        }
+
+        .info-row {
+            display: contents;
+        }
+
         .child-info h3 {
             color: var(--primary-color);
             margin-bottom: 15px;
@@ -109,10 +119,18 @@
         .info-label {
             font-weight: 500;
             min-width: 150px;
+            text-align: right;
+            grid-column: 1;
             color: var(--secondary-color);
         }
 
+        .info-colon {
+            grid-column: 2;
+            text-align: center;
+        }
+
         .info-value {
+            grid-column: 3;
             font-weight: 400;
         }
 
@@ -187,6 +205,24 @@
                 max-width: 150px;
             }
         }
+
+        @media (max-width: 576px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-row {
+                display: grid;
+                grid-template-columns: auto 10px 1fr;
+                margin-bottom: 8px;
+            }
+
+            .info-label,
+            .info-colon,
+            .info-value {
+                grid-column: auto;
+            }
+        }
     </style>
 </head>
 
@@ -194,13 +230,15 @@
     <div class="container">
         <!-- Kop Surat/Header Institusi -->
         <div class="kop">
-            <img src="{{ asset('assets') }}/images/logo.png" alt="Logo Institusi" class="kop-logo">
+            <img src="{{ asset('assets') }}/images/logo_bright_star.jpg" alt="Logo Institusi" class="kop-logo">
             <div class="kop-text">
-                <h2>LEMBAGA OBSERVASI ANAK</h2>
-                <p>Jl. Pendidikan No. 123, Kota Bandung | Telp: (022) 1234567</p>
-                <p>Email: observasi@example.com | Website: www.observasi-anak.example.com</p>
+                <h2>BRIGHT STAR OF CHILD</h2>
+                <h4>Pusat Layanan Terapi Anak Istimewa</h4>
+                <p> Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
+                    Tenggara 93462</p>
+                <p>Telp:085123238404 | Email: brightstarofchild12@gmail.com | Website: www.brightchild.id
+                </p>
             </div>
-            <img src="{{ asset('assets') }}/images/logo.png" alt="Logo Institusi" class="kop-logo">
         </div>
 
         <div class="header">
@@ -210,23 +248,29 @@
 
         <div class="child-info">
             <h3>Data Anak</h3>
-            <div class="info-item">
-                <span class="info-label">Nama Lengkap:</span>
-                <span class="info-value">{{ $data['nama'] }}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Alamat:</span>
-                <span class="info-value">{{ $data['alamat'] }}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Tanggal Lahir:</span>
-                <span
-                    class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_lahir'])->translatedFormat('d F Y') }}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Tanggal Observasi:</span>
-                <span
-                    class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_observasi'])->translatedFormat('d M Y') }}</span>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-label">Nama Lengkap</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value">{{ $data['nama'] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Alamat</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value">{{ $data['alamat'] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tanggal Lahir</span>
+                    <span class="info-colon">:</span>
+                    <span
+                        class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_lahir'])->translatedFormat('d F Y') }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tanggal Observasi</span>
+                    <span class="info-colon">:</span>
+                    <span
+                        class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_observasi'])->translatedFormat('d M Y') }}</span>
+                </div>
             </div>
         </div>
 

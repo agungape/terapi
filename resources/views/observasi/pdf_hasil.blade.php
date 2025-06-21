@@ -111,7 +111,7 @@
     <div class="section mb-4">
         <div class="section-title">HASIL OBSERVASI</div>
         <div class="section-content">
-            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13px;">
+            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 15px;">
                 <thead>
                     <tr style="background-color: #8ccedf; color: #fff;">
                         <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">Alat

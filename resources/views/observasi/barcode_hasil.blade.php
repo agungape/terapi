@@ -213,24 +213,20 @@
         <div class="child-info">
             <h3>Data Anak</h3>
             <div class="info-item">
-                <span class="info-label">Nama Lengkap</span>
-                <span style="margin-right: 10px;margin-left: 10px;">:</span>
+                <span class="info-label">Nama Lengkap :</span>
                 <span class="info-value">{{ $data['nama'] }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Alamat</span>
-                <span style="margin-right: 10px;margin-left: 10px;">:</span>
+                <span class="info-label">Alamat :</span>
                 <span class="info-value">{{ $data['alamat'] }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Tanggal Lahir</span>
-                <span style="margin-right: 10px;margin-left: 10px;">:</span>
+                <span class="info-label">Tanggal Lahir :</span>
                 <span
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_lahir'])->translatedFormat('d F Y') }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Tanggal Observasi</span>
-                <span style="margin-right: 10px;margin-left: 10px;">:</span>
+                <span class="info-label">Tanggal Observasi :</span>
                 <span
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_observasi'])->translatedFormat('d M Y') }}</span>
             </div>

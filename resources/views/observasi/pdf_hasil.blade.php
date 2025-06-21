@@ -228,7 +228,7 @@
     <!-- Tanda Tangan dan QR Code -->
     <div class="row mt-5">
         <div class="col-6"></div>
-        <div class="col-6 text-center">
+        <div class="col-6 text-center" style="page-break-inside: avoid;">
             <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}<br>
                 Terapis</p>
 

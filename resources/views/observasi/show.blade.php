@@ -496,7 +496,6 @@
                                                                             <table class="table table-bordered table-sm">
                                                                                 <thead class="thead-light">
                                                                                     <tr>
-                                                                                        <th style="width: 5%;">No</th>
                                                                                         <th>Pertanyaan</th>
                                                                                         <th style="width: 35%;">Jawaban
                                                                                         </th>
@@ -505,35 +504,43 @@
                                                                                 <tbody>
                                                                                     @foreach ($group->questions as $index => $q)
                                                                                         <tr>
-                                                                                            <td>{{ $index + 1 }}</td>
-                                                                                            <td>{{ $q->question_text }}
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <div
-                                                                                                    class="form-check form-check-inline">
-                                                                                                    <input
-                                                                                                        class="form-check-input"
-                                                                                                        type="radio"
-                                                                                                        name="answers[{{ $q->id }}]"
-                                                                                                        id="ya{{ $q->id }}"
-                                                                                                        value="ya">
-                                                                                                    <label
-                                                                                                        class="form-check-label"
-                                                                                                        for="ya{{ $q->id }}">Ya</label>
-                                                                                                </div>
-                                                                                                <div
-                                                                                                    class="form-check form-check-inline">
-                                                                                                    <input
-                                                                                                        class="form-check-input"
-                                                                                                        type="radio"
-                                                                                                        name="answers[{{ $q->id }}]"
-                                                                                                        id="tidak{{ $q->id }}"
-                                                                                                        value="tidak">
-                                                                                                    <label
-                                                                                                        class="form-check-label"
-                                                                                                        for="tidak{{ $q->id }}">Tidak</label>
-                                                                                                </div>
-                                                                                            </td>
+                                                                                            @if (Str::contains($q->question_text, ['Kemampuan Ekspresif', 'Kemampuan Reseptif', 'Kemampuan Visual']))
+                                                                                                <td colspan="2"
+                                                                                                    class="text-center">
+                                                                                                    <strong>{{ $q->question_text }}</strong>
+
+                                                                                                </td>
+                                                                                            @else
+                                                                                                </td>
+                                                                                                <td>{{ $q->question_text }}
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <div
+                                                                                                        class="form-check form-check-inline">
+                                                                                                        <input
+                                                                                                            class="form-check-input"
+                                                                                                            type="radio"
+                                                                                                            name="answers[{{ $q->id }}]"
+                                                                                                            id="ya{{ $q->id }}"
+                                                                                                            value="ya">
+                                                                                                        <label
+                                                                                                            class="form-check-label"
+                                                                                                            for="ya{{ $q->id }}">Ya</label>
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="form-check form-check-inline">
+                                                                                                        <input
+                                                                                                            class="form-check-input"
+                                                                                                            type="radio"
+                                                                                                            name="answers[{{ $q->id }}]"
+                                                                                                            id="tidak{{ $q->id }}"
+                                                                                                            value="tidak">
+                                                                                                        <label
+                                                                                                            class="form-check-label"
+                                                                                                            for="tidak{{ $q->id }}">Tidak</label>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            @endif
                                                                                         </tr>
                                                                                     @endforeach
                                                                                 </tbody>

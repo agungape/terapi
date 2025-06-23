@@ -99,6 +99,19 @@ class QuestionController extends Controller
         return view('q-perilaku.index', compact('perilaku'));
     }
 
+    public function qperilaku_update(Request $request, $id)
+    {
+        $qperilaku = QuestionPerilaku::where('id', $id)->first();
+
+        $validateData = $request->validate([
+            'question_text' => 'required',
+        ]);
+
+        $qperilaku->update($validateData);
+        Alert::success('Berhasil', "Data Question berhasil di Update");
+        return redirect()->back();
+    }
+
     public function perilaku_store(Request $request)
     {
         $validateData = $request->validate([

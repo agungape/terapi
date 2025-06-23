@@ -59,8 +59,16 @@
                                                                     data-name="question">
                                                                     <i class="fa fa-trash fa-fw"></i>
                                                                 </button>
+
                                                             </form>
                                                         @endcan
+                                                        @can('update qperilaku')
+                                                            <button type="button" class="btn btn-outline-warning btn-sm m-1"
+                                                                onclick="openEditModal({{ $q->id }}, '{{ $q->question_text }}')">
+                                                                <i class="fa fa-pencil-alt"></i>
+                                                            </button>
+                                                        @endcan
+
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -104,5 +112,49 @@
         </div>
 
     </form>
+
+    <form id="editForm" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Question</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="editName" class="col-sm-2 col-form-label">Question</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="editQuestion" name="question_text" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+@endsection
+@section('scripts')
+    <script>
+        function openEditModal(Id, Question) {
+            // Set the action URL for the form
+            document.getElementById('editForm').action = `/q-perilaku/update/${Id}`;
+            // Set the input value for the role name
+            document.getElementById('editQuestion').value = Question;
+
+            // Open the modal
+            $('#editModal').modal('show');
+        }
+    </script>
+
 
 @endsection

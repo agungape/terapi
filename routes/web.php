@@ -107,6 +107,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::delete('/q-penglihatan/{id}', [QuestionController::class, 'penglihatan_destroy'])->name('qpenglihatan.destroy');
     Route::get('/q-perilaku', [QuestionController::class, 'q_perilaku'])->name('question.perilaku');
     Route::post('/q-perilaku/simpan', [QuestionController::class, 'perilaku_store'])->name('qperilaku.store');
+    Route::put('/q-perilaku/update/{id}', [QuestionController::class, 'qperilaku_update'])->name('qperilaku.update');
     Route::delete('/q-perilaku/{id}', [QuestionController::class, 'perilaku_destroy'])->name('qperilaku.destroy');
     Route::get('/q-autis', [QuestionController::class, 'q_autis'])->name('question.autis');
     Route::post('/q-autis/simpan', [QuestionController::class, 'autis_store'])->name('qautis.store');

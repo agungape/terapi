@@ -62,7 +62,7 @@ class ObservasiController extends Controller
         $interPerilaku = "Kemungkinan anak mengalami masalah mental emosional";
         $penyimpanganPerilaku = "Konseling kepada orang tua jadwalkan kunjungan berikutnya 3 bulan lagi";
         $qpenglihatan = QuestionPenglihatan::get();
-        $qperilaku = QuestionPerilaku::latest()->get();
+        $qperilaku = QuestionPerilaku::orderBy('created_at', 'ASC')->get();
         $qautis = QuestionAutis::orderBy('no_urut')->get();
         $qgpph = QuestionGpph::orderBy('created_at', 'ASC')->get();
         $qwawancara = QuestionWawancara::all();

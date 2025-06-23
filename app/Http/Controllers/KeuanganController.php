@@ -358,7 +358,7 @@ class KeuanganController extends Controller
                     ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
-            ->orderBy('created_at')
+            ->orderBy('tanggal')
             ->get();
 
         // Hitung saldo akhir
@@ -388,9 +388,10 @@ class KeuanganController extends Controller
                     ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
-            ->orderBy('created_at')
+            ->orderBy('tanggal')
             ->get();
 
+        // dd($financialReport);
         $currentBalance = 0;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
@@ -406,7 +407,15 @@ class KeuanganController extends Controller
         $html = view('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'))->render();
 
         // Init mPDF
-        $mpdf = new Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_top' => 20,
+            'margin_right' => 15,
+            'margin_bottom' => 20,
+            'margin_left' => 15,
+            'default_font' => 'sans-serif'
+        ]);
 
         $mpdf->WriteHTML($html);
         return $mpdf->Output("laporan_keuangan_{$startDate}_{$endDate}.pdf", 'I'); // 'I' = inline

@@ -155,9 +155,10 @@
                                         Dari 23 indikator, terdapat <b>{{ $jumlahJawabanTidakAutis }}</b> jawaban
                                         <b>"TIDAK"</b>.<br>
                                         @if ($jumlahJawabanTidakAutis >= 2)
-                                            Jika terdapat 2 atau lebih jawaban "TIDAK", maka:<br><br>
-                                            <b>➡ Beresiko tinggi</b> anak mengalami hambatan komunikasi dan
-                                            keterlambatan bicara.<br>
+                                            Jika terdapat 2 atau lebih jawaban "TIDAK",Pada Indikator Penentuan
+                                            maka:<br><br>
+                                            <b>➡ Beresiko tinggi</b> anak mengalami hambatan dalam komunikasi dan
+                                            keterlambatan dalam berbicara.<br>
                                             Disarankan untuk konsultasi dengan dokter/psikolog dan melakukan
                                             terapi perilaku.
                                         @else
@@ -205,6 +206,39 @@
 
         </div>
     </div>
+
+    @if (!empty($wawancara))
+        <div class="section mb-4">
+            <div class="section-title">HASIL WAWANCARA</div>
+            <div class="section-content">
+                <table width="100%"
+                    style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 15px;">
+                    <thead>
+                        <tr style="background-color: #8ccedf; color: #fff;">
+                            <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">
+                                Pertanyaan</th>
+                            <th style="padding: 10px; border: 1px solid #dee2e6;" width="60%" class="text-center">
+                                jawaban
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($wawancara as $w)
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $w->question_wawancara->question_text }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    {{ $w->answer }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    @endif
     @if (!empty($hpperilaku))
         <div class="section mb-4">
             <div class="section-title">HASIL OBSERVASI PERILAKU</div>

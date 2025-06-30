@@ -438,6 +438,8 @@ class ObservasiController extends Controller
             ->whereDate('created_at', $tanggal)
             ->first();
 
+        $wawancara = QuestionResponseWawancara::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
+
         $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         $hpsensorik = HpSensorik::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         // Hitung jawaban untuk masing-masing tes
@@ -486,6 +488,7 @@ class ObservasiController extends Controller
             'totalNilaiGpph' => $totalNilaiGpph,
             'hpperilaku' => $hpperilaku,
             'hpsensorik' => $hpsensorik,
+            'wawancara' => $wawancara
         ];
 
         // Render view ke HTML

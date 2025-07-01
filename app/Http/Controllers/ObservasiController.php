@@ -448,10 +448,16 @@ class ObservasiController extends Controller
             ->where('answer', 'YA')
             ->count();
 
+
+        $criticalNoUrut = [2, 7, 9, 13, 14, 15];
+
         $jumlahJawabanTidakAutis = QuestionResponseAutis::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->where('answer', 'TIDAK')
+            ->whereIn('no_urut', $criticalNoUrut) // Filter hanya nomor urut kritis
             ->count();
+
+        dd($jumlahJawabanTidakAutis);
 
         $totalNilaiGpph = QuestionResponseGpph::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)

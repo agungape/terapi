@@ -460,8 +460,6 @@ class ObservasiController extends Controller
             })
             ->count();
 
-        dd($jumlahJawabanTidakAutis);
-
         $totalNilaiGpph = QuestionResponseGpph::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->sum('answer');

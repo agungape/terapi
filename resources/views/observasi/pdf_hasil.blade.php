@@ -241,7 +241,7 @@
     @endif --}}
 
     @if (!empty($hpperilaku))
-        <div class="section mb-4">
+        <div class="section mb-4" style="page-break-inside: avoid;">
             <div class="section-title">HASIL OBSERVASI PERILAKU</div>
             <div class="section-content">
 

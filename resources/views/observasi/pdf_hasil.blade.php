@@ -251,7 +251,7 @@
     @endif
 
     @if (!empty($hpsensorik))
-        <div class="section mb-4" style="page-break-after: always;">
+        <div class="section mb-4">
             <div class="section-title">HASIL OBSERVASI SENSORIK</div>
             <div class="section-content">
                 {!! $hpsensorik->deskripsi !!}

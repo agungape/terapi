@@ -451,10 +451,13 @@ class ObservasiController extends Controller
 
         $criticalNoUrut = [2, 7, 9, 13, 14, 15];
 
-        $jumlahJawabanTidakAutis = QuestionResponseAutis::where('anak_id', $anak->id)
+        $jumlahJawabanTidakAutis = QuestionResponseAutis::with(['question_autis'])
+            ->where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->where('answer', 'TIDAK')
-            ->whereIn('no_urut', $criticalNoUrut) // Filter hanya nomor urut kritis
+            ->whereHas('question_autis', function ($query) use ($criticalNoUrut) {
+                $query->whereIn('no_urut', $criticalNoUrut);
+            })
             ->count();
 
         dd($jumlahJawabanTidakAutis);

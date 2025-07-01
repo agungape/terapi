@@ -72,7 +72,7 @@
                     <td class="text-center">
                         <div class="col-10">
                             <h5 style="font-weight: bold; margin: 0;">BRIGHT STAR OF CHILD</h5>
-                            <h5 style="font-weight: bold; margin: 0;">Pusat Layanan Terapi Anak Istimewa
+                            <h5 style="font-weight: bold; margin: 0;">Pusat Layanan Terapi Anak Istimewah
                             </h5>
                             <p class="mb-0" style="font-size: 10pt;">
                                 Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
@@ -207,7 +207,7 @@
         </div>
     </div>
 
-    @if (!empty($wawancara))
+    {{-- @if (!empty($wawancara))
         <div class="section mb-4">
             <div class="section-title">HASIL WAWANCARA</div>
             <div class="section-content">
@@ -238,7 +238,8 @@
 
             </div>
         </div>
-    @endif
+    @endif --}}
+
     @if (!empty($hpperilaku))
         <div class="section mb-4">
             <div class="section-title">HASIL OBSERVASI PERILAKU</div>

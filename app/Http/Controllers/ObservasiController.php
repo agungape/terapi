@@ -511,7 +511,7 @@ class ObservasiController extends Controller
         $mpdf->SetCreator(config('app.name'));
 
         $mpdf->SetHeader("RAHASIA||Halaman {PAGENO}");
-        $mpdf->SetFooter("||Layanan Terapi Anak Spesial");
+        $mpdf->SetFooter("||Layanan Terapi Anak Istimewah");
 
         // Tambahkan HTML ke PDF
         $mpdf->WriteHTML($html);

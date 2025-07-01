@@ -241,8 +241,8 @@
     @endif --}}
 
     @if (!empty($hpperilaku))
-        <div class="section mb-4">
-            <div class="section-title" style="page-break-inside: avoid;">HASIL OBSERVASI PERILAKU</div>
+        <div class="section mb-4" style="page-break-after: always;">
+            <div class="section-title">HASIL OBSERVASI PERILAKU</div>
             <div class="section-content">
 
                 {!! $hpperilaku->deskripsi !!}
@@ -251,7 +251,7 @@
     @endif
 
     @if (!empty($hpsensorik))
-        <div class="section mb-5">
+        <div class="section mb-4" style="page-break-after: always;">
             <div class="section-title">HASIL OBSERVASI SENSORIK</div>
             <div class="section-content">
                 {!! $hpsensorik->deskripsi !!}

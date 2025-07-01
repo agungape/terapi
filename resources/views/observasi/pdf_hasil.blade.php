@@ -108,7 +108,7 @@
         </table>
     </div>
 
-    <div class="section mb-4">
+    <div class="section mb-4" style="page-break-after: always;">
         <div class="section-title">HASIL OBSERVASI</div>
         <div class="section-content">
             <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 15px;">

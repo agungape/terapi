@@ -1,7 +1,12 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
-        <span class="brand-text font-weight-light ml-4">BrightStarOfChild</span>
+        <span class="brand-text ml-4" style="font-size: 1.2rem; font-weight: 400;">
+            <span style="color: #fff; text-shadow: 0 0 5px #ffc107, 0 0 10px #ffc107;">Bright</span>
+            <span style="color: #fff; text-shadow: 0 0 5px #ffc107, 0 0 10px #ffc107;">Star</span>
+            <span style="color: #fff; text-shadow: 0 0 5px #17a2b8, 0 0 10px #17a2b8;">Of</span>
+            <span style="color: #fff; text-shadow: 0 0 5px #17a2b8, 0 0 10px #17a2b8;">Child</span>
+        </span>
     </a>
 
     <!-- Sidebar -->
@@ -9,11 +14,11 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('assets') }}/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
+                <img src="{{ asset('assets') }}/images/faces-clipart/pic-2.png" class="img-circle elevation-2"
                     alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ Auth::user()->username }}</a>
+                <a href="#" class="d-block">{{ Auth::user()->name }}</a>
             </div>
         </div>
 
@@ -253,86 +258,126 @@
                     </ul>
                 </li>
 
-                @can('view observasi')
-                    <li class="nav-item">
-                        <a href="/observasi" class="nav-link @yield('menuObservasi')">
+                <li class="nav-item @yield('masterLayananterapi')">
+                    @canany([
+                        'view observasi',
+                        'view assessment',
+                        'view pendaftaran',
+                        'view rekammedis',
+                        'view jadwal
+                        anak',
+                        ])
+                        <a href="#" class="nav-link @yield('menuLayananterapi')">
                             <i class="nav-icon fa fa-address-book"></i>
                             <p>
-                                Observasi
+                                Layanan Terapi
+                                <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
-                    </li>
-                @endcan
-                @can('view assessment')
-                    <li class="nav-item">
-                        <a href="/assessment" class="nav-link @yield('menuAssessment')">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                    @endcanany
+                    <ul class="nav nav-treeview">
+                        @can('view observasi')
+                            <li class="nav-item">
+                                <a href="/observasi" class="nav-link @yield('menuObservasi')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Observasi
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @if (Auth::user()->hasAnyRole(['psikolog', 'super-admin', 'admin']))
+                            @can('view assessment')
+                                <li class="nav-item">
+                                    <a href="/assessment" class="nav-link @yield('menuAssessment')">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Assessment
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                        @endif
+                        @can('view pendaftaran')
+                            <li class="nav-item">
+                                <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Pendaftaran
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view rekammedis')
+                            <li class="nav-item">
+                                <a href="/data" class="nav-link @yield('menuRekammedis')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Rekam Medis Anak
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view jadwal anak')
+                            <li class="nav-item">
+                                <a href="/jadwal" class="nav-link @yield('menuJadwal')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Jadwal Anak
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+
+                <li class="nav-item @yield('masterInformasiprofile')">
+                    @canany(['view informasi', 'view profile', 'view profile user'])
+                        <a href="#" class="nav-link @yield('menuInformasiprofile')">
+                            <i class="nav-icon fa fas fa-house-user"></i>
                             <p>
-                                Assessment
+                                Informasi & Profile
+                                <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
-                    </li>
-                @endcan
-                @can('view pendaftaran')
-                    <li class="nav-item">
-                        <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
-                            <i class="nav-icon fa fa-file-contract"></i>
-                            <p>
-                                Pendaftaran
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('view rekammedis')
-                    <li class="nav-item">
-                        <a href="/data" class="nav-link @yield('menuRekammedis')">
-                            <i class="nav-icon fa fa-clipboard-list"></i>
-                            <p>
-                                Rekam Medis Anak
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('view jadwal anak')
-                    <li class="nav-item">
-                        <a href="/jadwal" class="nav-link @yield('menuJadwal')">
-                            <i class="nav-icon fas fa-calendar-alt"></i>
-                            <p>
-                                Jadwal Anak
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('view informasi')
-                    <li class="nav-item">
-                        <a href="/informasi" class="nav-link @yield('menuInformasi')">
-                            <i class="nav-icon fas fa-info"></i>
-                            <p>
-                                Informasi
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('view profile')
-                    <li class="nav-item">
-                        <a href="/profile" class="nav-link @yield('menuProfile')">
-                            <i class="nav-icon fas fa-house-user"></i>
-                            <p>
-                                Profile Yayasan
-                            </p>
-                        </a>
-                    </li>
-                @endcan
-                @can('view profile user')
-                    <li class="nav-item">
-                        <a href="{{ route('profile.user') }}" class="nav-link @yield('menuProfileuser')">
-                            <i class="nav-icon fas fa-user-alt"></i>
-                            <p>
-                                Profile User
-                            </p>
-                        </a>
-                    </li>
-                @endcan
+                    @endcanany
+                    <ul class="nav nav-treeview">
+                        @can('view informasi')
+                            <li class="nav-item">
+                                <a href="/informasi" class="nav-link @yield('menuInformasi')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Informasi
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view profile')
+                            <li class="nav-item">
+                                <a href="/profile" class="nav-link @yield('menuProfile')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Profile Yayasan
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @if (Auth::user()->hasRole('terapis'))
+                            @can('view profile user')
+                                <li class="nav-item">
+                                    <a href="{{ route('profile.user') }}" class="nav-link @yield('menuProfileuser')">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>
+                                            Profile User
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                        @endif
+                    </ul>
+                </li>
+
+
 
                 @can('view career')
                     <li class="nav-item">
@@ -364,20 +409,23 @@
                         </a>
                     </li>
                 @endcan
-                <li class="nav-item @yield('masterWebsite')">
-                    @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
-                        <a href="#" class="nav-link @yield('menuKeuangan')">
-                            <i class="nav-icon fas fa-cog"></i>
-                            <p>
-                                Pengaturan Website
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
-                        </a>
-                    @endcanany
-                    <ul class="nav nav-treeview">
+                @can('view Setting')
+                    <li class="nav-item @yield('masterWebsite')">
+                        @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
+                            <a href="#" class="nav-link @yield('menuKeuangan')">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>
+                                    Pengaturan Website
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                        @endcanany
+                        <ul class="nav nav-treeview">
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                @endcan
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -1,4 +1,6 @@
 @extends('layouts.master')
+@section('menuInformasiprofile', 'active')
+@section('masterInformasiprofile', 'menu-is-opening menu-open')
 @section('menuProfileuser', 'active')
 @section('content')
 

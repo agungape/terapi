@@ -1,4 +1,6 @@
 @extends('layouts.master')
+@section('menuLayananterapi', 'active')
+@section('masterLayananterapi', 'menu-is-opening menu-open')
 @section('menuObservasi', 'active')
 @section('style')
     <style>

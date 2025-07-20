@@ -178,10 +178,10 @@
                                     <div style="padding: 6px; color: #333;">
                                         <b>Hasil Deteksi:</b><br>
                                         Dari hasil pemeriksaan,
-                                        @if ($jawabanPenglihatan == 'Curiga Gangguan Penglihatan')
-                                            <b>➡</b> {{ $jawabanPenglihatan }}.
+                                        @if ($jawabanPenglihatan->hasil == 'Curiga Gangguan Penglihatan')
+                                            <b>➡</b> {{ $jawabanPenglihatan->hasil }}.
                                         @else
-                                            <b><span style="color:green;">✔</span> </b>{{ $jawabanPenglihatan }}
+                                            <b><span style="color:green;">✔</span> </b>{{ $jawabanPenglihatan->hasil }}
                                         @endif
                                     </div>
                                 </td>

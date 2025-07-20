@@ -139,7 +139,8 @@
                                             Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
                                             melakukan terapi perilaku.
                                         @else
-                                            <b>✅ Tidak terdeteksi</b> masalah mental emosional pada anak.
+                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah mental
+                                            emosional pada anak.
                                         @endif
                                     </div>
                                 </td>
@@ -154,7 +155,7 @@
                                         <b>Hasil Deteksi:</b><br>
                                         Dari {{ $jumlahPertanyaanPendengaran }} indikator, terdapat
                                         <b>{{ $jumlahJawabanTidakPendengaran }}</b> jawaban
-                                        <b>"YA"</b>.<br>
+                                        <b>"TIDAK"</b>.<br>
                                         @if ($jumlahJawabanTidakPendengaran >= 1)
                                             Berdasarkan ketentuan, jika terdapat 1 atau lebih jawaban "TIDAK",
                                             maka:<br><br>
@@ -162,7 +163,8 @@
                                             Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
                                             melakukan terapi perilaku.
                                         @else
-                                            <b>✅ Tidak terdeteksi</b> masalah pendengaran pada anak.
+                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah
+                                            pendengaran pada anak.
                                         @endif
                                     </div>
                                 </td>
@@ -185,7 +187,8 @@
                                             Disarankan untuk konsultasi dengan dokter/psikolog dan melakukan
                                             terapi perilaku.
                                         @else
-                                            <b>✅ Tidak terdeteksi</b> hambatan komunikasi dan keterlambatan bicara.
+                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> hambatan
+                                            komunikasi dan keterlambatan bicara.
                                         @endif
                                     </div>
                                 </td>
@@ -204,7 +207,8 @@
                                             <b>➡ Anak kemungkinan mengalami kesulitan dalam pemusatan perhatian dan
                                                 hiperaktifitas.</b>
                                         @else
-                                            <b>✅ Tidak terdeteksi</b> kesulitan dalam pemusatan perhatian dan
+                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> kesulitan dalam
+                                            pemusatan perhatian dan
                                             hiperaktifitas.
                                         @endif
                                     </div>
@@ -264,7 +268,7 @@
     @endif --}}
 
     @if (!empty($hpperilaku))
-        <div class="section mb-4" style="page-break-after: always;">
+        <div class="section mb-4">
             <div class="section-title">HASIL OBSERVASI PERILAKU</div>
             <div class="section-content">
 

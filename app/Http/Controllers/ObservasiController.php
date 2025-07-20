@@ -440,7 +440,7 @@ class ObservasiController extends Controller
 
         $wawancara = QuestionResponseWawancara::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
         $jumlahPertanyaanPendengaran = QuestionResponse::where('anak_id', $anak->id)
-            ->whereDate('created_at', $hasil->created_at->toDateString())
+            ->whereDate('created_at', $tanggal)
             ->count();
 
         $jumlahJawabanTidakPendengaran = QuestionResponsePerilaku::where('anak_id', $anak->id)

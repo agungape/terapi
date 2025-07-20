@@ -448,6 +448,11 @@ class ObservasiController extends Controller
             ->where('answer', 'tidak')
             ->count();
 
+        $jawabanPenglihatan = HasilPemeriksaan::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->where('jenis', 'Penyimpangan Penglihatan')
+            ->first();
+
         $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         $hpsensorik = HpSensorik::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         // Hitung jawaban untuk masing-masing tes
@@ -504,6 +509,7 @@ class ObservasiController extends Controller
             'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
             'jumlahPertanyaanPendengaran' => $jumlahPertanyaanPendengaran,
             'jumlahJawabanTidakPendengaran' => $jumlahJawabanTidakPendengaran,
+            'jawabanPenglihatan' => $jawabanPenglihatan,
             'totalNilaiGpph' => $totalNilaiGpph,
             'hpperilaku' => $hpperilaku,
             'hpsensorik' => $hpsensorik,

@@ -169,6 +169,23 @@
                                     </div>
                                 </td>
                             </tr>
+                        @elseif ($jenis == 'Penyimpangan Penglihatan')
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $penyimpangan_penglihatan }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    <div style="padding: 6px; color: #333;">
+                                        <b>Hasil Deteksi:</b><br>
+                                        Dari hasil pemeriksaan,
+                                        @if ($hasil == 'Curiga Gangguan Penglihatan')
+                                            <b>➡ {{ $hasil }}.
+                                            @else
+                                                <b><span style="color:green;">✔</span> {{ $hasil }}
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
                         @elseif ($jenis == 'Autisme')
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">

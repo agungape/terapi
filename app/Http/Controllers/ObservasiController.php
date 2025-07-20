@@ -497,6 +497,7 @@ class ObservasiController extends Controller
             'tanggal' => $tanggal,
             'penyimpangan_perilaku' => "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE",
             'penyimpangan_pendengaran' => "Deteksi dini penyimpangan pendengaran",
+            'penyimpangan_penglihatan' => "Deteksi dini penyimpangan penglihatan",
             'autis' => "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT",
             'gpph' => "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH",
             'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,

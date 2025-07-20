@@ -377,6 +377,40 @@
                     </ul>
                 </li>
 
+                <li class="nav-item @yield('masterEcommerce')">
+                    @canany(['view informasi', 'view profile', 'view profile user'])
+                        <a href="#" class="nav-link @yield('menuEcommerce')">
+                            <i class="nav-icon fa fas fa-shopping-bag"></i>
+                            <p>
+                                Toko Online
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
+                    <ul class="nav nav-treeview">
+                        {{-- @can('view kategori produk') --}}
+                        <li class="nav-item">
+                            <a href="/products-category" class="nav-link @yield('menuKategoriproduk')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Kategori Produk
+                                </p>
+                            </a>
+                        </li>
+                        {{-- @endcan
+                        @can('view Layananproduk') --}}
+                        <li class="nav-item">
+                            <a href="/products-services" class="nav-link @yield('menuLayananproduk')">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Layanan Produk
+                                </p>
+                            </a>
+                        </li>
+                        {{-- @endcan --}}
+                    </ul>
+                </li>
+
 
 
                 @can('view career')

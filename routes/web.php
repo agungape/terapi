@@ -20,6 +20,7 @@ use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\PsikologController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ShopeeAffiliateController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\UserController;
@@ -178,6 +179,11 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
 
     // route psikolog
     Route::resource('/psikolog', PsikologController::class);
+
+
+    // route e-commerce
+
+    Route::get('/products-services', [ShopeeAffiliateController::class, 'index'])->name('products.index');
 });
 
 

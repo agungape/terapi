@@ -144,6 +144,29 @@
                                     </div>
                                 </td>
                             </tr>
+                        @elseif ($jenis == 'Penyimpangan Pendengaran')
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
+                                    {{ $penyimpangan_pendengaran }}
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #dee2e6;">
+                                    <div style="padding: 6px; color: #333;">
+                                        <b>Hasil Deteksi:</b><br>
+                                        Dari {{ $jumlahPertanyaanPendengaran }} indikator, terdapat
+                                        <b>{{ $jumlahJawabanTidakPendengaran }}</b> jawaban
+                                        <b>"YA"</b>.<br>
+                                        @if ($jumlahJawabanTidakPendengaran >= 1)
+                                            Berdasarkan ketentuan, jika terdapat 1 atau lebih jawaban "TIDAK",
+                                            maka:<br><br>
+                                            <b>➡ Kemungkinan anak mengalami permasalahan pendengaran</b><br>
+                                            Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
+                                            melakukan terapi perilaku.
+                                        @else
+                                            <b>✅ Tidak terdeteksi</b> masalah pendengaran pada anak.
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
                         @elseif ($jenis == 'Autisme')
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">

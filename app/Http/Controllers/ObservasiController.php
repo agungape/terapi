@@ -439,6 +439,14 @@ class ObservasiController extends Controller
             ->first();
 
         $wawancara = QuestionResponseWawancara::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
+        $jumlahPertanyaanPendengaran = QuestionResponse::where('anak_id', $anak->id)
+            ->whereDate('created_at', $hasil->created_at->toDateString())
+            ->count();
+
+        $jumlahJawabanTidakPendengaran = QuestionResponsePerilaku::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->where('answer', 'tidak')
+            ->count();
 
         $hpperilaku = HpPerilaku::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
         $hpsensorik = HpSensorik::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->first();
@@ -488,10 +496,13 @@ class ObservasiController extends Controller
             'hasil' => $hasil,
             'tanggal' => $tanggal,
             'penyimpangan_perilaku' => "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE",
+            'penyimpangan_pendengaran' => "Deteksi dini penyimpangan pendengaran",
             'autis' => "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT",
             'gpph' => "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH",
             'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,
             'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
+            'jumlahPertanyaanPendengaran' => $jumlahPertanyaanPendengaran,
+            'jumlahJawabanTidakPendengaran' => $jumlahJawabanTidakPendengaran,
             'totalNilaiGpph' => $totalNilaiGpph,
             'hpperilaku' => $hpperilaku,
             'hpsensorik' => $hpsensorik,

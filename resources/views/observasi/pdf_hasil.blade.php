@@ -179,9 +179,9 @@
                                         <b>Hasil Deteksi:</b><br>
                                         Dari hasil pemeriksaan,
                                         @if ($hasil == 'Curiga Gangguan Penglihatan')
-                                            <b>➡ {{ $hasil }}.
-                                            @else
-                                                <b><span style="color:green;">✔</span> {{ $hasil }}
+                                            <b>➡</b> {{ $hasil }}.
+                                        @else
+                                            <b><span style="color:green;">✔</span> </b>{{ $hasil }}
                                         @endif
                                     </div>
                                 </td>

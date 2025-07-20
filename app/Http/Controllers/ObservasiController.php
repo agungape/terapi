@@ -443,7 +443,7 @@ class ObservasiController extends Controller
             ->whereDate('created_at', $tanggal)
             ->count();
 
-        $jumlahJawabanTidakPendengaran = QuestionResponsePerilaku::where('anak_id', $anak->id)
+        $jumlahJawabanTidakPendengaran = QuestionResponse::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->where('answer', 'tidak')
             ->count();

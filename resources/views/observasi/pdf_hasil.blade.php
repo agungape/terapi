@@ -179,8 +179,11 @@
                                         <b>Hasil Deteksi:</b><br>
                                         Dari hasil pemeriksaan,
                                         @if ($jawabanPenglihatan->hasil == 'Curiga Gangguan Penglihatan')
+                                            Anak kesulitan atau tidak dapat mencocokkan kartu "E" sampai baris
+                                            ketiga<br><br>
                                             <b>➡</b> {{ $jawabanPenglihatan->hasil }}.
                                         @else
+                                            Anak dapat mencocokkan kartu "E" sampai baris ketiga<br><br>
                                             <b><span style="color:green;">✔</span> </b>{{ $jawabanPenglihatan->hasil }}
                                         @endif
                                     </div>

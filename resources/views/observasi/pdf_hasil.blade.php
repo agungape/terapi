@@ -139,6 +139,7 @@
                                             Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
                                             melakukan terapi perilaku.
                                         @else
+                                            <br><br>
                                             <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah mental
                                             emosional pada anak.
                                         @endif
@@ -163,6 +164,7 @@
                                             Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
                                             melakukan terapi perilaku.
                                         @else
+                                            <br><br>
                                             <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah
                                             pendengaran pada anak.
                                         @endif
@@ -183,6 +185,7 @@
                                             ketiga<br><br>
                                             <b>➡</b> {{ $jawabanPenglihatan->hasil }}.
                                         @else
+                                            <br><br>
                                             Anak dapat mencocokkan kartu "E" sampai baris ketiga<br><br>
                                             <b><span style="color:green;">✔</span> </b>{{ $jawabanPenglihatan->hasil }}
                                         @endif
@@ -207,6 +210,7 @@
                                             Disarankan untuk konsultasi dengan dokter/psikolog dan melakukan
                                             terapi perilaku.
                                         @else
+                                            <br><br>
                                             <b><span style="color:green;">✔</span> Tidak terdeteksi</b> hambatan
                                             komunikasi dan keterlambatan bicara.
                                         @endif
@@ -227,6 +231,7 @@
                                             <b>➡ Anak kemungkinan mengalami kesulitan dalam pemusatan perhatian dan
                                                 hiperaktifitas.</b>
                                         @else
+                                            <br><br>
                                             <b><span style="color:green;">✔</span> Tidak terdeteksi</b> kesulitan dalam
                                             pemusatan perhatian dan
                                             hiperaktifitas.

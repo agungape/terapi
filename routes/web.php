@@ -55,6 +55,7 @@ Route::get('/therapists', [FrontendController::class, 'therapists']);
 // akhir route website
 
 Route::get('/barcode/scan', [ObservasiController::class, 'scanBarcode'])->name('barcode.scan');
+Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcode'])->name('barcode.scan');
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 
 
@@ -176,6 +177,8 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
 
     // route assessment
     Route::resource('/assessment', AssessmentController::class);
+    Route::get('/assessment/cetak/{assessment}', [AssessmentController::class, 'cetak'])->name('assessment.cetak');
+
 
     // route psikolog
     Route::resource('/psikolog', PsikologController::class);

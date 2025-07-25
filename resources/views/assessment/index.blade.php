@@ -211,6 +211,10 @@
                                                                     <i class="fa fa-edit"></i>
                                                                 </a>
                                                             @endcan
+                                                            <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
+                                                                class="btn btn-success btn-sm mr-1" title="Cetak">
+                                                                <i class="fa fa-print"></i>
+                                                            </a>
                                                             @can('delete assessment')
                                                                 <form
                                                                     action="{{ route('assessment.destroy', ['assessment' => $a->id]) }}"

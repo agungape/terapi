@@ -283,7 +283,7 @@
                 <tr>
                     <td width="5%"></td>
                     <td width="3%"> <span class="bullet-point">•</span></td>
-                    <td colspan="2">{{ $assessment->tujuan_pemeriksaan }}</td>
+                    <td colspan="2" style="text-align: justify;">{{ $assessment->tujuan_pemeriksaan }}</td>
                 </tr>
             </tbody>
         </table>
@@ -300,7 +300,7 @@
                     <tr>
                         <td width="5%"></td>
                         <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2">
+                        <td colspan="2" style="text-align: justify;">
                             {{ $item }}
                         </td>
                     </tr>
@@ -319,7 +319,7 @@
                     <tr>
                         <td width="5%"></td>
                         <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2">
+                        <td colspan="2" style="text-align: justify;">
                             {{ $item }}
                         </td>
                     </tr>
@@ -338,7 +338,7 @@
                     <tr>
                         <td width="5%"></td>
                         <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2">
+                        <td colspan="2" style="text-align: justify;">
                             {{ $item }}
                         </td>
                     </tr>
@@ -363,7 +363,7 @@
                         <td width="5%"></td>
                         <td width="3%"></td>
                         <td width="3%"><span class="bullet-point-second">•</span></td>
-                        <td>
+                        <td style="text-align: justify;">
                             {{ $item }}
                         </td>
                     </tr>
@@ -378,7 +378,7 @@
                         <td width="5%"></td>
                         <td width="3%"></td>
                         <td width="3%"><span class="bullet-point-second">•</span></td>
-                        <td>
+                        <td style="text-align: justify;">
                             {{ $item }}
                         </td>
                     </tr>

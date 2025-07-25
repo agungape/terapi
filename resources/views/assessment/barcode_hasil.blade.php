@@ -234,12 +234,13 @@
 
         <div class="signature">
             <h3>Verifikasi Assessment</h3>
-            <img src="{{ asset('assets') }}/images/signature-psikolog-ori.png" alt="Tanda Tangan" class="signature-img">
-            <p style="font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #000;">Astri Yunita,
+            <img src="{{ asset('assets') }}/images/signature-psikolog-barcode.png" alt="Tanda Tangan"
+                class="signature-img">
+            <p style="font-weight: bold;">Astri Yunita,
                 S.Psi.,M.Psi.,Psikolog
             </p>
-            <p style="margin-bottom: 5px;">STR. XP00001068698759</p>
-            <p style="margin-bottom: 0;">SIPP. 20130221-2023-03-0807</p>
+            <p>STR. XP00001068698759</p>
+            <p>SIPP. 20130221-2023-03-0807</p>
         </div>
     </div>
 </body>

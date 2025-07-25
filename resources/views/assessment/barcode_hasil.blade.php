@@ -226,7 +226,7 @@
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_lahir'])->translatedFormat('d F Y') }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Tanggal Assessment :</span>
+                <span class="info-label">Tanggal Pemeriksaan :</span>
                 <span
                     class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_assessment'])->translatedFormat('d M Y') }}</span>
             </div>
@@ -235,7 +235,11 @@
         <div class="signature">
             <h3>Verifikasi Assessment</h3>
             <img src="{{ asset('assets') }}/images/signature-psikolog-ori.png" alt="Tanda Tangan" class="signature-img">
-            <p class="signature-info">Tanda tangan petugas observasi</p>
+            <p style="font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #000;">Astri Yunita,
+                S.Psi.,M.Psi.,Psikolog
+            </p>
+            <p style="margin-bottom: 5px;">STR. XP00001068698759</p>
+            <p style="margin-bottom: 0;">SIPP. 20130221-2023-03-0807</p>
         </div>
     </div>
 </body>

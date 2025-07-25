@@ -211,9 +211,11 @@
                                                                     <i class="fa fa-edit"></i>
                                                                 </a>
                                                             @endcan
-                                                            <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
-                                                                class="btn btn-success btn-sm mr-1" title="Cetak">
-                                                                <i class="fa fa-print"></i>
+
+                                                            <a href="https://wa.me/+62{{ $a->anak->telepon_ibu }}?text={{ urlencode('Hasil Assessment ' . $a->anak->nama . ': ' . route('assessment.cetak', ['assessment' => $a->id])) }}"
+                                                                class="btn btn-success btn-sm mr-1"
+                                                                title="Bagikan via WhatsApp" target="_blank">
+                                                                <i class="fab fa-whatsapp"></i>
                                                             </a>
                                                             @can('delete assessment')
                                                                 <form
@@ -228,6 +230,9 @@
                                                                     </button>
                                                                 </form>
                                                             @endcan
+
+
+
                                                         </div>
                                                     </td>
                                                     <td style="vertical-align: middle;">
@@ -240,12 +245,21 @@
                                                         </span>
                                                     </td>
                                                     <td style="vertical-align: middle;">
-                                                        <a href="{{ asset('storage/hasil-assessment/' . $a->file_assessment) }}"
-                                                            target="_blank"
-                                                            onclick="window.open(this.href).print(); return false;"
-                                                            class="file-link">
-                                                            {{ $a->file_assessment }}
-                                                        </a>
+                                                        @if ($a->file_assessment == null)
+                                                            <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
+                                                                class="file-link" title="Cetak" target="_blank"
+                                                                onclick="window.open(this.href).print(); return false;">
+                                                                hasil-assessment-{{ $a->anak->nama }}.pdf
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ asset('storage/hasil-assessment/' . $a->file_assessment) }}"
+                                                                target="_blank"
+                                                                onclick="window.open(this.href).print(); return false;"
+                                                                class="file-link">
+                                                                {{ $a->file_assessment }}
+                                                            </a>
+                                                        @endif
+
                                                     </td>
                                                 </tr>
                                             @empty

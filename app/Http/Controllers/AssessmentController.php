@@ -177,8 +177,8 @@ class AssessmentController extends Controller
             'mode' => 'utf-8',
             'format' => 'A4',
             'default_font' => 'times',
-            'margin_top' => 8,
-            'margin_bottom' => 10,
+            'margin_top' => 15,
+            'margin_bottom' => 15,
             'margin_left' => 15,
             'margin_right' => 15,
         ]);

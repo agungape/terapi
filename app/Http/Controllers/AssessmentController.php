@@ -167,7 +167,6 @@ class AssessmentController extends Controller
 
     public function cetak(Assessment $assessment)
     {
-        dd($assessment);
         $observasi_awal = $assessment->observasi_awal;
         $sumber_asesmen = $assessment->sumber_asesmen;
         $hasil_pemeriksaan = $assessment->hasil_pemeriksaan;
@@ -183,6 +182,8 @@ class AssessmentController extends Controller
             // 'signature' => $->signature_image_path, // path ke gambar tanda tangan
             'tanggal_assessment' => $assessment->tanggal_assessment
         ];
+
+        dd($data);
 
         $scanUrl = url('/barcode/assessment/scan?data=' . urlencode(json_encode($data)));
 

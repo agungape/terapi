@@ -395,3 +395,27 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        // Inisialisasi select2
+        $('.select2').select2();
+
+        // Script untuk menampilkan alasan jika tidak setuju
+        $('input[name="persetujuan_psikolog"]').change(function() {
+            if ($(this).val() === '0') {
+                $('#alasan-tidak-setuju-group').show();
+                $('#alasan_tidak_setuju').prop('required', true);
+            } else {
+                $('#alasan-tidak-setuju-group').hide();
+                $('#alasan_tidak_setuju').prop('required', false);
+            }
+        });
+
+        // Jika edit, cek nilai persetujuan saat load
+        if ($('input[name="persetujuan_psikolog"]:checked').val() === '0') {
+            $('#alasan-tidak-setuju-group').show();
+            $('#alasan_tidak_setuju').prop('required', true);
+        }
+    });
+</script>

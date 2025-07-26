@@ -148,7 +148,7 @@
 
         .bullet-point-second {
             font-size: 17px;
-            color: #1b51bd;
+            color: #7f8288;
             font-weight: bold;
         }
 

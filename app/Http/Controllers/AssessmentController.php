@@ -99,43 +99,61 @@ class AssessmentController extends Controller
         $roles = $user->getRoleNames();
         $anaks = Anak::latest()->get();
         $psikologs = Psikolog::latest()->get();
-        return view('assessment.edit', compact('assessment', 'anaks', 'psikologs', 'roles'));
+
+        if ($roles->contains('psikolog')) {
+            $psikologs = Psikolog::where('nama', $user->name)->first();
+            return view('assessment.edit', compact('assessment', 'anaks', 'psikologs', 'roles'));
+        } else {
+            $psikologs = Psikolog::latest()->get();
+            return view('assessment.edit', compact('assessment', 'anaks', 'psikologs', 'roles'));
+        }
     }
 
     public function update(Request $request, Assessment $assessment): RedirectResponse
     {
-        $validateData = $request->validate([
+        // Validasi
+        $validatedData = $request->validate([
             'anak_id' => 'required|exists:App\Models\Anak,id',
             'psikolog_id' => 'required|exists:App\Models\Psikolog,id',
-            'file_assessment' =>  'nullable|file|mimes:pdf|max:5120',
-            'assessment_awal' => 'required|string',
             'tanggal_assessment' => 'required|date',
-            'diagnosa' => 'nullable|string',
-            'rekomendasi' => 'nullable|string',
+            'tujuan_pemeriksaan' => 'required|string',
+            'sumber_asesmen' => 'required|array',
+            'sumber_asesmen.*' => 'required|string',
+            'perilaku' => 'required|array',
+            'perilaku.*' => 'required|string',
+            'kesimpulan_observasi' => 'required|string',
+            'hasil_pemeriksaan' => 'required|array',
+            'hasil_pemeriksaan.*' => 'required|string',
+            'diagnosa' => 'required|string',
+            'rekomendasi_orangtua' => 'required|array',
+            'rekomendasi_orangtua.*' => 'required|string',
+            'rekomendasi_terapi' => 'required|array',
+            'rekomendasi_terapi.*' => 'required|string',
             'catatan_tambahan' => 'nullable|string',
-            'tindak_lanjut' => 'nullable|string',
+            'persetujuan_psikolog' => 'required|in:0,1',
+            'alasan_tidak_setuju' => 'nullable|required_if:persetujuan_psikolog,0|string',
         ]);
 
-        $namaAnak = Anak::findorFail($request->anak_id);
+        dd($validatedData);
 
-        if ($request->hasFile('file_assessment')) {
+        // Update data assessment
+        $assessment->update([
+            'anak_id' => $validatedData['anak_id'],
+            'psikolog_id' => $validatedData['psikolog_id'],
+            'tanggal_assessment' => $validatedData['tanggal_assessment'],
+            'tujuan_pemeriksaan' => $validatedData['tujuan_pemeriksaan'],
+            'sumber_asesmen' => $validatedData['sumber_asesmen'],
+            'perilaku' => $validatedData['perilaku'],
+            'kesimpulan_observasi' => $validatedData['kesimpulan_observasi'],
+            'hasil_pemeriksaan' => $validatedData['hasil_pemeriksaan'],
+            'diagnosa' => $validatedData['diagnosa'],
+            'rekomendasi_orangtua' => $validatedData['rekomendasi_orangtua'],
+            'rekomendasi_terapi' => $validatedData['rekomendasi_terapi'],
+            'catatan_tambahan' => $validatedData['catatan_tambahan'],
+            'persetujuan_psikolog' => $validatedData['persetujuan_psikolog'],
+            'alasan_tidak_setuju' => $validatedData['persetujuan_psikolog'] ? null : $validatedData['alasan_tidak_setuju'],
+        ]);
 
-            if ($assessment->file_assessment) {
-                Storage::disk('public')->delete('hasil-assessment/' . $assessment->file_assessment);
-            }
-
-            $file = $request->file('file_assessment');
-            $extFile = $file->getClientOriginalExtension();
-            $namaFile =
-                "hasil-assessment-" . $namaAnak->nama . "." . $extFile;
-            $path = 'hasil-assessment/' . $namaFile;
-            Storage::disk('public')->put($path, file_get_contents($file));
-            $validateData['file_assessment'] = $namaFile;
-        } else {
-            $validatedData['file_assessment'] = $assessment->file_assessment;
-        }
-
-        $assessment->update($validateData);
         Alert::success('Berhasil', "Data Assessment berhasil di Update");
         return redirect("/assessment");
     }

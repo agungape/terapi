@@ -4,9 +4,9 @@
 @section('menuAssessment', 'active')
 
 @section('content')
-    <form action="{{ route('assessment.store') }}" method="POST" enctype="multipart/form-data">
-        @include('assessment.form', ['tombol' => 'Upload Hasil'])
-    </form>
+
+    @include('assessment.form', ['tombol' => 'Upload Hasil'])
+
 @endsection
 
 @section('styles')

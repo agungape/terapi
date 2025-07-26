@@ -242,7 +242,8 @@
                 <p>STR. XP00001068698759</p>
                 <p>SIPP. 20130221-2023-03-0807</p>
             @else
-                <p>dokumen belum ditandatangani karena : {{ $data['alasan_tidak_setuju'] }}</p>
+                <p>dokumen belum ditandatangani karena</p>
+                <p> {{ $data['alasan_tidak_setuju'] }}</p>
             @endif
 
 

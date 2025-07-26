@@ -142,7 +142,7 @@ class AssessmentController extends Controller
             'tanggal_assessment' => $validatedData['tanggal_assessment'],
             'tujuan_pemeriksaan' => $validatedData['tujuan_pemeriksaan'],
             'sumber_asesmen' => $validatedData['sumber_asesmen'],
-            'perilaku' => $validatedData['perilaku'],
+            'observasi_awal' => $validatedData['perilaku'],
             'kesimpulan_observasi' => $validatedData['kesimpulan_observasi'],
             'hasil_pemeriksaan' => $validatedData['hasil_pemeriksaan'],
             'diagnosa' => $validatedData['diagnosa'],

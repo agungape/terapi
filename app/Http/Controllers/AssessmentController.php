@@ -134,7 +134,6 @@ class AssessmentController extends Controller
             'alasan_tidak_setuju' => 'nullable|required_if:persetujuan_psikolog,0|string',
         ]);
 
-        dd($validatedData);
 
         // Update data assessment
         $assessment->update([

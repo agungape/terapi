@@ -231,8 +231,6 @@ class AssessmentController extends Controller
     {
         // Ambil data dari URL (contoh: ?data={"child_name":"Budi",...})
         $scannedData = $request->input('data');
-
-        dd($scannedData);
         // Decode data JSON
         $data = json_decode(urldecode($scannedData), true);
 

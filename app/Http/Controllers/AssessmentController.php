@@ -234,6 +234,7 @@ class AssessmentController extends Controller
         // Decode data JSON
         $data = json_decode(urldecode($scannedData), true);
 
+        dd($data);
         // Tampilkan view hasil scan
         return view('assessment.barcode_hasil', compact('data'));
     }

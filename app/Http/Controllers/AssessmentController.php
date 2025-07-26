@@ -184,8 +184,6 @@ class AssessmentController extends Controller
             'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y')
         ];
 
-        dd($data);
-
         $scanUrl = url('/barcode/assessment/scan?data=' . urlencode(json_encode($data)));
 
         $dns2d = new DNS2D();

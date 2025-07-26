@@ -226,8 +226,7 @@
             </div>
             <div class="info-item">
                 <span class="info-label">Tanggal Pemeriksaan :</span>
-                <span
-                    class="info-value">{{ \Carbon\Carbon::parse($data['tanggal_assessment'])->translatedFormat('d M Y') }}</span>
+                <span class="info-value">{{ $data['tanggal_assessment'] }}</span>
             </div>
         </div>
 

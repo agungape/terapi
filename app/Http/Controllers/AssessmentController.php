@@ -231,10 +231,10 @@ class AssessmentController extends Controller
         // Ambil data dari URL (contoh: ?data={"child_name":"Budi",...})
         $scannedData = $request->input('data');
 
+        dd($request);
         // Decode data JSON
         $data = json_decode(urldecode($scannedData), true);
 
-        dd($data);
         // Tampilkan view hasil scan
         return view('assessment.barcode_hasil', compact('data'));
     }

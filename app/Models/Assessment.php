@@ -21,6 +21,7 @@ class Assessment extends Model
         'tujuan_pemeriksaan',
         'sumber_asesmen',
         'observasi_awal',
+        'kesimpulan_observasi',
         'hasil_pemeriksaan',
         'diagnosa',
         'rekomendasi_orangtua',

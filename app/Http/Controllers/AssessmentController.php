@@ -27,7 +27,6 @@ class AssessmentController extends Controller
 
         $user = Auth::user();
         $roles = $user->getRoleNames();
-
         $anaks = Anak::where('status', 'aktif')->latest()->get();
 
         if ($roles->contains('psikolog')) {
@@ -48,6 +47,7 @@ class AssessmentController extends Controller
             'psikolog_id' => $validated['psikolog_id'],
             'tanggal_assessment' => $validated['tanggal_assessment'],
             'tujuan_pemeriksaan' => $validated['tujuan_pemeriksaan'],
+            'kesimpulan_observasi' => $validated['kesimpulan_observasi'],
             'sumber_asesmen' => $this->prepareJsonData($validated['sumber_asesmen_combined']),
             'observasi_awal' => $this->prepareJsonData($validated['perilaku_combined']),
             'hasil_pemeriksaan' => $this->prepareJsonData($validated['hasil_pemeriksaan_combined']),
@@ -80,6 +80,7 @@ class AssessmentController extends Controller
             'psikolog_id' => 'required|exists:App\Models\Psikolog,id',
             'tanggal_assessment' => 'required|date',
             'tujuan_pemeriksaan' => 'required|string',
+            'kesimpulan_observasi' => 'required|string',
             'sumber_asesmen_combined' => 'required|string',
             'perilaku_combined' => 'required|string',
             'hasil_pemeriksaan_combined' => 'required|string',

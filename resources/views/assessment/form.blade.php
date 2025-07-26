@@ -109,9 +109,9 @@
                                                             </label>
                                                             @if ($roles->contains('psikolog'))
                                                                 <input type="hidden" name="psikolog_id"
-                                                                    value="{{ auth()->user()->id }}">
+                                                                    value="{{ $psikologs->id }}">
                                                                 <input type="text" class="form-control"
-                                                                    value="{{ auth()->user()->nama }}" readonly>
+                                                                    value="{{ $psikologs->nama }}" readonly>
                                                             @else
                                                                 <select
                                                                     class="form-control select2 @error('psikolog_id') is-invalid @enderror"
@@ -268,16 +268,16 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="observasi_awal" class="form-label">
+                                                    <label for="kesimpulan_observasi" class="form-label">
                                                         <i class="fas fa-comment-medical mr-1"></i> Kesimpulan
                                                         Observasi
                                                         Awal
                                                         <span class="text-danger">*</span>
                                                     </label>
-                                                    <textarea class="form-control @error('observasi_awal') is-invalid @enderror" id="observasi_awal"
-                                                        name="observasi_awal" rows="3" placeholder="Deskripsikan perilaku yang diamati selama assessment..."
-                                                        required>{{ old('observasi_awal') }}</textarea>
-                                                    @error('observasi_awal')
+                                                    <textarea class="form-control @error('kesimpulan_observasi') is-invalid @enderror" id="kesimpulan_observasi"
+                                                        name="kesimpulan_observasi" rows="3" placeholder="Kesimpulan perilaku yang diamati selama assessment..."
+                                                        required>{{ old('kesimpulan_observasi') }}</textarea>
+                                                    @error('kesimpulan_observasi')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>

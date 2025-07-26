@@ -121,7 +121,7 @@
 
         .info-box {
             margin-bottom: 20px;
-            background-color: #f8f9fa;
+            background-color: #dbe4eebd;
             padding: 15px;
             border-radius: 5px;
         }
@@ -246,7 +246,7 @@
             </table>
         </div>
         <div class="kop-border"></div>
-        <h6 class="text-decoration-underline" style="font-weight: bold">HASIL PEMERIKSAAN PSIKOLOGIS</h6>
+        <h6 style="font-weight: bold">HASIL PEMERIKSAAN PSIKOLOGIS</h6>
     </div>
 
     <!-- Data Anak -->
@@ -305,6 +305,21 @@
                         </td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td width="5%"></td>
+                    <td width="3%"></td>
+                    <td colspan="2">
+                        <div class="info-box">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="20%">Kesimpulan :</td>
+
+                                    <td><i>{{ $assessment->kesimpulan_observasi }}</i></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-borderless">
@@ -343,6 +358,21 @@
                         </td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td width="5%"></td>
+                    <td width="3%"></td>
+                    <td colspan="2">
+                        <div class="info-box">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="20%">Diagnosa :</td>
+
+                                    <td><i>{{ $assessment->diagnosa }}</i></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-borderless">
@@ -412,5 +442,6 @@
 
 
 </body>
+
 
 </html>

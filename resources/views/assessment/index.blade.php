@@ -205,12 +205,14 @@
                                                 <tr>
                                                     <td style="vertical-align: middle;">
                                                         <div class="btn-group">
-                                                            @can('update assessment')
-                                                                <a href="{{ route('assessment.edit', ['assessment' => $a->id]) }}"
-                                                                    class="btn btn-warning btn-sm mr-1" title="Edit">
-                                                                    <i class="fa fa-edit"></i>
-                                                                </a>
-                                                            @endcan
+                                                            @if ($a->file_assessment == null)
+                                                                @can('update assessment')
+                                                                    <a href="{{ route('assessment.edit', ['assessment' => $a->id]) }}"
+                                                                        class="btn btn-warning btn-sm mr-1" title="Edit">
+                                                                        <i class="fa fa-edit"></i>
+                                                                    </a>
+                                                                @endcan
+                                                            @endif
 
                                                             <a href="https://wa.me/+62{{ $a->anak->telepon_ibu }}?text={{ urlencode('Hasil Assessment ' . $a->anak->nama . ': ' . route('assessment.cetak', ['assessment' => $a->id])) }}"
                                                                 class="btn btn-success btn-sm mr-1"

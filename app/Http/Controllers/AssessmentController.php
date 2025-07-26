@@ -167,6 +167,7 @@ class AssessmentController extends Controller
 
     public function cetak(Assessment $assessment)
     {
+        dd($assessment);
         $observasi_awal = $assessment->observasi_awal;
         $sumber_asesmen = $assessment->sumber_asesmen;
         $hasil_pemeriksaan = $assessment->hasil_pemeriksaan;

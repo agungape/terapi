@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anak;
 use App\Models\Assessment;
 use App\Models\Psikolog;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -180,7 +181,7 @@ class AssessmentController extends Controller
             'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
             'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
             // 'signature' => $->signature_image_path, // path ke gambar tanda tangan
-            'tanggal_assessment' => $assessment->tanggal_assessment
+            'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y')
         ];
 
         dd($data);

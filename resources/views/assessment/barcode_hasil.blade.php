@@ -207,7 +207,6 @@
 
         <div class="header">
             <h1>HASIL SCAN ASSESSMENT ANAK</h1>
-            <p class="subtitle">Data hasil assessment anak</p>
         </div>
 
         <div class="child-info">
@@ -234,13 +233,19 @@
 
         <div class="signature">
             <h3>Verifikasi Assessment</h3>
-            <img src="{{ asset('assets') }}/images/signature-psikolog-barcode.png" alt="Tanda Tangan"
-                class="signature-img">
-            <p style="font-weight: bold;">Astri Yunita,
-                S.Psi.,M.Psi.,Psikolog
-            </p>
-            <p>STR. XP00001068698759</p>
-            <p>SIPP. 20130221-2023-03-0807</p>
+            @if ($data['persetujuan_psikolog'] == 1)
+                <img src="{{ asset('assets') }}/images/signature-psikolog-barcode.png" alt="Tanda Tangan"
+                    class="signature-img">
+                <p style="font-weight: bold;">Astri Yunita,
+                    S.Psi.,M.Psi.,Psikolog
+                </p>
+                <p>STR. XP00001068698759</p>
+                <p>SIPP. 20130221-2023-03-0807</p>
+            @else
+                <p>dokumen belum ditandatangani karena : {{ $data['alasan_tidak_setuju'] }}</p>
+            @endif
+
+
         </div>
     </div>
 </body>

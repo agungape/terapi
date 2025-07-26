@@ -314,7 +314,7 @@
                                 <tr>
                                     <td width="20%">Kesimpulan :</td>
 
-                                    <td><i>{{ $assessment->kesimpulan_observasi }}</i></td>
+                                    <td style="text-align: justify;"><i>{{ $assessment->kesimpulan_observasi }}</i></td>
                                 </tr>
                             </table>
                         </div>
@@ -367,7 +367,7 @@
                                 <tr>
                                     <td width="20%">Diagnosa :</td>
 
-                                    <td><i>{{ $assessment->diagnosa }}</i></td>
+                                    <td style="text-align: justify;"><i>{{ $assessment->diagnosa }}</i></td>
                                 </tr>
                             </table>
                         </div>

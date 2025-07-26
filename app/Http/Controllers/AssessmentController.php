@@ -160,6 +160,8 @@ class AssessmentController extends Controller
             'nama' => $assessment->anak->nama,
             'alamat' => $assessment->anak->alamat,
             'tanggal_lahir' => $assessment->anak->tanggal_lahir,
+            'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
+            'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
             // 'signature' => $->signature_image_path, // path ke gambar tanda tangan
             'tanggal_assessment' => $assessment->tanggal_assessment
         ];

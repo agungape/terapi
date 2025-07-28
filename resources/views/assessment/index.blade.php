@@ -249,8 +249,7 @@
                                                     <td style="vertical-align: middle;">
                                                         @if ($a->file_assessment == null)
                                                             <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
-                                                                class="file-link" title="Cetak" target="_blank"
-                                                                onclick="window.open(this.href).print(); return false;">
+                                                                class="file-link" title="Cetak" target="_blank">
                                                                 hasil-assessment-{{ $a->anak->nama }}.pdf
                                                             </a>
                                                         @else

@@ -68,8 +68,8 @@
                                             <div class="dz-content d-flex flex-column">
                                                 <table>
                                                     <tr>
-                                                        <td width="40%">
-                                                            <div class="dz-quantity">Tanggal Pemeriksaan
+                                                        <td width="30%">
+                                                            <div class="dz-quantity">Tanggal
                                                             </div>
                                                         </td>
                                                         <td width="5%">

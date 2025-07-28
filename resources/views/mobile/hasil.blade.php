@@ -1,5 +1,29 @@
 @extends('mobile.master')
 @section('mobileResult', 'active')
+@section('style')
+    <style>
+        .file-link {
+            color: #4A86E8;
+            text-decoration: none;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .file-link:hover {
+            color: #3a76d8;
+        }
+
+        .file-link:before {
+            content: "\f1c1";
+            font-family: "Font Awesome 5 Free";
+            margin-right: 8px;
+            font-size: 16px;
+        }
+    </style>
+@endsection
 @section('content')
     <header class="header header-fixed">
         <div class="header-content">
@@ -41,14 +65,10 @@
                                 <div class="accordion-body">
                                     @foreach ($assessment as $a)
                                         <div class="dz-card list list-style-3">
-                                            <div class="dz-media media-75">
-                                                <img src="{{ asset('assets/mobile/pixio/images/pdf.png') }}">
-
-                                            </div>
                                             <div class="dz-content d-flex flex-column">
                                                 <table>
                                                     <tr>
-                                                        <td width="35%">
+                                                        <td width="40%">
                                                             <div class="dz-quantity">Tanggal Pemeriksaan
                                                             </div>
                                                         </td>
@@ -96,31 +116,30 @@
                                                     </tr>
                                                     <tr>
                                                         <td width="35%">
-                                                            <div class="dz-quantity">
+                                                            <div class="dz-quantity">Link Download
                                                             </div>
                                                         </td>
                                                         <td width="5%">
-                                                            <div class="dz-quantity">
+                                                            <div class="dz-quantity">:
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <div class="dz-quantity">
-                                                                @if ($a->persetujuan_psikolog == 1)
-                                                                    @if ($a->persetujuan_psikolog == 1)
-                                                                        <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
-                                                                            class="btn btn-sm btn-primary rounded-xl pwa-btn me-2"
-                                                                            title="download" target="_blank">
-                                                                            Download
-                                                                        </a>
-                                                                    @endif
-                                                                @endif
-                                                            </div>
+
+                                                            @if ($a->persetujuan_psikolog == 1)
+                                                                <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
+                                                                    class="file-link" title="Cetak" target="_blank"
+                                                                    onclick="window.open(this.href).print(); return false;">
+                                                                    assessment.pdf
+                                                                </a>
+                                                            @endif
+
                                                         </td>
                                                     </tr>
 
                                                 </table>
 
                                             </div>
+
                                         </div>
                                     @endforeach
                                 </div>

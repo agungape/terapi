@@ -31,9 +31,9 @@
 
             </a>
         </li>
-        <li> <button id="install-btn" class="btn btn-info">
+        {{-- <li> <button id="install-btn" class="btn btn-info">
                 Install Aplikasi
-            </button></li>
+            </button></li> --}}
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
             @csrf
         </form>

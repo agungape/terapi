@@ -275,7 +275,7 @@
 
 
 @endsection
-@section('canvas')
+{{-- @section('canvas')
     <!-- PWA Offcanvas -->
     <div class="offcanvas offcanvas-bottom pwa-offcanvas">
         <div class="container">
@@ -294,7 +294,7 @@
     <div class="offcanvas-backdrop pwa-backdrop"></div>
     <!-- PWA Offcanvas End -->
 
-@endsection
+@endsection --}}
 @section('scripts')
     <script>
         $(document).ready(function() {

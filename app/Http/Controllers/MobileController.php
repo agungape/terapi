@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
+use App\Models\Assessment;
 use App\Models\informasi;
 use App\Models\Jadwal;
 use App\Models\Kunjungan;
@@ -41,7 +42,7 @@ class MobileController extends Controller
         $user = auth()->user();
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
-        $terapis = Terapis::get();
+        $terapis = Terapis::where('status', 'aktif')->get();
         $informasi = Informasi::where('informasi', '!=', '')->first();
 
         $totalPertemuan = 20;
@@ -263,9 +264,21 @@ class MobileController extends Controller
         $user = auth()->user();
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
+
         // string (Pembayaran Anak) Wajib menggunakan SPASI
         $pembayaran = Pemasukkan::where('deskripsi', 'Pembayaran Anak ' . $anak->nama)->get();
         return view('mobile.payment', compact('anak', 'pembayaran'));
+    }
+
+
+    public function result()
+    {
+        $user = auth()->user();
+        $namaUser = $user->name;
+        $anak = Anak::where('nama', $namaUser)->first();
+        // string (Pembayaran Anak) Wajib menggunakan SPASI
+        $assessment = Assessment::where('anak_id', $anak->id)->get();
+        return view('mobile.hasil', compact('anak', 'assessment'));
     }
 
     public function tarif_detail($id)

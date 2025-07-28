@@ -83,7 +83,7 @@
                     </div>
                 </div>
             @endif
-            @if ($informasi)
+            {{-- @if ($informasi)
                 <div class="dz-category style-2">
                     <div class="alert alert-info solid alert-dismissible fade show">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
@@ -96,7 +96,7 @@
                         <hr> {!! $informasi->informasi !!}
                     </div>
                 </div>
-            @endif
+            @endif --}}
             {{-- profile anak --}}
 
             {{-- banner kelas dan riwayat terapi --}}
@@ -112,7 +112,7 @@
                                     <div class="dz-media media-75">
                                         @if ($k->status == 'hadir')
                                             <img
-                                                src=" {{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}">
+                                                src=" {{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}">
                                         @else
                                             <img src="{{ asset('assets') }}/mobile/pixio/images/product/product1/pic1.png"
                                                 alt="">
@@ -163,7 +163,7 @@
                             <div class="swiper-slide">
                                 <div class="dz-card style-5">
                                     <div class="dz-media media-304">
-                                        <img src="  {{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}"
+                                        <img src="  {{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/fisioterapi.png') }}"
                                             alt="" style="object-fit: cover;">
                                     </div>
                                     <div class="dz-content">
@@ -197,7 +197,7 @@
                                 <div class="dz-card style-2">
                                     <div class="dz-media media-303">
                                         <a href="#">
-                                            <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/mobile/pixio/images/product/product1/pic1.png') }}"
+                                            <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}"
                                                 alt="image" style="object-fit: cover;">
                                         </a>
                                     </div>

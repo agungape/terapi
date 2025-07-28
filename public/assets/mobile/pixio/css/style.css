@@ -21920,10 +21920,11 @@ label input {
     display: flex;
 }
 
-.offer-details span:first-child {
-    min-width: 60px; /* Sesuaikan dengan panjang teks terbesar */
+.offer-details tr td:first-child {
+    min-width: 100%;
     text-align: left;
 }
+
 
 .offer-banner {
     background-color: var(--bg-white);

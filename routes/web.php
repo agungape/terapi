@@ -177,7 +177,6 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
 
     // route assessment
     Route::resource('/assessment', AssessmentController::class);
-    Route::get('/assessment/cetak/{assessment}', [AssessmentController::class, 'cetak'])->name('assessment.cetak');
 
 
     // route psikolog
@@ -189,6 +188,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/products-services', [ShopeeAffiliateController::class, 'index'])->name('products.index');
 });
 
+Route::group(['middleware' => ['role:super-admin|admin|psikolog|anak']], function () {
+    Route::get('/assessment/cetak/{assessment}', [AssessmentController::class, 'cetak'])->name('assessment.cetak');
+});
 
 Route::group(['middleware' => ['role:anak']], function () {
 
@@ -202,5 +204,6 @@ Route::group(['middleware' => ['role:anak']], function () {
     Route::get('/app/kunjungan/{id}', [MobileController::class, 'kunjungan_detail'])->name('kunjunganmobile.detail');
     Route::get('/app/paket/{id}', [MobileController::class, 'tarif_detail'])->name('tarifmobile.detail');
     Route::get('/app/payment', [MobileController::class, 'payment'])->name('mobile.payment');
+    Route::get('/app/result', [MobileController::class, 'result'])->name('mobile.result');
     Route::get('/invoice/{id}/download', [MobileController::class, 'download_invoice'])->name('invoice.download');
 });

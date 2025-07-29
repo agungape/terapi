@@ -41,4 +41,9 @@ class Terapis extends Model
     {
         return $this->hasMany('App\Models\Jadwal');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

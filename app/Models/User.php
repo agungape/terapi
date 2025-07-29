@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return 'username';
     }
+
+    public function terapis()
+    {
+        return $this->hasOne(Terapis::class);
+    }
 }

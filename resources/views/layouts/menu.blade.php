@@ -14,8 +14,14 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('assets') }}/images/faces-clipart/pic-2.png" class="img-circle elevation-2"
-                    alt="User Image">
+                @if (Auth::user()->role === 'terapis')
+                    <!-- Jika user adalah terapis, ambil data terapis -->
+                    <img src="{{ Auth::user()->terapis->foto ? asset('storage/terapis/' . Auth::user()->terapis->foto) : asset('assets/images/faces-clipart/pic-2.png') }}"
+                        class="img-circle elevation-2" alt="User Image">
+                @else
+                    <img src="{{ asset('assets') }}/images/faces-clipart/pic-2.png" class="img-circle elevation-2"
+                        alt="User Image">
+                @endif
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::user()->name }}</a>

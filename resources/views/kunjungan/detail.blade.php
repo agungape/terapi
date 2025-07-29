@@ -28,8 +28,8 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                        src="{{ asset('assets') }}/adminlte/dist/img/user4-128x128.jpg"
+                                    <img class="profile-user-img img-fluid img-circle fixed-size"
+                                        src="{{ $kunjungan->anak->foto ? asset('storage/anak/' . $kunjungan->anak->foto) : asset('assets/images/faces/face1.jpg') }}"
                                         alt="User profile picture">
                                 </div>
 
@@ -40,8 +40,9 @@
                                 @else
                                     <p class="text-muted text-center">Perempuan</p>
                                 @endif
+                                <p class="text-muted text-center">{{ $kunjungan->usia }} Tahun</p>
 
-                                <h4> {{ $kunjungan->usia }} Tahun</h4>
+
                             </div>
                         </div>
 

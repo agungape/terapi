@@ -286,7 +286,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @if (Auth::user()->hasAnyRole(['psikolog', 'super-admin', 'admin']))
+                        @if (Auth::user()->hasAnyRole(['psikolog', 'super-admin', 'admin', 'terapis']))
                             @can('view assessment')
                                 <li class="nav-item">
                                     <a href="/assessment" class="nav-link @yield('menuAssessment')">

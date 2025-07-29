@@ -212,6 +212,7 @@ class MobileController extends Controller
         // Ambil semua kunjungan diurutkan berdasarkan sesi dan created_at
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
             ->whereNull('catatan')
+            ->where('jenis_terapi', 'terapi_perilaku')
             ->orderBy('sesi', 'desc')
             ->orderBy('created_at', 'asc')
             ->get();

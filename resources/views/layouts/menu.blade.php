@@ -17,16 +17,12 @@
             <div class="image">
                 @php
                     $user = $auth::user();
-                    $roles = $user->getRoleNames();
+                    $terapis = Terapis::where('nama', $user->name)->first();
                     $fotoPath = asset('assets/images/faces-clipart/pic-2.png'); // default
 
-                    if ($roles->contains('psikolog') && $user->psikolog) {
-                        $fotoPath = $user->psikolog->foto
-                            ? asset('storage/psikolog/' . $user->psikolog->foto)
-                            : $fotoPath;
-                    } elseif ($roles->contains('terapis') && $user->terapis) {
-                        $fotoPath = $user->terapis->foto ? asset('storage/terapis/' . $user->terapis->foto) : $fotoPath;
-                    } elseif ($user->foto) {
+                    if ($roles->contains('terapis')) {
+                        $fotoPath = $terapis->foto ? asset('storage/terapis/' . $terapis->foto) : $fotoPath;
+                    } else {
                         $fotoPath = asset('storage/users/' . $user->foto);
                     }
                 @endphp

@@ -177,9 +177,6 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
 
     // route assessment
     Route::resource('/assessment', AssessmentController::class);
-    // Route::get('/assessment/cetak/{assessment}', [AssessmentController::class, 'cetak'])->name('assessment.cetak');
-
-
 
     // route psikolog
     Route::resource('/psikolog', PsikologController::class);
@@ -190,7 +187,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/products-services', [ShopeeAffiliateController::class, 'index'])->name('products.index');
 });
 
-Route::group(['middleware' => ['role:super-admin|admin|psikolog|anak']], function () {
+Route::group(['middleware' => ['role:super-admin|admin|psikolog|anak|terapis']], function () {
     Route::get('/assessment/cetak/{assessment}', [AssessmentController::class, 'cetak'])->name('assessment.cetak');
 });
 

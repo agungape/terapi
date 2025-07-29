@@ -220,7 +220,7 @@
                         <div class="info-box bg-gradient-info shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-child"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Total Pasien</span>
+                                <span class="info-box-text">Total Kunjungan</span>
                                 <span class="info-box-number">{{ $kunjungan->count() }}</span>
                             </div>
                         </div>
@@ -229,8 +229,8 @@
                         <div class="info-box bg-gradient-success shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Hadir</span>
-                                <span class="info-box-number">{{ $kunjungan->where('status', 'hadir')->count() }}</span>
+                                <span class="info-box-text">Hadir Hari ini</span>
+                                <span class="info-box-number">{{ $hadir }}</span>
                             </div>
                         </div>
                     </div>
@@ -238,8 +238,8 @@
                         <div class="info-box bg-gradient-warning shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Izin</span>
-                                <span class="info-box-number">{{ $kunjungan->where('status', 'izin')->count() }}</span>
+                                <span class="info-box-text">Izin Hari ini</span>
+                                <span class="info-box-number">{{ $izin }}</span>
                             </div>
                         </div>
                     </div>
@@ -247,8 +247,8 @@
                         <div class="info-box bg-gradient-danger shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-procedures"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Sakit</span>
-                                <span class="info-box-number">{{ $kunjungan->where('status', 'sakit')->count() }}</span>
+                                <span class="info-box-text">Sakit Hari ini</span>
+                                <span class="info-box-number">{{ $sakit }}</span>
                             </div>
                         </div>
                     </div>
@@ -264,15 +264,22 @@
                                         </h5>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" name="table_search" class="form-control"
-                                                placeholder="Cari berdasarkan nama/id..." aria-label="Search">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
+                                        <form action="{{ route('kunjungan.pencarian') }}" method="GET"
+                                            class="d-flex justify-content-end align-items-center p-3 rounded flex-wrap">
+                                            <div class="form-group d-flex align-items-center mb-2 mb-sm-0">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="reservation"
+                                                        name="date_range">
+                                                    <button type="submit"
+                                                        class="btn btn-primary ml-2 mb-2 mb-sm-0">Filter</button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -282,7 +289,6 @@
                                     <table class="table table-hover">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th class="py-3">No. Induk</th>
                                                 <th class="py-3">Nama</th>
                                                 <th class="py-3">Terapis</th>
                                                 <th class="py-3">Pertemuan</th>
@@ -295,9 +301,6 @@
                                             @foreach ($kunjungan as $kun)
                                                 <tr class="align-middle">
                                                     <td>
-                                                        <span class="font-weight-bold">{{ $kun->anak->nib }}</span>
-                                                    </td>
-                                                    <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mr-3"
                                                                 style="width:42px;height:42px;">
@@ -305,7 +308,6 @@
                                                             </div>
                                                             <div>
                                                                 <h6 class="mb-0">{{ $kun->anak->nama }}</h6>
-                                                                <small class="text-muted">Anak</small>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -316,7 +318,12 @@
                                                                     style="width:32px;height:32px;">
                                                                     <i class="fas fa-user-md text-info"></i>
                                                                 </div>
-                                                                <span>{{ $kun->terapis->nama }}</span>
+                                                                <div>
+                                                                    <h6 class="mb-0">{{ $kun->terapis->nama }}</h6>
+                                                                    <small class="text-muted">
+                                                                        {{ $kun->tarif ? $kun->tarif->nama : 'Terapi tidak ada' }}</small>
+                                                                </div>
+
                                                             </div>
                                                         @else
                                                             <span class="text-muted">-</span>
@@ -326,7 +333,7 @@
                                                         @if ($kun->status == 'hadir')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
-                                                                {{ $kun->pertemuan }}</span>
+                                                                {{ $kun->pertemuan }} </span>
                                                         @elseif ($kun->status == 'sakit')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
@@ -338,9 +345,8 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <div>
-                                                            <i class="far fa-calendar-alt text-muted mr-1"></i>
-                                                            {{ $kun->created_at }}
+                                                        <div><small> <i class="far fa-calendar-alt text-muted mr-1"></i>
+                                                                {{ $kun->created_at }}</small>
                                                         </div>
 
                                                     </td>
@@ -365,7 +371,7 @@
                                                             @if ($kun->status == 'hadir')
                                                                 <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
                                                                     class="btn btn-primary btn-sm rounded-pill px-3">
-                                                                    <i class="fa fa-address-card mr-1"></i> Detail
+                                                                    <i class="fa fa-address-card mr-1"></i> E-Book Anak
                                                                 </a>
                                                             @endif
                                                         @endcan
@@ -391,4 +397,34 @@
     </div>
 
     <!-- Tambahkan stylesheet kustom untuk komponen pagination -->
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi Date Range Picker
+            $('#reservation').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    customRangeLabel: 'Custom',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                    firstDay: 1
+                }
+            });
+
+            // Set nilai awal jika ada dari request
+            @if (request('date_range'))
+                $('#reservation').val('{{ request('date_range') }}');
+            @endif
+
+
+        });
+    </script>
 @endsection

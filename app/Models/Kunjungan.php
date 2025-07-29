@@ -13,7 +13,7 @@ class Kunjungan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan'];
+    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'tarif_id'];
 
     protected $dates = ['created_at', 'updated_at'];
 
@@ -31,6 +31,12 @@ class Kunjungan extends Model
     {
         return $this->hasMany('App\Models\Pemeriksaan');
     }
+
+    public function tarif(): BelongsTo
+    {
+        return $this->belongsTo(Tarif::class);
+    }
+
     public function getCreatedAtAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])

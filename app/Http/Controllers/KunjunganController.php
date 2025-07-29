@@ -6,6 +6,7 @@ use App\Models\Anak;
 use App\Models\Kunjungan;
 use App\Models\Pemeriksaan;
 use App\Models\Program;
+use App\Models\Tarif;
 use App\Models\Terapis;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -25,7 +26,8 @@ class KunjunganController extends Controller
     public function index()
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        return view('kunjungan.index', compact('terapis'));
+        $jenis_terapi = Tarif::select('id', 'nama')->get();
+        return view('kunjungan.index', compact('terapis', 'jenis_terapi'));
     }
 
     /**
@@ -45,24 +47,31 @@ class KunjunganController extends Controller
         $validateData = $request->validate([
             'anak_id' => 'required|exists:App\Models\Anak,id',
             'terapis_id' => 'required|exists:App\Models\Terapis,id',
+            'tarif_id' => 'required|exists:App\Models\Tarif,id',
             'catatan' => '',
             'status' => 'required',
         ]);
 
 
-        // fungsi validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x
+        // fungsi validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x terapi perilaku
         $today = Carbon::today();
+        $tarif = Tarif::where('id', $request->tarif_id)->first();
+
         $cek = Kunjungan::where('anak_id', $request->anak_id)
+            ->where('tarif_id', $tarif->id)
             ->whereDate('created_at', $today)
             ->first();
+
+
         if ($cek) {
             // Jika sudah ada pendaftaran, return error
-            Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
+            Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
             return back();
         }
 
-        // Cek apakah anak sudah pernah kunjungan sebelumnya
+        // Cek apakah anak sudah pernah kunjungan sebelumnya terapi perilaku
         $kunjungan_data = Kunjungan::where('anak_id', $request->anak_id)
+            ->where('tarif_id', $tarif->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -77,6 +86,7 @@ class KunjunganController extends Controller
 
         $data['anak_id'] = $request->anak_id;
         $data['terapis_id'] = $request->terapis_id;
+        $data['tarif_id'] = $request->tarif_id;
         $data['catatan'] = $request->catatan;
         $data['status'] = $request->status;
         if ($request->status == 'hadir' || $request->status == 'sakit') {
@@ -86,14 +96,18 @@ class KunjunganController extends Controller
         }
 
         $kunjungan = Kunjungan::create($data);
-        Alert::success('Berhasil', "Data Anak $request->nama berhasil didaftarkan");
+        Alert::success('Berhasil', "Data Anak $request->nama berhasil didaftarkan")->autoClose(4000);;
         return redirect("/data");
     }
 
     public function riwayatAnak()
     {
         $kunjungan = Kunjungan::latest()->paginate(5);
-        return view('kunjungan.data', compact('kunjungan'));
+        $hadir = Kunjungan::whereDate('created_at', today())->where('status', 'hadir')->count();
+        $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
+        $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
+
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit'));
     }
 
     /**
@@ -120,6 +134,30 @@ class KunjunganController extends Controller
         return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'jumlah_pemeriksaan'));
     }
 
+
+    public function search_kunjungan(Request $request)
+    {
+        $query = Kunjungan::with(['anak', 'terapis', 'tarif'])
+            ->orderBy('created_at', 'desc');
+
+        // Filter berdasarkan range tanggal jika ada
+        if ($request->date_range) {
+            $dates = explode(' - ', $request->date_range);
+            $startDate = Carbon::parse($dates[0])->startOfDay();
+            $endDate = Carbon::parse($dates[1])->endOfDay();
+
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        $kunjungan = $query->paginate(10);
+
+        // Hitung statistik untuk card
+        $hadir = $query->clone()->where('status', 'hadir')->count();
+        $izin = $query->clone()->where('status', 'izin')->count();
+        $sakit = $query->clone()->where('status', 'sakit')->count();
+
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

@@ -238,6 +238,32 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label class="form-label text-muted">Jenis Terapi</label>
+                                        <select class="form-control select2 border-0 bg-light" name="tarif_id">
+                                            @forelse ($jenis_terapi as $jenis)
+                                                <option value="{{ $jenis->id }}">{{ $jenis->nama }}</option>
+                                            @empty
+                                                <option disabled selected>Tidak ada data</option>
+                                            @endforelse
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-label text-muted">Terapis</label>
+                                        <select class="form-control select2 border-0 bg-light" name="terapis_id">
+                                            @forelse ($terapis as $terapi)
+                                                <option value="{{ $terapi->id }}">{{ $terapi->nama }}</option>
+                                            @empty
+                                                <option disabled selected>Tidak ada data terapis</option>
+                                            @endforelse
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label class="form-label text-muted">Status Kunjungan</label>
                                         <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
                                             <label class="btn btn-outline-success active rounded mr-2">
@@ -254,25 +280,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Right Column -->
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-label text-muted">Terapis</label>
-                                        <select class="form-control select2 border-0 bg-light" name="terapis_id">
-                                            @forelse ($terapis as $terapi)
-                                                <option value="{{ $terapi->id }}">{{ $terapi->nama }}</option>
-                                            @empty
-                                                <option disabled selected>Tidak ada data terapis</option>
-                                            @endforelse
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group mb-0">
-                                        <label class="form-label text-muted">Catatan Medis</label>
-                                        <textarea class="form-control border-0 bg-light" name="catatan" rows="2" placeholder="Keterangan tambahan..."></textarea>
-                                    </div>
                                 </div>
                             </div>
                         </div>

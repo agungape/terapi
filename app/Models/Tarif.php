@@ -18,6 +18,11 @@ class Tarif extends Model
         return $this->hasMany('App\Models\Pemasukkan');
     }
 
+    public function kunjungans(): HasMany
+    {
+        return $this->hasMany(Kunjungan::class);
+    }
+
     protected function tarif(): Attribute
     {
         return Attribute::make(

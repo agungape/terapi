@@ -14,7 +14,11 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                @if (Auth::user()->role === 'terapis')
+                @php
+                    $roles = Auth::user()->getRoleNames();
+                @endphp
+
+                @if ($roles->contains('terapis'))
                     <!-- Jika user adalah terapis, ambil data terapis -->
                     <img src="{{ Auth::user()->terapis->foto ? asset('storage/terapis/' . Auth::user()->terapis->foto) : asset('assets/images/faces-clipart/pic-2.png') }}"
                         class="img-circle elevation-2" alt="User Image">

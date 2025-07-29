@@ -159,7 +159,7 @@ class KunjunganController extends Controller
     public function show(Kunjungan $kunjungan)
     {
         // dd($kunjungan->anak_id);
-        $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->get();
+        $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'terapi_perilaku')->get();
         // dd($riwayat);
         $jumlah_pemeriksaan = Pemeriksaan::select('created_at', DB::raw('count(id) as value'))->whereHas('kunjungan', function ($query) use ($kunjungan) {
             $query->where('anak_id', $kunjungan->anak->id);

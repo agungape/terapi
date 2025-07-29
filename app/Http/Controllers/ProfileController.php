@@ -77,7 +77,7 @@ class ProfileController extends Controller
         $roles = $user->getRoleNames();
         $namaUser = $user->name;
         $terapis = Terapis::where('nama', $namaUser)->first();
-        return view('profile.profile-user', compact('terapis'));
+        return view('profile.profile-user', compact('terapis', 'roles'));
     }
 
     /**

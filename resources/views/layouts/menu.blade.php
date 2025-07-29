@@ -12,20 +12,26 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
+        @inject('auth', 'Illuminate\Support\Facades\Auth')
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 @php
-                    $roles = Auth::user()->getRoleNames();
+                    $user = $auth::user();
+                    $roles = $user->getRoleNames();
+                    $fotoPath = asset('assets/images/faces-clipart/pic-2.png'); // default
+
+                    if ($roles->contains('psikolog') && $user->psikolog) {
+                        $fotoPath = $user->psikolog->foto
+                            ? asset('storage/psikolog/' . $user->psikolog->foto)
+                            : $fotoPath;
+                    } elseif ($roles->contains('terapis') && $user->terapis) {
+                        $fotoPath = $user->terapis->foto ? asset('storage/terapis/' . $user->terapis->foto) : $fotoPath;
+                    } elseif ($user->foto) {
+                        $fotoPath = asset('storage/users/' . $user->foto);
+                    }
                 @endphp
 
-                @if ($roles->contains('terapis'))
-                    <!-- Jika user adalah terapis, ambil data terapis -->
-                    <img src="{{ Auth::user()->terapis->foto ? asset('storage/terapis/' . Auth::user()->terapis->foto) : asset('assets/images/faces-clipart/pic-2.png') }}"
-                        class="img-circle elevation-2" alt="User Image">
-                @else
-                    <img src="{{ asset('assets') }}/images/faces-clipart/pic-2.png" class="img-circle elevation-2"
-                        alt="User Image">
-                @endif
+                <img src="{{ $fotoPath }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::user()->name }}</a>

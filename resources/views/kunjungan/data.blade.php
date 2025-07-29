@@ -339,11 +339,11 @@
                                                         @if ($kun->status == 'hadir')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
-                                                                {{ $kun->pertemuan }} / Sesi {{ $kun->sesi }}</span>
+                                                                {{ $kun->pertemuan }} / Season {{ $kun->sesi }}</span>
                                                         @elseif ($kun->status == 'sakit')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
-                                                                {{ $kun->pertemuan }} / Sesi {{ $kun->sesi }}</span>
+                                                                {{ $kun->pertemuan }} / Season {{ $kun->sesi }}</span>
                                                             <span
                                                                 class="badge badge-pill badge-danger px-3 py-2 font-weight-normal ml-1">Hangus</span>
                                                         @else

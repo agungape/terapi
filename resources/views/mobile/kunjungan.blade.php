@@ -36,7 +36,7 @@
                                         <div class="dz-icon">
                                             <i class="fi fi-rr-document"></i>
                                         </div>
-                                        <h6 class="acco-title">Sesi {{ $sesi }}</h6>
+                                        <h6 class="acco-title">Season {{ $sesi }}</h6>
                                         <div class="checkmark"></div>
                                     </button>
                                 </div>

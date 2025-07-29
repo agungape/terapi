@@ -247,7 +247,7 @@
                         <div class="info-box bg-gradient-danger shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-procedures"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Sakit Hari ini</span>
+                                <span class="info-box-text">Izin Hangus Hari ini</span>
                                 <span class="info-box-number">{{ $sakit }}</span>
                             </div>
                         </div>
@@ -320,8 +320,14 @@
                                                                 </div>
                                                                 <div>
                                                                     <h6 class="mb-0">{{ $kun->terapis->nama }}</h6>
+
                                                                     <small class="text-muted">
-                                                                        {{ $kun->tarif ? $kun->tarif->nama : 'Terapi tidak ada' }}</small>
+                                                                        @if ($kun->jenis_terapi == 'terapi_perilaku')
+                                                                            Terapi Perilaku
+                                                                        @else
+                                                                            Fisioterapi dan Sensori Integrasi
+                                                                        @endif
+                                                                    </small>
                                                                 </div>
 
                                                             </div>
@@ -333,11 +339,11 @@
                                                         @if ($kun->status == 'hadir')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
-                                                                {{ $kun->pertemuan }} </span>
+                                                                {{ $kun->pertemuan }} / Sesi {{ $kun->sesi }}</span>
                                                         @elseif ($kun->status == 'sakit')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
-                                                                {{ $kun->pertemuan }}</span>
+                                                                {{ $kun->pertemuan }} / Sesi {{ $kun->sesi }}</span>
                                                             <span
                                                                 class="badge badge-pill badge-danger px-3 py-2 font-weight-normal ml-1">Hangus</span>
                                                         @else

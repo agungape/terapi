@@ -239,13 +239,13 @@
 
                                     <div class="form-group">
                                         <label class="form-label text-muted">Jenis Terapi</label>
-                                        <select class="form-control select2 border-0 bg-light" name="tarif_id">
-                                            @forelse ($jenis_terapi as $jenis)
-                                                <option value="{{ $jenis->id }}">{{ $jenis->nama }}</option>
-                                            @empty
-                                                <option disabled selected>Tidak ada data</option>
-                                            @endforelse
+                                        <select name="jenis_terapi" id="jenis_terapi"
+                                            class="form-control select2 border-0 bg-light">
+                                            @foreach ($jenisTerapi as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
                                         </select>
+
                                     </div>
 
                                 </div>
@@ -276,7 +276,7 @@
                                             </label>
                                             <label class="btn btn-outline-danger rounded">
                                                 <input type="radio" name="status" value="sakit">
-                                                <i class="fas fa-procedures mr-1"></i> Sakit
+                                                <i class="fas fa-procedures mr-1"></i> Izin Hangus
                                             </label>
                                         </div>
                                     </div>

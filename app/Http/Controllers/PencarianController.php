@@ -13,7 +13,10 @@ class PencarianController extends Controller
     public function proses(Request $request): View
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        $jenis_terapi = Tarif::select('id', 'nama')->get();
+        $jenisTerapi = [
+            'fisioterapi' => 'Fisioterapi & Sensor Integrasi',
+            'terapi_perilaku' => 'Terapi Perilaku'
+        ];
 
         $result = Anak::where('nama', 'LIKE', '%' . $request->s . '%')
             ->orderBy('nama')->paginate(10);
@@ -22,7 +25,7 @@ class PencarianController extends Controller
             'result' => $result,
             's' => $request->s,
             'terapis' => $terapis,
-            'jenis_terapi' => $jenis_terapi
+            'jenisTerapi' => $jenisTerapi
         ]);
     }
 }

@@ -24,25 +24,25 @@
             <div class="default-tab style-2 mt-1">
                 <div class="tab-content">
 
-                    @foreach ($sesi as $sesiKey => $pertemuan)
+                    @foreach ($groupedBySesi as $sesi => $pertemuan)
                         <div class="accordion dz-accordion" id="accordionExample">
                             <div class="accordion-item">
-                                <div class="accordion-header acco-select" id="heading{{ $sesiKey }}">
-                                    <button class="accordion-button {{ $sesiTerakhir === $sesiKey ? '' : 'collapsed' }}"
+                                <div class="accordion-header acco-select" id="heading{{ $sesi }}">
+                                    <button class="accordion-button {{ $sesiTerakhir === $sesi ? '' : 'collapsed' }}"
                                         type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapse{{ $sesiKey }}"
-                                        aria-expanded="{{ $sesiTerakhir === $sesiKey ? 'true' : 'false' }}"
-                                        aria-controls="collapse{{ $sesiKey }}">
+                                        data-bs-target="#collapse{{ $sesi }}"
+                                        aria-expanded="{{ $sesiTerakhir === $sesi ? 'true' : 'false' }}"
+                                        aria-controls="collapse{{ $sesi }}">
                                         <div class="dz-icon">
                                             <i class="fi fi-rr-document"></i>
                                         </div>
-                                        <h6 class="acco-title">Sesi {{ $sesiKey }}</h6>
+                                        <h6 class="acco-title">Sesi {{ $sesi }}</h6>
                                         <div class="checkmark"></div>
                                     </button>
                                 </div>
-                                <div id="collapse{{ $sesiKey }}"
-                                    class="accordion-collapse collapse {{ $sesiTerakhir === $sesiKey ? 'show' : '' }}"
-                                    aria-labelledby="heading{{ $sesiKey }}" data-bs-parent="#accordionExample">
+                                <div id="collapse{{ $sesi }}"
+                                    class="accordion-collapse collapse {{ $sesiTerakhir === $sesi ? 'show' : '' }}"
+                                    aria-labelledby="heading{{ $sesi }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
                                         @foreach ($pertemuan as $kunjungan)
                                             <div class="dz-card list list-style-3">

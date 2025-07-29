@@ -151,6 +151,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
     Route::get('/search-kunjungan', [KunjunganController::class, 'search_kunjungan'])->name('kunjungan.pencarian');
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');
+    Route::post('/kunjungan/selesai-sesi', [KunjunganController::class, 'selesaiSesi'])->name('kunjungan.selesai-sesi');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
 
     Route::post('/ubah-status-anak', [AnakController::class, 'ubahStatus'])->name('anak.status');

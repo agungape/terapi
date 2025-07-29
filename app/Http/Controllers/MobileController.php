@@ -207,46 +207,25 @@ class MobileController extends Controller
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
 
-        // $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 20)
-        //     ->orderBy('created_at', 'desc')
-        //     ->first();
+        $anak = Anak::where('nama', $namaUser)->first();
 
-        // if ($pertemuanAwal) {
-        //     // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
-        //     $kunjungan = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('id', '>', $pertemuanAwal->id) // Ambil data setelah pertemuan 20 terakhir
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->get();
-        // } else {
-        //     $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
-        // }
-        // return view('mobile.kunjungan', compact('anak', 'kunjungan'));
+        // Ambil semua kunjungan diurutkan berdasarkan sesi dan created_at
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
-            ->orderBy('created_at', 'asc') // Pastikan urutan sesuai waktu pembuatan
+            ->whereNull('catatan')
+            ->orderBy('sesi', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
-        $sesi = [];
-        $sesiIndex = 1;
-        $sesiTerakhir = null;
-        $lastCreatedAt = null;
+        // Kelompokkan berdasarkan sesi
+        $groupedBySesi = $kunjungan->groupBy('sesi');
 
-        foreach ($kunjungan as $index => $item) {
-            $sesiKey = $sesiIndex;
-            $sesi[$sesiKey][] = $item;
-
-            // Simpan sesi terakhir berdasarkan created_at terbaru
-            if (is_null($lastCreatedAt) || $item->tanggal > $lastCreatedAt) {
-                $sesiTerakhir = $sesiKey;
-                $lastCreatedAt = $item->tanggal;
-            }
-
-            if (($index + 1) % 20 == 0) {
-                $sesiIndex++;
-            }
-        }
-
-        // Kirim data kunjungan, sesi, dan sesi terakhir ke view
-        return view('mobile.kunjungan', compact('kunjungan', 'sesi', 'anak', 'sesiTerakhir'));
+        // Kirim data ke view
+        return view('mobile.kunjungan', [
+            'anak' => $anak,
+            'kunjungan' => $kunjungan,
+            'groupedBySesi' => $groupedBySesi,
+            'sesiTerakhir' => $kunjungan->max('sesi') // Ambil sesi terakhir
+        ]);
     }
 
     public function kunjungan_detail($id)

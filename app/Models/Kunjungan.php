@@ -13,7 +13,7 @@ class Kunjungan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'tarif_id'];
+    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'jenis_terapi', 'sesi'];
 
     protected $dates = ['created_at', 'updated_at'];
 

@@ -42,6 +42,17 @@
                                 @endif
                                 <p class="text-muted text-center">{{ $kunjungan->usia }} Tahun</p>
 
+                                <div class="text-center">
+
+                                    <form id="selesaiSesiForm" action="{{ route('kunjungan.selesai-sesi') }}"
+                                        method="POST">
+                                        @csrf
+                                        <input type="hidden" name="anak_id" value="{{ $kunjungan->anak->id }}">
+                                        <input type="hidden" name="jenis_terapi" value="{{ $kunjungan->jenis_terapi }}">
+                                        <button type="submit" id="selesaiSesiBtn" class="btn btn-sm btn-success">Selesaikan
+                                            Sesi</button>
+                                    </form>
+                                </div>
 
                             </div>
                         </div>
@@ -257,6 +268,29 @@
             $(document).on('click', '.remove-button', function() {
                 $(this).closest('.container-form').remove();
 
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('selesaiSesiBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Konfirmasi Selesai Sesi',
+                text: "Apakah Anda yakin ingin menyelesaikan sesi ini? jika ya, sesi akan berakhir dan beralih ke sesi selanjutnya",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Selesaikan!',
+                cancelButtonText: 'Batal',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('selesaiSesiForm').submit();
+                }
             });
         });
     </script>

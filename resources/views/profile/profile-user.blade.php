@@ -27,7 +27,7 @@
             <!-- Default box -->
             <div class="card">
                 <div class="card-body">
-                    @if ($roles->contains('psikolog'))
+                    @if ($roles->contains('terapis'))
                         <div class="row">
                             <!-- Bagian Logo -->
 
@@ -148,8 +148,6 @@
                         </div>
                     @else
                         <p>Tampilan Khusus Terapis</p>
-
-
                     @endif
                 </div>
             </div>

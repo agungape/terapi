@@ -74,10 +74,9 @@ class ProfileController extends Controller
     public function profile_user()
     {
         $user = auth()->user();
-        $roles = $user->getRoleNames();
         $namaUser = $user->name;
         $terapis = Terapis::where('nama', $namaUser)->first();
-        return view('profile.profile-user', compact('terapis', 'roles'));
+        return view('profile.profile-user', compact('terapis'));
     }
 
     /**

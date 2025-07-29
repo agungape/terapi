@@ -27,7 +27,9 @@
             <!-- Default box -->
             <div class="card">
                 <div class="card-body">
-                    @if ($roles->contains('terapis'))
+                    @if ($terapis == null)
+                        <p>Tampilan Khusus Terapis</p>
+                    @else
                         <div class="row">
                             <!-- Bagian Logo -->
 
@@ -146,8 +148,7 @@
                             </div>
                             </form>
                         </div>
-                    @else
-                        <p>Tampilan Khusus Terapis</p>
+
                     @endif
                 </div>
             </div>

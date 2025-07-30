@@ -221,7 +221,7 @@
                             <span class="info-box-icon"><i class="fas fa-child"></i></span>
                             <div class="info-box-content">
                                 <span class="info-box-text">Total Kunjungan</span>
-                                <span class="info-box-number">{{ $kunjungan->count() }}</span>
+                                <span class="info-box-number">{{ $total }}</span>
                             </div>
                         </div>
                     </div>

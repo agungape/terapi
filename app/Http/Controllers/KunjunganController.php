@@ -146,6 +146,7 @@ class KunjunganController extends Controller
             ->latest()
             ->paginate(5);
 
+        $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
         $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
         $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
         $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();

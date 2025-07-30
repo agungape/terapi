@@ -2,7 +2,7 @@
   "name": "Bright Star Of Child",
   "short_name": "Bright",
   "description": "Bright Star Of Child",
-  "start_url": "/resource/view/mobile/login.blade.php",
+  "start_url": "/mobile",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FFB200",
@@ -20,4 +20,5 @@
     }
   ]
 }
+
 

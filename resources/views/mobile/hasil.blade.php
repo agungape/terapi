@@ -47,6 +47,12 @@
         <div class="container">
             <div class="default-tab style-2 mt-1">
                 <div class="tab-content">
+                    <a href="javascript:void(0);" class="dz-media d-inline-block p-b15 p-t10">
+                        <video style="border-radius: 12px;" width="100%" autoplay muted loop playsinline>
+                            <source src="{{ asset('assets/mobile/pixio/videos/banner/video4.mp4') }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </a>
                     <div class="accordion dz-accordion" id="accordionExample">
 
                         <div class="accordion-item">
@@ -63,7 +69,7 @@
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
-                                    @foreach ($assessment as $a)
+                                    @forelse ($assessment as $a)
                                         <div class="dz-card list list-style-3">
                                             <div class="dz-content d-flex flex-column">
                                                 <table>
@@ -141,7 +147,35 @@
                                             </div>
 
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <p class="text-center">data assessment belum ada</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion dz-accordion" id="accordionObservasi">
+
+                        <div class="accordion-item">
+                            <div class="accordion-header acco-select" id="headingTwo">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                    <div class="dz-icon">
+                                        <i class="fi fi-rr-document"></i>
+                                    </div>
+                                    <h6 class="acco-title">Data Observasi</h6>
+                                    <div class="checkmark"></div>
+                                </button>
+                            </div>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionObservasi">
+                                <div class="accordion-body">
+
+                                    <p class="text-center">data observasi belum ada <small class="text-green"><i>sedang
+                                                dalam tahap
+                                                pengembangan</i></small></p>
+
+
                                 </div>
                             </div>
                         </div>

@@ -30,8 +30,12 @@
                     <div class="dz-content">
                         <h6 class="title"><a href="product-detail.html">{{ $anak->nama }}</a></h6>
                         <ul class="dz-meta gap-4">
+                            <li class="dz-qty font-12"><small>Season:</small><span
+                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->sesi }}</span></li>
+                        </ul>
+                        <ul class="dz-meta gap-4">
                             <li class="dz-qty font-12"><small>Pertemuan:</small><span
-                                    class="font-w500">{{ $kunjungan->pertemuan }}</span></li>
+                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->pertemuan }}</span></li>
                         </ul>
                         <ul class="dz-meta gap-4">
                             <li class="dz-qty font-12"><small>Status:</small><span
@@ -39,12 +43,12 @@
                         </ul>
                         <ul class="dz-meta gap-4">
                             <li class="dz-qty font-12"><small>Terapis:</small><span
-                                    class="font-w500">{{ $kunjungan->terapis->nama }}</span>
+                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->terapis->nama }}</span>
                             </li>
                         </ul>
                         <ul class="dz-meta gap-4">
                             <li class="dz-qty font-12"><small>Waktu:</small><span
-                                    class="font-w500">{{ $kunjungan->created_at }}</span>
+                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->created_at }}</span>
                             </li>
                         </ul>
                     </div>
@@ -78,7 +82,12 @@
                                     <h6 class="title font-w600">Keterangan:</h6>
                                     <div class="dz-offer-coupon">
                                         <div class="offer-content">
-                                            <p>{{ $p->keterangan }}</p>
+                                            <div style="white-space: pre-line;">
+                                                @foreach (explode("\n", $p->keterangan) as $paragraph)
+                                                    <p style="margin-bottom: 1px; line-height: 1.5;">{{ $paragraph }}
+                                                    </p>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

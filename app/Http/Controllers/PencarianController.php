@@ -12,6 +12,7 @@ class PencarianController extends Controller
 {
     public function proses(Request $request): View
     {
+        // dd($request);
         $terapis = Terapis::where('status', 'aktif')->get();
         $jenisTerapi = [
             'fisioterapi' => 'Fisioterapi & Sensor Integrasi',

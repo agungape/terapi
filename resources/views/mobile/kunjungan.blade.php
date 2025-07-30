@@ -23,7 +23,12 @@
         <div class="container">
             <div class="default-tab style-2 mt-1">
                 <div class="tab-content">
-
+                    <a href="javascript:void(0);" class="dz-media d-inline-block p-b15 p-t10">
+                        <video style="border-radius: 12px;" width="100%" autoplay muted loop playsinline>
+                            <source src="{{ asset('assets/mobile/pixio/videos/banner/video3.mp4') }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </a>
                     @foreach ($groupedBySesi as $sesi => $pertemuan)
                         <div class="accordion dz-accordion" id="accordionExample">
                             <div class="accordion-item">

@@ -19,41 +19,66 @@
                 <div class="content-box">
                     <div class="col-12">
                         <div class="card text-center">
+                            <div class="card-body row g-0">
+                                <h6>Absensi Season {{ $season }}</h6>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td width="30%"></td>
+                                            <td>Terapi Perilaku</td>
+                                            <td>Fisioterapi & SI</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Hadir
+                                                </li>
+                                            </td>
+                                            <td class="text-blue">
+                                                {{ $hadir_terapi_perilaku }}
+                                            <td class="text-blue">
+                                                {{ $hadir_fisioterapi }}
+                                            </td>
 
-                            <div class="card-body">
-                                <h6>Progres Terapi
-                                    <span class="pull-end text-info">{{ $progress }}%</span>
-                                </h6>
-                                <div class="progress">
-                                    <div class="progress-bar bg-info progress-animated border-0"
-                                        style="width: {{ $progress }}%;" role="progressbar">
-                                        <span class="sr-only">60% Complete</span>
-                                    </div>
-                                </div>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Izin
+                                                </li>
+                                            </td>
+                                            <td class="text-yellow">
+                                                {{ $izin_terapi_perilaku }}
+                                            <td class="text-yellow">
+                                                {{ $izin_fisioterapi }}
+                                            </td>
 
-                                <div class="card-body mt-2">
-                                    <h6>Kehadiran</h6>
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Hadir</p>
-                                            <span class="badge bg-success rounded-pill">{{ $hadir }}</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Izin
-                                            <span class="badge bg-warning rounded-pill">{{ $izin }}</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Izin Hangus
-                                            <span class="badge bg-danger rounded-pill">{{ $absen }}</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Sisa Pertemuan
-                                            <span class="badge bg-info rounded-pill">{{ $sisaPertemuan }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Izin Hangus
+                                                </li>
+                                            </td>
+                                            <td class="text-red">
+                                                {{ $izin_hangus_terapi_perilaku }}
+                                            <td class="text-red">
+                                                {{ $izin_hangus_fisioterapi }}
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
 
                             </div>
+
                         </div>
                     </div>
                 </div>

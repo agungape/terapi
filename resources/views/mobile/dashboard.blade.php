@@ -275,26 +275,27 @@
 
 
 @endsection
-{{-- @section('canvas')
+@section('canvas')
     <!-- PWA Offcanvas -->
     <div class="offcanvas offcanvas-bottom pwa-offcanvas">
         <div class="container">
             <div class="offcanvas-body">
                 <img class="logo dark" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
                 <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
-                <h5 class="title">Bright Star of Child </h5>
-                <p class="pwa-text">Instal Aplikasi ke layar beranda Anda untuk akses mudah</p>
-                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">Install
-                    Aplikasi</button>
-                <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">Install
-                    Nanti</button>
+                <h5 class="title">Bright Star of Child</h5>
+                <p class="pwa-text">Instal aplikasi untuk pengalaman yang lebih baik</p>
+                <button type="button" class="btn btn-sm btn-primary rounded-xl" id="installButton">
+                    Install Aplikasi
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2" id="closeInstallPrompt">
+                    Nanti Saja
+                </button>
             </div>
         </div>
     </div>
-    <div class="offcanvas-backdrop pwa-backdrop"></div>
+    <div class="offcanvas-backdrop fade show pwa-backdrop"></div>
     <!-- PWA Offcanvas End -->
-
-@endsection --}}
+@endsection
 @section('scripts')
     <script>
         $(document).ready(function() {
@@ -316,6 +317,80 @@
                 // Tampilkan modal
                 $('#exampleModalLong').modal('show');
             });
+
+            // Fungsi untuk menampilkan/menyembunyikan prompt install
+            function toggleInstallPrompt(show) {
+                const offcanvas = document.querySelector('.pwa-offcanvas');
+                const backdrop = document.querySelector('.pwa-backdrop');
+
+                if (show) {
+                    offcanvas.classList.add('show');
+                    backdrop.classList.add('show');
+                } else {
+                    offcanvas.classList.remove('show');
+                    backdrop.classList.remove('show');
+                }
+            }
+
+            // Cek apakah aplikasi sudah diinstall
+            function isAppInstalled() {
+                return window.matchMedia('(display-mode: standalone)').matches ||
+                    window.navigator.standalone ||
+                    document.referrer.includes('android-app://');
+            }
+
+            // Event listener untuk beforeinstallprompt
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+
+                // Tampilkan prompt install jika belum diinstall
+                if (!isAppInstalled()) {
+                    toggleInstallPrompt(true);
+                }
+            });
+
+            // Handle tombol install
+            document.getElementById('installButton').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const {
+                        outcome
+                    } = await deferredPrompt.userChoice;
+                    console.log(`User response: ${outcome}`);
+                    deferredPrompt = null;
+                    toggleInstallPrompt(false);
+                }
+            });
+
+            // Handle tombol close
+            document.getElementById('closeInstallPrompt').addEventListener('click', () => {
+                toggleInstallPrompt(false);
+                // Simpan preferensi user untuk tidak menampilkan lagi hari ini
+                localStorage.setItem('pwaPromptDismissed', new Date().toDateString());
+            });
+
+            // Cek apakah perlu menampilkan prompt saat load
+            window.addEventListener('load', () => {
+                const lastDismissed = localStorage.getItem('pwaPromptDismissed');
+                const today = new Date().toDateString();
+
+                if (!isAppInstalled() && lastDismissed !== today && deferredPrompt) {
+                    setTimeout(() => toggleInstallPrompt(true), 5000);
+                }
+            });
+
+            // Deteksi iOS untuk menampilkan instruksi khusus
+            function isIOS() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            }
+
+            if (isIOS() && !isAppInstalled()) {
+                // Tampilkan instruksi khusus untuk iOS
+                console.log("Untuk iOS, gunakan menu Share lalu 'Add to Home Screen'");
+            }
         });
     </script>
 

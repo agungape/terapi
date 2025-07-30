@@ -151,7 +151,7 @@ class KunjunganController extends Controller
         $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
         $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
 
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit'));
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'total'));
     }
 
     /**

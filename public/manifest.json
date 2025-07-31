@@ -2,7 +2,7 @@
   "name": "Bright Star Of Child",
   "short_name": "Bright",
   "description": "Bright Star Of Child",
-  "start_url": "/mobile/",
+  "start_url": "brightchild.id/mobile/",
   "scope": "/mobile/",
   "display": "standalone",
   "theme_color": "#87CEEB",

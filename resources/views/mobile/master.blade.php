@@ -11,22 +11,18 @@
     <meta name="author" content="DexignZone">
     <meta name="robots" content="index, follow">
 
-    <meta name="keywords"
-        content="app, clothing, e-shop, ecommerce, ecommerce android app, ecommerce app, eCommerce Website, minimal shop, online shop, shop app, store, ui kit, woocommerce, mobile application, mobile app, mobile, android application, online shopping, pixio, user interface, user experience, App Design, Design Elements, Fashion App, fashion, Trendy, Stylish, User-Friendly, Navigation, Product Display, Branding, Development, Visual Design, Mobile UI Elements, Stylish Mobile Design, Mobile App Development, Fashion App Templates, Fashion App Prototypes, UI Kit for Online Store, Trendy Fashion App, Fashion App UX/UI, UI/UX, Website, Web Design">
+    <meta name="keywords" content="Layanan Terapi Anak Berkebutuhan Khusus">
 
-    <meta
-        name="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
+    <meta name="Layanan Terapi Anak Berkebutuhan Khusus">
 
-    <meta property="og:title" content="Bright Star Of Child App Template ( Bootstrap + PWA ) | DexignZone">
-    <meta property="og:description"
-        content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
+    <meta property="og:title" content="Bright Star Of Child">
+    <meta property="og:description" content="Layanan Terapi Anak Berkebutuhan Khusus">
     <meta property="og:image" content="social-image.html">
 
     <meta name="format-detection" content="telephone=no">
 
-    <meta name="twitter:title" content="Bright Star Of Child App Template ( Bootstrap + PWA ) | DexignZone">
-    <meta name="twitter:description"
-        content="Pixio offers a cutting-edge eCommerce Fashion Bootstrap Mobile App Template designed to revolutionize your online shopping experience. With a comprehensive range of meticulously crafted design elements, our kit empowers you to create a visually stunning and intuitively navigable fashion app. Immerse your users in a seamless journey through the latest trends and collections, all presented with a touch of sophistication and flair.">
+    <meta name="twitter:title" content="Bright Star Of Child">
+    <meta name="twitter:description" content="Layanan Terapi Anak Berkebutuhan Khusus">
     <meta name="twitter:image" content="social-image.html">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -38,21 +34,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
     <!-- PWA Version -->
-
-    {{-- <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0d6efd">
-    <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
-    <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"> --}}
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <meta name="theme-color" content="#87CEEB">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Bright Star Of Child">
-
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"
@@ -123,41 +105,9 @@
     <script src="{{ asset('assets') }}/mobile/pixio/js/dz.carousel.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/settings.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
-    {{-- <script src="{{ asset('assets') }}/mobile/index.js"></script> --}}
-    <script src="{{ asset('app.js') }}"></script>
+    <script src="{{ asset('index.js') }}"></script>
     @yield('scripts')
 
-    {{-- <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('Service Worker registered:', reg))
-                .catch(err => console.error('Service Worker error:', err));
-        }
-    </script>
-    <script>
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Simpan event
-            e.preventDefault();
-            deferredPrompt = e;
-
-            // Tampilkan tombol install
-            const installBtn = document.getElementById('install-btn');
-            installBtn.style.display = 'inline-block';
-
-            installBtn.addEventListener('click', async () => {
-                installBtn.style.display = 'none';
-                deferredPrompt.prompt();
-
-                const {
-                    outcome
-                } = await deferredPrompt.userChoice;
-                console.log(`User response to install prompt: ${outcome}`);
-                deferredPrompt = null;
-            });
-        });
-    </script> --}}
 
 </body>
 

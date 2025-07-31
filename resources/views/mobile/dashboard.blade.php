@@ -284,10 +284,10 @@
                 <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
                 <h5 class="title">Bright Star of Child</h5>
                 <p class="pwa-text">Instal aplikasi untuk pengalaman yang lebih baik</p>
-                <button type="button" class="btn btn-sm btn-primary rounded-xl" id="installButton">
+                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn">
                     Install Aplikasi
                 </button>
-                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2" id="closeInstallPrompt">
+                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2">
                     Nanti Saja
                 </button>
             </div>

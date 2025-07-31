@@ -1,5 +1,6 @@
 // PWA Installation Logic
-let deferredPrompt;
+let deferredPrompt = null;
+let isPromptAvailable = false;
 
 // Safe DOM Access Wrapper
 function whenDOMReady() {
@@ -37,6 +38,8 @@ function whenDOMReady() {
   // PWA Prompt Controls
   const showInstallPrompt = () => {
     try {
+      if (!isPromptAvailable) return;
+
       const overlay = document.querySelector('.pwa-offcanvas');
       const backdrop = document.querySelector('.pwa-backdrop');
       if (overlay) overlay.classList.add('show');
@@ -64,11 +67,17 @@ function whenDOMReady() {
   // Install Button Handler
   if (pwaBtn) {
     pwaBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
+      if (!deferredPrompt) {
+        console.warn('Install prompt not available yet');
+        return;
+      }
 
       try {
+        console.log('Showing install prompt');
         deferredPrompt.prompt();
+
         const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response: ${outcome}`);
 
         if (outcome === 'accepted') {
           console.log('User accepted PWA install');
@@ -80,6 +89,7 @@ function whenDOMReady() {
         console.error('Error during install prompt:', err);
       } finally {
         deferredPrompt = null;
+        isPromptAvailable = false;
       }
     });
   }
@@ -90,34 +100,43 @@ function whenDOMReady() {
   });
 
   // Show prompt if not previously dismissed
-  if (!getCookie(PwaKey) && !isIOS()) {
-    setTimeout(showInstallPrompt, 5000); // Show after 5 seconds
+  if (!getCookie(PwaKey)) {
+    setTimeout(() => {
+      if (isPromptAvailable) {
+        showInstallPrompt();
+      }
+    }, 5000);
   }
 }
 
 // Service Worker Registration with Fallback
 function registerServiceWorker() {
-  if (!('serviceWorker' in navigator)) return;
+  if (!('serviceWorker' in navigator)) {
+    console.warn('Service Worker not supported');
+    return;
+  }
 
   const swUrl = '/sw.js';
   const scope = '/mobile/';
 
   navigator.serviceWorker.register(swUrl, { scope })
     .then(registration => {
-      console.log('ServiceWorker registration successful with scope:', registration.scope);
+      console.log('ServiceWorker registered with scope:', registration.scope);
 
-      // Handle updates
+      // Check for updates
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
-        console.log('New service worker found:', newWorker);
+        newWorker.addEventListener('statechange', () => {
+          console.log('New service worker state:', newWorker.state);
+        });
       });
     })
     .catch(error => {
       console.error('ServiceWorker registration failed:', error);
 
-      // Fallback attempt with different scope
+      // Fallback to root scope if needed
       if (error.message.includes('scope')) {
-        console.warn('Attempting fallback registration with root scope');
+        console.warn('Attempting registration with root scope');
         navigator.serviceWorker.register(swUrl)
           .then(reg => console.log('Fallback registration succeeded:', reg.scope))
           .catch(err => console.error('Fallback registration failed:', err));
@@ -127,32 +146,43 @@ function registerServiceWorker() {
 
 // Initialize PWA
 function initPWA() {
-  // Register Service Worker
+  // Register Service Worker first
   registerServiceWorker();
 
   // Handle installation prompt
   window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('beforeinstallprompt event fired');
     e.preventDefault();
     deferredPrompt = e;
-    console.log('PWA install prompt available');
+    isPromptAvailable = true;
+
+    // Enable install button if exists
+    const pwaBtn = document.querySelector('.pwa-btn');
+    if (pwaBtn) {
+      pwaBtn.disabled = false;
+    }
   });
 
-  // Track app installation
+  // Track successful installation
   window.addEventListener('appinstalled', () => {
     console.log('PWA was successfully installed');
     deferredPrompt = null;
+    isPromptAvailable = false;
   });
 }
 
 // Start when DOM is ready
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  setTimeout(() => {
+function initialize() {
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initPWA();
     whenDOMReady();
-  }, 1000);
-} else {
-  document.addEventListener('DOMContentLoaded', () => {
-    initPWA();
-    whenDOMReady();
-  });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      initPWA();
+      whenDOMReady();
+    });
+  }
 }
+
+// Start the application
+initialize();

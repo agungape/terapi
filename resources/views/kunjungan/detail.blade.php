@@ -168,7 +168,13 @@
                                                                 @endif --}}
                                                                 @if ($loop->first)
                                                                     <td rowspan="3" style="vertical-align: middle">
-                                                                        {{ $p->keterangan }}</td>
+                                                                        @foreach (explode("\n", $p->keterangan) as $paragraph)
+                                                                            <p
+                                                                                style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                {{ $paragraph }}
+                                                                            </p>
+                                                                        @endforeach
+                                                                    </td>
                                                                 @endif
                                                             </tr>
 

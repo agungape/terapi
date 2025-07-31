@@ -39,8 +39,17 @@
 
     <!-- PWA Version -->
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{-- <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0d6efd">
+    <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
+    <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png"> --}}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta name="theme-color" content="#87CEEB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bright Star Of Child">
+
     <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
     <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
@@ -113,7 +122,8 @@
     <script src="{{ asset('assets') }}/mobile/pixio/js/dz.carousel.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/settings.js"></script>
     <script src="{{ asset('assets') }}/mobile/pixio/js/custom.js"></script>
-    <script src="{{ asset('assets') }}/mobile/index.js"></script>
+    {{-- <script src="{{ asset('assets') }}/mobile/index.js"></script> --}}
+    <script src="{{ asset('app.js') }}"></script>
     @yield('scripts')
 
     {{-- <script>

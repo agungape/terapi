@@ -1,24 +1,25 @@
 {
-  "name": "Bright Star Of Child",
-  "short_name": "Bright",
-  "description": "Bright Star Of Child",
-  "start_url": "https://brightchild.id/mobile/",
-  "scope": "/mobile/",
-  "display": "standalone",
-  "theme_color": "#87CEEB",
-  "background_color": "#E0F7FA" ,
-  "icons": [
-    {
-      "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
-
-
+    "name": "Bright Star Of Child",
+    "short_name": "Bright",
+    "description": "Bright Star Of Child",
+    "start_url": "/mobile/",
+    "scope": "/mobile/",
+    "display": "standalone",
+    "theme_color": "#87CEEB",
+    "background_color": "#E0F7FA",
+    "icons": [
+      {
+        "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ],
+    "orientation": "portrait"
+  }

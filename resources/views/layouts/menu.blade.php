@@ -378,7 +378,7 @@
                 </li>
 
                 <li class="nav-item @yield('masterEcommerce')">
-                    @canany(['view informasi', 'view profile', 'view profile user'])
+                    @canany(['view kategori produk', 'view layanan produk'])
                         <a href="#" class="nav-link @yield('menuEcommerce')">
                             <i class="nav-icon fa fas fa-shopping-bag"></i>
                             <p>

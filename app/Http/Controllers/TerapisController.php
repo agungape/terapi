@@ -123,7 +123,7 @@ class TerapisController extends Controller
             'jurusan' => 'required',
             'role' => 'nullable',
             'status' => 'required',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
         if ($request->file('foto')) {

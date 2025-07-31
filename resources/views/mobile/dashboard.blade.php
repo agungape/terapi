@@ -287,7 +287,7 @@
                 <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn">
                     Install Aplikasi
                 </button>
-                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2">
+                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2 pwa">
                     Nanti Saja
                 </button>
             </div>
@@ -318,88 +318,88 @@
                 $('#exampleModalLong').modal('show');
             });
 
-            // PWA Installation Logic
-            let deferredPrompt;
-            const pwaOffcanvas = $('.pwa-offcanvas');
-            const pwaBackdrop = $('.pwa-backdrop');
+            // // PWA Installation Logic
+            // let deferredPrompt;
+            // const pwaOffcanvas = $('.pwa-offcanvas');
+            // const pwaBackdrop = $('.pwa-backdrop');
 
-            // Check if the app is already installed
-            function isAppInstalled() {
-                return window.matchMedia('(display-mode: standalone)').matches ||
-                    window.navigator.standalone ||
-                    document.referrer.includes('android-app://');
-            }
+            // // Check if the app is already installed
+            // function isAppInstalled() {
+            //     return window.matchMedia('(display-mode: standalone)').matches ||
+            //         window.navigator.standalone ||
+            //         document.referrer.includes('android-app://');
+            // }
 
-            // Show install prompt
-            function showInstallPromotion() {
-                if (!isAppInstalled()) {
-                    pwaOffcanvas.addClass('show');
-                    pwaBackdrop.addClass('show');
-                }
-            }
+            // // Show install prompt
+            // function showInstallPromotion() {
+            //     if (!isAppInstalled()) {
+            //         pwaOffcanvas.addClass('show');
+            //         pwaBackdrop.addClass('show');
+            //     }
+            // }
 
-            // Hide install prompt
-            function hideInstallPromotion() {
-                pwaOffcanvas.removeClass('show');
-                pwaBackdrop.removeClass('show');
-            }
+            // // Hide install prompt
+            // function hideInstallPromotion() {
+            //     pwaOffcanvas.removeClass('show');
+            //     pwaBackdrop.removeClass('show');
+            // }
 
-            // Listen for beforeinstallprompt event
-            window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent the mini-infobar from appearing on mobile
-                e.preventDefault();
-                // Stash the event so it can be triggered later
-                deferredPrompt = e;
+            // // Listen for beforeinstallprompt event
+            // window.addEventListener('beforeinstallprompt', (e) => {
+            //     // Prevent the mini-infobar from appearing on mobile
+            //     e.preventDefault();
+            //     // Stash the event so it can be triggered later
+            //     deferredPrompt = e;
 
-                // Show the install button
-                showInstallPromotion();
+            //     // Show the install button
+            //     showInstallPromotion();
 
-                // Log the event for debugging
-                console.log('beforeinstallprompt event fired');
-            });
+            //     // Log the event for debugging
+            //     console.log('beforeinstallprompt event fired');
+            // });
 
-            // Handle install button click
-            $('#installPWA').click(async () => {
-                if (deferredPrompt) {
-                    // Show the install prompt
-                    deferredPrompt.prompt();
+            // // Handle install button click
+            // $('#installPWA').click(async () => {
+            //     if (deferredPrompt) {
+            //         // Show the install prompt
+            //         deferredPrompt.prompt();
 
-                    // Wait for the user to respond to the prompt
-                    const {
-                        outcome
-                    } = await deferredPrompt.userChoice;
+            //         // Wait for the user to respond to the prompt
+            //         const {
+            //             outcome
+            //         } = await deferredPrompt.userChoice;
 
-                    // Optionally, send analytics event with outcome of user choice
-                    console.log(`User response to the install prompt: ${outcome}`);
+            //         // Optionally, send analytics event with outcome of user choice
+            //         console.log(`User response to the install prompt: ${outcome}`);
 
-                    // We've used the prompt, and can't use it again, throw it away
-                    deferredPrompt = null;
+            //         // We've used the prompt, and can't use it again, throw it away
+            //         deferredPrompt = null;
 
-                    // Hide the install button
-                    hideInstallPromotion();
-                }
-            });
+            //         // Hide the install button
+            //         hideInstallPromotion();
+            //     }
+            // });
 
-            // Handle defer button click
-            $('#deferInstall').click(() => {
-                hideInstallPromotion();
+            // // Handle defer button click
+            // $('#deferInstall').click(() => {
+            //     hideInstallPromotion();
 
-                // Optionally, set a cookie or localStorage to remember user's choice
-                localStorage.setItem('pwaInstallDeferred', 'true');
+            //     // Optionally, set a cookie or localStorage to remember user's choice
+            //     localStorage.setItem('pwaInstallDeferred', 'true');
 
-                // Show again after 7 days
-                setTimeout(() => {
-                    if (!isAppInstalled()) {
-                        showInstallPromotion();
-                    }
-                }, 7 * 24 * 60 * 60 * 1000);
-            });
+            //     // Show again after 7 days
+            //     setTimeout(() => {
+            //         if (!isAppInstalled()) {
+            //             showInstallPromotion();
+            //         }
+            //     }, 7 * 24 * 60 * 60 * 1000);
+            // });
 
-            // Check if we should show the prompt on page load
-            if (!localStorage.getItem('pwaInstallDeferred') && !isAppInstalled()) {
-                // Show after 5 seconds to allow user to see the page first
-                setTimeout(showInstallPromotion, 5000);
-            }
+            // // Check if we should show the prompt on page load
+            // if (!localStorage.getItem('pwaInstallDeferred') && !isAppInstalled()) {
+            //     // Show after 5 seconds to allow user to see the page first
+            //     setTimeout(showInstallPromotion, 5000);
+            // }
         });
     </script>
 

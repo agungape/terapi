@@ -50,7 +50,7 @@
                 @foreach ($terapis as $t)
                     @if ($t->role === 'Terapi Perilaku')
                         <div class="col-md-6 col-lg-4 therapist-card" data-specialty="speech">
-                            <div class="card border-0 shadow-sm h-100">
+                            <div class="card border-0 shadow-sm h-100 img-container">
                                 <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
                                     class="card-img-top" alt="Therapist">
                                 <div class="card-body">

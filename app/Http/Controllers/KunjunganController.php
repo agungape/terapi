@@ -224,6 +224,8 @@ class KunjunganController extends Controller
      */
     public function destroy(Kunjungan $kunjungan)
     {
-        //
+        $kunjungan->delete();
+        Alert::success('Berhasil', "kunjungan anak telah di hapus")->autoClose(4000);
+        return redirect()->back();
     }
 }

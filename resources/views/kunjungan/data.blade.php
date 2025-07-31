@@ -289,6 +289,7 @@
                                     <table class="table table-hover">
                                         <thead class="bg-light">
                                             <tr>
+                                                <th class="py-3">#</th>
                                                 <th class="py-3">Nama</th>
                                                 <th class="py-3">Terapis</th>
                                                 <th class="py-3">Pertemuan</th>
@@ -300,6 +301,19 @@
                                         <tbody>
                                             @foreach ($kunjungan as $kun)
                                                 <tr class="align-middle">
+                                                    <td>
+                                                        <form
+                                                            action="{{ route('kunjungan.destroy', ['kunjungan' => $kun->id]) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-outline-danger btn-sm btn-hapus"
+                                                                title="Hapus Data" data-name="{{ $kun->anak->nama }}"
+                                                                data-table="kunjungan">
+                                                                <i class="fa fa-trash fa-fw"></i>
+                                                            </button>
+                                                        </form>
+                                                    </td>
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mr-3"
@@ -359,7 +373,8 @@
                                                     <td>
                                                         @if ($kun->status == 'hadir')
                                                             <span class="badge badge-pill badge-success px-3 py-2">
-                                                                <i class="fas fa-check-circle mr-1"></i>{{ $kun->status }}
+                                                                <i
+                                                                    class="fas fa-check-circle mr-1"></i>{{ $kun->status }}
                                                             </span>
                                                         @elseif ($kun->status == 'izin')
                                                             <span class="badge badge-pill badge-warning px-3 py-2">

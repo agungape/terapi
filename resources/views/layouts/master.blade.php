@@ -368,6 +368,11 @@
                     teksAlert = 'Semua data <b>Kunjungan</b> untuk anak ' +
                         'ini juga akan terhapus!';
                     break;
+                case 'kunjungan':
+                    judulAlert = 'Hapus kunjungan anak ' + tombol.getAttribute('data-name') + '?';
+                    teksAlert = 'data pemeriksaan pada <b>Kunjungan</b> anak ' +
+                        'ini juga akan terhapus!';
+                    break;
                 default:
                     judulAlert = 'Apakah anda yakin?';
                     teksAlert = 'Hapus data <b>' + tombol.getAttribute('data-name') + '</b>';

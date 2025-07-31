@@ -239,17 +239,21 @@ a {
 }
 
 /* Blog Section */
-.blog-section .card-img-top {
-    width: 100%;       /* Lebar mengikuti parent */
-    height: 100%;
-    object-fit: cover; /* Memotong gambar yang tidak proporsional */
-    object-position: center; /* Fokus ke tengah gambar */
+.blog-section .card-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Membuat container persegi */
+    overflow: hidden;
+    position: relative;
 }
 
-.image-container {
+.blog-section .card-img-top {
     width: 100%;
-    aspect-ratio: 1/1; /* Membuat container persegi */
-    overflow: hidden;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 /* CTA Section */

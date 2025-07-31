@@ -196,11 +196,12 @@ class KunjunganController extends Controller
         $kunjungan = $query->paginate(10);
 
         // Hitung statistik untuk card
-        $hadir = $query->clone()->where('status', 'hadir')->count();
-        $izin = $query->clone()->where('status', 'izin')->count();
-        $sakit = $query->clone()->where('status', 'sakit')->count();
+        $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
+        $hadir = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
+        $izin = $query->clone()->whereNull('catatan')->where('status', 'izin')->count();
+        $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();
 
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit'));
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'total'));
     }
     /**
      * Show the form for editing the specified resource.

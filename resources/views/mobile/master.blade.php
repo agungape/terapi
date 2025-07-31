@@ -41,7 +41,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#0d6efd">
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ asset('assets') }}/mobile/manifest.json">
     <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
 
     <!-- Global CSS -->
@@ -116,7 +116,7 @@
     <script src="{{ asset('assets') }}/mobile/index.js"></script>
     @yield('scripts')
 
-    <script>
+    {{-- <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
                 .then(reg => console.log('Service Worker registered:', reg))
@@ -146,7 +146,7 @@
                 deferredPrompt = null;
             });
         });
-    </script>
+    </script> --}}
 
 </body>
 

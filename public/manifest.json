@@ -1,5 +1,6 @@
-  {
+{
     "background_color": "#E0F7FA",
+    "theme_color": "#E0F7FA",
     "description": "Bright Star Of Child",
     "display": "standalone",
     "icons": [
@@ -11,8 +12,7 @@
     ],
     "name": "Bright Star Of Child",
     "short_name": "Bright",
-    "start_url": "https://brightchild.id/mobile/",
+    "start_url": "https://brightchild.id/mobile",
     "scope": "/mobile/",
-    "orientation": "portrait",
-    "splash_pages": null
+    "orientation": "portrait"
   }

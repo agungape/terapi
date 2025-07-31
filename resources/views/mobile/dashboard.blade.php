@@ -318,6 +318,15 @@
                 $('#exampleModalLong').modal('show');
             });
 
+            // Saat login berhasil
+            function handleLoginSuccess(token) {
+                localStorage.setItem('authToken', token);
+
+                // Jika di PWA, redirect ke start_url
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    window.location.href = '/mobile/?source=pwa';
+                }
+            }
             // // PWA Installation Logic
             // let deferredPrompt;
             // const pwaOffcanvas = $('.pwa-offcanvas');

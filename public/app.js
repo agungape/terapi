@@ -1,69 +1,49 @@
-// Versi cache (ubah ini untuk memperbarui cache)
-const CACHE_NAME = 'pixio-pwa-v1';
+const CACHE_NAME = 'bsc-pwa-v2';
+const OFFLINE_URL = '/mobile/offline.html';
 
-// Daftar resource yang akan di-cache (sesuaikan dengan kebutuhan Anda)
 const urlsToCache = [
-  '/',
-  '/mobile',
+  '/mobile/',
+  '/app/',
   '/assets/mobile/pixio/css/styles.css',
   '/assets/mobile/pixio/js/custom.js',
   '/assets/mobile/pixio/images/app-logo/bsc.png',
-  '/manifest.json',
-  // Tambahkan file lainnya yang diperlukan
 ];
 
-// Event: Install Service Worker
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installed');
-  // Pre-cache resources
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching files');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((err) => {
-        console.log('Service Worker: Cache error', err);
-      })
+      .then(cache => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Event: Fetch resources
 self.addEventListener('fetch', (event) => {
-  console.log('Service Worker: Fetching', event.request.url);
-  // Strategi Cache-First
+  // Handle API requests dengan auth header
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return new Response(JSON.stringify({ error: "You are offline" }), {
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    ));
+    return;
+  }
+
+  // Handle halaman lainnya
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        // Jika ada di cache, kembalikan dari cache
-        if (response) {
-          return response;
-        }
-        // Jika tidak ada, fetch dari jaringan
-        return fetch(event.request)
-          .then((response) => {
-            // Jika fetch gagal (misalnya offline), tampilkan fallback
-            if (!response || response.status !== 200) {
-              return caches.match('/offline.html'); // Ganti dengan halaman offline jika ada
-            }
-            return response;
-          });
-      })
+      .then(response => response || fetch(event.request))
+      .catch(() => caches.match(OFFLINE_URL))
   );
 });
 
-// Event: Aktifasi Service Worker
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activated');
-  // Hapus cache lama
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('Service Worker: Clearing old cache');
-            return caches.delete(cache);
-          }
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) return caches.delete(cache);
         })
       );
     })

@@ -90,7 +90,7 @@ class MobileController extends Controller
         $anak = Anak::where('nama', $namaUser)->first();
 
         $kunjungan = Kunjungan::where('anak_id', $anak->id)->latest()->first();
-        $season = $kunjungan->sesi ?? 'sesi tidak ada';
+        $season = $kunjungan->sesi ?? 'Tidak Ada';
         // $totalPertemuan = 20;
         // $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 1)
         //     ->orderBy('created_at', 'desc')

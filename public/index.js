@@ -1,18 +1,8 @@
-// Register Service Worker
+// Register Service worker to control making site work offline
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('app.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.error('SW Registration Failed:', err));
-  }
-
-  // Cek Auth Status Saat Aplikasi Dibuka
-  document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
-    if (token && !window.location.pathname.includes('/')) {
-      // Jika sudah login, redirect ke halaman utama
-      window.location.href = '/app/';
-    }
-  });
+	navigator.serviceWorker.register('app.js')
+	.then(() => { console.log('Service Worker Registered'); });
+}
 
 // Code to handle install prompt on desktop
 let deferredPrompt;
@@ -23,22 +13,14 @@ var PwaValue = getCookie(PwaKey);
 //pwaBtn.style.display = 'none';
 
 /* for ios start*/
-function isThisDeviceRunningiOS() {
-    const isIOS = ['iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
-                 (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-
-    if (isIOS) {
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        // Jika di iOS dan sudah login, paksa reload untuk menghindari logout
-        window.location.reload();
-      }
-      installText.innerHTML = 'Tambahkan ke Home Screen via Safari Share > "Add to Home Screen".';
-      pwaBtn?.remove();
-    }
-    return isIOS;
+function isThisDeviceRunningiOS(){
+  if (['iPad Simulator', 'iPhone Simulator','iPod Simulator', 'iPad','iPhone','iPod','ios'].includes(navigator.platform) || navigator.userAgent.indexOf('Mac OS X') != -1){
+	installText.innerHTML = 'Bright Star of Child Mobile App Template" to your home screen for easy access click to safari share option "Add to Home Screen".';
+	pwaBtn.remove();
+	return true;
   }
-  isThisDeviceRunningiOS();
+}
+isThisDeviceRunningiOS();
 /* for ios end*/
 
 window.addEventListener('beforeinstallprompt', (e) => {

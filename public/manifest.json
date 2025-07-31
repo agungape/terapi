@@ -11,5 +11,8 @@
     ],
     "name": "Bright Star Of Child",
     "short_name": "Bright",
-    "start_url": "/mobile/"
+    "start_url": "/mobile/",
+    "scope": "/mobile/",
+    "orientation": "portrait",
+    "splash_pages": null
   }

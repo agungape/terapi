@@ -52,7 +52,7 @@
                         <div class="col-md-6 col-lg-4 therapist-card" data-specialty="speech">
                             <div class="card border-0 shadow-sm h-100">
                                 <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
-                                    class="card-img-top" alt="Therapist">
+                                    class="card-img-top" style="height: 510px; object-fit:cover" alt="Therapist">
                                 <div class="card-body">
                                     <h5 class="fw-bold mb-1">{{ $t->nama }}</h5>
                                     <p class="text-muted mb-3">{{ $t->role }}</p>

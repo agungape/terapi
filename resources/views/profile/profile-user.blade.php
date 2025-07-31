@@ -116,6 +116,35 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label for="inputSubject" class="col-sm-4 col-form-label">Perguruan Tinggi</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="inputSubject" name="perguruan_tinggi"
+                                            class="form-control @error('perguruan_tinggi') is-invalid @enderror"
+                                            value="{{ old('perguruan_tinggi') ?? ($terapis->perguruan_tinggi ?? '') }}"
+                                            placeholder="Universitas Halu Oleo" />
+                                    </div>
+                                    @error('perguruan_tinggi')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputSubject" class="col-sm-4 col-form-label">Jurusan</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="inputSubject" name="jurusan"
+                                            class="form-control @error('jurusan') is-invalid @enderror"
+                                            value="{{ old('jurusan') ?? ($terapis->jurusan ?? '') }}"
+                                            placeholder="S1 Psikologi" />
+                                    </div>
+                                    @error('jurusan')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
                                 <!-- Telepon -->
                                 <div class="form-group row">
                                     <label for="inputSubject" class="col-sm-4 col-form-label">Telepon</label>

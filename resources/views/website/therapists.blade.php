@@ -62,7 +62,7 @@
                                         </div>
                                         <div>
                                             <small class="text-muted">Pendidikan</small>
-                                            <p class="mb-0 small">Sarjana Psikologi Universitas Halu Oleo</p>
+                                            <p class="mb-0 small">{{ $t->jurusan }} {{ $t->perguruan_tinggi }}</p>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center mb-3">
@@ -103,7 +103,7 @@
                                         </div>
                                         <div>
                                             <small class="text-muted">Pendidikan</small>
-                                            <p class="mb-0 small">
+                                            <p class="mb-0 small">{{ $t->jurusan }} {{ $t->perguruan_tinggi }}
                                             </p>
                                         </div>
                                     </div>
@@ -113,7 +113,7 @@
                                         </div>
                                         <div>
                                             <small class="text-muted">Sertifikasi</small>
-                                            <p class="mb-0 small">Sensory Integration Certified, Handwriting Without Tears
+                                            <p class="mb-0 small">
                                             </p>
                                         </div>
                                     </div>

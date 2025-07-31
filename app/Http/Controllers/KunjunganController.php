@@ -196,7 +196,7 @@ class KunjunganController extends Controller
         $kunjungan = $query->paginate(10);
 
         // Hitung statistik untuk card
-        $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
+        $total = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
         $hadir = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
         $izin = $query->clone()->whereNull('catatan')->where('status', 'izin')->count();
         $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();

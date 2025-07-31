@@ -50,7 +50,7 @@
                                         <input type="hidden" name="anak_id" value="{{ $kunjungan->anak->id }}">
                                         <input type="hidden" name="jenis_terapi" value="{{ $kunjungan->jenis_terapi }}">
                                         <button type="submit" id="selesaiSesiBtn" class="btn btn-sm btn-success">Selesaikan
-                                            Sesi</button>
+                                            Season</button>
                                     </form>
                                 </div>
 

@@ -69,7 +69,7 @@ function whenDOMReady() {
 
 // Service Worker Registration (Works everywhere)
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/mobile/' })
+    navigator.serviceWorker.register('/asset/mobile/sw.js', { scope: '/mobile/' })
     .then(reg => console.log('SW registered:', reg.scope))
     .catch(err => console.error('SW registration failed:', err));
 }

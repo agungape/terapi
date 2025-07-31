@@ -149,6 +149,10 @@
                                                         {{-- @php
                                                             $date = null;
                                                         @endphp --}}
+                                                        @php
+                                                            $rows = $r->pemeriksaans->count();
+                                                        @endphp
+
                                                         @forelse ($r->pemeriksaans as $p)
                                                             @php
                                                                 $time = strtotime($p->created_at);
@@ -167,7 +171,8 @@
                                                                     </td>
                                                                 @endif --}}
                                                                 @if ($loop->first)
-                                                                    <td rowspan="3" style="vertical-align: middle">
+                                                                    <td rowspan="{{ $rows }}"
+                                                                        style="vertical-align: middle">
                                                                         @foreach (explode("\n", $p->keterangan) as $paragraph)
                                                                             <p
                                                                                 style="margin-bottom: 1px; line-height: 1.5;">

@@ -241,7 +241,7 @@ a {
 /* Blog Section */
 .blog-section .card-img-top {
     width: 100%;       /* Lebar mengikuti parent */
-    height: 200px;     /* Tinggi tetap (sesuaikan dengan kebutuhan) */
+    height: 100%;     /* Tinggi tetap (sesuaikan dengan kebutuhan) */
     object-fit: cover; /* Memotong gambar yang tidak proporsional */
     object-position: center; /* Fokus ke tengah gambar */
 }

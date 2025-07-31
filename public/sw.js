@@ -11,8 +11,8 @@ const urlsToCache = [
 
   // Assets penting
   `${ASSETS_PATH}pixio/images/app-logo/bsc.png`,
-  `${ASSETS_PATH}css/main.css`,
-  `${ASSETS_PATH}js/app.js`,
+  `${ASSETS_PATH}pixio/css/style.css`,
+  `${ASSETS_PATH}pixio/js/custom.js`,
 
   // Fallback
   '/offline.html'

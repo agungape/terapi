@@ -172,7 +172,7 @@
                                                                 @endif --}}
                                                                 @if ($loop->first)
                                                                     <td rowspan="{{ $rows }}"
-                                                                        style="vertical-align: middle">
+                                                                        style="vertical-align: middle; text-align:left">
                                                                         @foreach (explode("\n", $p->keterangan) as $paragraph)
                                                                             <p
                                                                                 style="margin-bottom: 1px; line-height: 1.5;">

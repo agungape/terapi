@@ -1,6 +1,7 @@
 // PWA Installation Logic
 let deferredPrompt = null;
 let isPromptAvailable = false;
+let installButtonClicked = false;
 
 // Safe DOM Access Wrapper
 function whenDOMReady() {
@@ -38,12 +39,16 @@ function whenDOMReady() {
   // PWA Prompt Controls
   const showInstallPrompt = () => {
     try {
-      if (!isPromptAvailable) return;
+      if (!isPromptAvailable) {
+        console.log('Prompt not available, not showing UI');
+        return;
+      }
 
       const overlay = document.querySelector('.pwa-offcanvas');
       const backdrop = document.querySelector('.pwa-backdrop');
       if (overlay) overlay.classList.add('show');
       if (backdrop) backdrop.classList.add('show');
+      console.log('Install prompt UI shown');
     } catch (e) {
       console.error('Error showing install prompt:', e);
     }
@@ -59,6 +64,7 @@ function whenDOMReady() {
       // Set cookie for 30 days
       const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
       document.cookie = `${PwaKey}=true; expires=${expires}; path=/; Secure; SameSite=Lax`;
+      console.log('Install prompt hidden and cookie set');
     } catch (e) {
       console.error('Error hiding install prompt:', e);
     }
@@ -68,18 +74,18 @@ function whenDOMReady() {
   if (pwaBtn) {
     pwaBtn.addEventListener('click', async () => {
       if (!deferredPrompt) {
-        console.warn('Install prompt not available yet');
+        console.warn('Install prompt not available yet, queuing request');
+        installButtonClicked = true;
         return;
       }
 
       try {
-        console.log('Showing install prompt');
-        deferredPrompt.prompt();
+        console.log('Showing install prompt to user');
+        installButtonClicked = false;
+        const choiceResult = await deferredPrompt.prompt();
+        console.log(`User response: ${choiceResult.outcome}`);
 
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response: ${outcome}`);
-
-        if (outcome === 'accepted') {
+        if (choiceResult.outcome === 'accepted') {
           console.log('User accepted PWA install');
           hideInstallPrompt();
         } else {
@@ -102,7 +108,7 @@ function whenDOMReady() {
   // Show prompt if not previously dismissed
   if (!getCookie(PwaKey)) {
     setTimeout(() => {
-      if (isPromptAvailable) {
+      if (isPromptAvailable || installButtonClicked) {
         showInstallPrompt();
       }
     }, 5000);
@@ -126,8 +132,13 @@ function registerServiceWorker() {
       // Check for updates
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
+        console.log('New service worker found:', newWorker.state);
+
         newWorker.addEventListener('statechange', () => {
-          console.log('New service worker state:', newWorker.state);
+          console.log('Service worker state changed:', newWorker.state);
+          if (newWorker.state === 'activated') {
+            console.log('New service worker activated');
+          }
         });
       });
     })
@@ -151,7 +162,7 @@ function initPWA() {
 
   // Handle installation prompt
   window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('beforeinstallprompt event fired');
+    console.log('beforeinstallprompt event fired', e);
     e.preventDefault();
     deferredPrompt = e;
     isPromptAvailable = true;
@@ -160,6 +171,12 @@ function initPWA() {
     const pwaBtn = document.querySelector('.pwa-btn');
     if (pwaBtn) {
       pwaBtn.disabled = false;
+      console.log('Install button enabled');
+    }
+
+    // If button was clicked before prompt was available
+    if (installButtonClicked) {
+      showInstallPrompt();
     }
   });
 
@@ -168,21 +185,42 @@ function initPWA() {
     console.log('PWA was successfully installed');
     deferredPrompt = null;
     isPromptAvailable = false;
+    installButtonClicked = false;
   });
 }
 
 // Start when DOM is ready
 function initialize() {
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    console.log('DOM already ready, initializing PWA');
     initPWA();
     whenDOMReady();
   } else {
+    console.log('Waiting for DOM content loaded');
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM content loaded, initializing PWA');
       initPWA();
       whenDOMReady();
     });
   }
 }
 
+// Debugging helpers
+window.debugPWA = {
+  showPrompt: () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+    } else {
+      console.warn('No deferredPrompt available');
+    }
+  },
+  getState: () => ({
+    deferredPrompt: !!deferredPrompt,
+    isPromptAvailable,
+    installButtonClicked
+  })
+};
+
 // Start the application
+console.log('Starting PWA initialization');
 initialize();

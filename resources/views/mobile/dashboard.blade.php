@@ -284,16 +284,16 @@
                 <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
                 <h5 class="title">Bright Star of Child</h5>
                 <p class="pwa-text">Instal aplikasi untuk pengalaman yang lebih baik</p>
-                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn">
+                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">
                     Install Aplikasi
                 </button>
-                <button type="button" class="btn btn-sm btn-secondary rounded-xl ms-2 pwa">
+                <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">
                     Nanti Saja
                 </button>
             </div>
         </div>
     </div>
-    <div class="offcanvas-backdrop fade show pwa-backdrop"></div>
+    <div class="offcanvas-backdrop pwa-backdrop"></div>
     <!-- PWA Offcanvas End -->
 @endsection
 @section('scripts')

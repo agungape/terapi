@@ -15,7 +15,7 @@ var PwaValue = getCookie(PwaKey);
 /* for ios start*/
 function isThisDeviceRunningiOS(){
   if (['iPad Simulator', 'iPhone Simulator','iPod Simulator', 'iPad','iPhone','iPod','ios'].includes(navigator.platform) || navigator.userAgent.indexOf('Mac OS X') != -1){
-	installText.innerHTML = 'Bright Star of Child Mobile App Template" to your home screen for easy access click to safari share option "Add to Home Screen".';
+	installText.innerHTML = 'Install "Bright - Layanan Terapi Anak Spesial" to your home screen for easy access click to safari share option "Add to Home Screen".';
 	pwaBtn.remove();
 	return true;
   }

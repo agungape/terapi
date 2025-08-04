@@ -72,6 +72,7 @@ class LoginController extends Controller
     {
         // Ambil tampilan yang sedang digunakan dari session atau URL
         $view = $request->session()->get('view', 'admin');
+
         // Jika pengguna login dari tampilan mobile (anak)
         if ($view === 'anak') {
             if (!$user->hasRole('anak')) {

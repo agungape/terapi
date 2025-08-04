@@ -24,17 +24,22 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::latest()->paginate(10);
+        $users = User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'super-admin');
+        })
+            ->with('roles')
+            ->orderByDesc('last_login')
+            ->paginate(10);
+
         $terapis = Terapis::orderBy('nama')->get();
         $anaks = Anak::orderBy('nama')->get();
         $psikologs = Psikolog::orderBy('nama')->get();
-        $roles = Role::pluck('name', 'name')->all();
+        $roles = Role::where('name', '!=', 'super-admin')->pluck('name', 'name')->all();
+
         foreach ($users as $user) {
-            if ($user->last_login) {
-                $user->last_login_duration = Carbon::parse($user->last_login)->diffForHumans();
-            } else {
-                $user->last_login_duration = 'Never logged in';
-            }
+            $user->last_login_duration = $user->last_login
+                ? Carbon::parse($user->last_login)->diffForHumans()
+                : 'Never logged in';
         }
         return view('role-permission.user.index', ['users' => $users, 'roles' => $roles, 'anaks' => $anaks, 'terapis' => $terapis,  'psikologs' => $psikologs]);
     }

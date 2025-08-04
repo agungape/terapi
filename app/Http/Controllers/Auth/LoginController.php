@@ -51,8 +51,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $user = auth()->user();
-        $roles = $user->getRoleNames(); // Mengembalikan koleksi nama role
-        dd($roles);
+        $roles = $user->getRoleNames();
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -73,7 +72,6 @@ class LoginController extends Controller
     {
         // Ambil tampilan yang sedang digunakan dari session atau URL
         $view = $request->session()->get('view', 'admin');
-
         // Jika pengguna login dari tampilan mobile (anak)
         if ($view === 'anak') {
             if (!$user->hasRole('anak')) {

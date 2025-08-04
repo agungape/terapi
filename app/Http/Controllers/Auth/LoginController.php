@@ -52,7 +52,7 @@ class LoginController extends Controller
     {
         $user = auth()->user();
         $roles = $user->getRoleNames(); // Mengembalikan koleksi nama role
-
+        dd($roles);
         $this->guard()->logout();
 
         $request->session()->invalidate();

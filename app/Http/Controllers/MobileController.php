@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anak;
 use App\Models\Assessment;
+use App\Models\Fisioterapi;
 use App\Models\informasi;
 use App\Models\Jadwal;
 use App\Models\Kunjungan;
@@ -260,15 +261,26 @@ class MobileController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
+        // Ambil semua kunjungan diurutkan berdasarkan sesi dan created_at
+        $kunjungan_fisioterapi = Kunjungan::where('anak_id', $anak->id)
+            ->whereNull('catatan')
+            ->where('jenis_terapi', 'fisioterapi')
+            ->orderBy('sesi', 'desc')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         // Kelompokkan berdasarkan sesi
         $groupedBySesi = $kunjungan->groupBy('sesi');
+        $groupedBySesi_fisio = $kunjungan_fisioterapi->groupBy('sesi');
 
         // Kirim data ke view
         return view('mobile.kunjungan', [
             'anak' => $anak,
-            'kunjungan' => $kunjungan,
             'groupedBySesi' => $groupedBySesi,
-            'sesiTerakhir' => $kunjungan->max('sesi') // Ambil sesi terakhir
+            'sesiTerakhir' => $kunjungan->max('sesi'),
+            'groupedBySesi_fisio' => $groupedBySesi_fisio,
+            'sesiTerakhir_fisio' => $kunjungan_fisioterapi->max('sesi'),
+
         ]);
     }
 
@@ -279,7 +291,8 @@ class MobileController extends Controller
         $anak = Anak::where('nama', $namaUser)->first();
         $kunjungan = Kunjungan::findOrFail($id);
         $pemeriksaan = Pemeriksaan::where('kunjungan_id', $kunjungan->id)->get();
-        return view('mobile.kunjungandetail', compact('kunjungan', 'anak', 'pemeriksaan'));
+        $fisioterapi = Fisioterapi::where('kunjungan_id', $kunjungan->id)->get();
+        return view('mobile.kunjungandetail', compact('kunjungan', 'anak', 'pemeriksaan', 'fisioterapi'));
     }
 
     public function payment()

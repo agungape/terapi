@@ -94,123 +94,248 @@
                     <!-- /.col -->
                     <div class="col-md-9">
                         <div class="card">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <ul class="nav nav-pills">
-                                            <li class="nav-item"><a class="nav-link active" href="#activity"
-                                                    data-toggle="tab">Riwayat</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#timeline"
-                                                    data-toggle="tab">Pemeriksaaan</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a href="{{ route('kunjungan.data') }}" class="btn btn-sm btn-warning float-right">
-                                            Kembali</a>
-                                    </div>
-                                </div>
-
-
-                            </div><!-- /.card-header -->
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    {{-- riwayat --}}
-                                    <div class="active tab-pane" id="activity">
-                                        <div class="card-body">
-                                            <table class="table table-bordered">
-                                                @foreach ($riwayat as $r)
-                                                    <thead>
-                                                        <tr style="background-color: lavender">
-                                                            <th>Pertemuan</th>
-                                                            <th colspan="2">{{ $r->pertemuan }}
-                                                                @if ($r->status == 'hadir')
-                                                                    <label
-                                                                        class="badge badge-success">{{ $r->status }}</label>
-                                                                @elseif ($r->status == 'izin')
-                                                                    <label
-                                                                        class="badge badge-warning">{{ $r->status }}</label>
-                                                                @elseif ($r->status == 'sakit')
-                                                                    <label
-                                                                        class="badge badge-danger">{{ $r->status }}</label>
-                                                                @endif
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Tanggal</th>
-                                                            <th colspan="2"> {{ $r->created_at }} </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th class="text-center"> Program </th>
-                                                            <th class="text-center"> Skala </th>
-                                                            <th class="text-center"> Keterangan </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {{-- @php
-                                                            $date = null;
-                                                        @endphp --}}
-                                                        @php
-                                                            $rows = $r->pemeriksaans->count();
-                                                        @endphp
-
-                                                        @forelse ($r->pemeriksaans as $p)
-                                                            @php
-                                                                $time = strtotime($p->created_at);
-                                                            @endphp
-                                                            <tr class="text-center">
-                                                                <td>{{ $p->program->deskripsi }}
-                                                                </td>
-                                                                <td>{{ $p->status }}</td>
-                                                                {{-- @if ($date != $p->created_at)
-                                                                    @php
-                                                                        $date = $p->created_at;
-                                                                    @endphp
-                                                                    <td rowspan="{{ $jumlah_pemeriksaan[$time] }}"
-                                                                        style="vertical-align: middle">
-                                                                        {{ $p->keterangan }}
-                                                                    </td>
-                                                                @endif --}}
-                                                                @if ($loop->first)
-                                                                    <td rowspan="{{ $rows }}"
-                                                                        style="vertical-align: middle; text-align:left">
-                                                                        @foreach (explode("\n", $p->keterangan) as $paragraph)
-                                                                            <p
-                                                                                style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                {{ $paragraph }}
-                                                                            </p>
-                                                                        @endforeach
-                                                                    </td>
-                                                                @endif
-                                                            </tr>
-
-
-                                                        @empty
-                                                            <tr>
-                                                                <td colspan="3" class="text-center"> data program belum
-                                                                    ada</td>
-                                                            </tr>
-                                                        @endforelse
-
-                                                    </tbody>
-                                                @endforeach
-                                            </table>
-
-                                            {{-- <div class="row">
-                                                <div class="mx-auto mt-3">
-                                                    {{ $riwayat->fragment('judul')->links() }}
-                                                </div>
-                                            </div> --}}
+                            @if ($kunjungan->jenis_terapi == 'terapi_perilaku')
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <ul class="nav nav-pills">
+                                                <li class="nav-item"><a class="nav-link active" href="#activity"
+                                                        data-toggle="tab">Riwayat</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="#timeline"
+                                                        data-toggle="tab">Pemeriksaaan</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a href="{{ route('kunjungan.data') }}"
+                                                class="btn btn-sm btn-warning float-right">
+                                                Kembali</a>
                                         </div>
                                     </div>
-                                    <!-- pemeriksaan -->
-                                    <div class="tab-pane" id="timeline">
-                                        <form action="{{ route('pemeriksaan.store') }}" method="POST">
-                                            @include('kunjungan.form', ['tombol' => 'Submit'])
-                                        </form>
+
+
+                                </div><!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        {{-- riwayat --}}
+                                        <div class="active tab-pane" id="activity">
+                                            <div class="card-body">
+                                                <table class="table table-bordered">
+                                                    @foreach ($riwayat as $r)
+                                                        <thead>
+                                                            <tr style="background-color: lavender">
+                                                                <th>Pertemuan</th>
+                                                                <th colspan="2">{{ $r->pertemuan }}
+                                                                    @if ($r->status == 'hadir')
+                                                                        <label
+                                                                            class="badge badge-success">{{ $r->status }}</label>
+                                                                    @elseif ($r->status == 'izin')
+                                                                        <label
+                                                                            class="badge badge-warning">{{ $r->status }}</label>
+                                                                    @elseif ($r->status == 'sakit')
+                                                                        <label
+                                                                            class="badge badge-danger">{{ $r->status }}</label>
+                                                                    @endif
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Tanggal</th>
+                                                                <th colspan="2"> {{ $r->created_at }} </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th class="text-center"> Program </th>
+                                                                <th class="text-center"> Skala </th>
+                                                                <th class="text-center"> Keterangan </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @php
+                                                                $rows = $r->pemeriksaans->count();
+                                                            @endphp
+
+                                                            @forelse ($r->pemeriksaans as $p)
+                                                                @php
+                                                                    $time = strtotime($p->created_at);
+                                                                @endphp
+                                                                <tr class="text-center">
+                                                                    <td>{{ $p->program->deskripsi }}
+                                                                    </td>
+                                                                    <td>{{ $p->status }}</td>
+                                                                    @if ($loop->first)
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $p->keterangan) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                    @endif
+                                                                </tr>
+                                                            @empty
+                                                                <tr>
+                                                                    <td colspan="3" class="text-center"> data program
+                                                                        belum
+                                                                        ada</td>
+                                                                </tr>
+                                                            @endforelse
+
+                                                        </tbody>
+                                                    @endforeach
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!-- pemeriksaan -->
+                                        <div class="tab-pane" id="timeline">
+                                            <form action="{{ route('pemeriksaan.store') }}" method="POST">
+                                                @include('kunjungan.form', ['tombol' => 'Submit'])
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            @else
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <ul class="nav nav-pills">
+                                                <li class="nav-item"><a class="nav-link active" href="#activity"
+                                                        data-toggle="tab">Riwayat Fisioterapi</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="#timeline"
+                                                        data-toggle="tab">Pemeriksaaan</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a href="{{ route('kunjungan.data') }}"
+                                                class="btn btn-sm btn-warning float-right">
+                                                Kembali</a>
+                                        </div>
                                     </div>
 
+
+                                </div><!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="tab-content">
+                                        {{-- riwayat --}}
+                                        <div class="active tab-pane" id="activity">
+                                            <div class="card-body">
+                                                <table class="table table-bordered">
+                                                    @foreach ($riwayat_fisioterapi as $f)
+                                                        <thead>
+                                                            <tr style="background-color: lavender">
+                                                                <th>Pertemuan</th>
+                                                                <th colspan="5">{{ $f->pertemuan }}
+                                                                    @if ($f->status == 'hadir')
+                                                                        <label
+                                                                            class="badge badge-success">{{ $f->status }}</label>
+                                                                    @elseif ($f->status == 'izin')
+                                                                        <label
+                                                                            class="badge badge-warning">{{ $f->status }}</label>
+                                                                    @elseif ($f->status == 'sakit')
+                                                                        <label
+                                                                            class="badge badge-danger">{{ $f->status }}</label>
+                                                                    @endif
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Tanggal</th>
+                                                                <th colspan="5"> {{ $f->created_at }} </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th class="text-center"> Program </th>
+                                                                <th class="text-center"> Aktivitas Terapi </th>
+                                                                <th class="text-center"> Respon Anak </th>
+                                                                <th class="text-center"> Kemajuan </th>
+                                                                <th class="text-center"> Kendala </th>
+                                                                <th class="text-center"> Catatan Khusus </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @php
+                                                                $rows = $f->fisioterapis->count();
+                                                            @endphp
+
+                                                            @forelse ($f->fisioterapis as $fisio)
+                                                                @php
+                                                                    $time = strtotime($fisio->created_at);
+                                                                @endphp
+                                                                <tr class="text-center">
+                                                                    <td>{{ $fisio->program->deskripsi }}
+                                                                    </td>
+                                                                    @if ($loop->first)
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $fisio->aktivitas_terapi) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $fisio->respons_anak) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $fisio->kemajuan) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $fisio->kendala) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                        <td rowspan="{{ $rows }}"
+                                                                            style="vertical-align: middle; text-align:left">
+                                                                            @foreach (explode("\n", $fisio->catatan_khusus) as $paragraph)
+                                                                                <p
+                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                    {{ $paragraph }}
+                                                                                </p>
+                                                                            @endforeach
+                                                                        </td>
+                                                                    @endif
+                                                                </tr>
+
+
+                                                            @empty
+                                                                <tr>
+                                                                    <td colspan="6" class="text-center"> data program
+                                                                        belum
+                                                                        ada</td>
+                                                                </tr>
+                                                            @endforelse
+
+                                                        </tbody>
+                                                    @endforeach
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!-- pemeriksaan -->
+                                        <div class="tab-pane" id="timeline">
+                                            <form action="{{ route('fisioterapi.store') }}" method="POST">
+                                                @include('kunjungan.form_fisioterapi', [
+                                                    'tombol' => 'Simpan Data',
+                                                ])
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -265,6 +390,41 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                `);
+
+                formIndex++;
+
+                $('.select2').select2();
+            });
+
+            $(document).on('click', '.remove-button', function() {
+                $(this).closest('.container-form').remove();
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            let formIndex = 1;
+            $('#add-button-fisioterapi').click(function() {
+                $('#form-fisioterapi').append(`
+
+                <div class="container-form row col-md-12">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Program</label>
+                            <div class="col-sm-6">
+                                <select class="form-control select2" style="width:100%" name="program_id[${formIndex}]">
+                                    @foreach ($program_fisioterapi as $f)
+                                        <option value="{{ $f->id }}">{{ $f->deskripsi }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-sm-4"> <button type="button" id="add-button-fisioterapi" class="btn btn-sm btn-danger remove-button"><i class="fa fa-minus"></i></button></div>
                         </div>
                     </div>
                 </div>

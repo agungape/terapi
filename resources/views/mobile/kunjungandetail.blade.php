@@ -53,50 +53,157 @@
                         </ul>
                     </div>
                 </div>
-                <div class="dz-product-detail">
-                    <div class="detail-content">
-                        <h4 class="title">Program Terapi</h4>
-                    </div>
-                    @forelse ($pemeriksaan as $p)
-                        <div class="dz-offer-coupon">
-                            <div class="offer">
-                                <h6>{{ $loop->iteration }}</h6>
-                            </div>
-                            <div class="offer-content">
-                                <h6>{{ $p->program->deskripsi }}</h6>
-                                <p>Skala : @if ($p->status == 'dp')
-                                        Dibantu Penuh (DP)
-                                    @elseif ($p->status == 'ds')
-                                        Dibantu Sebagian (DS)
-                                    @elseif ($p->status == 'tb')
-                                        Tidak Dibantu (TD)
-                                    @else
-                                        Status Tidak Diketahui
-                                    @endif
-                                </p>
-                            </div>
+                @if ($kunjungan->jenis_terapi == 'terapi_perilaku')
+                    <div class="dz-product-detail">
+                        <div class="detail-content">
+                            <h4 class="title">Program Terapi</h4>
                         </div>
-                        @if ($loop->last)
-                            <div class="item-wrapper">
-                                <div class="description">
-                                    <h6 class="title font-w600">Keterangan:</h6>
-                                    <div class="dz-offer-coupon">
-                                        <div class="offer-content">
-                                            <div style="white-space: pre-line;">
-                                                @foreach (explode("\n", $p->keterangan) as $paragraph)
-                                                    <p style="margin-bottom: 1px; line-height: 1.5;">{{ $paragraph }}
-                                                    </p>
-                                                @endforeach
+                        @forelse ($pemeriksaan as $p)
+                            <div class="dz-offer-coupon">
+                                <div class="offer">
+                                    <h6>{{ $loop->iteration }}</h6>
+                                </div>
+                                <div class="offer-content">
+                                    <h6>{{ $p->program->deskripsi }}</h6>
+                                    <p>Skala : @if ($p->status == 'dp')
+                                            Dibantu Penuh (DP)
+                                        @elseif ($p->status == 'ds')
+                                            Dibantu Sebagian (DS)
+                                        @elseif ($p->status == 'tb')
+                                            Tidak Dibantu (TD)
+                                        @else
+                                            Status Tidak Diketahui
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                            @if ($loop->last)
+                                <div class="item-wrapper">
+                                    <div class="description">
+                                        <h6 class="title font-w600">Keterangan:</h6>
+                                        <div class="dz-offer-coupon">
+                                            <div class="offer-content">
+                                                <div style="white-space: pre-line;">
+                                                    @foreach (explode("\n", $p->keterangan) as $paragraph)
+                                                        <p style="margin-bottom: 1px;">
+                                                            {{ $paragraph }}
+                                                        </p>
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            @endif
+                        @empty
+                            <p class="text-center">data program terapi tidak ada</p>
+                        @endforelse
+                    </div>
+                @else
+                    <div class="dz-product-detail">
+                        <div class="detail-content">
+                            <h4 class="title">Program Fisioterapi & Sensori Integrasi</h4>
+                        </div>
+                        @forelse ($fisioterapi as $f)
+                            <div class="dz-offer-coupon">
+                                <div class="offer">
+                                    <h6>{{ $loop->iteration }}</h6>
+                                </div>
+                                <div class="offer-content">
+                                    <h6>{{ $f->program->deskripsi }}</h6>
+                                </div>
                             </div>
-                        @endif
-                    @empty
-                        <p class="text-center">data program terapi tidak ada</p>
-                    @endforelse
-                </div>
+                            @if ($loop->last)
+                                <div class="item-wrapper">
+                                    <div class="description">
+                                        <h6 class="title font-w600">Aktivitas Terapi:</h6>
+                                        <div class="dz-offer-coupon">
+                                            <div class="offer-content">
+                                                <div style="white-space: pre-line;">
+                                                    @foreach (explode("\n", $f->aktivitas_terapi) as $paragraph)
+                                                        <p style="margin-bottom: 1px;">
+                                                            {{ $paragraph }}
+                                                        </p>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if ($f->respons_anak)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Respons Anak:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div style="white-space: pre-line;">
+                                                        @foreach (explode("\n", $f->respons_anak) as $paragraph)
+                                                            <p style="margin-bottom: 1px;">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($f->kemanjuan)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Kemajuan:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div style="white-space: pre-line;">
+                                                        @foreach (explode("\n", $f->kemajuan) as $paragraph)
+                                                            <p style="margin-bottom: 1px;">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($f->kendala)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Kendala:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div style="white-space: pre-line;">
+                                                        @foreach (explode("\n", $f->kendala) as $paragraph)
+                                                            <p style="margin-bottom: 1px;">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($f->catatan_khusus)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Catatan Khusus:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div style="white-space: pre-line;">
+                                                        @foreach (explode("\n", $f->catatan_khusus) as $paragraph)
+                                                            <p style="margin-bottom: 1px;">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            @endif
+                        @empty
+                            <p class="text-center">data program terapi tidak ada</p>
+                        @endforelse
+                    </div>
+                @endif
             </div>
         </main>
     </div>

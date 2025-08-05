@@ -394,7 +394,7 @@
                                                     </td>
                                                     <td class="text-center">
                                                         @can('show rekammedis')
-                                                            @if ($kun->status == 'hadir' && $kun->jenis_terapi == 'terapi_perilaku')
+                                                            @if ($kun->status == 'hadir')
                                                                 <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
                                                                     class="btn btn-primary btn-sm rounded-pill px-3">
                                                                     <i class="fa fa-address-card mr-1"></i> E-Book Anak

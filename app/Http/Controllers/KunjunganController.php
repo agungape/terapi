@@ -161,23 +161,16 @@ class KunjunganController extends Controller
      */
     public function show(Kunjungan $kunjungan)
     {
-        // dd($kunjungan->anak_id);
+        // riwayat terapi_perilaku
         $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'terapi_perilaku')->whereNull('catatan')->latest()->get();
-        // dd($riwayat);
-        $jumlah_pemeriksaan = Pemeriksaan::select('created_at', DB::raw('count(id) as value'))->whereHas('kunjungan', function ($query) use ($kunjungan) {
-            $query->where('anak_id', $kunjungan->anak->id);
-        })->groupBy('created_at')->get();
+        // riwayat fisioterapi
+        $riwayat_fisioterapi = Kunjungan::with('fisioterapis')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'fisioterapi')->whereNull('catatan')->latest()->get();
 
-        $jumlah_pemeriksaan = array_reduce($jumlah_pemeriksaan->toArray(), function ($hold_data, $item) {
-            $tanggal = strtotime($item['created_at']);
-            $hold_data[$tanggal] = $item['value'];
-            return $hold_data;
-        });
-
-        $program = Program::all();
+        $program = Program::where('jenis', 'terapi_perilaku')->get();
+        $program_fisioterapi = Program::where('jenis', 'fisioterapi')->get();
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());
-        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'jumlah_pemeriksaan'));
+        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi'));
     }
 
 

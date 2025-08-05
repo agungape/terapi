@@ -40,6 +40,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Program</th>
+                                            <th>Jenis Program</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -49,6 +50,13 @@
                                             <tr>
                                                 <td scope="row">{{ $program->firstItem() + $loop->iteration - 1 }}</td>
                                                 <td>{{ $p->deskripsi }}</td>
+                                                <td>
+                                                    @if ($p->jenis == 'terapi_perilaku')
+                                                        Terapi Perilaku
+                                                    @elseif ($p->jenis == 'fisioterapi')
+                                                        Fisioterapi & Sensori Integrasi
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @can('delete program anak')
                                                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -89,7 +97,7 @@
     <form action="{{ route('program.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Tambah Program</h5>
@@ -99,6 +107,16 @@
                             <label for="exampleInputMobile" class="col-sm-4 col-form-label">Nama Program</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" name="deskripsi">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Jenis Program</label>
+                            <div class="col-sm-8">
+                                <select name="jenis" class="form-control select2 border-0 bg-light">
+                                    @foreach ($jenis as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

@@ -32,6 +32,11 @@ class Kunjungan extends Model
         return $this->hasMany('App\Models\Pemeriksaan');
     }
 
+    public function fisioterapis(): HasMany
+    {
+        return $this->hasMany('App\Models\Fisioterapi');
+    }
+
     public function tarif(): BelongsTo
     {
         return $this->belongsTo(Tarif::class);
@@ -43,25 +48,4 @@ class Kunjungan extends Model
             ->locale('id') // Menggunakan bahasa Indonesia
             ->translatedFormat('l, d F Y'); // Format "Hari, Tanggal Bulan Tahun"
     }
-
-    // protected static function boot()
-    // {
-    //     parent::boot();
-
-    //     // Event 'creating' untuk menetapkan nomor pertemuan
-    //     static::creating(function ($kunjungan) {
-    //         // Cek apakah anak sudah pernah kunjungan sebelumnya
-    //         $lastVisit = Kunjungan::where('anak_id', $kunjungan->anak_id)
-    //             ->orderBy('created_at', 'desc')
-    //             ->first();
-
-    //         // Jika ada kunjungan sebelumnya, nomor pertemuan +1 dari yang terakhir
-    //         if ($lastVisit) {
-    //             $kunjungan->pertemuan = $lastVisit->pertemuan + 1;
-    //         } else {
-    //             // Jika belum pernah kunjungan sebelumnya, pertemuan diisi dengan 0
-    //             $kunjungan->pertemuan = 1;
-    //         }
-    //     });
-    // }
 }

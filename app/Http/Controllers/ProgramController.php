@@ -13,8 +13,12 @@ class ProgramController extends Controller
      */
     public function index()
     {
+        $jenis = [
+            'terapi_perilaku' => 'Terapi Perilaku',
+            'fisioterapi' => 'Fisioterapi & Sensor Integrasi'
+        ];
         $program = Program::orderBy('deskripsi')->paginate(5);
-        return view('program.index', compact('program'));
+        return view('program.index', compact('program', 'jenis'));
     }
 
     /**
@@ -32,6 +36,7 @@ class ProgramController extends Controller
     {
         $validateData = $request->validate([
             'deskripsi' => 'required',
+            'jenis' => 'required',
         ]);
         $program = Program::create($validateData);
         Alert::success('Berhasil', "Data program $request->deskripsi berhasil dibuat");

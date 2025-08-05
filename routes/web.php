@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnakController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\FisioterapiController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\JadwalController;
@@ -141,7 +142,6 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/keuangan/laporan/pdf/{startDate}/{endDate}', [KeuanganController::class, 'laporan_pdf'])->name('keuangan.laporan.pdf');
 
 
-
     Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
     Route::post('/terapis/pelatihan', [TerapisController::class, 'pelatihan_store'])->name('pelatihans.store');
@@ -153,6 +153,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');
     Route::post('/kunjungan/selesai-sesi', [KunjunganController::class, 'selesaiSesi'])->name('kunjungan.selesai-sesi');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
+    Route::post('/fisioterapi', [FisioterapiController::class, 'store'])->name('fisioterapi.store');
 
     Route::post('/ubah-status-anak', [AnakController::class, 'ubahStatus'])->name('anak.status');
     Route::post('/ubah-status-terapis', [TerapisController::class, 'ubahStatus'])->name('terapis.status');

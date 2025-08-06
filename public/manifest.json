@@ -11,13 +11,8 @@
         "sizes": "192x192",
         "type": "image/png",
         "purpose": "any maskable"
-      },
-      {
-        "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
-        "sizes": "512x512",
-        "type": "image/png",
-        "purpose": "any maskable"
       }
+
     ],
     "name": "Bright Star Of Child",
     "short_name": "Bright",

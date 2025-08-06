@@ -144,9 +144,9 @@ class KunjunganController extends Controller
     }
     public function riwayatAnak()
     {
-        $kunjungan = Kunjungan::whereNull('catatan')
+        $kunjungan = Kunjungan::whereNotNull('pertemuan')->whereNull('catatan')
             ->latest()
-            ->paginate(5);
+            ->paginate(10);
 
         $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
         $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
@@ -177,6 +177,8 @@ class KunjunganController extends Controller
     public function search_kunjungan(Request $request)
     {
         $query = Kunjungan::with(['anak', 'terapis', 'tarif'])
+            ->whereNotNull('pertemuan')
+            ->whereNull('catatan')
             ->orderBy('created_at', 'desc');
 
         // Filter berdasarkan range tanggal jika ada

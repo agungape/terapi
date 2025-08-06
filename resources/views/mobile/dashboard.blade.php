@@ -9,7 +9,7 @@
                         <div class="media-35 m-r10">
 
                             <img class="rounded-xl"
-                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/1.png') }}"
+                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/avatar.png') }}"
                                 alt="">
                         </div>
                         <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="right-content">
                                     <div class="dz-media">
-                                        <img src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}"
+                                        <img src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/default.png') }}"
                                             alt="">
                                     </div>
                                     {{-- <h2 class="dz-text" data-text="BRIGHT">BRIGHT</h2> --}}

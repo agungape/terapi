@@ -24,7 +24,7 @@
             <div class="container p-0">
                 <div class="dz-card list list-style-3">
                     <div class="dz-media">
-                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/small/2.png') }}"
+                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/small.png') }}"
                             alt="">
                     </div>
                     <div class="dz-content">

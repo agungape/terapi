@@ -1,7 +1,7 @@
 <div class="sidebar">
     <a href="profile.html" class="author-box">
         <div class="dz-media">
-            <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/avatar/small/2.png') }}"
+            <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/small.png') }}"
                 alt="author-image">
         </div>
         <div class="dz-info">

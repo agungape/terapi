@@ -68,7 +68,7 @@
                                                     <div class="dz-card list list-style-3">
                                                         <div class="dz-media media-75">
                                                             <img
-                                                                src="{{ $kunjungan->anak->foto ? asset('storage/anak/' . $kunjungan->anak->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}">
+                                                                src="{{ $kunjungan->anak->foto ? asset('storage/anak/' . $kunjungan->anak->foto) : asset('assets/mobile/pixio/images/foto-anak/default.png') }}">
                                                         </div>
                                                         <div class="dz-content d-flex flex-column">
                                                             <h6 class="title">

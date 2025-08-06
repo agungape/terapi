@@ -251,7 +251,7 @@
                                             </div>
                                             <div class="dz-price m-r60">
                                                 <h6 class="dz-name">Pertemuan:</h6>
-                                                <span class="badge badge-sm badge-warning">20x</span>
+                                                <span class="badge badge-sm badge-warning">-</span>
                                             </div>
                                         </div>
                                         <div class="description">

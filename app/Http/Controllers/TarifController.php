@@ -100,17 +100,14 @@ class TarifController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tarif $tarif)
-    {
-        //
-    }
+    public function show(Tarif $tarif) {}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Tarif $tarif)
     {
-        //
+        return view('tarif.edit', compact('tarif'));
     }
 
     /**
@@ -118,7 +115,16 @@ class TarifController extends Controller
      */
     public function update(Request $request, Tarif $tarif)
     {
-        //
+        $validateData = $request->validate([
+            'nama' => 'required',
+            'deskripsi' => 'nullable',
+            'tarif' => 'required',
+        ]);
+
+        $tarif->update($validateData);
+        Alert::success('Berhasil', "Paket Terapi telah di update");
+        // Trik agar halaman kembali ke halaman asal
+        return redirect("/tarif");
     }
 
     /**

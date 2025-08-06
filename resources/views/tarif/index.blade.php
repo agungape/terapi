@@ -104,16 +104,20 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    <a href="{{ route('tarif.edit', ['tarif' => $t->id]) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fa fa-edit"></i> Edit Data</a>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                         <form action="{{ route('tarif.destroy', ['tarif' => $t->id]) }}"
                                                             method="POST">
                                                             @csrf @method('DELETE')
                                                             <button type="submit" class="btn btn-danger btn-sm btn-hapus"
                                                                 title="Hapus Data" data-name="{{ $t->nama }}"
-                                                                data-table="tarif">
+                                                                data-table="tarif"><i class="fa fa-trash"></i>
                                                                 Hapus Data
                                                             </button>
                                                         </form>
+
                                                     </div>
                                                 </td>
                                             </tr>

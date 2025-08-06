@@ -31,7 +31,8 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
     <!-- Favicons Icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
+    <link rel="shortcut icon" type="image/x-icon"
+        href="{{ asset('assets') }}/mobile/pixio/images/app-logo/favicon-bsc.png">
 
     <!-- PWA Version -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">

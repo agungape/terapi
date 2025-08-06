@@ -7,8 +7,8 @@
     "scope": "/",
     "icons": [
       {
-        "src": "/assets/mobile/pixio/images/app-logo/bsc.png",
-        "sizes": "192x192",
+        "src": "/assets/mobile/pixio/images/app-logo/bsc150x150.png",
+        "sizes": "150x150",
         "type": "image/png",
         "purpose": "any maskable"
       }

@@ -310,7 +310,7 @@
 
                 // Isi data ke dalam modal
                 $('.product-name').text(name);
-                $('.product-description').text(description);
+                $('.product-description').html(description.replace(/\n/g, '<br>'));
                 $('.product-tarif').text('Rp ' + tarif);
                 $('.product-image').attr('src', image);
 

@@ -35,6 +35,13 @@
 
     <!-- PWA Version -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#E0F7FA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bright">
+    <link rel="apple-touch-icon" href="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
+    <meta name="msapplication-TileImage" content="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png">
+    <meta name="msapplication-TileColor" content="#E0F7FA">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets') }}/mobile/pixio/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"

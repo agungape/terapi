@@ -90,99 +90,76 @@ class MobileController extends Controller
         $namaUser = $user->name;
         $anak = Anak::where('nama', $namaUser)->first();
 
-        $kunjungan = Kunjungan::where('anak_id', $anak->id)->latest()->first();
-        $season = $kunjungan->sesi ?? 'Tidak Ada';
-        // $totalPertemuan = 20;
-        // $pertemuanAwal = Kunjungan::where('anak_id', $anak->id)->where('pertemuan', 1)
-        //     ->orderBy('created_at', 'desc')
-        //     ->first();
+        $kunjungan_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
+            ->whereNotNull('pertemuan')
+            ->whereNull('catatan')
+            ->where('jenis_terapi', 'terapi_perilaku')
+            ->latest()
+            ->first();
+        $season_perilaku = $kunjungan_terapi_perilaku->sesi ?? 'Tidak Ada';
 
-        // if ($pertemuanAwal) {
-        //     // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
-        //     $hadir = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('id', '>=', $pertemuanAwal->id)
-        //         ->where('status', 'hadir') // Ambil data setelah pertemuan 20 terakhir
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->count();
-        //     $izin = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('id', '>=', $pertemuanAwal->id)
-        //         ->where('status', 'izin') // Ambil data setelah pertemuan 20 terakhir
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->count();
-        //     $absen = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('id', '>=', $pertemuanAwal->id)
-        //         ->where('status', 'sakit') // Ambil data setelah pertemuan 20 terakhir
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->count();
-        //     $sisa = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('id', '>=', $pertemuanAwal->id)  // Ambil data setelah pertemuan 20 terakhir
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->get();
+        $kunjungan_fisioterapi = Kunjungan::where('anak_id', $anak->id)
+            ->whereNotNull('pertemuan')
+            ->whereNull('catatan')
+            ->where('jenis_terapi', 'fisioterapi')
+            ->latest()
+            ->first();
+        $season_fisioterapi = $kunjungan_fisioterapi->sesi ?? 'Tidak Ada';
 
-        //     $pertemuanSekarang = $sisa->max('pertemuan') ?? 1;
 
-        //     // Jika tidak ada data, asumsikan pertemuan pertama
-        // } else {
-        //     $hadir = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('status', 'hadir')
-        //         ->orderBy('pertemuan')->count();
-        //     $izin = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('status', 'izin')
-        //         ->orderBy('pertemuan')->count();
-        //     $absen = Kunjungan::where('anak_id', $anak->id)
-        //         ->where('status', 'sakit')
-        //         ->orderBy('pertemuan')->count();
-        //     $kunjungan = Kunjungan::where('anak_id', $anak->id)
-        //         ->orderBy('pertemuan', 'asc')
-        //         ->get();
-
-        //     $pertemuanSekarang = $kunjungan->max('pertemuan') ?? 1;
-        // }
-
-        // $sisaPertemuan = max(0, $totalPertemuan - $pertemuanSekarang);
-        // $progress = ($pertemuanSekarang / $totalPertemuan) * 100;
-
-        if (!$kunjungan || !$kunjungan->sesi) {
+        if (!$kunjungan_terapi_perilaku || !$kunjungan_terapi_perilaku->sesi) {
             // Berikan nilai default jika sesi tidak ada
             $hadir_terapi_perilaku = 0;
             $izin_terapi_perilaku = 0;
             $izin_hangus_terapi_perilaku = 0;
-            $hadir_fisioterapi = 0;
-            $izin_fisioterapi = 0;
-            $izin_hangus_fisioterapi = 0;
         } else {
             $hadir_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_terapi_perilaku->sesi)
                 ->where('jenis_terapi', 'terapi_perilaku')
                 ->whereNull('catatan')
                 ->where('status', 'hadir')
                 ->count();
             $izin_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_terapi_perilaku->sesi)
+                ->where('jenis_terapi', 'terapi_perilaku')
+                ->whereNull('catatan')
                 ->where('status', 'izin')
                 ->count();
             $izin_hangus_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_terapi_perilaku->sesi)
+                ->where('jenis_terapi', 'terapi_perilaku')
+                ->whereNull('catatan')
                 ->where('status', 'sakit')
                 ->count();
+        }
 
+        if (!$kunjungan_fisioterapi || !$kunjungan_fisioterapi->sesi) {
+            // Berikan nilai default jika sesi tidak ada
+            $hadir_fisioterapi = 0;
+            $izin_fisioterapi = 0;
+            $izin_hangus_fisioterapi = 0;
+        } else {
             $hadir_fisioterapi = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_fisioterapi->sesi)
                 ->where('jenis_terapi', 'fisioterapi')
                 ->whereNull('catatan')
                 ->where('status', 'hadir')
                 ->count();
             $izin_fisioterapi = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_fisioterapi->sesi)
+                ->where('jenis_terapi', 'fisioterapi')
+                ->whereNull('catatan')
                 ->where('status', 'izin')
                 ->count();
             $izin_hangus_fisioterapi = Kunjungan::where('anak_id', $anak->id)
-                ->where('sesi', $kunjungan->sesi)
+                ->where('sesi', $kunjungan_fisioterapi->sesi)
+                ->where('jenis_terapi', 'fisioterapi')
+                ->whereNull('catatan')
                 ->where('status', 'sakit')
                 ->count();
         }
 
-        return view('mobile.profile', compact('anak', 'hadir_terapi_perilaku', 'izin_terapi_perilaku', 'izin_hangus_terapi_perilaku', 'hadir_fisioterapi', 'izin_fisioterapi', 'izin_hangus_fisioterapi', 'season'));
+        return view('mobile.profile', compact('anak', 'hadir_terapi_perilaku', 'izin_terapi_perilaku', 'izin_hangus_terapi_perilaku', 'hadir_fisioterapi', 'izin_fisioterapi', 'izin_hangus_fisioterapi', 'season_perilaku', 'season_fisioterapi'));
     }
 
     public function profile_edit()

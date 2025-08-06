@@ -34,7 +34,8 @@
                             <li class="list-group-items">
                                 <label class="radio-label">
                                     <span class="checkmark">
-                                        <div class="dz-icon style-2 icon-fill"><i class="fi fi-rr-home font-20"></i></div>
+                                        <div class="dz-icon style-2 icon-fill"><i class="fi fi-rr-document font-20"></i>
+                                        </div>
                                         <div class="list-content">
                                             <h5 class="title">Riwayat Terapi Perilaku</h5>
                                         </div>
@@ -66,10 +67,6 @@
                                             <div class="accordion-body">
                                                 @foreach ($pertemuan as $kunjungan)
                                                     <div class="dz-card list list-style-3">
-                                                        <div class="dz-media media-75">
-                                                            <img
-                                                                src="{{ $kunjungan->anak->foto ? asset('storage/anak/' . $kunjungan->anak->foto) : asset('assets/mobile/pixio/images/foto-anak/default.png') }}">
-                                                        </div>
                                                         <div class="dz-content d-flex flex-column">
                                                             <h6 class="title">
                                                                 <a
@@ -91,8 +88,8 @@
                                                                 </div>
                                                                 <div class="dz-quantity">
                                                                     <a href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan->id]) }}"
-                                                                        class="btn btn-primary rounded-xl btn-xs font-13 mt-3">
-                                                                        <i class="fi fi-rr-eye"></i>
+                                                                        class="btn btn-primary btn-xs font-13 mt-3">
+                                                                        Lihat
                                                                     </a>
                                                                 </div>
                                                             @else
@@ -115,7 +112,7 @@
                             <li class="list-group-items">
                                 <label class="radio-label">
                                     <span class="checkmark">
-                                        <div class="dz-icon style-2 icon-fill"><i class="fi fi-rr-home font-20"></i></i>
+                                        <div class="dz-icon style-2 icon-fill"><i class="fi fi-rr-document font-20"></i></i>
                                         </div>
                                         <div class="list-content">
                                             <h5 class="title">Riwayat Fisioterapi & Sensori Integrasi</h5>
@@ -149,10 +146,6 @@
                                             <div class="accordion-body">
                                                 @foreach ($pertemuan_fisio as $kunjungan_fisioterapi)
                                                     <div class="dz-card list list-style-3">
-                                                        <div class="dz-media media-75">
-                                                            <img
-                                                                src="{{ $kunjungan_fisioterapi->anak->foto ? asset('storage/anak/' . $kunjungan_fisioterapi->anak->foto) : asset('assets/mobile/pixio/images/banner/pic1.png') }}">
-                                                        </div>
                                                         <div class="dz-content d-flex flex-column">
                                                             <h6 class="title">
                                                                 <a
@@ -174,8 +167,8 @@
                                                                 </div>
                                                                 <div class="dz-quantity">
                                                                     <a href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan_fisioterapi->id]) }}"
-                                                                        class="btn btn-primary rounded-xl btn-xs font-13 mt-3">
-                                                                        <i class="fi fi-rr-eye"></i>
+                                                                        class="btn btn-primary btn-xs font-13 mt-3">
+                                                                        Lihat
                                                                     </a>
                                                                 </div>
                                                             @else

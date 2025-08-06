@@ -20,7 +20,7 @@
                     <div class="col-12">
                         <div class="card text-center">
                             <div class="card-body row g-0">
-                                <h6>Absensi Season {{ $season }}</h6>
+                                <h6>Absensi Anak</h6>
                                 <table>
                                     <thead>
                                         <tr>

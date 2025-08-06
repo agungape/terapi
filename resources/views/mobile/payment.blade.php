@@ -112,7 +112,7 @@
                         <div class="media-35 m-r10">
 
                             <img class="rounded-xl"
-                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : aasset('assets/mobile/pixio/images/foto-anak/avatar.png') }}"
+                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/avatar.png') }}"
                                 alt="">
                         </div>
                         <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>

@@ -231,8 +231,9 @@ class KunjunganController extends Controller
         $hadir = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
         $izin = $query->clone()->whereNull('catatan')->where('status', 'izin')->count();
         $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();
+        $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
 
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'total'));
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total'));
     }
     /**
      * Show the form for editing the specified resource.

@@ -92,14 +92,22 @@ class KunjunganController extends Controller
             }
         }
 
+        $pertemuan = ($request->status == 'hadir' || $request->status == 'izin_hangus')
+            ? $nextPertemuan
+            : ($kunjungan_terakhir->pertemuan ?? 1);
+
+        $sesi = ($request->status == 'hadir' || $request->status == 'izin_hangus')
+            ? $nextSesi
+            : ($kunjungan_terakhir->sesi ?? 1);
+
         $data = [
             'anak_id' => $request->anak_id,
             'terapis_id' => $request->terapis_id,
             'jenis_terapi' => $request->jenis_terapi,
             'catatan' => $request->catatan,
             'status' => $request->status,
-            'pertemuan' => ($request->status == 'hadir' || $request->status == 'sakit') ? $nextPertemuan : $kunjungan_terakhir->pertemuan,
-            'sesi' => ($request->status == 'hadir' || $request->status == 'sakit') ? $nextSesi : $kunjungan_terakhir->sesi,
+            'pertemuan' => $pertemuan,
+            'sesi' => $sesi,
         ];
 
         $kunjungan = Kunjungan::create($data);
@@ -148,12 +156,22 @@ class KunjunganController extends Controller
             ->latest()
             ->paginate(10);
 
+        // Ambil daftar sesi yang sudah selesai (memiliki catatan 'Sesi selesai')
+        $completedSessions = Kunjungan::where('catatan', 'Sesi selesai')
+            ->select('anak_id', 'sesi', 'jenis_terapi')
+            ->get()
+            ->map(function ($item) {
+                return $item->anak_id . '-' . ($item->sesi - 1) . '-' . $item->jenis_terapi;
+            })
+            ->toArray();
+
+        // dd($completedSessions);
         $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
         $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
         $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
         $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
-
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'total'));
+        $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
 
     /**
@@ -170,7 +188,23 @@ class KunjunganController extends Controller
         $program_fisioterapi = Program::where('jenis', 'fisioterapi')->get();
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());
-        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi'));
+
+        $hasHigherSession = Kunjungan::where('anak_id', $kunjungan->anak_id)
+            ->where('jenis_terapi', $kunjungan->jenis_terapi)
+            ->where('sesi', '>', $kunjungan->sesi)
+            ->exists();
+
+        // Cek apakah sesi saat ini sudah selesai
+        $isCurrentSessionCompleted = Kunjungan::where('anak_id', $kunjungan->anak_id)
+            ->where('sesi', $kunjungan->sesi)
+            ->where('jenis_terapi', $kunjungan->jenis_terapi)
+            ->where('catatan', 'Sesi selesai')
+            ->exists();
+
+
+
+
+        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'hasHigherSession', 'isCurrentSessionCompleted'));
     }
 
 

@@ -274,8 +274,12 @@
                                                 <input type="radio" name="status" value="izin">
                                                 <i class="fas fa-envelope mr-1"></i> Izin
                                             </label>
-                                            <label class="btn btn-outline-danger rounded">
+                                            <label class="btn btn-outline-secondary rounded mr-2">
                                                 <input type="radio" name="status" value="sakit">
+                                                <i class="fas fa-procedures mr-1"></i> Sakit
+                                            </label>
+                                            <label class="btn btn-outline-danger rounded">
+                                                <input type="radio" name="status" value="izin_hangus">
                                                 <i class="fas fa-procedures mr-1"></i> Izin Hangus
                                             </label>
                                         </div>

@@ -234,7 +234,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
+                    <div class="col-12 col-sm-6 col-md-2">
                         <div class="info-box bg-gradient-warning shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
                             <div class="info-box-content">
@@ -243,12 +243,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
+                    <div class="col-12 col-sm-6 col-md-2">
                         <div class="info-box bg-gradient-danger shadow-sm">
-                            <span class="info-box-icon"><i class="fas fa-procedures"></i></span>
+                            <span class="info-box-icon"><i class="fas fa-times-circle"></i></span>
                             <div class="info-box-content">
-                                <span class="info-box-text">Izin Hangus Hari ini</span>
-                                <span class="info-box-number">{{ $sakit }}</span>
+                                <span class="info-box-text">Izin Hangus Hari Ini</span>
+                                <span class="info-box-number">{{ $izin_hangus }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <div class="info-box bg-gradient-secondary shadow-sm">
+                            <span class="info-box-icon"><i class="fas fa-notes-medical"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Sakit Hari Ini</span>
+                                <span class="info-box-number"> {{ $sakit }}</span>
                             </div>
                         </div>
                     </div>
@@ -359,7 +368,12 @@
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
                                                                 {{ $kun->pertemuan }} / Season {{ $kun->sesi }}</span>
-                                                        @elseif ($kun->status == 'sakit')
+                                                            @if (in_array($kun->anak_id . '-' . $kun->sesi . '-' . $kun->jenis_terapi, $completedSessions))
+                                                                <span
+                                                                    class="badge badge-pill badge-success px-3 py-2 font-weight-normal ml-1">Season
+                                                                    Selesai</span>
+                                                            @endif
+                                                        @elseif ($kun->status == 'izin_hangus')
                                                             <span
                                                                 class="badge badge-pill badge-light px-3 py-2 font-weight-normal">Pertemuan
                                                                 {{ $kun->pertemuan }} / Season {{ $kun->sesi }}</span>
@@ -387,8 +401,12 @@
                                                                     class="fas fa-exclamation-circle mr-1"></i>{{ $kun->status }}
                                                             </span>
                                                         @elseif ($kun->status == 'sakit')
+                                                            <span class="badge badge-pill badge-secondary px-3 py-2">
+                                                                <i class="fas fa-notes-medical mr-1"></i>Sakit
+                                                            </span>
+                                                        @elseif ($kun->status == 'izin_hangus')
                                                             <span class="badge badge-pill badge-danger px-3 py-2">
-                                                                <i class="fas fa-times-circle mr-1"></i>Absen
+                                                                <i class="fas fa-times-circle mr-1"></i>Hangus
                                                             </span>
                                                         @endif
                                                     </td>

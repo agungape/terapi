@@ -41,19 +41,21 @@
                                     <p class="text-muted text-center">Perempuan</p>
                                 @endif
                                 <p class="text-muted text-center">{{ $kunjungan->usia }} Tahun</p>
-
                                 <div class="text-center">
+                                    @if (!$isCurrentSessionCompleted && !$hasHigherSession)
+                                        <form id="selesaiSesiForm" action="{{ route('kunjungan.selesai-sesi') }}"
+                                            method="POST">
+                                            @csrf
+                                            <input type="hidden" name="anak_id" value="{{ $kunjungan->anak->id }}">
+                                            <input type="hidden" name="jenis_terapi"
+                                                value="{{ $kunjungan->jenis_terapi }}">
 
-                                    <form id="selesaiSesiForm" action="{{ route('kunjungan.selesai-sesi') }}"
-                                        method="POST">
-                                        @csrf
-                                        <input type="hidden" name="anak_id" value="{{ $kunjungan->anak->id }}">
-                                        <input type="hidden" name="jenis_terapi" value="{{ $kunjungan->jenis_terapi }}">
-                                        <button type="submit" id="selesaiSesiBtn" class="btn btn-sm btn-success">Selesaikan
-                                            Season</button>
-                                    </form>
+                                            <button type="submit" id="selesaiSesiBtn"
+                                                class="btn btn-sm btn-success">Selesaikan
+                                                Season</button>
+                                        </form>
+                                    @endif
                                 </div>
-
                             </div>
                         </div>
 

@@ -226,6 +226,14 @@ class KunjunganController extends Controller
 
         $kunjungan = $query->paginate(10);
 
+        $completedSessions = Kunjungan::where('catatan', 'Sesi selesai')
+            ->select('anak_id', 'sesi', 'jenis_terapi')
+            ->get()
+            ->map(function ($item) {
+                return $item->anak_id . '-' . ($item->sesi - 1) . '-' . $item->jenis_terapi;
+            })
+            ->toArray();
+
         // Hitung statistik untuk card
         $total = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
         $hadir = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
@@ -233,7 +241,7 @@ class KunjunganController extends Controller
         $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();
         $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
 
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total'));
+        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
     /**
      * Show the form for editing the specified resource.

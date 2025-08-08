@@ -83,7 +83,7 @@
                                         <h6 class="title font-w600">Keterangan:</h6>
                                         <div class="dz-offer-coupon">
                                             <div class="offer-content">
-                                                <div style="white-space: pre-line;">
+                                                <div>
                                                     @foreach (explode("\n", $p->keterangan) as $paragraph)
                                                         <p style="margin-bottom: 1px;">
                                                             {{ $paragraph }}
@@ -113,29 +113,29 @@
                                     <h6>{{ $f->program->deskripsi }}</h6>
                                 </div>
                             </div>
-                            @if ($loop->last)
-                                <div class="item-wrapper">
-                                    <div class="description">
-                                        <h6 class="title font-w600">Aktivitas Terapi:</h6>
-                                        <div class="dz-offer-coupon">
-                                            <div class="offer-content">
-                                                <div style="white-space: pre-line;">
-                                                    @foreach (explode("\n", $f->aktivitas_terapi) as $paragraph)
-                                                        <p style="margin-bottom: 1px;">
-                                                            {{ $paragraph }}
-                                                        </p>
-                                                    @endforeach
-                                                </div>
+                            <div class="item-wrapper">
+                                <div class="description">
+                                    <h6 class="title font-w600">Aktivitas Terapi:</h6>
+                                    <div class="dz-offer-coupon">
+                                        <div class="offer-content">
+                                            <div>
+                                                @foreach (explode("\n", $f->aktivitas_terapi) as $paragraph)
+                                                    <p style="margin-bottom: 1px;">
+                                                        {{ $paragraph }}
+                                                    </p>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
-                                    @if ($f->respons_anak)
+                                </div>
+                                @if ($loop->last)
+                                    @if ($f->evaluasi)
                                         <div class="description">
                                             <h6 class="title font-w600">Respons Anak:</h6>
                                             <div class="dz-offer-coupon">
                                                 <div class="offer-content">
-                                                    <div style="white-space: pre-line;">
-                                                        @foreach (explode("\n", $f->respons_anak) as $paragraph)
+                                                    <div>
+                                                        @foreach (explode("\n", $f->evaluasi) as $paragraph)
                                                             <p style="margin-bottom: 1px;">
                                                                 {{ $paragraph }}
                                                             </p>
@@ -146,46 +146,13 @@
                                         </div>
                                     @endif
 
-                                    @if ($f->kemanjuan)
-                                        <div class="description">
-                                            <h6 class="title font-w600">Kemajuan:</h6>
-                                            <div class="dz-offer-coupon">
-                                                <div class="offer-content">
-                                                    <div style="white-space: pre-line;">
-                                                        @foreach (explode("\n", $f->kemajuan) as $paragraph)
-                                                            <p style="margin-bottom: 1px;">
-                                                                {{ $paragraph }}
-                                                            </p>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    @if ($f->kendala)
-                                        <div class="description">
-                                            <h6 class="title font-w600">Kendala:</h6>
-                                            <div class="dz-offer-coupon">
-                                                <div class="offer-content">
-                                                    <div style="white-space: pre-line;">
-                                                        @foreach (explode("\n", $f->kendala) as $paragraph)
-                                                            <p style="margin-bottom: 1px;">
-                                                                {{ $paragraph }}
-                                                            </p>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
 
                                     @if ($f->catatan_khusus)
                                         <div class="description">
                                             <h6 class="title font-w600">Catatan Khusus:</h6>
                                             <div class="dz-offer-coupon">
                                                 <div class="offer-content">
-                                                    <div style="white-space: pre-line;">
+                                                    <div>
                                                         @foreach (explode("\n", $f->catatan_khusus) as $paragraph)
                                                             <p style="margin-bottom: 1px;">
                                                                 {{ $paragraph }}
@@ -196,9 +163,9 @@
                                             </div>
                                         </div>
                                     @endif
+                                @endif
+                            </div>
 
-                                </div>
-                            @endif
                         @empty
                             <p class="text-center">data program terapi tidak ada</p>
                         @endforelse

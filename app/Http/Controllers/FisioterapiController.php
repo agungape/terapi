@@ -10,36 +10,33 @@ class FisioterapiController extends Controller
 {
     public function store(Request $request)
     {
+
         $cek = Fisioterapi::where('kunjungan_id', $request->kunjungan_id)->first();
         if (!$cek) {
             $validateData = $request->validate([
                 'kunjungan_id' => 'required|exists:App\Models\Kunjungan,id',
                 'program_id' => 'required|array',
-                'aktivitas_terapi' => 'required|string',
-                'respons_anak' => 'nullable|string',
-                'kemajuan' => 'nullable|string',
-                'kendala' => 'nullable|string',
+                'aktivitas_terapi' => 'required|array',
+                'evaluasi' => 'required|string',
                 'catatan_khusus' => 'nullable|string',
+
                 'program_id.*' => 'required|exists:App\Models\Program,id',
+                'aktivitas_terapi.*' => 'required',
             ]);
 
             // Ambil data dari input
             $kunjunganId = $request->input('kunjungan_id');
             $programId = $request->input('program_id');
             $aktivitas_terapi = $request->input('aktivitas_terapi');
-            $respons_anak = $request->input('respons_anak');
-            $kemajuan = $request->input('kemajuan');
-            $kendala = $request->input('kendala');
+            $evaluasi = $request->input('evaluasi');
             $catatan_khusus = $request->input('catatan_khusus');
 
-            foreach ($programId as $idProgram) {
+            foreach ($programId as $index => $idProgram) {
                 Fisioterapi::create([
                     'kunjungan_id' => $kunjunganId,
                     'program_id' => $idProgram,
-                    'aktivitas_terapi' => $aktivitas_terapi,
-                    'respons_anak' => $respons_anak,
-                    'kemajuan' => $kemajuan,
-                    'kendala' => $kendala,
+                    'aktivitas_terapi' => $aktivitas_terapi[$index],
+                    'evaluasi' => $evaluasi,
                     'catatan_khusus' => $catatan_khusus
                 ]);
             }

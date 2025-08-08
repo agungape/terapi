@@ -29,21 +29,21 @@
         <div class="form-group row"><label class="col-sm-3 col-form-label">Skala</label>
             <div class="col-sm-3">
                 <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary1" name="status[0]" value="dp">
+                    <input type="radio" id="radioPrimary1" name="status[0]" value="dp" required>
                     <label for="radioPrimary1"> DP
                     </label>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary2" name="status[0]" value="ds">
+                    <input type="radio" id="radioPrimary2" name="status[0]" value="ds" required>
                     <label for="radioPrimary2"> DS
                     </label>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary3" name="status[0]" value="tb">
+                    <input type="radio" id="radioPrimary3" name="status[0]" value="tb" required>
                     <label for="radioPrimary3"> TB
                     </label>
                 </div>
@@ -56,7 +56,7 @@
         <div class="form-group row">
             <div class="col-sm-12">
                 <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" autofocus
-                    placeholder="keterangan" rows="6"></textarea>
+                    placeholder="keterangan" rows="6" required></textarea>
             </div>
             @error('keterangan')
                 <span class="invalid-feedback" role="alert">

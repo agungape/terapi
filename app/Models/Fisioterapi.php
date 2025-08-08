@@ -14,9 +14,7 @@ class Fisioterapi extends Model
         'kunjungan_id',
         'program_id',
         'aktivitas_terapi',
-        'respons_anak',
-        'kemajuan',
-        'kendala',
+        'evaluasi',
         'catatan_khusus'
     ];
 

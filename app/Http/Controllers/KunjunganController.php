@@ -150,6 +150,7 @@ class KunjunganController extends Controller
 
         return back();
     }
+
     public function riwayatAnak()
     {
         $kunjungan = Kunjungan::whereNotNull('pertemuan')->whereNull('catatan')
@@ -174,9 +175,6 @@ class KunjunganController extends Controller
         return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Kunjungan $kunjungan)
     {
         // riwayat terapi_perilaku
@@ -200,9 +198,6 @@ class KunjunganController extends Controller
             ->where('jenis_terapi', $kunjungan->jenis_terapi)
             ->where('catatan', 'Sesi selesai')
             ->exists();
-
-
-
 
         return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'hasHigherSession', 'isCurrentSessionCompleted'));
     }

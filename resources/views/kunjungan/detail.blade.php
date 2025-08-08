@@ -246,9 +246,7 @@
                                                             <tr>
                                                                 <th class="text-center"> Program </th>
                                                                 <th class="text-center"> Aktivitas Terapi </th>
-                                                                <th class="text-center"> Respon Anak </th>
-                                                                <th class="text-center"> Kemajuan </th>
-                                                                <th class="text-center"> Kendala </th>
+                                                                <th class="text-center"> Evaluasi </th>
                                                                 <th class="text-center"> Catatan Khusus </th>
                                                             </tr>
                                                         </thead>
@@ -264,37 +262,18 @@
                                                                 <tr class="text-center">
                                                                     <td>{{ $fisio->program->deskripsi }}
                                                                     </td>
+                                                                    <td>
+                                                                        @foreach (explode("\n", $fisio->aktivitas_terapi) as $paragraph)
+                                                                            <p
+                                                                                style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                {{ $paragraph }}
+                                                                            </p>
+                                                                        @endforeach
+                                                                    </td>
                                                                     @if ($loop->first)
                                                                         <td rowspan="{{ $rows }}"
                                                                             style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->aktivitas_terapi) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->respons_anak) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->kemajuan) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->kendala) as $paragraph)
+                                                                            @foreach (explode("\n", $fisio->evaluasi) as $paragraph)
                                                                                 <p
                                                                                     style="margin-bottom: 1px; line-height: 1.5;">
                                                                                     {{ $paragraph }}
@@ -372,21 +351,21 @@
                         <div class="form-group row"><label class="col-sm-3 col-form-label">Skala</label>
                             <div class="col-sm-3">
                                 <div class="icheck-primary">
-                                    <input type="radio" id="radioPrimary1${formIndex}" name="status[${formIndex}]" value="dp">
+                                    <input type="radio" id="radioPrimary1${formIndex}" name="status[${formIndex}]" value="dp" required>
                                         <label for="radioPrimary1${formIndex}"> DP
                                         </label>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="icheck-primary">
-                                    <input type="radio" id="radioPrimary2${formIndex}" name="status[${formIndex}]" value="ds">
+                                    <input type="radio" id="radioPrimary2${formIndex}" name="status[${formIndex}]" value="ds" required>
                                         <label for="radioPrimary2${formIndex}"> DS
                                         </label>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="icheck-primary">
-                                    <input type="radio" id="radioPrimary3${formIndex}" name="status[${formIndex}]" value="tb">
+                                    <input type="radio" id="radioPrimary3${formIndex}" name="status[${formIndex}]" value="tb" required>
                                         <label for="radioPrimary3${formIndex}"> TB
                                         </label>
                                     </div>
@@ -418,7 +397,7 @@
                 <div class="container-form row col-md-12">
                     <div class="col-md-12">
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Program</label>
+                            <label class="col-sm-2 col-form-label">Program ${formIndex + 1}</label>
                             <div class="col-sm-6">
                                 <select class="form-control select2" style="width:100%" name="program_id[${formIndex}]">
                                     @foreach ($program_fisioterapi as $f)
@@ -427,6 +406,20 @@
                                 </select>
                             </div>
                             <div class="col-sm-4"> <button type="button" id="add-button-fisioterapi" class="btn btn-sm btn-danger remove-button"><i class="fa fa-minus"></i></button></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Aktivitas Terapi ${formIndex + 1}</label>
+                            <div class="col-sm-6">
+                                <textarea class="form-control @error('aktivitas_terapi[${formIndex}]') is-invalid @enderror" name="aktivitas_terapi[${formIndex}]" autofocus
+                                    placeholder="aktivitas_terapi" rows="3"></textarea>
+                                @error('aktivitas_terapi[${formIndex}]')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -25,13 +25,11 @@
                         class="fa fa-plus"></i></button></div>
         </div>
     </div>
-</div>
-<div class="row">
     <div class="col-md-12">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Aktivitas Terapi</label>
-            <div class="col-sm-10">
-                <textarea class="form-control @error('aktivitas_terapi') is-invalid @enderror" name="aktivitas_terapi" autofocus
+            <div class="col-sm-6">
+                <textarea class="form-control @error('aktivitas_terapi') is-invalid @enderror" name="aktivitas_terapi[0]" autofocus
                     placeholder="aktivitas_terapi" rows="3"></textarea>
                 @error('aktivitas_terapi')
                     <span class="invalid-feedback" role="alert">
@@ -42,43 +40,15 @@
 
         </div>
     </div>
+</div>
+<div class="row">
     <div class="col-md-12">
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Respon Anak</label>
+            <label class="col-sm-2 col-form-label">Evaluasi</label>
             <div class="col-sm-10">
-                <textarea class="form-control @error('respons_anak') is-invalid @enderror" name="respons_anak" autofocus
-                    placeholder="respons_anak" rows="3"></textarea>
-                @error('respons_anak')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            </div>
-
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Kemajuan</label>
-            <div class="col-sm-10">
-                <textarea class="form-control @error('kemajuan') is-invalid @enderror" name="kemajuan" autofocus placeholder="kemajuan"
+                <textarea class="form-control @error('evaluasi') is-invalid @enderror" name="evaluasi" autofocus placeholder="evaluasi"
                     rows="3"></textarea>
-                @error('kemajuan')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            </div>
-
-        </div>
-    </div>
-    <div class="col-md-12">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Kendala</label>
-            <div class="col-sm-10">
-                <textarea class="form-control @error('kendala') is-invalid @enderror" name="kendala" autofocus placeholder="kendala"
-                    rows="3"></textarea>
-                @error('kendala')
+                @error('evaluasi')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

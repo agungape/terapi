@@ -48,46 +48,28 @@ class LoginController extends Controller
         return 'username';
     }
 
-    public function logout(Request $request)
+    public function showLoginForm(Request $request)
     {
-        $user = auth()->user();
-        $roles = $user->getRoleNames();
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        if ($roles->contains('anak')) {
-            return redirect('/mobile'); // Redirect ke login admin
-        } else {
-            return redirect('/login'); // Redirect ke login anak
-        }
-
-        // Default redirect jika tidak ada user (fallback)
-        return redirect('/');
+        $request->session()->put('view', 'admin');
+        return view('auth.login');
     }
+
 
     protected function authenticated(Request $request, $user)
     {
-        // Ambil tampilan yang sedang digunakan dari session atau URL
         $view = $request->session()->get('view', 'admin');
 
-        // Jika pengguna login dari tampilan mobile (anak)
         if ($view === 'anak') {
             if (!$user->hasRole('anak')) {
-                // Jika bukan anak, logout dan kembali ke login mobile
                 Auth::logout();
-                // Alert::toast('', 'error');
-                return redirect()->route('mobile.login')->with('error', 'Anda tidak memiliki akses ke tampilan Mobile.');
+                return redirect()->route('mobile.login')
+                    ->with('error', 'Anda tidak memiliki akses ke tampilan Mobile.');
             }
             return redirect()->route('app');
         }
 
-        // Jika pengguna login dari tampilan admin
-        if ($view === 'admin' || $view === null) {
+        if ($view === 'admin') {
             if ($user->hasRole('anak')) {
-                // Jika anak mencoba login ke tampilan admin, logout dan kembali ke login admin
                 Auth::logout();
                 Alert::toast('Anda tidak memiliki akses ke tampilan Website.', 'error');
                 return redirect()->route('login');
@@ -95,7 +77,23 @@ class LoginController extends Controller
             return redirect(RouteServiceProvider::HOME);
         }
 
-        // Default redirect jika tidak ada tampilan yang sesuai
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = auth()->user();
+        $roles = $user ? $user->getRoleNames() : collect();
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        $request->session()->forget('view');
+
+        if ($roles->contains('anak')) {
+            return redirect('/mobile');
+        }
+        return redirect('/login');
     }
 }

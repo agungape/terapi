@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnakController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\FisioterapiController;
 use App\Http\Controllers\FrontendController;
@@ -57,13 +58,11 @@ Route::get('/therapists', [FrontendController::class, 'therapists']);
 
 Route::get('/barcode/scan', [ObservasiController::class, 'scanBarcode'])->name('barcode.scan');
 Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcode'])->name('barcode.scan');
+
+
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 
-
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 
 Auth::routes();

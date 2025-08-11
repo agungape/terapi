@@ -29,14 +29,11 @@ class MobileController extends Controller
      */
     public function index(Request $request)
     {
-
-        if ($request->is('mobile') || $request->is('mobile/*')) {
-            session(['view' => 'anak']);
-        } else {
-            session(['view' => 'admin']);
-        }
+        // Set view untuk login mobile
+        $request->session()->put('view', 'anak');
         return view('mobile.login');
     }
+
 
     public function app()
     {

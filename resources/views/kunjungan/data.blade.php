@@ -215,7 +215,7 @@
         <section class="content py-4">
             <div class="container-fluid">
                 <!-- Card statistik -->
-                <div class="row mb-4">
+                <div class="row">
                     <div class="col-12 col-sm-6 col-md-3">
                         <div class="info-box bg-gradient-info shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-child"></i></span>
@@ -225,6 +225,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row mb-4">
                     <div class="col-12 col-sm-6 col-md-3">
                         <div class="info-box bg-gradient-success shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-check-circle"></i></span>
@@ -234,7 +236,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-2">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <div class="info-box bg-gradient-warning shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-exclamation-circle"></i></span>
                             <div class="info-box-content">
@@ -243,7 +245,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-2">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <div class="info-box bg-gradient-danger shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-times-circle"></i></span>
                             <div class="info-box-content">
@@ -252,7 +254,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-6 col-md-2">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <div class="info-box bg-gradient-secondary shadow-sm">
                             <span class="info-box-icon"><i class="fas fa-notes-medical"></i></span>
                             <div class="info-box-content">

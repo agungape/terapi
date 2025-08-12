@@ -153,6 +153,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::post('/kunjungan/selesai-sesi', [KunjunganController::class, 'selesaiSesi'])->name('kunjungan.selesai-sesi');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
     Route::post('/fisioterapi', [FisioterapiController::class, 'store'])->name('fisioterapi.store');
+    Route::put('/data/{kunjungan}/tambah-terapis', [KunjunganController::class, 'tambahTerapis'])->name('kunjungan.tambah-terapis');
+    Route::put('/data/{kunjungan}/edit-status', [KunjunganController::class, 'updateStatus'])->name('kunjungan.update-status');
+    Route::put('/data/{kunjungan}/edit-terapis', [KunjunganController::class, 'updateTerapis'])->name('kunjungan.update-terapis');
 
     Route::post('/ubah-status-anak', [AnakController::class, 'ubahStatus'])->name('anak.status');
     Route::post('/ubah-status-terapis', [TerapisController::class, 'ubahStatus'])->name('terapis.status');

@@ -43,7 +43,11 @@
                         </ul>
                         <ul class="dz-meta gap-4">
                             <li class="dz-qty font-12"><small>Terapis:</small><span
-                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->terapis->nama }}</span>
+                                    class="dz-status text-primary d-inline-block">{{ $kunjungan->terapis->nama }}
+                                    @if ($kunjungan->terapis_id_pendamping)
+                                        - {{ $kunjungan->terapisPendamping->nama }}
+                                    @endif
+                                </span>
                             </li>
                         </ul>
                         <ul class="dz-meta gap-4">

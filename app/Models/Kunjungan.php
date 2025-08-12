@@ -13,7 +13,7 @@ class Kunjungan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'jenis_terapi', 'sesi'];
+    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'jenis_terapi', 'sesi', 'terapis_id_pendamping'];
 
     protected $dates = ['created_at', 'updated_at'];
 
@@ -25,6 +25,11 @@ class Kunjungan extends Model
     public function terapis(): BelongsTo
     {
         return $this->belongsTo('App\Models\Terapis');
+    }
+
+    public function terapisPendamping(): BelongsTo
+    {
+        return $this->belongsTo('App\Models\Terapis', 'terapis_id_pendamping');
     }
 
     public function pemeriksaans(): HasMany

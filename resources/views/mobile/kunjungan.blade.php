@@ -84,7 +84,9 @@
                                                                     </li>
                                                                 </ul>
                                                                 <div class="dz-quantity">Terapis :
-                                                                    {{ $kunjungan->terapis->nama ?? '-' }}
+                                                                    {{ $kunjungan->terapis->nama ?? '-' }} @if ($kunjungan->terapis_id_pendamping)
+                                                                        - {{ $kunjungan->terapisPendamping->nama }}
+                                                                    @endif
                                                                 </div>
                                                                 <div class="dz-quantity">
                                                                     <a href="{{ route('kunjunganmobile.detail', ['id' => $kunjungan->id]) }}"

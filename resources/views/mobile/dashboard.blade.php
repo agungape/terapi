@@ -133,7 +133,9 @@
                                             </li>
                                         </ul>
                                         @if ($k->status == 'hadir')
-                                            <div class="dz-quantity">Terapis : {{ $k->terapis->nama }}
+                                            <div class="dz-quantity">Terapis : {{ $k->terapis->nama }} @if ($k->terapis_id_pendamping)
+                                                    - {{ $k->terapisPendamping->nama }}
+                                                @endif
                                             </div>
                                         @else
                                             <div class="dz-quantity">Terapis : -

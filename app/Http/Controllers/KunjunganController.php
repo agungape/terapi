@@ -34,17 +34,10 @@ class KunjunganController extends Controller
         return view('kunjungan.index', compact('terapis', 'jenisTerapi'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Anak $anak)
     {
         return view('kunjungan.index', compact('anak'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
 
     public function store(Request $request): RedirectResponse
     {
@@ -153,6 +146,7 @@ class KunjunganController extends Controller
 
     public function riwayatAnak()
     {
+        $terapis = Terapis::where('status', 'aktif')->get();
         $kunjungan = Kunjungan::whereNotNull('pertemuan')->whereNull('catatan')
             ->latest()
             ->paginate(10);
@@ -172,7 +166,7 @@ class KunjunganController extends Controller
         $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
         $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
         $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
+        return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
 
     public function show(Kunjungan $kunjungan)
@@ -201,7 +195,6 @@ class KunjunganController extends Controller
 
         return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'hasHigherSession', 'isCurrentSessionCompleted'));
     }
-
 
     public function search_kunjungan(Request $request)
     {
@@ -238,29 +231,65 @@ class KunjunganController extends Controller
 
         return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Kunjungan $kunjungan)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Kunjungan $kunjungan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Kunjungan $kunjungan)
     {
         $kunjungan->delete();
         Alert::success('Berhasil', "kunjungan anak telah di hapus")->autoClose(4000);
+        return redirect()->back();
+    }
+
+    public function tambahTerapis(Request $request, Kunjungan $kunjungan)
+    {
+        $validated = $request->validate([
+            'terapis_id_pendamping' => 'required|exists:terapis,id',
+        ]);
+
+        // Pengecekan 1: Terapis pendamping tidak boleh sama dengan terapis utama
+        if ($validated['terapis_id_pendamping'] == $kunjungan->terapis_id) {
+            Alert::error('Gagal', 'Terapis pendamping tidak boleh sama dengan terapis utama')->autoClose(4000);
+            return redirect()->back();
+        }
+
+        // Pengecekan 2: Maksimal 2 terapis (1 utama + 1 pendamping)
+        if ($kunjungan->terapis_id_pendamping) {
+            Alert::error('Gagal', 'Maksimal hanya boleh ada 2 terapis (1 utama + 1 pendamping)')->autoClose(4000);
+            return redirect()->back();
+        }
+
+        // Update terapis pendamping
+        $kunjungan->update(['terapis_id_pendamping' => $validated['terapis_id_pendamping']]);
+
+        Alert::success('Berhasil', "Terapis pendamping berhasil ditambahkan")->autoClose(4000);
+        return redirect()->back();
+    }
+
+    public function updateStatus(Request $request, Kunjungan $kunjungan)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:hadir,izin,sakit,izin_hangus',
+        ]);
+
+        $kunjungan->update(['status' => $validated['status']]);
+
+        Alert::success('Berhasil', "Status telah di Perbaharui")->autoClose(4000);
+        return redirect()->back();
+    }
+
+    public function updateTerapis(Request $request, Kunjungan $kunjungan)
+    {
+        $validated = $request->validate([
+            'terapis_id' => 'required|exists:terapis,id',
+        ]);
+
+        $kunjungan->update(['terapis_id' => $validated['terapis_id']]);
+
+        Alert::success('Berhasil', "Terapis telah di Perbaharui")->autoClose(4000);
         return redirect()->back();
     }
 }

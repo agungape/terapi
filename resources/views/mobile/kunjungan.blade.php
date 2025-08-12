@@ -80,7 +80,7 @@
                                                                         {{ $kunjungan->pertemuan }}</li>
                                                                     <li class="dz-review">
                                                                         <i class="feather icon-star-on"></i>
-                                                                        <span>({{ $kunjungan->status == 'sakit' ? 'absen' : $kunjungan->status }})</span>
+                                                                        <span>({{ $kunjungan->status == 'izin_hangus' ? 'izin hangus' : $kunjungan->status }})</span>
                                                                     </li>
                                                                 </ul>
                                                                 <div class="dz-quantity">Terapis :
@@ -97,7 +97,7 @@
                                                             @else
                                                                 <ul class="dz-meta">
                                                                     <li class="dz-review">
-                                                                        <span>({{ $kunjungan->status == 'sakit' ? 'absen' : $kunjungan->status }})</span>
+                                                                        <span>({{ $kunjungan->status == 'izin_hangus' ? 'izin hangus' : $kunjungan->status }})</span>
                                                                     </li>
                                                                 </ul>
                                                             @endif
@@ -161,7 +161,7 @@
                                                                         {{ $kunjungan_fisioterapi->pertemuan }}</li>
                                                                     <li class="dz-review">
                                                                         <i class="feather icon-star-on"></i>
-                                                                        <span>({{ $kunjungan_fisioterapi->status == 'sakit' ? 'absen' : $kunjungan_fisioterapi->status }})</span>
+                                                                        <span>({{ $kunjungan_fisioterapi->status == 'izin_hangus' ? 'izin hangus' : $kunjungan_fisioterapi->status }})</span>
                                                                     </li>
                                                                 </ul>
                                                                 <div class="dz-quantity">Terapis :
@@ -176,7 +176,7 @@
                                                             @else
                                                                 <ul class="dz-meta">
                                                                     <li class="dz-review">
-                                                                        <span>({{ $kunjungan_fisioterapi->status == 'sakit' ? 'absen' : $kunjungan_fisioterapi->status }})</span>
+                                                                        <span>({{ $kunjungan_fisioterapi->status == 'izin_hangus' ? 'izin hangus' : $kunjungan_fisioterapi->status }})</span>
                                                                     </li>
                                                                 </ul>
                                                             @endif

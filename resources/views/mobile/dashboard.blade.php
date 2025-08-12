@@ -114,7 +114,7 @@
                                             <img
                                                 src=" {{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}">
                                         @else
-                                            <img src="{{ asset('assets') }}/mobile/pixio/images/product/product1/pic1.png"
+                                            <img src="{{ asset('assets/mobile/pixio/images/terapis-default.png') }}"
                                                 alt="">
                                         @endif
                                     </div>

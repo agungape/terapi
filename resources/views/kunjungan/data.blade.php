@@ -198,8 +198,8 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
-                        <h1 class="fw-bold"><i class="fas fa-notes-medical text-primary mr-2"></i>Rekam Medik Anak</h4>
-                            <p class="text-muted mt-2">Pencatatan dan pemantauan perkembangan pasien</p>
+                        <h1 class="fw-bold"><i class="fas fa-notes-medical text-primary mr-2"></i>Riwayat Terapi Anak</h4>
+                            <p class="text-muted mt-2">Pencatatan dan pemantauan perkembangan anak</p>
                     </div>
                     <div>
                         <ol class="breadcrumb bg-transparent mb-0 p-0">

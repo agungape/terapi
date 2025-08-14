@@ -333,9 +333,11 @@
                             <div class="col-sm-8">
                                 <input type="hidden" name="formterapis" value="tambahterapis">
                                 <select class="form-control @error('name') is-invalid @enderror select2"
-                                    style="width:100%" name="name">
+                                    style="width:100%" name="terapis">
                                     @forelse ($terapis as $t)
-                                        <option value="{{ $t->nama }}">{{ $t->nama }}
+                                        <option value="{{ $t->id }}"
+                                            {{ old('terapis') == $t->id ? 'selected' : '' }}>
+                                            {{ $t->nama }}
                                         </option>
                                     @empty
                                         <option>tidak ada data</option>

@@ -103,18 +103,30 @@ class UserController extends Controller
 
     public function store_terapis(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:users,name',
+        $validated = $request->validate([
+            'terapis' => [
+                'nullable',
+                'exists:terapis,id',
+                function ($attribute, $value, $fail) {
+                    if ($value && User::where('terapis_id', $value)->exists()) {
+                        $fail('Terapis ini sudah memiliki akun user.');
+                    }
+                }
+            ],
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'roles' => 'required',
         ]);
 
+        $terapis = Terapis::findOrFail($request->terapis);
+
+
         $hashedPassword = Hash::make($request->password);
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => $terapis->nama,
+            'terapis_id' => $terapis->id,
             'username' => $request->username,
             'email' => $request->email,
             'password' => $hashedPassword,

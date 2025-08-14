@@ -14,8 +14,10 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('assets') }}/images/faces-clipart/pic-2.png" class="img-circle elevation-2"
-                    alt="User Image">
+                <img src="{{ Auth::user()->terapis && Auth::user()->terapis->foto ? asset('storage/terapis/' . Auth::user()->terapis->foto) : asset('assets/images/faces-clipart/pic-2.png') }}"
+                    class="img-circle elevation-2" style="width: 40px; height: 40px; object-fit: cover;"
+                    alt="Foto Profil">
+
             </div>
             <div class="info">
                 <a href="#" class="d-block">{{ Auth::user()->name }}</a>
@@ -313,7 +315,7 @@
                                 <a href="/data" class="nav-link @yield('menuRekammedis')">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>
-                                        Rekam Medis Anak
+                                        Riwayat Terapi Anak
                                     </p>
                                 </a>
                             </li>

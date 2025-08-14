@@ -25,6 +25,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'terapis_id',
     ];
 
     /**
@@ -53,6 +54,6 @@ class User extends Authenticatable
 
     public function terapis()
     {
-        return $this->hasOne(Terapis::class);
+        return $this->belongsTo(Terapis::class);
     }
 }

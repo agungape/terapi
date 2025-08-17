@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnakController;
+use App\Http\Controllers\AnalisiskinerjaController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CareerController;
@@ -179,6 +180,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');
     Route::get('/delete-fototerapis/{id}', [TerapisController::class, 'deletefoto'])->name('delete.fototerapis');
+
+
+    Route::get('/analisis-kinerja', [AnalisiskinerjaController::class, 'analisis_kinerja'])->name('analisis.kinerja');
 
     // route assessment
     Route::resource('/assessment', AssessmentController::class);

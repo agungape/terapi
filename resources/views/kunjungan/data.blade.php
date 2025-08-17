@@ -205,7 +205,7 @@
                         <ol class="breadcrumb bg-transparent mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a>
                             </li>
-                            <li class="breadcrumb-item active">Rekam Medik</li>
+                            <li class="breadcrumb-item active">Riwayat Terapi</li>
                         </ol>
                     </div>
                 </div>

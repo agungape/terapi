@@ -413,6 +413,42 @@
                     </ul>
                 </li>
 
+                <li class="nav-item @yield('masterLaporan_analisis')">
+                    @canany(['view laporan kunjungan', 'view analisis kinerja'])
+                        <a href="#" class="nav-link @yield('menuLaporanAnalsis')">
+                            <i class="nav-icon fa fas fa-file-alt"></i>
+                            <p>
+                                Laporan & Analisis
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                    @endcanany
+                    <ul class="nav nav-treeview">
+                        @can('view laporan kunjungan')
+                            <li class="nav-item">
+                                <a href="/laporan-kunjungan" class="nav-link @yield('menuLaporanKunjungan')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Laporan Kunjungan
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('view analisis kinerja')
+                            <li class="nav-item">
+                                <a href="/analisis-kinerja" class="nav-link @yield('menuAnalisisKinerja')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>
+                                        Analisis Kinerja
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+
+
+
 
 
                 @can('view career')

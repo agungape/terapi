@@ -18,67 +18,61 @@ class AnalisiskinerjaController extends Controller
         ]);
 
         // Set default tanggal jika tidak ada input
-        $tanggalMulai = $request->tanggal_mulai
-            ? \Carbon\Carbon::parse($request->tanggal_mulai)->startOfDay()
-            : now()->startOfMonth();
+        $tanggalMulai = $request->tanggal_mulai ?? now()->startOfMonth()->format('Y-m-d');
+        $tanggalSelesai = $request->tanggal_selesai ?? now()->endOfMonth()->format('Y-m-d');
 
-        $tanggalSelesai = $request->tanggal_selesai
-            ? \Carbon\Carbon::parse($request->tanggal_selesai)->endOfDay()
-            : now()->endOfMonth();
-
-        // Query untuk mendapatkan jumlah anak unik per terapis dalam rentang tanggal dengan status hadir
-        $daftarTerapis = Terapis::withCount(['kunjungans as jumlah_anak' => function ($query) use ($tanggalMulai, $tanggalSelesai) {
-            $query->select(DB::raw('COUNT(DISTINCT anak_id)'))
-                ->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai])
-                ->where('status', 'hadir');
-        }])
-            ->orderBy('jumlah_anak', 'desc')
+        // Query utama untuk menghitung TOTAL KUNJUNGAN (bukan anak unik)
+        $daftarTerapis = Terapis::select([
+            'terapis.id',
+            'terapis.nama',
+            'terapis.role',
+            DB::raw('COUNT(kunjungans.id) as total_kunjungan') // Hitung semua kunjungan
+        ])
+            ->leftJoin('kunjungans', function ($join) use ($tanggalMulai, $tanggalSelesai) {
+                $join->on('terapis.id', '=', 'kunjungans.terapis_id')
+                    ->whereBetween('kunjungans.created_at', [$tanggalMulai, $tanggalSelesai])
+                    ->where('kunjungans.status', 'hadir');
+            })
+            ->groupBy('terapis.id', 'terapis.nama', 'terapis.role')
+            ->orderBy('total_kunjungan', 'desc')
             ->paginate(10);
 
         // Total terapis
         $totalTerapis = Terapis::count();
 
-        // Total anak unik dalam periode dengan status hadir
-        $totalAnak = Kunjungan::whereBetween('created_at', [$tanggalMulai, $tanggalSelesai . ' 23:59:59'])
-            ->where('status', 'hadir')
-            ->distinct('anak_id')
-            ->count('anak_id');
-
-        // Total sesi dalam periode dengan status hadir
-        $totalSesi = Kunjungan::whereBetween('created_at', [$tanggalMulai, $tanggalSelesai . ' 23:59:59'])
+        // Total kunjungan dalam periode (semua terapis)
+        $totalKunjungan = Kunjungan::whereBetween('created_at', [$tanggalMulai, $tanggalSelesai])
             ->where('status', 'hadir')
             ->count();
 
-        // Terapis dengan jumlah anak terbanyak (hitung hanya yang hadir)
+        // Terapis dengan kunjungan terbanyak
         $terapisTerbaik = Terapis::select([
             'terapis.id',
             'terapis.nama',
-            DB::raw('COUNT(DISTINCT kunjungans.anak_id) as jumlah_anak')
+            DB::raw('COUNT(kunjungans.id) as total_kunjungan')
         ])
             ->leftJoin('kunjungans', function ($join) use ($tanggalMulai, $tanggalSelesai) {
                 $join->on('terapis.id', '=', 'kunjungans.terapis_id')
-                    ->whereBetween('kunjungans.created_at', [$tanggalMulai, $tanggalSelesai . ' 23:59:59'])
+                    ->whereBetween('kunjungans.created_at', [$tanggalMulai, $tanggalSelesai])
                     ->where('kunjungans.status', 'hadir');
             })
             ->groupBy('terapis.id', 'terapis.nama')
-            ->orderBy('jumlah_anak', 'desc')
+            ->orderBy('total_kunjungan', 'desc')
             ->first();
 
-        // Data untuk chart (hanya yang hadir)
+        // Data untuk chart
         $namaTerapis = $daftarTerapis->pluck('nama');
-        $jumlahAnak = $daftarTerapis->pluck('jumlah_anak');
-
-        $maxAnak = $daftarTerapis->max('jumlah_anak') ?: 1;
+        $totalKunjunganPerTerapis = $daftarTerapis->pluck('total_kunjungan');
+        $maxKunjungan = $totalKunjunganPerTerapis->max() ?: 1; // Hindari division by zero
 
         return view('laporan-analisis.analisis-kinerja', compact(
             'daftarTerapis',
             'totalTerapis',
-            'totalAnak',
-            'totalSesi',
+            'totalKunjungan',
             'terapisTerbaik',
             'namaTerapis',
-            'jumlahAnak',
-            'maxAnak',
+            'totalKunjunganPerTerapis',
+            'maxKunjungan',
             'tanggalMulai',
             'tanggalSelesai'
         ));

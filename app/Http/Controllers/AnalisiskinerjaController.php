@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kunjungan;
 use App\Models\Terapis;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,8 +19,14 @@ class AnalisiskinerjaController extends Controller
         ]);
 
         // Set default tanggal jika tidak ada input
-        $tanggalMulai = $request->tanggal_mulai ?? now()->startOfMonth()->format('Y-m-d');
-        $tanggalSelesai = $request->tanggal_selesai ?? now()->endOfMonth()->format('Y-m-d');
+        // Parse tanggal dengan Carbon (termasuk waktu)
+        $tanggalMulai = $request->tanggal_mulai
+            ? Carbon::parse($request->tanggal_mulai)->startOfDay()
+            : now()->startOfMonth();
+
+        $tanggalSelesai = $request->tanggal_selesai
+            ? Carbon::parse($request->tanggal_selesai)->endOfDay()
+            : now()->endOfMonth();
 
         // Query utama untuk menghitung TOTAL KUNJUNGAN (bukan anak unik)
         $daftarTerapis = Terapis::select([
@@ -45,6 +52,8 @@ class AnalisiskinerjaController extends Controller
         // Total kunjungan dalam periode (semua terapis)
         $totalKunjungan = Kunjungan::whereBetween('created_at', [$tanggalMulai, $tanggalSelesai])
             ->where('status', 'hadir')
+            ->whereNotNull('pertemuan')
+            ->whereNull('catatan')
             ->count();
 
         // Terapis dengan kunjungan terbanyak

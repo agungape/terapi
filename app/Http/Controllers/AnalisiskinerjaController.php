@@ -69,6 +69,7 @@ class AnalisiskinerjaController extends Controller
         // Data untuk chart (hanya yang hadir)
         $namaTerapis = $daftarTerapis->pluck('nama');
         $jumlahAnak = $daftarTerapis->pluck('jumlah_anak');
+
         $maxAnak = $jumlahAnak->max() ?: 1;
 
         return view('laporan-analisis.analisis-kinerja', compact(

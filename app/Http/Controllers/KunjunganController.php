@@ -198,6 +198,7 @@ class KunjunganController extends Controller
 
     public function search_kunjungan(Request $request)
     {
+        $terapis = Terapis::where('status', 'aktif')->get();
         $query = Kunjungan::with(['anak', 'terapis', 'tarif'])
             ->whereNotNull('pertemuan')
             ->whereNull('catatan')
@@ -229,7 +230,7 @@ class KunjunganController extends Controller
         $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();
         $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
 
-        return view('kunjungan.data', compact('kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
+        return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
 
     public function edit(Kunjungan $kunjungan)

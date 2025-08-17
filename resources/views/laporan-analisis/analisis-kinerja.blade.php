@@ -178,11 +178,17 @@
                                                 <td>{{ $terapis->jumlah_anak }}</td>
                                                 <td>
                                                     <div class="progress progress-xs">
-                                                        <div class="progress-bar bg-{{ $terapis->jumlah_anak > 10 ? 'danger' : ($terapis->jumlah_anak > 5 ? 'warning' : 'success') }}"
+                                                        <div class="progress-bar
+                                                            @if ($terapis->jumlah_anak > $maxAnak * 0.7) bg-danger
+                                                            @elseif($terapis->jumlah_anak > $maxAnak * 0.4) bg-warning
+                                                            @else bg-success @endif"
                                                             style="width: {{ ($terapis->jumlah_anak / $maxAnak) * 100 }}%">
                                                         </div>
                                                     </div>
-                                                    <small>{{ round(($terapis->jumlah_anak / $maxAnak) * 100, 1) }}%</small>
+                                                    <small>
+                                                        {{ $terapis->jumlah_anak }} anak
+                                                        ({{ round(($terapis->jumlah_anak / $maxAnak) * 100, 1) }}%)
+                                                    </small>
                                                 </td>
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-info" title="Detail">

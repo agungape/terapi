@@ -178,14 +178,14 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $terapis->nama }}</td>
-                                                <td>{{ $terapis->spesialisasi }}</td>
+                                                <td>{{ $terapis->role }}</td>
                                                 <td>{{ $terapis->total_kunjungan }}</td>
                                                 <td>
                                                     <div class="progress progress-xs">
                                                         <div class="progress-bar
-                                                    @if ($terapis->total_kunjungan > $maxKunjungan * 0.7) bg-danger
+                                                    @if ($terapis->total_kunjungan > $maxKunjungan * 0.7) bg-success
                                                     @elseif($terapis->total_kunjungan > $maxKunjungan * 0.4) bg-warning
-                                                    @else bg-success @endif"
+                                                    @else bg-danger @endif"
                                                             style="width: {{ ($terapis->total_kunjungan / $maxKunjungan) * 100 }}%">
                                                         </div>
                                                     </div>

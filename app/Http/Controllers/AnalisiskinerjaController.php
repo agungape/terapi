@@ -31,7 +31,9 @@ class AnalisiskinerjaController extends Controller
             ->leftJoin('kunjungans', function ($join) use ($tanggalMulai, $tanggalSelesai) {
                 $join->on('terapis.id', '=', 'kunjungans.terapis_id')
                     ->whereBetween('kunjungans.created_at', [$tanggalMulai, $tanggalSelesai])
-                    ->where('kunjungans.status', 'hadir');
+                    ->where('kunjungans.status', 'hadir')
+                    ->whereNotNull('pertemuan')
+                    ->whereNull('catatan');
             })
             ->groupBy('terapis.id', 'terapis.nama', 'terapis.role')
             ->orderBy('total_kunjungan', 'desc')
@@ -54,7 +56,9 @@ class AnalisiskinerjaController extends Controller
             ->leftJoin('kunjungans', function ($join) use ($tanggalMulai, $tanggalSelesai) {
                 $join->on('terapis.id', '=', 'kunjungans.terapis_id')
                     ->whereBetween('kunjungans.created_at', [$tanggalMulai, $tanggalSelesai])
-                    ->where('kunjungans.status', 'hadir');
+                    ->where('kunjungans.status', 'hadir')
+                    ->whereNotNull('pertemuan')
+                    ->whereNull('catatan');
             })
             ->groupBy('terapis.id', 'terapis.nama')
             ->orderBy('total_kunjungan', 'desc')

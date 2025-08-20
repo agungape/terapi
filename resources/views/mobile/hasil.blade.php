@@ -133,7 +133,8 @@
 
                                                             @if ($a->persetujuan_psikolog == 1)
                                                                 <a href="{{ route('assessment.cetak', ['assessment' => $a->id]) }}"
-                                                                    class="file-link" title="Cetak" target="_blank">
+                                                                    class="file-link" title="Cetak" target="_blank"
+                                                                    onclick="return false;">
                                                                     assessment.pdf
                                                                 </a>
                                                             @endif

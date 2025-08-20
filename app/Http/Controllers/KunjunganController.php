@@ -50,19 +50,19 @@ class KunjunganController extends Controller
         ]);
 
         // Validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x terapi perilaku
-        if ($request->jenis_terapi == 'terapi_perilaku') {
-            $today = Carbon::today();
+        // if ($request->jenis_terapi == 'terapi_perilaku') {
+        //     $today = Carbon::today();
 
-            $cek = Kunjungan::where('anak_id', $request->anak_id)
-                ->where('jenis_terapi', $request->jenis_terapi)
-                ->whereDate('created_at', $today)
-                ->first();
+        //     $cek = Kunjungan::where('anak_id', $request->anak_id)
+        //         ->where('jenis_terapi', $request->jenis_terapi)
+        //         ->whereDate('created_at', $today)
+        //         ->first();
 
-            if ($cek) {
-                Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
-                return back();
-            }
-        }
+        //     if ($cek) {
+        //         Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
+        //         return back();
+        //     }
+        // }
 
         // Ambil data kunjungan terakhir untuk jenis terapi ini
         $kunjungan_terakhir = Kunjungan::where('anak_id', $request->anak_id)
@@ -181,19 +181,14 @@ class KunjunganController extends Controller
         $tanggal_lahir = Carbon::parse($kunjungan->anak->tanggal_lahir);
         $kunjungan->usia = $tanggal_lahir->diffInYears(Carbon::now());
 
-        $hasHigherSession = Kunjungan::where('anak_id', $kunjungan->anak_id)
-            ->where('jenis_terapi', $kunjungan->jenis_terapi)
-            ->where('sesi', '>', $kunjungan->sesi)
-            ->exists();
-
         // Cek apakah sesi saat ini sudah selesai
         $isCurrentSessionCompleted = Kunjungan::where('anak_id', $kunjungan->anak_id)
-            ->where('sesi', $kunjungan->sesi)
+            ->where('sesi', '>', $kunjungan->sesi)
             ->where('jenis_terapi', $kunjungan->jenis_terapi)
             ->where('catatan', 'Sesi selesai')
             ->exists();
 
-        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'hasHigherSession', 'isCurrentSessionCompleted'));
+        return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'isCurrentSessionCompleted'));
     }
 
     public function search_kunjungan(Request $request)

@@ -42,7 +42,7 @@
                                 @endif
                                 <p class="text-muted text-center">{{ $kunjungan->usia }} Tahun</p>
                                 <div class="text-center">
-                                    @if (!$isCurrentSessionCompleted && !$hasHigherSession)
+                                    @if ($isCurrentSessionCompleted == false)
                                         <form id="selesaiSesiForm" action="{{ route('kunjungan.selesai-sesi') }}"
                                             method="POST">
                                             @csrf

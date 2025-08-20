@@ -232,15 +232,16 @@ class MobileController extends Controller
             ->whereNull('catatan')
             ->where('jenis_terapi', 'terapi_perilaku')
             ->orderBy('sesi', 'desc')
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
+
 
         // Ambil semua kunjungan diurutkan berdasarkan sesi dan created_at
         $kunjungan_fisioterapi = Kunjungan::where('anak_id', $anak->id)
             ->whereNull('catatan')
             ->where('jenis_terapi', 'fisioterapi')
             ->orderBy('sesi', 'desc')
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Kelompokkan berdasarkan sesi
@@ -266,6 +267,7 @@ class MobileController extends Controller
         $kunjungan = Kunjungan::findOrFail($id);
         $pemeriksaan = Pemeriksaan::where('kunjungan_id', $kunjungan->id)->get();
         $fisioterapi = Fisioterapi::where('kunjungan_id', $kunjungan->id)->get();
+
         return view('mobile.kunjungandetail', compact('kunjungan', 'anak', 'pemeriksaan', 'fisioterapi'));
     }
 

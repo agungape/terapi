@@ -37,9 +37,9 @@
                                                     Hadir
                                                 </li>
                                             </td>
-                                            <td class="text-blue">
+                                            <td class="text-green">
                                                 {{ $hadir_terapi_perilaku }}
-                                            <td class="text-blue">
+                                            <td class="text-green">
                                                 {{ $hadir_fisioterapi }}
                                             </td>
 
@@ -55,6 +55,20 @@
                                                 {{ $izin_terapi_perilaku }}
                                             <td class="text-yellow">
                                                 {{ $izin_fisioterapi }}
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Sakit
+                                                </li>
+                                            </td>
+                                            <td class="text-blue">
+                                                {{ $sakit_terapi_perilaku }}
+                                            <td class="text-blue">
+                                                {{ $sakit_fisioterapi }}
                                             </td>
 
                                         </tr>

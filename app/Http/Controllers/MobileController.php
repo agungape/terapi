@@ -108,6 +108,7 @@ class MobileController extends Controller
             // Berikan nilai default jika sesi tidak ada
             $hadir_terapi_perilaku = 0;
             $izin_terapi_perilaku = 0;
+            $sakit_terapi_perilaku = 0;
             $izin_hangus_terapi_perilaku = 0;
         } else {
             $hadir_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
@@ -122,6 +123,12 @@ class MobileController extends Controller
                 ->whereNull('catatan')
                 ->where('status', 'izin')
                 ->count();
+            $sakit_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
+                ->where('sesi', $kunjungan_terapi_perilaku->sesi)
+                ->where('jenis_terapi', 'terapi_perilaku')
+                ->whereNull('catatan')
+                ->where('status', 'sakit')
+                ->count();
             $izin_hangus_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
                 ->where('sesi', $kunjungan_terapi_perilaku->sesi)
                 ->where('jenis_terapi', 'terapi_perilaku')
@@ -134,6 +141,7 @@ class MobileController extends Controller
             // Berikan nilai default jika sesi tidak ada
             $hadir_fisioterapi = 0;
             $izin_fisioterapi = 0;
+            $sakit_fisioterapi = 0;
             $izin_hangus_fisioterapi = 0;
         } else {
             $hadir_fisioterapi = Kunjungan::where('anak_id', $anak->id)
@@ -148,6 +156,12 @@ class MobileController extends Controller
                 ->whereNull('catatan')
                 ->where('status', 'izin')
                 ->count();
+            $sakit_fisioterapi = Kunjungan::where('anak_id', $anak->id)
+                ->where('sesi', $kunjungan_fisioterapi->sesi)
+                ->where('jenis_terapi', 'fisioterapi')
+                ->whereNull('catatan')
+                ->where('status', 'sakit')
+                ->count();
             $izin_hangus_fisioterapi = Kunjungan::where('anak_id', $anak->id)
                 ->where('sesi', $kunjungan_fisioterapi->sesi)
                 ->where('jenis_terapi', 'fisioterapi')
@@ -156,7 +170,7 @@ class MobileController extends Controller
                 ->count();
         }
 
-        return view('mobile.profile', compact('anak', 'hadir_terapi_perilaku', 'izin_terapi_perilaku', 'izin_hangus_terapi_perilaku', 'hadir_fisioterapi', 'izin_fisioterapi', 'izin_hangus_fisioterapi', 'season_perilaku', 'season_fisioterapi'));
+        return view('mobile.profile', compact('anak', 'hadir_terapi_perilaku', 'izin_terapi_perilaku', 'sakit_terapi_perilaku', 'izin_hangus_terapi_perilaku', 'hadir_fisioterapi', 'izin_fisioterapi', 'sakit_fisioterapi', 'izin_hangus_fisioterapi', 'season_perilaku', 'season_fisioterapi'));
     }
 
     public function profile_edit()

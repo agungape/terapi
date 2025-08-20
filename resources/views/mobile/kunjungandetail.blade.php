@@ -108,30 +108,33 @@
                         <div class="detail-content">
                             <h4 class="title">Program Fisioterapi & Sensori Integrasi</h4>
                         </div>
-                        @forelse ($fisioterapi as $f)
+
+                        {{-- @forelse ($fisioterapi as $f)
                             <div class="dz-offer-coupon">
                                 <div class="offer">
                                     <h6>{{ $loop->iteration }}</h6>
                                 </div>
                                 <div class="offer-content">
                                     <h6>{{ $f->program->deskripsi }}</h6>
-                                </div>
-                            </div>
-                            <div class="item-wrapper">
-                                <div class="description">
-                                    <h6 class="title font-w600">Aktivitas Terapi:</h6>
-                                    <div class="dz-offer-coupon">
-                                        <div class="offer-content">
-                                            <div>
+                                    <p>
+                                    <table border="1">
+                                        <tr>
+                                            <td>aktivitas terapi</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 @foreach (explode("\n", $f->aktivitas_terapi) as $paragraph)
                                                     <p style="margin-bottom: 1px;">
                                                         {{ $paragraph }}
                                                     </p>
                                                 @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    </p>
                                 </div>
+                            </div>
+                            <div class="item-wrapper">
                                 @if ($loop->last)
                                     @if ($f->evaluasi)
                                         <div class="description">
@@ -172,6 +175,74 @@
 
                         @empty
                             <p class="text-center">data program terapi tidak ada</p>
+                        @endforelse --}}
+
+                        @forelse ($fisioterapi as $f)
+                            <div class="accordion dz-accordion style-2" id="accordionFaq1">
+                                <div class="accordion-item wow fadeInUp" data-wow-delay="0.8s">
+                                    <h2 class="accordion-header" id="heading{{ $f->id }}">
+                                        <a href="javascript:void(0);" class="accordion-button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse{{ $f->id }}" aria-expanded="false"
+                                            aria-controls="collapse{{ $f->id }}">
+                                            {{ $f->program->deskripsi }}
+                                        </a>
+                                    </h2>
+                                    <div id="collapse{{ $f->id }}" class="accordion-collapse collapse show"
+                                        aria-labelledby="heading{{ $f->id }}" data-bs-parent="#accordionFaq1"
+                                        style="">
+                                        <div class="accordion-body">
+                                            @foreach (explode("\n", $f->aktivitas_terapi) as $paragraph)
+                                                <p class="m-b0" style="text-align: justify">
+                                                    {{ $paragraph }}
+                                                </p>
+                                            @endforeach
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="item-wrapper">
+                                @if ($loop->last)
+                                    @if ($f->evaluasi)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Respons Anak:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div>
+                                                        @foreach (explode("\n", $f->evaluasi) as $paragraph)
+                                                            <p style="margin-bottom: 1px; text-align:justify">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+
+                                    @if ($f->catatan_khusus)
+                                        <div class="description">
+                                            <h6 class="title font-w600">Catatan Khusus:</h6>
+                                            <div class="dz-offer-coupon">
+                                                <div class="offer-content">
+                                                    <div>
+                                                        @foreach (explode("\n", $f->catatan_khusus) as $paragraph)
+                                                            <p style="margin-bottom: 1px;">
+                                                                {{ $paragraph }}
+                                                            </p>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+
+                        @empty
+                            <p class="text-center">data program fisioterapi tidak ada</p>
                         @endforelse
                     </div>
                 @endif

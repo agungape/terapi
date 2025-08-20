@@ -278,7 +278,7 @@ class MobileController extends Controller
         $anak = Anak::where('nama', $namaUser)->first();
 
         // string (Pembayaran Anak) Wajib menggunakan SPASI
-        $pembayaran = Pemasukkan::where('deskripsi', 'Pembayaran Anak ' . $anak->nama)->get();
+        $pembayaran = Pemasukkan::where('deskripsi', 'Pembayaran Anak ' . $anak->nama)->latest()->get();
         return view('mobile.payment', compact('anak', 'pembayaran'));
     }
 

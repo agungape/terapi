@@ -31,7 +31,6 @@ class MobileController extends Controller
         return view('mobile.login');
     }
 
-
     public function app()
     {
         $user = auth()->user();

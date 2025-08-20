@@ -59,7 +59,7 @@
     <div class="sidebar-bottom">
         <div class="app-info">
             <h6 class="name font-w400"><b>Bright Star Of Child</b> </h6>
-            <span class="ver-info">App Version 1.0</span>
+            <span class="ver-info">App Version 1.01</span>
         </div>
     </div>
 </div>

@@ -65,6 +65,7 @@
                                                 <th>Username</th>
                                                 <th>Email</th>
                                                 <th>Last Login</th>
+                                                <th>Status</th>
                                                 <th>Role</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -77,6 +78,12 @@
                                                     <td>{{ $user->username }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>{{ $user->last_login_duration }}</td>
+                                                    <td>
+                                                        <span
+                                                            class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
+                                                        </span>
+                                                    </td>
                                                     <td>
                                                         @if (!empty($user->getRoleNames()))
                                                             @foreach ($user->getRoleNames() as $rolename)
@@ -112,6 +119,22 @@
                                                                     </button>
                                                                 </form>
                                                             @endcan
+
+                                                            @can('update status user')
+                                                                <form action="{{ route('users.update-status', $user->id) }}"
+                                                                    method="POST" class="d-inline m-1">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <input type="hidden" name="is_active"
+                                                                        value="{{ $user->is_active ? 0 : 1 }}">
+                                                                    <button type="submit"
+                                                                        class="btn btn-sm {{ $user->is_active ? 'btn-warning' : 'btn-success' }}">
+                                                                        {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                                    </button>
+                                                                </form>
+                                                            @endcan
+
+
                                                         </div>
                                                     </td>
                                                 </tr>

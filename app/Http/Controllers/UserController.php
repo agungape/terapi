@@ -20,6 +20,7 @@ class UserController extends Controller
         $this->middleware('permission:create user', ['only' => ['create', 'store']]);
         $this->middleware('permission:update user', ['only' => ['update', 'edit']]);
         $this->middleware('permission:delete user', ['only' => ['destroy']]);
+        $this->middleware('permission:update status user', ['only' => ['updateStatus']]);
     }
 
     public function index()
@@ -200,6 +201,18 @@ class UserController extends Controller
         $user->syncRoles($request->roles);
         Alert::toast('data user berhasil di perbarui', 'success')->timerProgressBar();
         return redirect('/users');
+    }
+
+    public function updateStatus(Request $request, User $user)
+    {
+        $request->validate([
+            'is_active' => 'required|boolean'
+        ]);
+
+        $user->update(['is_active' => $request->is_active]);
+
+        Alert::toast('status berhasil di perbarui', 'success')->timerProgressBar();
+        return redirect()->back();
     }
 
     public function destroy($user)

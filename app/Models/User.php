@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'terapis_id',
+        'is_active' // tambahkan ini
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'is_active' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
 

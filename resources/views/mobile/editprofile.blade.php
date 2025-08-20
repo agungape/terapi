@@ -69,7 +69,7 @@
                             <div class="avatar-preview">
                                 <div class="text-center">
                                     <img id="previewImage"
-                                        src="{{ asset($anak->foto ? 'storage/anak/' . $anak->foto : 'assets/images/faces/face1.jpg') }}"
+                                        src="{{ asset($anak->foto ? 'storage/anak/' . $anak->foto : 'assets/mobile/pixio/images/foto-anak/avatar.png') }}"
                                         class="rounded-circle img-thumbnail"
                                         style="width: 150px; height: 150px; object-fit: cover;">
                                 </div>

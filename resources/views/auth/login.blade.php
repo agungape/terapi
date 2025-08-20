@@ -27,6 +27,22 @@
                     <img src="{{ asset('assets') }}/images/bsc.png" class="img-fluid">
                 </div>
                 <p class="login-box-msg">{{ __('Masukkan Username & Password untuk Masuk') }}</p>
+
+                <!-- error jika status tidak aktif -->
+                @if (session('error'))
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Akses Ditolak',
+                                text: '{{ session('error') }}',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'Mengerti'
+                            });
+                        });
+                    </script>
+                @endif
+
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">

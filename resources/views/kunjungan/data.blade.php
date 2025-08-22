@@ -316,7 +316,6 @@
                                                 <tr class="align-middle">
                                                     <td>
                                                         @can('delete kunjungan')
-                                                        <td>
                                                             <form
                                                                 action="{{ route('kunjungan.destroy', ['kunjungan' => $kun->id]) }}"
                                                                 method="POST" class="d-inline">
@@ -328,185 +327,192 @@
                                                                     <i class="fa fa-trash fa-fw"></i>
                                                                 </button>
                                                             </form>
-                                                        </td>
-                                                    @endcan
-                                                    @can('edit kunjungan')
-                                                        <div class="input-group-prepend">
-                                                            <button type="button"
-                                                                class="btn btn-outline-warning dropdown-toggle"
-                                                                data-toggle="dropdown" aria-expanded="false">
-                                                                {{ $kun->anak->nib }}
-                                                            </button>
-                                                            <div class="dropdown-menu" style="">
-                                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                                    data-target="#tambahTerapisModal-{{ $kun->id }}">Tambah
-                                                                    Terapis</a>
-                                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                                    data-target="#editStatusModal-{{ $kun->id }}">Edit
-                                                                    Status</a>
-                                                                <a class="dropdown-item" href="#" data-toggle="modal"
-                                                                    data-target="#editTerapisModal-{{ $kun->id }}">Edit
-                                                                    Terapis</a>
+                                                        @endcan
+                                                        @can('edit kunjungan')
+                                                            <div class="input-group-prepend">
+                                                                <button type="button"
+                                                                    class="btn btn-outline-warning dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-expanded="false">
+                                                                    {{ $kun->anak->nib }}
+                                                                </button>
+                                                                <div class="dropdown-menu" style="">
+                                                                    <a class="dropdown-item" href="#"
+                                                                        data-toggle="modal"
+                                                                        data-target="#tambahTerapisModal-{{ $kun->id }}">Tambah
+                                                                        Terapis</a>
+                                                                    <a class="dropdown-item" href="#"
+                                                                        data-toggle="modal"
+                                                                        data-target="#editStatusModal-{{ $kun->id }}">Edit
+                                                                        Status</a>
+                                                                    <a class="dropdown-item" href="#"
+                                                                        data-toggle="modal"
+                                                                        data-target="#editTerapisModal-{{ $kun->id }}">Edit
+                                                                        Terapis</a>
+                                                                </div>
                                                             </div>
-                                                        </div>
 
-                                                        <!-- Modal Tambah Terapis -->
-                                                        <div class="modal fade" id="tambahTerapisModal-{{ $kun->id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="tambahTerapisModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <form
-                                                                        action="{{ route('kunjungan.tambah-terapis', $kun->id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('PUT')
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title"
-                                                                                id="tambahTerapisModalLabel">Tambah Terapis
-                                                                                untuk {{ $kun->anak->nama }}</h5>
-                                                                            <button type="button" class="close"
-                                                                                data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="form-group">
-                                                                                <label for="terapis_id">Pilih
-                                                                                    Terapis</label>
-                                                                                <select name="terapis_id_pendamping"
-                                                                                    id="terapis_id" class="form-control"
-                                                                                    required>
-                                                                                    @foreach ($terapis as $t)
-                                                                                        @if (
-                                                                                            ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
-                                                                                                ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
-                                                                                            @if ($kun->terapis_id != $t->id)
+                                                            <!-- Modal Tambah Terapis -->
+                                                            <div class="modal fade"
+                                                                id="tambahTerapisModal-{{ $kun->id }}" tabindex="-1"
+                                                                role="dialog" aria-labelledby="tambahTerapisModalLabel"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <form
+                                                                            action="{{ route('kunjungan.tambah-terapis', $kun->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @method('PUT')
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title"
+                                                                                    id="tambahTerapisModalLabel">Tambah Terapis
+                                                                                    untuk {{ $kun->anak->nama }}</h5>
+                                                                                <button type="button" class="close"
+                                                                                    data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="form-group">
+                                                                                    <label for="terapis_id">Pilih
+                                                                                        Terapis</label>
+                                                                                    <select name="terapis_id_pendamping"
+                                                                                        id="terapis_id" class="form-control"
+                                                                                        required>
+                                                                                        @foreach ($terapis as $t)
+                                                                                            @if (
+                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
+                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
+                                                                                                @if ($kun->terapis_id != $t->id)
+                                                                                                    <option
+                                                                                                        value="{{ $t->id }}"
+                                                                                                        {{ $kun->terapis_id_pendamping == $t->id ? 'selected' : '' }}>
+                                                                                                        {{ $t->nama }}
+                                                                                                        ({{ $t->role }})
+                                                                                                    </option>
+                                                                                                @endif
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-dismiss="modal">Batal</button>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary">Simpan</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Modal Edit Status -->
+                                                            <div class="modal fade" id="editStatusModal-{{ $kun->id }}"
+                                                                tabindex="-1" role="dialog"
+                                                                aria-labelledby="editStatusModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <form
+                                                                            action="{{ route('kunjungan.update-status', $kun->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @method('PUT')
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title"
+                                                                                    id="editStatusModalLabel">
+                                                                                    Edit Status
+                                                                                    Kunjungan {{ $kun->anak->nama }}</h5>
+                                                                                <button type="button" class="close"
+                                                                                    data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="form-group">
+                                                                                    <label for="status">Status</label>
+                                                                                    <select name="status" id="status"
+                                                                                        class="form-control" required>
+                                                                                        <option value="hadir"
+                                                                                            {{ $kun->status == 'hadir' ? 'selected' : '' }}>
+                                                                                            Hadir</option>
+                                                                                        <option value="izin"
+                                                                                            {{ $kun->status == 'izin' ? 'selected' : '' }}>
+                                                                                            Izin</option>
+                                                                                        <option value="sakit"
+                                                                                            {{ $kun->status == 'sakit' ? 'selected' : '' }}>
+                                                                                            Sakit</option>
+                                                                                        <option value="izin_hangus"
+                                                                                            {{ $kun->status == 'izin_hangus' ? 'selected' : '' }}>
+                                                                                            Izin Hangus</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-dismiss="modal">Batal</button>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary">Simpan</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Modal Edit Terapis -->
+                                                            <div class="modal fade" id="editTerapisModal-{{ $kun->id }}"
+                                                                tabindex="-1" role="dialog"
+                                                                aria-labelledby="editTerapisModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <form
+                                                                            action="{{ route('kunjungan.update-terapis', $kun->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @method('PUT')
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title"
+                                                                                    id="editTerapisModalLabel">Edit Terapis
+                                                                                    untuk {{ $kun->anak->nama }}</h5>
+                                                                                <button type="button" class="close"
+                                                                                    data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="form-group">
+                                                                                    <label for="terapis_id">Terapis</label>
+                                                                                    <select name="terapis_id" id="terapis_id"
+                                                                                        class="form-control" required>
+                                                                                        @foreach ($terapis as $t)
+                                                                                            @if (
+                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
+                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
                                                                                                 <option
                                                                                                     value="{{ $t->id }}"
-                                                                                                    {{ $kun->terapis_id_pendamping == $t->id ? 'selected' : '' }}>
+                                                                                                    {{ $kun->terapis_id == $t->id ? 'selected' : '' }}>
                                                                                                     {{ $t->nama }}
                                                                                                     ({{ $t->role }})
                                                                                                 </option>
                                                                                             @endif
-                                                                                        @endif
-                                                                                    @endforeach
-                                                                                </select>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Batal</button>
-                                                                            <button type="submit"
-                                                                                class="btn btn-primary">Simpan</button>
-                                                                        </div>
-                                                                    </form>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-dismiss="modal">Batal</button>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-primary">Simpan</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-
-                                                        <!-- Modal Edit Status -->
-                                                        <div class="modal fade" id="editStatusModal-{{ $kun->id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="editStatusModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <form
-                                                                        action="{{ route('kunjungan.update-status', $kun->id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('PUT')
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title" id="editStatusModalLabel">
-                                                                                Edit Status
-                                                                                Kunjungan {{ $kun->anak->nama }}</h5>
-                                                                            <button type="button" class="close"
-                                                                                data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="form-group">
-                                                                                <label for="status">Status</label>
-                                                                                <select name="status" id="status"
-                                                                                    class="form-control" required>
-                                                                                    <option value="hadir"
-                                                                                        {{ $kun->status == 'hadir' ? 'selected' : '' }}>
-                                                                                        Hadir</option>
-                                                                                    <option value="izin"
-                                                                                        {{ $kun->status == 'izin' ? 'selected' : '' }}>
-                                                                                        Izin</option>
-                                                                                    <option value="sakit"
-                                                                                        {{ $kun->status == 'sakit' ? 'selected' : '' }}>
-                                                                                        Sakit</option>
-                                                                                    <option value="izin_hangus"
-                                                                                        {{ $kun->status == 'izin_hangus' ? 'selected' : '' }}>
-                                                                                        Izin Hangus</option>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Batal</button>
-                                                                            <button type="submit"
-                                                                                class="btn btn-primary">Simpan</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Modal Edit Terapis -->
-                                                        <div class="modal fade" id="editTerapisModal-{{ $kun->id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="editTerapisModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <form
-                                                                        action="{{ route('kunjungan.update-terapis', $kun->id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        @method('PUT')
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title"
-                                                                                id="editTerapisModalLabel">Edit Terapis
-                                                                                untuk {{ $kun->anak->nama }}</h5>
-                                                                            <button type="button" class="close"
-                                                                                data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="form-group">
-                                                                                <label for="terapis_id">Terapis</label>
-                                                                                <select name="terapis_id" id="terapis_id"
-                                                                                    class="form-control" required>
-                                                                                    @foreach ($terapis as $t)
-                                                                                        @if (
-                                                                                            ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
-                                                                                                ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
-                                                                                            <option
-                                                                                                value="{{ $t->id }}"
-                                                                                                {{ $kun->terapis_id == $t->id ? 'selected' : '' }}>
-                                                                                                {{ $t->nama }}
-                                                                                                ({{ $t->role }})
-                                                                                            </option>
-                                                                                        @endif
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                data-dismiss="modal">Batal</button>
-                                                                            <button type="submit"
-                                                                                class="btn btn-primary">Simpan</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endcan
+                                                        @endcan
                                                     </td>
                                                     <td>
                                                         <div class="d-flex align-items-center">

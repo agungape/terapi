@@ -50,19 +50,19 @@ class KunjunganController extends Controller
         ]);
 
         // Validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x terapi perilaku
-        // if ($request->jenis_terapi == 'terapi_perilaku') {
-        //     $today = Carbon::today();
+        if ($request->jenis_terapi == 'terapi_perilaku') {
+            $today = Carbon::today();
 
-        //     $cek = Kunjungan::where('anak_id', $request->anak_id)
-        //         ->where('jenis_terapi', $request->jenis_terapi)
-        //         ->whereDate('created_at', $today)
-        //         ->first();
+            $cek = Kunjungan::where('anak_id', $request->anak_id)
+                ->where('jenis_terapi', $request->jenis_terapi)
+                ->whereDate('created_at', $today)
+                ->first();
 
-        //     if ($cek) {
-        //         Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
-        //         return back();
-        //     }
-        // }
+            if ($cek) {
+                Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
+                return back();
+            }
+        }
 
         // Ambil data kunjungan terakhir untuk jenis terapi ini
         $kunjungan_terakhir = Kunjungan::where('anak_id', $request->anak_id)

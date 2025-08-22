@@ -315,7 +315,7 @@
                                             @foreach ($kunjungan as $kun)
                                                 <tr class="align-middle">
 
-                                                    {{-- @can('delete kunjungan')
+                                                    @can('delete kunjungan')
                                                         <td>
                                                             <form
                                                                 action="{{ route('kunjungan.destroy', ['kunjungan' => $kun->id]) }}"
@@ -329,7 +329,7 @@
                                                                 </button>
                                                             </form>
                                                         </td>
-                                                    @endcan --}}
+                                                    @endcan
                                                     @can('edit kunjungan')
                                                         <td>
                                                             <div class="input-group-prepend">
@@ -555,6 +555,7 @@
                                                             <span class="text-muted">-</span>
                                                         @endif
                                                     </td>
+
                                                     <td>
                                                         @if ($kun->status == 'hadir')
                                                             <span

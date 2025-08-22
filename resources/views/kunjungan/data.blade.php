@@ -300,9 +300,8 @@
                                     <table class="table table-hover">
                                         <thead class="bg-light">
                                             <tr>
-                                                @can('delete kunjungan')
-                                                    <th class="py-3">#</th>
-                                                @endcan
+
+                                                <th class="py-3">#</th>
                                                 <th class="py-3">Nama</th>
                                                 <th class="py-3">Terapis</th>
                                                 <th class="py-3">Pertemuan</th>

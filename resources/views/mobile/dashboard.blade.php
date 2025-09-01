@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            @if (in_array($sisaPertemuan, [4, 3, 2, 1]))
+            {{-- @if (in_array($sisaPertemuan, [4, 3, 2, 1]))
                 <div class="dz-category style-2">
                     <div class="alert alert-info solid alert-dismissible fade show">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
@@ -82,7 +82,7 @@
                                 target="_blank">085123238404</a></strong> untuk melanjutkan sesi
                     </div>
                 </div>
-            @endif
+            @endif --}}
             {{-- @if ($informasi)
                 <div class="dz-category style-2">
                     <div class="alert alert-info solid alert-dismissible fade show">
@@ -170,10 +170,10 @@
                                     </div>
                                     <div class="dz-content">
                                         <span style=" padding-bottom: 10px;">{{ $t->nama }}</span>
-                                        <button type="button" class="btn btn-info rounded-xl w-100"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModalLong"
-                                            data-id="{{ $t->id }}" data-name="{{ $t->nama }}"
-                                            data-description="{{ $t->deskripsi }}" data-tarif="{{ $t->tarif }}"
+                                        <button type="button" class="btn btn-info rounded-xl w-100" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModalLong" data-id="{{ $t->id }}"
+                                            data-name="{{ $t->nama }}" data-description="{{ $t->deskripsi }}"
+                                            data-tarif="{{ $t->tarif }}"
                                             data-image="{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}">
                                             Selengkapnya
                                         </button>

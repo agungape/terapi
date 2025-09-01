@@ -28,8 +28,8 @@
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle"
-                                        src="{{ asset('assets') }}/adminlte/dist/img/user4-128x128.jpg"
+                                    <img class="profile-user-img img-circle fixed-size"
+                                        src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}"
                                         alt="User profile picture">
                                 </div>
 
@@ -86,13 +86,12 @@
                                     <div class="col-md-10">
                                         <ul class="nav nav-pills">
                                             <li class="nav-item"><a class="nav-link active" href="#activity"
-                                                    data-toggle="tab">Riwayat</a></li>
+                                                    data-toggle="tab">Riwayat Terapi Perilaku</a></li>
                                             <li class="nav-item"><a class="nav-link" href="#timeline"
-                                                    data-toggle="tab">Aktivitas
-                                                    Anak</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#settings"
+                                                    data-toggle="tab">Riwayat Fisioterapi & SI</a></li>
+                                            {{-- <li class="nav-item"><a class="nav-link" href="#settings"
                                                     data-toggle="tab">Grafik
-                                                    Perkembangan</a></li>
+                                                    Perkembangan</a></li> --}}
                                         </ul>
                                     </div>
                                     <div class="col-md-2">
@@ -112,8 +111,9 @@
                                                 {{-- <table class="table table-hover table-responsive"> --}}
                                                 <thead>
                                                     <tr class="text-center">
-                                                        <th scope="col">#</th>
+                                                        <th scope="col">Sesi</th>
                                                         <th scope="col">Pertemuan</th>
+                                                        <th scope="col">Terapis</th>
                                                         <th scope="col">Tanggal</th>
                                                         <th scope="col">Status</th>
                                                     </tr>
@@ -122,9 +122,17 @@
                                                     @foreach ($kunjungan as $kun)
                                                         <tr class="text-center">
                                                             <td scope="row">
-                                                                {{ $kunjungan->firstItem() + $loop->iteration - 1 }}
+                                                                {{ $kun->sesi }}
                                                             </td>
-                                                            <td style="text-transform: capitalize;">{{ $kun->pertemuan }}
+                                                            <td style="text-transform: capitalize;">
+                                                                @if ($kun->status == 'izin')
+                                                                    -
+                                                                @else
+                                                                    {{ $kun->pertemuan }}
+                                                                @endif
+                                                            </td>
+                                                            <td style="text-transform: capitalize;">
+                                                                {{ $kun->terapis->nama }}
                                                             </td>
                                                             <td style="text-transform: capitalize;">{{ $kun->created_at }}
                                                             </td>
@@ -138,6 +146,10 @@
                                                                         class="badge badge-warning">{{ $kun->status }}</label>
                                                                 @endif
                                                                 @if ($kun->status == 'sakit')
+                                                                    <label
+                                                                        class="badge badge-secondary">{{ $kun->status }}</label>
+                                                                @endif
+                                                                @if ($kun->status == 'izin_hangus')
                                                                     <label
                                                                         class="badge badge-danger">{{ $kun->status }}</label>
                                                                 @endif
@@ -156,56 +168,74 @@
                                     </div>
                                     <!-- /.tab-pane -->
                                     <div class="tab-pane" id="timeline">
-                                        @foreach ($kunjungan as $kun)
-                                            <div class="timeline timeline-inverse">
-                                                <!-- timeline time label -->
-                                                <div class="time-label">
-                                                    @if ($kun->status == 'hadir')
-                                                        <span class="bg-success">
-                                                            {{ $kun->created_at }}
-                                                        </span>
-                                                    @else
-                                                        <span class="bg-danger">
-                                                            {{ $kun->created_at }}
-                                                        </span>
-                                                    @endif
 
-                                                </div>
-                                                <div>
-                                                    <i class="fas fa-comments bg-warning"></i>
-                                                    <div class="timeline-item">
-                                                        <span class="time"><i class="far fa-clock"></i>
-                                                            {{ $kun->status }}</span>
-
-                                                        <h3 class="timeline-header"><a
-                                                                href="">{{ $kun->terapis->nama }}</a>
-                                                        </h3>
-                                                        @foreach ($kun->pemeriksaans as $p)
-                                                            <div class="timeline-body">
-                                                                @if ($loop->first)
-                                                                    {{ $p->keterangan }}
+                                        <div class="card-body table-responsive p-0">
+                                            <table class="table table-hover text-nowrap">
+                                                {{-- <table class="table table-hover table-responsive"> --}}
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th scope="col">Sesi</th>
+                                                        <th scope="col">Pertemuan</th>
+                                                        <th scope="col">Terapis</th>
+                                                        <th scope="col">Tanggal</th>
+                                                        <th scope="col">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($fisioterapi as $fis)
+                                                        <tr class="text-center">
+                                                            <td scope="row">
+                                                                {{ $fis->sesi }}
+                                                            </td>
+                                                            <td style="text-transform: capitalize;">
+                                                                @if ($fis->status == 'izin')
+                                                                    -
+                                                                @else
+                                                                    {{ $fis->pertemuan }}
                                                                 @endif
-                                                            </div>
+                                                            </td>
+                                                            <td style="text-transform: capitalize;">
+                                                                {{ $fis->terapis->nama }}
+                                                            </td>
+                                                            <td style="text-transform: capitalize;">{{ $fis->created_at }}
+                                                            </td>
+                                                            <td>
+                                                                @if ($fis->status == 'hadir')
+                                                                    <label
+                                                                        class="badge badge-success">{{ $fis->status }}</label>
+                                                                @endif
+                                                                @if ($fis->status == 'izin')
+                                                                    <label
+                                                                        class="badge badge-warning">{{ $fis->status }}</label>
+                                                                @endif
+                                                                @if ($fis->status == 'sakit')
+                                                                    <label
+                                                                        class="badge badge-secondary">{{ $fis->status }}</label>
+                                                                @endif
+                                                                @if ($fis->status == 'izin_hangus')
+                                                                    <label
+                                                                        class="badge badge-danger">{{ $fis->status }}</label>
+                                                                @endif
+                                                            </td>
 
-
-                                                            <div class="timeline-footer">
-                                                                <a href="#"
-                                                                    class="btn btn-warning btn-flat btn-sm">View
-                                                                    comment</a>
-                                                            </div>
-                                                        @break
+                                                        </tr>
                                                     @endforeach
+                                                </tbody>
+                                            </table>
+                                            <div class="row">
+                                                <div class="mx-auto mt-3">
+                                                    {{ $fisioterapi->fragment('judul')->links() }}
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 </div>
 
 
 
 
 
-                                <div class="tab-pane" id="settings">
+                                {{-- <div class="tab-pane" id="settings">
                                     <form class="form-horizontal">
                                         <div class="form-group row">
                                             <label for="inputName" class="col-sm-2 col-form-label">Name</label>
@@ -258,13 +288,13 @@
                                             </div>
                                         </div>
                                     </form>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+    </div>
     </section>
-</div>
+    </div>
 @endsection

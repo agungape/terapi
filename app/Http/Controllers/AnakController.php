@@ -143,8 +143,14 @@ class AnakController extends Controller
      */
     public function show(Anak $anak)
     {
-        $kunjungan = Kunjungan::where('anak_id', $anak->id)->latest()->paginate(5);
-        return view('anak.detail', compact('kunjungan', 'anak'));
+        $kunjungan = Kunjungan::where('anak_id', $anak->id)->where('jenis_terapi', 'terapi_perilaku')->whereNotNull('pertemuan')->whereNull('catatan')
+            ->latest()
+            ->paginate(10);
+        $fisioterapi = Kunjungan::where('anak_id', $anak->id)->where('jenis_terapi', 'fisioterapi')->whereNotNull('pertemuan')->whereNull('catatan')
+            ->latest()
+            ->paginate(10);
+
+        return view('anak.detail', compact('kunjungan', 'fisioterapi', 'anak'));
     }
 
 

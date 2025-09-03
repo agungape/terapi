@@ -241,7 +241,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <th>Tanggal</th>
-                                                                <th colspan="5"> {{ $f->created_at }} </th>
+                                                                <th colspan="3"> {{ $f->created_at }} </th>
                                                             </tr>
                                                             <tr>
                                                                 <th class="text-center"> Program </th>
@@ -295,7 +295,7 @@
 
                                                             @empty
                                                                 <tr>
-                                                                    <td colspan="6" class="text-center"> data program
+                                                                    <td colspan="4" class="text-center"> data program
                                                                         belum
                                                                         ada</td>
                                                                 </tr>

@@ -226,7 +226,7 @@
                                                         <thead>
                                                             <tr style="background-color: lavender">
                                                                 <th>Pertemuan</th>
-                                                                <th colspan="5">{{ $f->pertemuan }}
+                                                                <th colspan="3">{{ $f->pertemuan }}
                                                                     @if ($f->status == 'hadir')
                                                                         <label
                                                                             class="badge badge-success">{{ $f->status }}</label>

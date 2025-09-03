@@ -120,72 +120,70 @@
                                     <div class="tab-content">
                                         {{-- riwayat --}}
                                         <div class="active tab-pane" id="activity">
-                                            <div class="card-body">
-                                                <table class="table table-bordered">
-                                                    @foreach ($riwayat as $r)
-                                                        <thead>
-                                                            <tr style="background-color: lavender">
-                                                                <th>Pertemuan</th>
-                                                                <th colspan="2">{{ $r->pertemuan }}
-                                                                    @if ($r->status == 'hadir')
-                                                                        <label
-                                                                            class="badge badge-success">{{ $r->status }}</label>
-                                                                    @elseif ($r->status == 'izin')
-                                                                        <label
-                                                                            class="badge badge-warning">{{ $r->status }}</label>
-                                                                    @elseif ($r->status == 'sakit')
-                                                                        <label
-                                                                            class="badge badge-danger">{{ $r->status }}</label>
-                                                                    @endif
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Tanggal</th>
-                                                                <th colspan="2"> {{ $r->created_at }} </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center"> Program </th>
-                                                                <th class="text-center"> Skala </th>
-                                                                <th class="text-center"> Keterangan </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
+                                            <table class="table table-bordered table-responsive">
+                                                @foreach ($riwayat as $r)
+                                                    <thead>
+                                                        <tr style="background-color: lavender">
+                                                            <th>Pertemuan</th>
+                                                            <th colspan="2">{{ $r->pertemuan }}
+                                                                @if ($r->status == 'hadir')
+                                                                    <label
+                                                                        class="badge badge-success">{{ $r->status }}</label>
+                                                                @elseif ($r->status == 'izin')
+                                                                    <label
+                                                                        class="badge badge-warning">{{ $r->status }}</label>
+                                                                @elseif ($r->status == 'sakit')
+                                                                    <label
+                                                                        class="badge badge-danger">{{ $r->status }}</label>
+                                                                @endif
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Tanggal</th>
+                                                            <th colspan="2"> {{ $r->created_at }} </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th class="text-center"> Program </th>
+                                                            <th class="text-center"> Skala </th>
+                                                            <th class="text-center"> Keterangan </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $rows = $r->pemeriksaans->count();
+                                                        @endphp
+
+                                                        @forelse ($r->pemeriksaans as $p)
                                                             @php
-                                                                $rows = $r->pemeriksaans->count();
+                                                                $time = strtotime($p->created_at);
                                                             @endphp
-
-                                                            @forelse ($r->pemeriksaans as $p)
-                                                                @php
-                                                                    $time = strtotime($p->created_at);
-                                                                @endphp
-                                                                <tr class="text-center">
-                                                                    <td>{{ $p->program->deskripsi }}
+                                                            <tr class="text-center">
+                                                                <td>{{ $p->program->deskripsi }}
+                                                                </td>
+                                                                <td>{{ $p->status }}</td>
+                                                                @if ($loop->first)
+                                                                    <td rowspan="{{ $rows }}"
+                                                                        style="vertical-align: middle; text-align:left">
+                                                                        @foreach (explode("\n", $p->keterangan) as $paragraph)
+                                                                            <p
+                                                                                style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                {{ $paragraph }}
+                                                                            </p>
+                                                                        @endforeach
                                                                     </td>
-                                                                    <td>{{ $p->status }}</td>
-                                                                    @if ($loop->first)
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $p->keterangan) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                    @endif
-                                                                </tr>
-                                                            @empty
-                                                                <tr>
-                                                                    <td colspan="3" class="text-center"> data program
-                                                                        belum
-                                                                        ada</td>
-                                                                </tr>
-                                                            @endforelse
+                                                                @endif
+                                                            </tr>
+                                                        @empty
+                                                            <tr>
+                                                                <td colspan="3" class="text-center"> data program
+                                                                    belum
+                                                                    ada</td>
+                                                            </tr>
+                                                        @endforelse
 
-                                                        </tbody>
-                                                    @endforeach
-                                                </table>
-                                            </div>
+                                                    </tbody>
+                                                @endforeach
+                                            </table>
                                         </div>
                                         <!-- pemeriksaan -->
                                         <div class="tab-pane" id="timeline">
@@ -220,91 +218,90 @@
                                     <div class="tab-content">
                                         {{-- riwayat --}}
                                         <div class="active tab-pane" id="activity">
-                                            <div class="card-body">
-                                                <table class="table table-bordered">
-                                                    @foreach ($riwayat_fisioterapi as $f)
-                                                        <thead>
-                                                            <tr style="background-color: lavender">
-                                                                <th>Pertemuan</th>
-                                                                <th colspan="3">{{ $f->pertemuan }}
-                                                                    @if ($f->status == 'hadir')
-                                                                        <label
-                                                                            class="badge badge-success">{{ $f->status }}</label>
-                                                                    @elseif ($f->status == 'izin')
-                                                                        <label
-                                                                            class="badge badge-warning">{{ $f->status }}</label>
-                                                                    @elseif ($f->status == 'sakit')
-                                                                        <label
-                                                                            class="badge badge-danger">{{ $f->status }}</label>
-                                                                    @endif
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Tanggal</th>
-                                                                <th colspan="3"> {{ $f->created_at }} </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center"> Program </th>
-                                                                <th class="text-center"> Aktivitas Terapi </th>
-                                                                <th class="text-center"> Evaluasi </th>
-                                                                <th class="text-center"> Catatan Khusus </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @php
-                                                                $rows = $f->fisioterapis->count();
-                                                            @endphp
 
-                                                            @forelse ($f->fisioterapis as $fisio)
-                                                                @php
-                                                                    $time = strtotime($fisio->created_at);
-                                                                @endphp
-                                                                <tr class="text-center">
-                                                                    <td>{{ $fisio->program->deskripsi }}
-                                                                    </td>
-                                                                    <td>
-                                                                        @foreach (explode("\n", $fisio->aktivitas_terapi) as $paragraph)
+                                            <table class="table table-bordered table-responsive">
+                                                @foreach ($riwayat_fisioterapi as $f)
+                                                    <thead>
+                                                        <tr style="background-color: lavender">
+                                                            <th>Pertemuan</th>
+                                                            <th colspan="3">{{ $f->pertemuan }}
+                                                                @if ($f->status == 'hadir')
+                                                                    <label
+                                                                        class="badge badge-success">{{ $f->status }}</label>
+                                                                @elseif ($f->status == 'izin')
+                                                                    <label
+                                                                        class="badge badge-warning">{{ $f->status }}</label>
+                                                                @elseif ($f->status == 'sakit')
+                                                                    <label
+                                                                        class="badge badge-danger">{{ $f->status }}</label>
+                                                                @endif
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Tanggal</th>
+                                                            <th colspan="3"> {{ $f->created_at }} </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th class="text-center"> Program </th>
+                                                            <th class="text-center"> Aktivitas Terapi </th>
+                                                            <th class="text-center"> Evaluasi </th>
+                                                            <th class="text-center"> Catatan Khusus </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $rows = $f->fisioterapis->count();
+                                                        @endphp
+
+                                                        @forelse ($f->fisioterapis as $fisio)
+                                                            @php
+                                                                $time = strtotime($fisio->created_at);
+                                                            @endphp
+                                                            <tr class="text-center">
+                                                                <td>{{ $fisio->program->deskripsi }}
+                                                                </td>
+                                                                <td>
+                                                                    @foreach (explode("\n", $fisio->aktivitas_terapi) as $paragraph)
+                                                                        <p style="margin-bottom: 1px; line-height: 1.5;">
+                                                                            {{ $paragraph }}
+                                                                        </p>
+                                                                    @endforeach
+                                                                </td>
+                                                                @if ($loop->first)
+                                                                    <td rowspan="{{ $rows }}"
+                                                                        style="vertical-align: middle; text-align:left">
+                                                                        @foreach (explode("\n", $fisio->evaluasi) as $paragraph)
                                                                             <p
                                                                                 style="margin-bottom: 1px; line-height: 1.5;">
                                                                                 {{ $paragraph }}
                                                                             </p>
                                                                         @endforeach
                                                                     </td>
-                                                                    @if ($loop->first)
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->evaluasi) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                        <td rowspan="{{ $rows }}"
-                                                                            style="vertical-align: middle; text-align:left">
-                                                                            @foreach (explode("\n", $fisio->catatan_khusus) as $paragraph)
-                                                                                <p
-                                                                                    style="margin-bottom: 1px; line-height: 1.5;">
-                                                                                    {{ $paragraph }}
-                                                                                </p>
-                                                                            @endforeach
-                                                                        </td>
-                                                                    @endif
-                                                                </tr>
+                                                                    <td rowspan="{{ $rows }}"
+                                                                        style="vertical-align: middle; text-align:left">
+                                                                        @foreach (explode("\n", $fisio->catatan_khusus) as $paragraph)
+                                                                            <p
+                                                                                style="margin-bottom: 1px; line-height: 1.5;">
+                                                                                {{ $paragraph }}
+                                                                            </p>
+                                                                        @endforeach
+                                                                    </td>
+                                                                @endif
+                                                            </tr>
 
 
-                                                            @empty
-                                                                <tr>
-                                                                    <td colspan="4" class="text-center"> data program
-                                                                        belum
-                                                                        ada</td>
-                                                                </tr>
-                                                            @endforelse
+                                                        @empty
+                                                            <tr>
+                                                                <td colspan="4" class="text-center"> data program
+                                                                    belum
+                                                                    ada</td>
+                                                            </tr>
+                                                        @endforelse
 
-                                                        </tbody>
-                                                    @endforeach
-                                                </table>
-                                            </div>
+                                                    </tbody>
+                                                @endforeach
+                                            </table>
+
                                         </div>
                                         <!-- pemeriksaan -->
                                         <div class="tab-pane" id="timeline">

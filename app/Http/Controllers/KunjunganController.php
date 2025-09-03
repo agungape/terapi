@@ -172,9 +172,9 @@ class KunjunganController extends Controller
     public function show(Kunjungan $kunjungan)
     {
         // riwayat terapi_perilaku
-        $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'terapi_perilaku')->whereNull('catatan')->latest()->get();
+        $riwayat = Kunjungan::with('pemeriksaans')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'terapi_perilaku')->where('status', 'hadir')->whereNull('catatan')->latest()->get();
         // riwayat fisioterapi
-        $riwayat_fisioterapi = Kunjungan::with('fisioterapis')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'fisioterapi')->whereNull('catatan')->latest()->get();
+        $riwayat_fisioterapi = Kunjungan::with('fisioterapis')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'fisioterapi')->where('status', 'hadir')->whereNull('catatan')->latest()->get();
 
         $program = Program::where('jenis', 'terapi_perilaku')->get();
         $program_fisioterapi = Program::where('jenis', 'fisioterapi')->get();

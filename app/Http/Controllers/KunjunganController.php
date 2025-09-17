@@ -34,11 +34,6 @@ class KunjunganController extends Controller
         return view('kunjungan.index', compact('jenisTerapi'));
     }
 
-    public function create(Anak $anak)
-    {
-        return view('kunjungan.index', compact('anak'));
-    }
-
     public function getTerapisByJenis(Request $request)
     {
         $jenisTerapi = $request->jenis_terapi;

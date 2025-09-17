@@ -543,9 +543,9 @@
                                                                     <h6 class="mb-0">-</h6>
                                                                 @endif
                                                                 <small class="text-muted">
-                                                                    @if ($kun->jenis_terapi === 'Terapi Perilaku')
+                                                                    @if ($kun->jenis_terapi === 'terapi-perilaku')
                                                                         Terapi Perilaku
-                                                                    @elseif ($kun->jenis_terapi === 'Fisioterapi')
+                                                                    @elseif ($kun->jenis_terapi === 'fisioterapi')
                                                                         Fisioterapi dan Sensori Integrasi
                                                                     @else
                                                                         -

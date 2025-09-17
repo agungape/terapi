@@ -25,7 +25,7 @@ class TerapisController extends Controller
 
     public function index()
     {
-        $terapis = Terapis::orderBy('nib')->paginate(5);
+        $terapis = Terapis::orderBy('status', 'asc')->paginate(5);
         return view('terapis.index', ['terapis' => $terapis]);
     }
 

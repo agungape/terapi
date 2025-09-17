@@ -25,7 +25,7 @@ class KunjunganController extends Controller
 
     public function index()
     {
-        return view('kunjungan.index', compact('jenisTerapi'));
+        return view('kunjungan.index');
     }
 
     public function getTerapisByJenis(Request $request)

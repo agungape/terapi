@@ -25,18 +25,31 @@ class KunjunganController extends Controller
 
     public function index()
     {
-        $terapis = Terapis::where('status', 'aktif')->get();
         $jenisTerapi = [
-            'terapi_perilaku' => 'Terapi Perilaku',
-            'fisioterapi' => 'Fisioterapi & Sensor Integrasi'
+            'Terapi Perilaku' => 'Terapi Perilaku',
+            'Fisioterapi' => 'Fisioterapi & Sensor Integrasi'
         ];
+        // dd($jenisTerapi);
 
-        return view('kunjungan.index', compact('terapis', 'jenisTerapi'));
+        return view('kunjungan.index', compact('jenisTerapi'));
     }
 
     public function create(Anak $anak)
     {
         return view('kunjungan.index', compact('anak'));
+    }
+
+    public function getTerapisByJenis(Request $request)
+    {
+        $jenisTerapi = $request->jenis_terapi;
+
+
+        // Query untuk mendapatkan terapis berdasarkan jenis terapi
+        $terapis = Terapis::where('role', $jenisTerapi)
+            ->where('status', 'aktif')
+            ->get();
+
+        return response()->json($terapis);
     }
 
     public function store(Request $request): RedirectResponse

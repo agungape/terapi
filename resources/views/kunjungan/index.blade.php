@@ -84,6 +84,22 @@
             font-weight: 700;
             color: #333;
         }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 @endsection
 @section('content')
@@ -236,30 +252,29 @@
                                                 id="namaAnak">
                                         </div>
                                     </div>
-
                                     <div class="form-group">
-                                        <label class="form-label text-muted">Jenis Terapi</label>
-                                        <select name="jenis_terapi" id="jenis_terapi"
-                                            class="form-control select2 border-0 bg-light">
-                                            @foreach ($jenisTerapi as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
+                                        <label class="form-label text-muted">Terapis</label>
+                                        <select class="form-control select2 border-0 bg-light" name="terapis_id"
+                                            id="terapis_id">
+                                            <option value="">Pilih Jenis Terapi Terlebih Dahulu</option>
+                                            <!-- Options akan diisi melalui JavaScript -->
                                         </select>
-
+                                        <div id="loading-terapis" class="mt-2 text-primary" style="display: none;">
+                                            <span class="loading-spinner"></span> Memuat terapis...
+                                        </div>
                                     </div>
-
                                 </div>
 
                                 <!-- Right Column -->
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-label text-muted">Terapis</label>
-                                        <select class="form-control select2 border-0 bg-light" name="terapis_id">
-                                            @forelse ($terapis as $terapi)
-                                                <option value="{{ $terapi->id }}">{{ $terapi->nama }}</option>
-                                            @empty
-                                                <option disabled selected>Tidak ada data terapis</option>
-                                            @endforelse
+                                        <label class="form-label text-muted">Jenis Terapi</label>
+                                        <select name="jenis_terapi" id="jenis_terapi"
+                                            class="form-control select2 border-0 bg-light">
+                                            <option value="" selected disabled>Pilih Jenis Terapi</option>
+                                            <option value="Terapi Perilaku">Terapi Perilaku</option>
+                                            <option value="Fisioterapi">Fisioterapi & Sensor Integrasi
+                                            </option>
                                         </select>
                                     </div>
 
@@ -305,26 +320,134 @@
 @endsection
 
 @section('scripts')
-    @include('kunjungan.ajax')
+
     <script>
         $(document).ready(function() {
-            // Show registration form with animation when patient is selected
-            $('.kirim-data').click(function() {
-                $('#registrationForm').slideDown('fast', function() {
-                    $(this).addClass('show');
-                    $('html, body').animate({
-                        scrollTop: $(this).offset().top - 20
-                    }, 300);
-                });
-            });
-
-            // Initialize enhanced select2
+            // Inisialisasi Select2
             $('.select2').select2({
                 theme: 'bootstrap4',
                 minimumResultsForSearch: 5,
                 placeholder: "Pilih terapis",
                 width: '100%'
             });
+
+            // Tampilkan form pendaftaran saat pasien dipilih
+            $('.kirim-data').click(function() {
+                const anakId = $(this).data('id');
+                const namaAnak = $(this).data('nama');
+
+                $('#anak_id').val(anakId);
+                $('#namaAnak').val(namaAnak);
+
+                $('#registrationForm').slideDown('fast', function() {
+                    $(this).addClass('show');
+                    $('html, body').animate({
+                        scrollTop: $(this).offset().top - 20
+                    }, 300);
+                });
+
+                // Reset form terapis
+                resetTerapisForm();
+            });
+
+            // Event handler untuk perubahan jenis terapi
+            $('#jenis_terapi').change(function() {
+                const jenisTerapi = $(this).val();
+
+                if (jenisTerapi) {
+                    // Aktifkan form terapis
+                    $('#terapis_id').prop('disabled', false);
+                    $('#label-terapis').removeClass('disabled');
+
+                    // Load terapis berdasarkan jenis terapi
+                    loadTerapisByJenisTerapi();
+                } else {
+                    // Nonaktifkan form terapis jika tidak ada jenis terapi yang dipilih
+                    resetTerapisForm();
+                }
+            });
+
+            // Fungsi untuk reset form terapis
+            function resetTerapisForm() {
+                $('#terapis_id').html(
+                    '<option value="" selected disabled>Pilih Jenis Terapi Terlebih Dahulu</option>');
+                $('#terapis_id').prop('disabled', true);
+                $('#terapis_id').trigger('change');
+                $('#label-terapis').addClass('disabled');
+
+                // Reset debug info
+                $('#debug-jenis-terapi').text('-');
+                $('#debug-nilai-dikirim').text('-');
+                $('#debug-jumlah-terapis').text('-');
+                $('#debug-status-request').text('-');
+            }
+
+            // Event handler untuk reset form
+            $('#reset-form').click(function() {
+                setTimeout(function() {
+                    resetTerapisForm();
+                }, 100);
+            });
+
+            // Fungsi untuk memuat terapis berdasarkan jenis terapi yang dipilih
+            function loadTerapisByJenisTerapi() {
+                const jenisTerapi = $('#jenis_terapi').val();
+                const terapisSelect = $('#terapis_id');
+
+                // Update debug info
+                $('#debug-jenis-terapi').text(jenisTerapi);
+                $('#debug-nilai-dikirim').text(jenisTerapi);
+
+                if (!jenisTerapi) {
+                    resetTerapisForm();
+                    return;
+                }
+
+                // Tampilkan loading
+                $('#loading-terapis').show();
+                terapisSelect.prop('disabled', true);
+                $('#debug-status-request').html('<span class="text-info">Mengirim request...</span>');
+
+                // AJAX request untuk mendapatkan terapis berdasarkan jenis terapi
+                $.ajax({
+                    url: '/get-terapis-by-jenis',
+                    type: 'GET',
+                    data: {
+                        jenis_terapi: jenisTerapi
+                    },
+                    success: function(response) {
+                        // Update debug info
+                        $('#debug-jumlah-terapis').text(response.length + ' terapis ditemukan');
+                        $('#debug-status-request').html(
+                            '<span class="text-success">Request berhasil</span>');
+
+                        let options = '<option value="" selected disabled>Pilih Terapis</option>';
+
+                        if (response.length > 0) {
+                            $.each(response, function(index, terapis) {
+                                options +=
+                                    `<option value="${terapis.id}">${terapis.nama}</option>`;
+                            });
+                        } else {
+                            options = '<option value="" disabled>Tidak ada terapis tersedia</option>';
+                        }
+
+                        terapisSelect.html(options);
+                        terapisSelect.prop('disabled', false);
+                        terapisSelect.trigger('change');
+                    },
+                    error: function(xhr) {
+                        console.error('Error fetching terapis:', xhr);
+                        $('#debug-status-request').html('<span class="text-danger">Error: ' + xhr
+                            .statusText + '</span>');
+                        terapisSelect.html('<option value="" disabled>Error memuat terapis</option>');
+                    },
+                    complete: function() {
+                        // Sembunyikan loading
+                        $('#loading-terapis').hide();
+                    }
+                });
+            }
 
             // Add focus effect to form inputs
             $('.form-control').focus(function() {

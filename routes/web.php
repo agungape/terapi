@@ -149,6 +149,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/terapis/sertifikat/{sertifikat}', [TerapisController::class, 'sertifikat_show'])->name('sertifikat.show');
     Route::resource('/kunjungan', KunjunganController::class);
     Route::get('/pencarian/proses', [PencarianController::class, 'proses']);
+    Route::get('/get-terapis-by-jenis', [KunjunganController::class, 'getTerapisByJenis'])->name('get.terapis.by.jenis');
     Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
     Route::get('/search-kunjungan', [KunjunganController::class, 'search_kunjungan'])->name('kunjungan.pencarian');
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');

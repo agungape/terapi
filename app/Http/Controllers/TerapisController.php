@@ -36,8 +36,8 @@ class TerapisController extends Controller
     {
         $lastTerapis = Terapis::orderBy('nib', 'desc')->first();
         $role = [
-            'Terapi Perilaku' => 'Terapi Perilaku',
-            'Fisioterapi' => 'Fisioterapi'
+            'terapi_perilaku' => 'Terapi Perilaku',
+            'fisioterapi' => 'Fisioterapi & Sensori Integrasi'
         ];
 
         // Jika tidak ada terapis, mulai dengan BSC01
@@ -101,8 +101,8 @@ class TerapisController extends Controller
     public function edit(Terapis $terapi)
     {
         $role = [
-            'Terapi Perilaku' => 'Terapi Perilaku',
-            'Fisioterapi' => 'Fisioterapi'
+            'terapi_perilaku' => 'Terapi Perilaku',
+            'fisioterapi' => 'Fisioterapi'
         ];
 
         return view('terapis.edit', compact('terapi', 'role'));

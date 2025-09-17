@@ -253,6 +253,21 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label class="form-label text-muted">Jenis Terapi</label>
+                                        <select name="jenis_terapi" id="jenis_terapi"
+                                            class="form-control select2 border-0 bg-light">
+                                            <option value="" selected disabled>Pilih Jenis Terapi</option>
+                                            <option value="Terapi Perilaku">Terapi Perilaku</option>
+                                            <option value="Fisioterapi">Fisioterapi & Sensor Integrasi
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
                                         <label class="form-label text-muted">Terapis</label>
                                         <select class="form-control select2 border-0 bg-light" name="terapis_id"
                                             id="terapis_id">
@@ -262,20 +277,6 @@
                                         <div id="loading-terapis" class="mt-2 text-primary" style="display: none;">
                                             <span class="loading-spinner"></span> Memuat terapis...
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!-- Right Column -->
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-label text-muted">Jenis Terapi</label>
-                                        <select name="jenis_terapi" id="jenis_terapi"
-                                            class="form-control select2 border-0 bg-light">
-                                            <option value="" selected disabled>Pilih Jenis Terapi</option>
-                                            <option value="Terapi Perilaku">Terapi Perilaku</option>
-                                            <option value="Fisioterapi">Fisioterapi & Sensor Integrasi
-                                            </option>
-                                        </select>
                                     </div>
 
                                     <div class="form-group">

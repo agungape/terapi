@@ -25,12 +25,6 @@ class KunjunganController extends Controller
 
     public function index()
     {
-        $jenisTerapi = [
-            'Terapi Perilaku' => 'Terapi Perilaku',
-            'Fisioterapi' => 'Fisioterapi & Sensor Integrasi'
-        ];
-        // dd($jenisTerapi);
-
         return view('kunjungan.index', compact('jenisTerapi'));
     }
 

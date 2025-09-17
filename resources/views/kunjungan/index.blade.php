@@ -257,8 +257,8 @@
                                         <select name="jenis_terapi" id="jenis_terapi"
                                             class="form-control select2 border-0 bg-light">
                                             <option value="" selected disabled>Pilih Jenis Terapi</option>
-                                            <option value="Terapi Perilaku">Terapi Perilaku</option>
-                                            <option value="Fisioterapi">Fisioterapi & Sensor Integrasi
+                                            <option value="terapi_perilaku">Terapi Perilaku</option>
+                                            <option value="fisioterapi">Fisioterapi & Sensor Integrasi
                                             </option>
                                         </select>
                                     </div>

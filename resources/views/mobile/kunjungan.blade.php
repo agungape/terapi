@@ -101,7 +101,7 @@
                                                                     </li>
                                                                 </ul>
                                                             @endif
-                                                        </div>
+                                                        </div> 
                                                     </div>
                                                 @endforeach
                                             </div>

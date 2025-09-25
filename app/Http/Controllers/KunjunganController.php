@@ -76,24 +76,27 @@ class KunjunganController extends Controller
         $nextSesi = 1;
 
         if ($kunjungan_terakhir) {
-            // Jika ada kunjungan sebelumnya
-            if ($kunjungan_terakhir->pertemuan < 20) {
-                $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
-                $nextSesi = $kunjungan_terakhir->sesi ?? 1;
+            // Jika status terakhir adalah HADIR atau IZIN HANGUS, maka tingkatkan pertemuan
+            if ($kunjungan_terakhir->status == 'hadir' || $kunjungan_terakhir->status == 'izin_hangus') {
+
+                if ($kunjungan_terakhir->pertemuan < 20) {
+                    $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
+                    $nextSesi = $kunjungan_terakhir->sesi ?? 1;
+                } else {
+                    // Jika pertemuan sudah 20, naikkan sesi dan reset pertemuan
+                    $nextPertemuan = 1;
+                    $nextSesi = ($kunjungan_terakhir->sesi ?? 1) + 1;
+                }
             } else {
-                // Jika pertemuan sudah 20, naikkan sesi dan reset pertemuan
-                $nextPertemuan = 1;
-                $nextSesi = ($kunjungan_terakhir->sesi ?? 1) + 1;
+                // Jika status terakhir adalah IZIN SAKIT, pertahankan nomor pertemuan yang sama
+                $nextPertemuan = $kunjungan_terakhir->pertemuan;
+                $nextSesi = $kunjungan_terakhir->sesi ?? 1;
             }
         }
 
-        $pertemuan = ($request->status == 'hadir' || $request->status == 'izin_hangus')
-            ? $nextPertemuan
-            : ($kunjungan_terakhir->pertemuan ?? 1);
-
-        $sesi = ($request->status == 'hadir' || $request->status == 'izin_hangus')
-            ? $nextSesi
-            : ($kunjungan_terakhir->sesi ?? 1);
+        // Tentukan pertemuan dan sesi untuk kunjungan baru
+        $pertemuan = $nextPertemuan;
+        $sesi = $nextSesi;
 
         $data = [
             'anak_id' => $request->anak_id,

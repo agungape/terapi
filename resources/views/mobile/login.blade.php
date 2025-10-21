@@ -77,8 +77,8 @@
                         <img src="{{ asset('assets') }}/mobile/pixio/images/authentication/pic5.png" alt="">
                     </div>
                     <div class="section-head">
-                        <h3 class="title">Sign in to your account</h3>
-                        <p>Welcome Back You've Been Missed!</p>
+                        <h3 class="title">Selamat Datang Anak Hebat</h3>
+                        <p>Masukkan Username dan Password Kamu</p>
                     </div>
 
                     @if (session('error'))

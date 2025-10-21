@@ -106,7 +106,6 @@
                                 <input id="username" type="text" name="username"
                                     class="form-control validate @error('username') is-invalid @enderror "
                                     value="{{ old('username') }}">
-                                <label for="username">Username</label>
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">

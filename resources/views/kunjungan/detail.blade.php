@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Profile</h1>
+                        <h1>Riwayat Terapi Anak </h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">User Profile</li>
+                            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                            <li class="breadcrumb-item active">Riwayat Terapi</li>
                         </ol>
                     </div>
                 </div>
@@ -141,6 +141,10 @@
                                                         <tr>
                                                             <th>Tanggal</th>
                                                             <th colspan="2"> {{ $r->created_at }} </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Terapis</th>
+                                                            <th colspan="2"> {{ $r->terapis->nama }} </th>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-center"> Program </th>

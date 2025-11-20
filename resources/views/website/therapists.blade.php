@@ -55,7 +55,6 @@
                                     class="card-img-top" style="height: 510px; object-fit:cover" alt="Therapist">
                                 <div class="card-body">
                                     <h5 class="fw-bold mb-1">{{ $t->nama }}</h5>
-                                    <p class="text-muted mb-3">{{ $t->role }}</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="icon-box-sm bg-primary-light text-primary me-3">
                                             <i class="fas fa-graduation-cap"></i>
@@ -70,7 +69,13 @@
                                             <i class="fas fa-certificate"></i>
                                         </div>
                                         <div>
-                                            <small class="text-muted">Sertifikasi</small>
+                                            <small class="text-muted">Sertifikasi &nbsp;
+                                                @if ($t->role == 'terapi_perilaku')
+                                                    Terapi Perilaku
+                                                @else
+                                                    Fisioterap
+                                                @endif
+                                            </small>
                                             <p class="mb-0 small">
                                             </p>
                                         </div>

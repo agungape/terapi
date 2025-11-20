@@ -48,7 +48,7 @@
 
             <div class="row g-4">
                 @foreach ($terapis as $t)
-                    @if ($t->role === 'Terapi Perilaku')
+                    @if ($t->role === 'terapi_perilaku')
                         <div class="col-md-6 col-lg-4 therapist-card" data-specialty="speech">
                             <div class="card border-0 shadow-sm h-100">
                                 <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/website/images/default-woman.png') }}"
@@ -69,12 +69,8 @@
                                             <i class="fas fa-certificate"></i>
                                         </div>
                                         <div>
-                                            <small class="text-muted">Sertifikasi &nbsp;
-                                                @if ($t->role == 'terapi_perilaku')
-                                                    Terapi Perilaku
-                                                @else
-                                                    Fisioterap
-                                                @endif
+                                            <small class="text-muted">Sertifikasi Terapi Perilaku
+
                                             </small>
                                             <p class="mb-0 small">
                                             </p>
@@ -101,7 +97,6 @@
                                     class="card-img-top" alt="Therapist">
                                 <div class="card-body">
                                     <h5 class="fw-bold mb-1">{{ $t->nama }}</h5>
-                                    <p class="text-muted mb-3">{{ $t->role }}</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="icon-box-sm bg-success-light text-success me-3">
                                             <i class="fas fa-graduation-cap"></i>
@@ -117,7 +112,7 @@
                                             <i class="fas fa-certificate"></i>
                                         </div>
                                         <div>
-                                            <small class="text-muted">Sertifikasi</small>
+                                            <small class="text-muted">Sertifikasi Fisioterapi</small>
                                             <p class="mb-0 small">
                                             </p>
                                         </div>

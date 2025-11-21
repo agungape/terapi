@@ -97,6 +97,11 @@
 
             // Fungsi untuk membuat chart
             function createChart(ctx, label, data, bgColor, borderColor) {
+                // Cari nilai maksimum dari data
+                const maxDataValue = Math.max(...data);
+                // Tambahkan margin 20% dari nilai maksimum untuk tampilan yang lebih baik
+                const maxYValue = maxDataValue * 1.2;
+
                 return new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -119,18 +124,28 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                min: 0, // Nilai minimum Y
-                                max: 20000000, // Nilai maksimum Y
+                                min: 0,
+                                max: maxYValue, // Nilai maksimum menyesuaikan data
                                 ticks: {
-                                    stepSize: 5000000, // Step size sesuai kebutuhan
+                                    stepSize: calculateStepSize(
+                                        maxYValue), // Fungsi untuk menghitung step size
                                     callback: function(value) {
-                                        return value.toLocaleString(); // Pemformatan angka
+                                        return value.toLocaleString();
                                     }
                                 }
                             }
                         }
                     }
                 });
+            }
+
+            // Fungsi untuk menghitung step size yang sesuai
+            function calculateStepSize(maxValue) {
+                if (maxValue <= 1000000) return 200000; // Untuk nilai kecil
+                if (maxValue <= 5000000) return 500000;
+                if (maxValue <= 10000000) return 1000000;
+                if (maxValue <= 50000000) return 5000000;
+                return 10000000; // Untuk nilai sangat besar
             }
 
             // Buat chart pemasukan

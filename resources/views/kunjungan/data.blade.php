@@ -335,10 +335,13 @@
                                                                     {{ $kun->anak->nib }}
                                                                 </button>
                                                                 <div class="dropdown-menu" style="">
+                                                                    @if ($kun->status === 'hadir')
                                                                     <a class="dropdown-item" href="#"
-                                                                        data-toggle="modal"
-                                                                        data-target="#tambahTerapisModal-{{ $kun->id }}">Tambah
-                                                                        Terapis</a>
+                                                                    data-toggle="modal"
+                                                                    data-target="#tambahTerapisModal-{{ $kun->id }}">Tambah
+                                                                    Terapis</a>
+                                                                    @endif
+
                                                                     <a class="dropdown-item" href="#"
                                                                         data-toggle="modal"
                                                                         data-target="#editStatusModal-{{ $kun->id }}">Edit

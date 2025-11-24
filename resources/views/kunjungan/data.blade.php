@@ -380,8 +380,8 @@
                                                                                         required>
                                                                                         @foreach ($terapis as $t)
                                                                                             @if (
-                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
-                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
+                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'terapi_perilaku') ||
+                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'terapi_perilaku'))
                                                                                                 @if ($kun->terapis_id != $t->id)
                                                                                                     <option
                                                                                                         value="{{ $t->id }}"
@@ -487,8 +487,8 @@
                                                                                         class="form-control" required>
                                                                                         @foreach ($terapis as $t)
                                                                                             @if (
-                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'Terapi Perilaku') ||
-                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'Terapi Perilaku'))
+                                                                                                ($kun->jenis_terapi == 'terapi_perilaku' && $t->role == 'terapi_perilaku') ||
+                                                                                                    ($kun->jenis_terapi != 'terapi_perilaku' && $t->role != 'terapi_perilaku'))
                                                                                                 <option
                                                                                                     value="{{ $t->id }}"
                                                                                                     {{ $kun->terapis_id == $t->id ? 'selected' : '' }}>

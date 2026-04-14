@@ -73,8 +73,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
-        return redirect('/users');
+        return redirect('/users')->with('success', 'data user berhasil di tambahkan');
     }
 
     public function store_anak(Request $request)
@@ -98,8 +97,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
-        return redirect('/users');
+        return redirect('/users')->with('success', 'data user berhasil di tambahkan');
     }
 
     public function store_terapis(Request $request)
@@ -135,8 +133,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
-        return redirect('/users');
+        return redirect('/users')->with('success', 'data user berhasil di tambahkan');
     }
 
     public function store_psikolog(Request $request)
@@ -159,8 +156,7 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        Alert::toast('data user berhasil di tambahkan', 'success')->timerProgressBar();
-        return redirect('/users');
+        return redirect('/users')->with('success', 'data user berhasil di tambahkan');
     }
 
     public function edit(User $user)
@@ -199,8 +195,7 @@ class UserController extends Controller
 
         $user->update($data);
         $user->syncRoles($request->roles);
-        Alert::toast('data user berhasil di perbarui', 'success')->timerProgressBar();
-        return redirect('/users');
+        return redirect('/users')->with('success', 'data user berhasil di perbarui');
     }
 
     public function updateStatus(Request $request, User $user)
@@ -211,8 +206,7 @@ class UserController extends Controller
 
         $user->update(['is_active' => $request->is_active]);
 
-        Alert::toast('status berhasil di perbarui', 'success')->timerProgressBar();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'status berhasil di perbarui');
     }
 
     public function destroy($user)
@@ -220,7 +214,6 @@ class UserController extends Controller
         $user = User::findOrFail($user);
         $user->delete();
 
-        Alert::success('Berhasil', "Data User berhasil dihapus");
-        return redirect('/users');
+        return redirect('/users')->with('success', "Data User berhasil dihapus");
     }
 }

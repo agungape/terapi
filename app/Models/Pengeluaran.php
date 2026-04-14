@@ -13,29 +13,35 @@ class Pengeluaran extends Model
 
     protected $fillable = ['jumlah', 'deskripsi', 'tanggal', 'saldo_akhir', 'gambar', 'kategori_id'];
 
-    protected function tanggal(): Attribute
+    protected $casts = [
+        'jumlah' => 'decimal:2',
+        'saldo_akhir' => 'decimal:2',
+        'tanggal' => 'date',
+    ];
+
+    protected function tanggalFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => date("d-m-Y", strtotime($value))
+            get: fn() => $this->tanggal ? $this->tanggal->format('d-m-Y') : '-'
         );
     }
 
-    protected function jumlah(): Attribute
+    protected function jumlahFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => 'Rp ' . rtrim(rtrim(number_format($value, 2, ',', '.'), '0'), ',')
+            get: fn() => 'Rp ' . rtrim(rtrim(number_format($this->jumlah, 2, ',', '.'), '0'), ',')
         );
     }
 
     public static function getTotalPengeluaran(): float
     {
-        return self::sum('jumlah');
+        return (float) self::sum('jumlah');
     }
 
-    protected function saldoakhir(): Attribute
+    protected function saldoakhirFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => 'Rp ' . rtrim(rtrim(number_format($value, 2, ',', '.'), '0'), ',')
+            get: fn() => 'Rp ' . rtrim(rtrim(number_format($this->saldo_akhir, 2, ',', '.'), '0'), ',')
         );
     }
 

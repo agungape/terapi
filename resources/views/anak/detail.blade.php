@@ -1,300 +1,283 @@
 @extends('layouts.master')
-@section('menuMaster', 'active')
-@section('masterShow', 'menu-is-opening menu-open')
-@section('menuAnak', 'active')
-@section('content')
+@section('title', 'Profil Anak: ' . $anak->nama)
 
-    <div class="content-wrapper">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Profile</h1>
+@section('content')
+<div class="space-y-8">
+    
+    <!-- Top Bar / Breadcrumb replacement -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <a href="{{ route('anak.index') }}" class="hover:text-red-500 transition-colors">Data Anak</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-slate-600">User Profile</span>
+        </div>
+        <a href="{{ route('anak.index') }}" class="bg-white border border-slate-200 hover:border-slate-300 text-slate-600 py-2 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Left Column: User Card & Bio -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Main Profile Card -->
+            <div class="card-premium p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-red-500/10 to-red-600/5 -z-0"></div>
+                <div class="relative z-10">
+                    <div class="w-24 h-24 rounded-full border-4 border-white shadow-md mx-auto mb-4 overflow-hidden bg-slate-100">
+                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" 
+                             alt="Avatar" class="w-full h-full object-cover">
                     </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">User Profile</li>
-                        </ol>
+                    <h3 class="text-lg font-extrabold text-slate-800 leading-tight">{{ $anak->nama }}</h3>
+                    <div class="flex items-center justify-center gap-2 mt-2">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                            {{ $anak->jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}
+                        </span>
+                        <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                            {{ $anak->usia }} Tahun
+                        </span>
                     </div>
                 </div>
-            </div><!-- /.container-fluid -->
-        </section>
+            </div>
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <img class="profile-user-img img-circle fixed-size"
-                                        src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}"
-                                        alt="User profile picture">
-                                </div>
-
-                                <h3 class="profile-username text-center">{{ $anak->nama }}</h3>
-                                @if ($anak->jenis_kelamin == 'L')
-                                    <p class="text-muted text-center">Laki - Laki</p>
-                                @else
-                                    <p class="text-muted text-center">Perempuan</p>
-                                @endif
-
-                                <h4>{{ $anak->usia }} Tahun</h4>
-                            </div>
-                        </div>
-
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Biodata Anak</h3>
-                            </div>
-
-                            <div class="card-body">
-                                <strong><i class="fas fa-book mr-1"></i> Pendidikan</strong>
-
-                                <p class="text-muted">
-                                    {{ $anak->pendidikan }}
-                                </p>
-
-                                <hr>
-
-                                <strong><i class="fas fa-map-marker-alt mr-1"></i> Alamat</strong>
-
-                                <p class="text-muted">{{ $anak->alamat }}</p>
-
-                                <hr>
-
-                                <strong><i class="fas fa-pencil-alt mr-1"></i> Diagnosa</strong>
-
-                                <p class="text-muted">
-                                    {{ $anak->diagnosa }}
-                                </p>
-
-                                <hr>
-
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
+            <!-- Biodata Details -->
+            <div class="card-premium overflow-hidden">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <i data-lucide="info" class="w-3.5 h-3.5 text-red-500"></i> BIODATA DASAR
+                    </h4>
+                </div>
+                <div class="p-6 space-y-5">
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendidikan</p>
+                        <p class="text-sm font-bold text-slate-700">{{ $anak->pendidikan }}</p>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-md-9">
-                        <div class="card">
-                            <div class="card-header p-2">
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <ul class="nav nav-pills">
-                                            <li class="nav-item"><a class="nav-link active" href="#activity"
-                                                    data-toggle="tab">Riwayat Terapi Perilaku</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#timeline"
-                                                    data-toggle="tab">Riwayat Fisioterapi & SI</a></li>
-                                            {{-- <li class="nav-item"><a class="nav-link" href="#settings"
-                                                    data-toggle="tab">Grafik
-                                                    Perkembangan</a></li> --}}
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a href="{{ route('anak.index') }}" class="btn btn-sm btn-warning float-right">
-                                            Kembali</a>
-                                    </div>
-                                </div>
-
-
-                            </div><!-- /.card-header -->
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    <div class="active tab-pane" id="activity">
-
-                                        <div class="card-body table-responsive p-0">
-                                            <table class="table table-hover text-nowrap">
-                                                {{-- <table class="table table-hover table-responsive"> --}}
-                                                <thead>
-                                                    <tr class="text-center">
-                                                        <th scope="col">Sesi</th>
-                                                        <th scope="col">Pertemuan</th>
-                                                        <th scope="col">Terapis</th>
-                                                        <th scope="col">Tanggal</th>
-                                                        <th scope="col">Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($kunjungan as $kun)
-                                                        <tr class="text-center">
-                                                            <td scope="row">
-                                                                {{ $kun->sesi }}
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">
-                                                                @if ($kun->status == 'izin')
-                                                                    -
-                                                                @else
-                                                                    {{ $kun->pertemuan }}
-                                                                @endif
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">
-                                                                {{ $kun->terapis->nama }}
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">{{ $kun->created_at }}
-                                                            </td>
-                                                            <td>
-                                                                @if ($kun->status == 'hadir')
-                                                                    <label
-                                                                        class="badge badge-success">{{ $kun->status }}</label>
-                                                                @endif
-                                                                @if ($kun->status == 'izin')
-                                                                    <label
-                                                                        class="badge badge-warning">{{ $kun->status }}</label>
-                                                                @endif
-                                                                @if ($kun->status == 'sakit')
-                                                                    <label
-                                                                        class="badge badge-secondary">{{ $kun->status }}</label>
-                                                                @endif
-                                                                @if ($kun->status == 'izin_hangus')
-                                                                    <label
-                                                                        class="badge badge-danger">{{ $kun->status }}</label>
-                                                                @endif
-                                                            </td>
-
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                            <div class="row">
-                                                <div class="mx-auto mt-3">
-                                                    {{ $kunjungan->fragment('judul')->links() }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.tab-pane -->
-                                    <div class="tab-pane" id="timeline">
-
-                                        <div class="card-body table-responsive p-0">
-                                            <table class="table table-hover text-nowrap">
-                                                {{-- <table class="table table-hover table-responsive"> --}}
-                                                <thead>
-                                                    <tr class="text-center">
-                                                        <th scope="col">Sesi</th>
-                                                        <th scope="col">Pertemuan</th>
-                                                        <th scope="col">Terapis</th>
-                                                        <th scope="col">Tanggal</th>
-                                                        <th scope="col">Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($fisioterapi as $fis)
-                                                        <tr class="text-center">
-                                                            <td scope="row">
-                                                                {{ $fis->sesi }}
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">
-                                                                @if ($fis->status == 'izin')
-                                                                    -
-                                                                @else
-                                                                    {{ $fis->pertemuan }}
-                                                                @endif
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">
-                                                                {{ $fis->terapis->nama }}
-                                                            </td>
-                                                            <td style="text-transform: capitalize;">{{ $fis->created_at }}
-                                                            </td>
-                                                            <td>
-                                                                @if ($fis->status == 'hadir')
-                                                                    <label
-                                                                        class="badge badge-success">{{ $fis->status }}</label>
-                                                                @endif
-                                                                @if ($fis->status == 'izin')
-                                                                    <label
-                                                                        class="badge badge-warning">{{ $fis->status }}</label>
-                                                                @endif
-                                                                @if ($fis->status == 'sakit')
-                                                                    <label
-                                                                        class="badge badge-secondary">{{ $fis->status }}</label>
-                                                                @endif
-                                                                @if ($fis->status == 'izin_hangus')
-                                                                    <label
-                                                                        class="badge badge-danger">{{ $fis->status }}</label>
-                                                                @endif
-                                                            </td>
-
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                            <div class="row">
-                                                <div class="mx-auto mt-3">
-                                                    {{ $fisioterapi->fragment('judul')->links() }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-                                {{-- <div class="tab-pane" id="settings">
-                                    <form class="form-horizontal">
-                                        <div class="form-group row">
-                                            <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                                            <div class="col-sm-10">
-                                                <input type="email" class="form-control" id="inputName"
-                                                    placeholder="Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                                            <div class="col-sm-10">
-                                                <input type="email" class="form-control" id="inputEmail"
-                                                    placeholder="Email">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="inputName2"
-                                                    placeholder="Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="inputExperience"
-                                                class="col-sm-2 col-form-label">Experience</label>
-                                            <div class="col-sm-10">
-                                                <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="inputSkills"
-                                                    placeholder="Skills">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="offset-sm-2 col-sm-10">
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="checkbox"> I agree to the <a href="#">terms
-                                                            and conditions</a>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="offset-sm-2 col-sm-10">
-                                                <button type="submit" class="btn btn-danger">Submit</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div> --}}
-                            </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat</p>
+                        <p class="text-sm font-bold text-slate-700 leading-relaxed">{{ $anak->alamat }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diagnosa</p>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <p class="text-xs font-bold text-slate-600 italic">"{{ $anak->diagnosa }}"</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Contact Card -->
+            <div class="card-premium">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <i data-lucide="phone-call" class="w-3.5 h-3.5 text-red-500"></i> KONTAK KELUARGA
+                    </h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <!-- Ayah -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Ayah</p>
+                            <p class="text-xs font-bold text-slate-700">{{ $anak->telepon_ayah ?? '-' }}</p>
+                        </div>
+                        @if($anak->telepon_ayah)
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^\d]/', '', $anak->telepon_ayah)) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        @endif
+                    </div>
+                    <hr class="border-slate-50">
+                    <!-- Ibu -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Ibu</p>
+                            <p class="text-xs font-bold text-slate-700">{{ $anak->telepon_ibu ?? '-' }}</p>
+                        </div>
+                        @if($anak->telepon_ibu)
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^\d]/', '', $anak->telepon_ibu)) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Active Packages & Tabs -->
+        <div class="lg:col-span-3 space-y-8">
+            
+            <!-- Active Packages Visualization -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @forelse($activePackages as $pkg)
+                <div class="card-premium p-6 relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-red-50 rounded-full opacity-50 group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Paket Aktif</h4>
+                                <h3 class="text-sm font-extrabold text-slate-800">{{ $pkg->tarif->nama }}</h3>
+                            </div>
+                            <div class="bg-red-50 text-red-600 px-3 py-1.5 rounded-xl text-xs font-black border border-red-100">
+                                {{ $pkg->sisa_pertemuan }} <span class="text-[9px] uppercase font-bold text-red-400 ml-1">Sesi Sisa</span>
+                            </div>
+                        </div>
+                        
+                        @php 
+                            $total = $pkg->tarif->jumlah_pertemuan ?? 0;
+                            $used = $pkg->sudah_terpakai ?? 0;
+                            $percent = $total > 0 ? ($used / $total) * 100 : 0;
+                        @endphp
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[10px] font-extrabold text-slate-500 uppercase">
+                                <span>Progres Sesi ({{ $used }}/{{ $total }})</span>
+                                <span>{{ round($percent) }}%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-1000 shadow-[0_0_8px_rgba(220,38,38,0.3)]" style="width: {{ $percent }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2">
+                            <i data-lucide="tag" class="w-3.5 h-3.5 text-slate-300"></i>
+                            <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">{{ ucwords(str_replace('_', ' ', $pkg->tarif->jenis_terapi)) }}</span>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="card-premium p-8 text-center md:col-span-2 bg-slate-50/50 border-dashed border-2">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <i data-lucide="alert-circle" class="w-6 h-6 text-slate-300"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest tracking-widest">Belum ada paket aktif yang terdaftar</p>
+                </div>
+                @endforelse
+            </div>
+
+            <!-- History Tabs -->
+            <div class="card-premium" x-data="{ tab: 'perilaku' }">
+                <div class="p-2 border-b border-slate-100 flex gap-2">
+                    <button @click="tab = 'perilaku'" 
+                            :class="tab === 'perilaku' ? 'bg-red-50 text-red-600' : 'text-slate-500 hover:bg-slate-50'"
+                            class="flex-1 py-3 px-4 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all">
+                        Terapi Perilaku
+                    </button>
+                    <button @click="tab = 'fisio'" 
+                            :class="tab === 'fisio' ? 'bg-red-50 text-red-600' : 'text-slate-500 hover:bg-slate-50'"
+                            class="flex-1 py-3 px-4 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all">
+                        Fisioterapi & SI
+                    </button>
+                </div>
+
+                <div class="p-0">
+                    <!-- Tab Perilaku -->
+                    <div x-show="tab === 'perilaku'" x-transition:enter="transition-opacity duration-300" class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sesi</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                @forelse ($kunjungan as $kun)
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-black text-slate-700 text-xs">Season {{ $kun->sesi }} <span class="text-slate-400 ml-1">#{{ $kun->pertemuan }}</span></td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[8px] font-black text-slate-500">{{ strtoupper(substr($kun->terapis->nama, 0, 1)) }}</div>
+                                            <span class="text-xs font-bold text-slate-600 lowercase">{{ $kun->terapis->nama }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs font-bold text-slate-500">{{ $kun->created_at->format('d/m/Y H:i') }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        @php
+                                            $badgeClass = [
+                                                'hadir' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
+                                                'izin' => 'bg-amber-50 text-amber-600 border-amber-100',
+                                                'sakit' => 'bg-blue-50 text-blue-600 border-blue-100',
+                                                'izin_hangus' => 'bg-red-50 text-red-600 border-red-100'
+                                            ][$kun->status] ?? 'bg-slate-100';
+                                        @endphp
+                                        <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border {{ $badgeClass }}">
+                                            {{ str_replace('_', ' ', $kun->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-12 text-center text-xs font-bold text-slate-400 italic">Belum ada riwayat kunjungan</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="p-6 bg-slate-50/30 border-t border-slate-100">
+                            {{ $kunjungan->fragment('perilaku')->links() }}
+                        </div>
+                    </div>
+
+                    <!-- Tab Fisio -->
+                    <div x-show="tab === 'fisio'" x-transition:enter="transition-opacity duration-300" class="overflow-x-auto" x-cloak>
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sesi</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal</th>
+                                    <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50">
+                                @forelse ($fisioterapi as $fis)
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-black text-slate-700 text-xs">Season {{ $fis->sesi }} <span class="text-slate-400 ml-1">#{{ $fis->pertemuan }}</span></td>
+                                    <td class="px-6 py-4 px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[8px] font-black text-slate-500">{{ strtoupper(substr($fis->terapis->nama??'T', 0, 1)) }}</div>
+                                            <span class="text-xs font-bold text-slate-600 lowercase">{{ $fis->terapis->nama }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs font-bold text-slate-500">{{ $fis->created_at->format('d/m/Y H:i') }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        @php
+                                            $badgeClass = [
+                                                'hadir' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
+                                                'izin' => 'bg-amber-50 text-amber-600 border-amber-100',
+                                                'sakit' => 'bg-blue-50 text-blue-600 border-blue-100',
+                                                'izin_hangus' => 'bg-red-50 text-red-600 border-red-100'
+                                            ][$fis->status] ?? 'bg-slate-100';
+                                        @endphp
+                                        <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter border {{ $badgeClass }}">
+                                            {{ str_replace('_', ' ', $fis->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-12 text-center text-xs font-bold text-slate-400 italic">Belum ada riwayat kunjungan</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        <div class="p-6 bg-slate-50/30 border-t border-slate-100">
+                            {{ $fisioterapi->fragment('fisio')->links() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </section>
-    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
 @endsection

@@ -1,686 +1,358 @@
 @extends('layouts.master')
-@section('menuLogin', 'active')
-@section('masterLogin', 'menu-is-opening menu-open')
-@section('menuUserlogin', 'active')
+@section('title', 'Manajemen User')
+
 @section('content')
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>User</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Login</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<div x-data="{ 
+    showTambah: false, 
+    showTambahAnak: false, 
+    showTambahTerapis: false, 
+    showTambahPsikolog: false,
+    showEdit: @json($errors->any() && old('form') == 'edit'),
+    editUser: {
+        id: '',
+        name: '',
+        username: '',
+        email: '',
+        roles: []
+    },
+    openEdit(user) {
+        this.editUser = user;
+        this.showEdit = true;
+    }
+}" class="space-y-8 animate-in fade-in duration-500">
+    
+    <!-- Sophisticated Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="space-y-1">
+            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-slate-600">User Accounts</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Data Login Pengguna</h2>
+        </div>
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex flex-wrap justify-content-start">
-                                @can('create user')
-                                    <button class="btn btn-primary btn-sm m-1" data-toggle="modal" data-target="#tambahModal">
-                                        <i class="fa fa-plus mr-1"></i> Tambah User
-                                    </button>
-                                @endcan
+        <!-- Multi-Action Button Group -->
+        <div class="flex flex-wrap gap-2">
+            @can('create user')
+            <button @click="showTambah = true" class="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-slate-200">
+                <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> Akun Admin
+            </button>
+            @endcan
 
-                                @can('create user anak')
-                                    <button class="btn btn-success btn-sm m-1" data-toggle="modal"
-                                        data-target="#tambahModalAnak">
-                                        <i class="fa fa-plus mr-1"></i> Tambah User Anak
-                                    </button>
-                                @endcan
+            @can('create user anak')
+            <button @click="showTambahAnak = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-red-500 text-slate-600 hover:text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
+                <i data-lucide="baby" class="w-4 h-4"></i> Akun Anak
+            </button>
+            @endcan
 
-                                @can('create user terapis')
-                                    <button class="btn btn-warning btn-sm m-1" data-toggle="modal"
-                                        data-target="#tambahModalTerapis">
-                                        <i class="fa fa-plus mr-1"></i> Tambah User Terapis
-                                    </button>
-                                @endcan
+            @can('create user terapis')
+            <button @click="showTambahTerapis = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-blue-500 text-slate-600 hover:text-blue-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
+                <i data-lucide="heart" class="w-4 h-4"></i> Akun Terapis
+            </button>
+            @endcan
+        </div>
+    </div>
 
-                                @can('create user psikolog')
-                                    <button class="btn btn-danger btn-sm m-1" data-toggle="modal"
-                                        data-target="#tambahModalPsikolog">
-                                        <i class="fa fa-plus mr-1"></i> Tambah User Psikolog
-                                    </button>
-                                @endcan
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body p-3">
-                                <div class="table-responsive">
-                                    <table class="table table-hover text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Username</th>
-                                                <th>Email</th>
-                                                <th>Last Login</th>
-                                                <th>Status</th>
-                                                <th>Role</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($users as $user)
-                                                <tr>
-                                                    <td>{{ $users->firstItem() + $loop->iteration - 1 }}</td>
-                                                    <td>{{ $user->name }}</td>
-                                                    <td>{{ $user->username }}</td>
-                                                    <td>{{ $user->email }}</td>
-                                                    <td>{{ $user->last_login_duration }}</td>
-                                                    <td>
-                                                        <span
-                                                            class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        @if (!empty($user->getRoleNames()))
-                                                            @foreach ($user->getRoleNames() as $rolename)
-                                                                <span
-                                                                    class="badge bg-primary mx-1">{{ $rolename }}</span>
-                                                            @endforeach
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex flex-wrap">
-                                                            @can('update user')
-                                                                <button type="button" class="btn btn-outline-info btn-sm m-1"
-                                                                    data-toggle="modal" data-target="#editModal"
-                                                                    data-id="{{ $user->id }}"
-                                                                    data-name="{{ $user->name }}"
-                                                                    data-email="{{ $user->email }}"
-                                                                    data-username="{{ $user->username }}"
-                                                                    data-role="{{ $user->getRoleNames()->implode(',') }}">
-                                                                    <i class="fa fa-edit"></i>
-                                                                </button>
-                                                            @endcan
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card-premium p-6 bg-white border-none shadow-xl shadow-slate-100/50 flex items-center gap-6">
+            <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner">
+                <i data-lucide="users" class="w-7 h-7"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Pengguna</p>
+                <h3 class="text-2xl font-black text-slate-800 italic">{{ $users->total() }}</h3>
+            </div>
+        </div>
+        <div class="card-premium p-6 bg-white border-none shadow-xl shadow-slate-100/50 flex items-center gap-6">
+            <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 shadow-inner">
+                <i data-lucide="shield-check" class="w-7 h-7"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Roles Active</p>
+                <h3 class="text-2xl font-black text-slate-800 italic">{{ count($roles) }}</h3>
+            </div>
+        </div>
+        <div class="card-premium p-6 bg-slate-900 border-none shadow-xl shadow-slate-200/50 text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">System Security</p>
+                <h3 class="text-xl font-black italic text-emerald-400">ENCRYPTED</h3>
+            </div>
+            <i data-lucide="fingerprint" class="w-20 h-20 text-white/5 absolute -right-4 -bottom-4 group-hover:scale-110 transition-transform"></i>
+        </div>
+    </div>
 
-                                                            @can('delete user')
-                                                                <form
-                                                                    action="{{ route('users.destroy', ['user' => $user->id]) }}"
-                                                                    method="POST" class="d-inline m-1">
-                                                                    @csrf @method('DELETE')
-                                                                    <button type="submit"
-                                                                        class="btn btn-outline-danger btn-sm btn-hapus"
-                                                                        title="Hapus Data" data-name="{{ $user->name }}"
-                                                                        data-table="user">
-                                                                        <i class="fa fa-trash fa-fw"></i>
-                                                                    </button>
-                                                                </form>
-                                                            @endcan
+    <!-- Main Table Card -->
+    <div class="card-premium overflow-hidden bg-white shadow-xl shadow-slate-200/50">
+        <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                <i data-lucide="database" class="w-4 h-4 text-red-500"></i> REPOSITORY LOGIN DATA
+            </h3>
+        </div>
 
-                                                            @can('update status user')
-                                                                <form action="{{ route('users.update-status', $user->id) }}"
-                                                                    method="POST" class="d-inline m-1">
-                                                                    @csrf
-                                                                    @method('PATCH')
-                                                                    <input type="hidden" name="is_active"
-                                                                        value="{{ $user->is_active ? 0 : 1 }}">
-                                                                    <button type="submit"
-                                                                        class="btn btn-sm {{ $user->is_active ? 'btn-warning' : 'btn-success' }}">
-                                                                        {{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                                    </button>
-                                                                </form>
-                                                            @endcan
-
-
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="6" class="text-center">Data tidak ada...</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-12">#</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identitas Pengguna</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Kontak / Login</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status / Last Login</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Otoritas (Role)</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Manajemen</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse ($users as $user)
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-6 py-4 text-xs font-bold text-slate-300 italic">#{{ $users->firstItem() + $loop->iteration - 1 }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-black text-[10px] uppercase">
+                                    {{ substr($user->name, 0, 2) }}
                                 </div>
-                                <div class="d-flex justify-content-center mt-3">
-                                    {{ $users->fragment('judul')->links() }}
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-black text-slate-800 uppercase italic tracking-tight group-hover:text-red-600 transition-colors leading-none mb-1">{{ $user->name }}</span>
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter italic">UID: {{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
                                 </div>
                             </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-600 tracking-tight leading-none mb-1">{{ $user->email ?? '-' }}</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">{{ $user->username }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col gap-1.5">
+                                <span class="px-2 py-0.5 {{ $user->is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100' }} border rounded text-[9px] font-black uppercase tracking-widest w-max">
+                                    {{ $user->is_active ? 'Aktif' : 'Suspended' }}
+                                </span>
+                                <span class="text-[10px] font-bold text-slate-400 italic leading-none">{{ $user->last_login_duration ?? 'Belum pernah login' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-black">
+                            <div class="flex flex-wrap gap-1">
+                                @forelse ($user->getRoleNames() as $rolename)
+                                    <span class="px-2 py-1 bg-slate-900 text-white rounded-lg text-[9px] font-black uppercase tracking-tighter">{{ $rolename }}</span>
+                                @empty
+                                    <span class="text-slate-300 italic text-[10px]">No Role</span>
+                                @endforelse
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-2 opacity-20 group-hover:opacity-100 transition-opacity">
+                                @can('update user')
+                                <button type="button" @click="openEdit({
+                                    id: '{{ $user->id }}',
+                                    name: '{{ $user->name }}',
+                                    username: '{{ $user->username }}',
+                                    email: '{{ $user->email }}',
+                                    roles: @json($user->getRoleNames())
+                                })" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                @endcan
 
+                                @can('update status user')
+                                <form action="{{ route('users.update-status', $user->id) }}" method="POST" class="inline">
+                                    @csrf @method('PATCH')
+                                    <input type="hidden" name="is_active" value="{{ $user->is_active ? 0 : 1 }}">
+                                    <button type="submit" class="p-2 {{ $user->is_active ? 'bg-amber-50 text-amber-600 hover:bg-amber-600' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600' }} rounded-xl hover:text-white transition-all shadow-sm border border-amber-100" 
+                                            title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                        <i data-lucide="{{ $user->is_active ? 'user-minus' : 'user-check' }}" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                @endcan
 
-    {{-- Modal Tambah user --}}
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white d-flex justify-content-center">
-                    <h5 class="modal-title" id="tambahModalLabel">Tambah User</h5>
-                </div>
-                <form action="{{ route('users.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <input type="hidden" name="form" value="tambah">
-                            <label for="tambahInputMobile" class="col-sm-4 col-form-label">Nama</label>
-                            <div class="col-sm-8">
-                                <input id="name" type="text"
-                                    class="form-control @error('name') is-invalid @enderror" name="name"
-                                    value="{{ old('name') }}" required autocomplete="name" autofocus>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                @can('delete user')
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus"
+                                            data-name="{{ $user->name }}">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                @endcan
                             </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="tambahInputMobile" class="col-sm-4 col-form-label">Username</label>
-                            <div class="col-sm-8">
-                                <input id="username" type="text"
-                                    class="form-control @error('username') is-invalid @enderror" name="username"
-                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="p-20 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <i data-lucide="users-2" class="w-16 h-16 text-slate-100"></i>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Belum ada data user yang terdaftar</p>
                             </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="email" class="col-sm-4 col-form-label">{{ __('Email Address') }}</label>
-                            <div class="col-sm-8">
-                                <input id="email" type="email"
-                                    class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ old('email') }}" autocomplete="email">
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="password" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password" required
-                                    autocomplete="new-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password-confirm"
-                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="password-confirm" type="password" class="form-control"
-                                    name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label class="col-sm-4 col-form-label">{{ __('Roles') }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" name="roles[]" multiple>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role }}">{{ $role }}</option>
-                                    @endforeach
-                                </select>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">
-                            {{ __('Register') }}</button>
-                    </div>
-                </form>
-            </div>
+        <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-center">
+            {{ $users->links() }}
         </div>
     </div>
 
-    {{-- modal tambah user anak --}}
-    <div class="modal fade" id="tambahModalAnak" tabindex="-1" aria-labelledby="tambahModalLabelAnak"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white d-flex justify-content-center">
-                    <h5 class="modal-title" id="tambahModalLabelAnak">Tambah User Anak</h5>
-                </div>
-                <form action="{{ route('usersanak.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <label for="tambahInputMobilnama" class="col-sm-4 col-form-label">Anak</label>
-                            <div class="col-sm-8">
-                                <input type="hidden" name="formanak" value="tambahanak">
-                                <select class="form-control @error('name') is-invalid @enderror select2"
-                                    style="width:100%" name="name">
-                                    @forelse ($anaks as $anak)
-                                        <option value="{{ $anak->nama }}">{{ $anak->nama }}
-                                        </option>
-                                    @empty
-                                        <option>tidak ada data</option>
-                                    @endforelse
-                                </select>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="usernameanak" class="col-sm-4 col-form-label">Username</label>
-                            <div class="col-sm-8">
-                                <input id="usernameanak" type="text"
-                                    class="form-control @error('username') is-invalid @enderror" name="username"
-                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="passwordanak" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="passwordanak" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password" required
-                                    autocomplete="new-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password-confirmanak"
-                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="password-confirmanak" type="password" class="form-control"
-                                    name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="roleanak" class="col-sm-4 col-form-label">{{ __('Roles') }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" name="roles[]" multiple>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role }}">{{ $role }}</option>
-                                    @endforeach
-                                </select>
+    <!-- Modals (Alpine.js Powered) -->
 
-                            </div>
+    {{-- Modal Tambah User Admin --}}
+    <div x-show="showTambah" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div x-show="showTambah" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showTambah = false"></div>
+        
+        <div x-show="showTambah" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative w-full max-w-lg bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div class="bg-slate-900 text-white p-7 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><i data-lucide="user-plus" class="text-emerald-400"></i></div>
+                    <div class="space-y-0.5">
+                        <h5 class="text-sm font-black uppercase tracking-widest mb-0 leading-none">Registrasi Akun Admin</h5>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Membuat hak akses sistem level internal</p>
+                    </div>
+                </div>
+                <button @click="showTambah = false" class="text-slate-400 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="form" value="tambah">
+                <div class="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Lengkap</label>
+                            <input type="text" name="name" required class="form-modern-input" placeholder="Nama User">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Username</label>
+                            <input type="text" name="username" required class="form-modern-input" placeholder="login_id">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">
-                            {{ __('Register') }}</button>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Email</label>
+                        <input type="email" name="email" class="form-modern-input" placeholder="email@example.com">
                     </div>
-                </form>
-            </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password</label>
+                            <input type="password" name="password" required class="form-modern-input">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" required class="form-modern-input">
+                        </div>
+                    </div>
+                    <div class="space-y-2 font-bold">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Penugasan Role</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach ($roles as $role)
+                                <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                                    <input type="checkbox" name="roles[]" value="{{ $role }}" class="w-4 h-4 text-red-500 rounded border-slate-300 focus:ring-red-100">
+                                    <span class="text-[10px] font-black uppercase text-slate-600">{{ $role }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-6 flex justify-end gap-3">
+                    <button type="button" @click="showTambah = false" class="bg-white border border-slate-200 text-slate-500 py-3 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest">Batal</button>
+                    <button type="submit" class="bg-slate-900 hover:bg-black text-white py-3 px-10 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-200 italic transition-all">Submit Registration</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    {{-- modal tambah user Terapis --}}
-    <div class="modal fade" id="tambahModalTerapis" tabindex="-1" aria-labelledby="tambahModalLabelTerapis"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-white d-flex justify-content-center">
-                    <h5 class="modal-title" id="tambahModalLabelTerapis">Tambah User Terapis</h5>
+    {{-- Modal Edit User --}}
+    <div x-show="showEdit" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div x-show="showEdit" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEdit = false"></div>
+        
+        <div x-show="showEdit" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative w-full max-w-lg bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div class="bg-blue-600 text-white p-7 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><i data-lucide="user-cog" class="text-white"></i></div>
+                    <div class="space-y-0.5">
+                        <h5 class="text-sm font-black uppercase tracking-widest mb-0 leading-none italic">Update Metadata Account</h5>
+                        <p class="text-[9px] font-bold text-blue-100 uppercase tracking-tighter">Modifikasi profile dan link otoritas user</p>
+                    </div>
                 </div>
-                <form action="{{ route('usersterapis.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <label for="tambahInputMobilnama" class="col-sm-4 col-form-label">Terapis</label>
-                            <div class="col-sm-8">
-                                <input type="hidden" name="formterapis" value="tambahterapis">
-                                <select class="form-control @error('name') is-invalid @enderror select2"
-                                    style="width:100%" name="terapis">
-                                    @forelse ($terapis as $t)
-                                        <option value="{{ $t->id }}"
-                                            {{ old('terapis') == $t->id ? 'selected' : '' }}>
-                                            {{ $t->nama }}
-                                        </option>
-                                    @empty
-                                        <option>tidak ada data</option>
-                                    @endforelse
-                                </select>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="usernameterapis" class="col-sm-4 col-form-label">Username</label>
-                            <div class="col-sm-8">
-                                <input id="usernameterapis" type="text"
-                                    class="form-control @error('username') is-invalid @enderror" name="username"
-                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="emailterapis" class="col-sm-4 col-form-label">{{ __('Email Address') }}</label>
-                            <div class="col-sm-8">
-                                <input id="emailterapis" type="email"
-                                    class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ old('email') }}" required autocomplete="email">
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="passwordterapis" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="passwordterapis" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password" required
-                                    autocomplete="new-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password-confirmterapis"
-                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="password-confirmterapis" type="password" class="form-control"
-                                    name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="roleterapis" class="col-sm-4 col-form-label">{{ __('Roles') }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" name="roles[]" multiple>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role }}">{{ $role }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-warning">
-                            {{ __('Register') }}</button>
-                    </div>
-                </form>
+                <button @click="showEdit = false" class="text-blue-100 hover:text-white transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
+            <form :action="'{{ route('users.index') }}/' + editUser.id" method="POST">
+                @csrf @method('PUT')
+                <input type="hidden" name="form" value="edit">
+                <div class="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Lengkap</label>
+                            <input type="text" name="name" x-model="editUser.name" required class="form-modern-input">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Username</label>
+                            <input type="text" name="username" x-model="editUser.username" required class="form-modern-input">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Aktif</label>
+                        <input type="email" name="email" x-model="editUser.email" class="form-modern-input">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password Baru</label>
+                            <input type="password" name="password" class="form-modern-input" placeholder="Kosongkan jika tidak diubah">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Confirm Password</label>
+                            <input type="password" name="password_confirmation" class="form-modern-input">
+                        </div>
+                    </div>
+                    <div class="space-y-2 font-bold">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Penugasan Role</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach ($roles as $role)
+                                <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                                    <input type="checkbox" name="roles[]" value="{{ $role }}" 
+                                           :checked="editUser.roles.includes('{{ $role }}')"
+                                           class="w-4 h-4 text-blue-500 rounded border-slate-300 focus:ring-blue-100">
+                                    <span class="text-[10px] font-black uppercase text-slate-600">{{ $role }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-6 flex justify-end gap-3">
+                    <button type="button" @click="showEdit = false" class="bg-white border border-slate-200 text-slate-500 py-3 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest">Tutup</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-black text-white py-3 px-10 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-100 transition-all italic tracking-tight">Commit Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    {{-- modal tambah user Psikolog --}}
-    <div class="modal fade" id="tambahModalPsikolog" tabindex="-1" aria-labelledby="tambahModalLabelPsikolog"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white d-flex justify-content-center">
-                    <h5 class="modal-title" id="tambahModalLabelPsikolog">Tambah User Psikolog</h5>
-                </div>
-                <form action="{{ route('userspsikolog.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <label for="tambahInputMobilnama" class="col-sm-4 col-form-label">Psikolog</label>
-                            <div class="col-sm-8">
-                                <input type="hidden" name="formpsikolog" value="tambahpsikolog">
-                                <select class="form-control @error('name') is-invalid @enderror select2"
-                                    style="width:100%" name="name">
-                                    @forelse ($psikologs as $psikolog)
-                                        <option value="{{ $psikolog->nama }}">{{ $psikolog->nama }}
-                                        </option>
-                                    @empty
-                                        <option>tidak ada data</option>
-                                    @endforelse
-                                </select>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="usernamepsikolog" class="col-sm-4 col-form-label">Username</label>
-                            <div class="col-sm-8">
-                                <input id="usernamepsikolog" type="text"
-                                    class="form-control @error('username') is-invalid @enderror" name="username"
-                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="passwordterapis" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="passwordterapis" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password" required
-                                    autocomplete="new-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password-confirmterapis"
-                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="password-confirmterapis" type="password" class="form-control"
-                                    name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="roleterapis" class="col-sm-4 col-form-label">{{ __('Roles') }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" name="roles[]" multiple>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role }}">{{ $role }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-danger">
-                            {{ __('Register') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    {{-- modal edit --}}
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
-                </div>
-                <form id="editUserForm" action="{{ route('users.update', ':id') }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <label for="editName" class="col-sm-4 col-form-label">Nama</label>
-                            <div class="col-sm-8">
-                                <input type="hidden" name="form" value="edit">
-                                <input id="editName" type="text"
-                                    class="form-control @error('name') is-invalid @enderror " name="name"
-                                    value="{{ old('name') }}" required autocomplete="name" autofocus>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="editUsername" class="col-sm-4 col-form-label">Username</label>
-                            <div class="col-sm-8">
-                                <input id="editUsername" type="text"
-                                    class="form-control @error('username') is-invalid @enderror" name="username"
-                                    value="{{ old('username') }}" required autocomplete="username" autofocus>
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="editEmail" class="col-sm-4 col-form-label">{{ __('Email Address') }}</label>
-                            <div class="col-sm-8">
-                                <input id="editEmail" type="email"
-                                    class="form-control @error('email') is-invalid @enderror" name="email"
-                                    value="{{ old('email') }}" required autocomplete="email">
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="editPassword" class="col-sm-4 col-form-label">{{ __('Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="editPassword" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" name="password"
-                                    autocomplete="new-password" placeholder="ketik untuk mengubah kata sandi">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="password-confirm"
-                                class="col-sm-4 col-form-label">{{ __('Confirm Password') }}</label>
-                            <div class="col-sm-8">
-                                <input id="editPassword_confirmation" type="password" class="form-control"
-                                    name="password_confirmation" autocomplete="new-password">
-                            </div>
-                        </div>
-                        <div class="form-group row mb-3">
-                            <label for="validationCustom04" class="col-sm-4 col-form-label">{{ __('Level') }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" id="roles" name="roles[]" multiple>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role }}">{{ $role }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary"> Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
+</div>
 @endsection
+
 @section('scripts')
-    <script>
-        // Mengisi form modal edit dengan data pengguna
-        $('#editModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button yang diklik
-            var id = button.data('id');
-            var name = button.data('name');
-            var email = button.data('email');
-            var username = button.data('username');
-            let roles = button.data('role').split(',');
-
-            // Isi form dengan data pengguna
-            var modal = $(this);
-            modal.find('#editName').val(name);
-            modal.find('#editEmail').val(email);
-            modal.find('#editUsername').val(username);
-
-            // Reset dan isi ulang select role
-            let rolesSelect = modal.find('#roles');
-            rolesSelect.val([]).trigger('change'); // Reset value
-            roles.forEach(role => {
-                rolesSelect.find(`option[value="${role}"]`).prop('selected', true);
-            });
-            rolesSelect.trigger('change'); // Refresh tampilan select2
-
-            // Update action form
-            var actionUrl = "{{ route('users.update', ':id') }}".replace(':id', id);
-            modal.find('#editUserForm').attr('action', actionUrl);
-        })
-
-        let isErrorTambah = @json($errors->any() && old('form') == 'tambah');
-        if (isErrorTambah) {
-            $('#tambahModal').modal('show');
-        }
-
-        let isErrorTambahAnak = @json($errors->any() && old('formanak') == 'tambahanak');
-        if (isErrorTambahAnak) {
-            $('#tambahModalAnak').modal('show');
-        }
-
-        let isErrorTambahTerapis = @json($errors->any() && old('formterapis') == 'tambahterapis');
-        if (isErrorTambahTerapis) {
-            $('#isErrorTambahTerapis').modal('show');
-        }
-
-        let isErrorTambahPsikolog = @json($errors->any() && old('formpsikolog') == 'tambahpsikolog');
-        if (isErrorTambahPsikolog) {
-            $('#isErrorTambahPsikolog').modal('show');
-        }
-
-        let iserror_edit = @json ($errors->any() && old('form') == 'edit');
-        if (iserror_edit) {
-            $('#editModal').modal('show');
-        }
-    </script>
-
+<style>
+    .form-modern-input {
+        width: 100%;
+        background-color: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 1rem;
+        padding: 0.875rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1e293b;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+    .form-modern-input:focus {
+        background-color: #ffffff;
+        border-color: #ef4444;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() { 
+        if(typeof lucide !== 'undefined') lucide.createIcons(); 
+    });
+</script>
 @endsection

@@ -29,15 +29,24 @@ class QuestionController extends Controller
         ]);
 
         $questions = Question::create($validateData);
-        Alert::success('Berhasil', "Data Question berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil dibuat");
     }
 
     public function hapus_pendengaran(Question $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "questions di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "questions di hapus");
+    }
+
+    public function qpendengaran_update(Request $request, $id)
+    {
+        $q = Question::findOrFail($id);
+        $validateData = $request->validate([
+            'age_group_id' => 'required|exists:App\Models\AgeGroup,id',
+            'question_text' => 'required',
+        ]);
+        $q->update($validateData);
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 
     public function umur()
@@ -52,15 +61,21 @@ class QuestionController extends Controller
             'nama' => 'required',
         ]);
         $ageGroups = AgeGroup::create($validateData);
-        Alert::success('Berhasil', "Data umur $request->nama berhasil dibuat");
-        return redirect("/q-umur");
+        return redirect("/q-umur")->with('success', "Data umur $request->nama berhasil dibuat");
     }
 
     public function hapus_umur(AgeGroup $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "$id->nama telah di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "$id->nama telah di hapus");
+    }
+
+    public function age_update(Request $request, $id)
+    {
+        $age = AgeGroup::findOrFail($id);
+        $validateData = $request->validate(['nama' => 'required']);
+        $age->update($validateData);
+        return redirect()->back()->with('success', "Data Umur berhasil di Update");
     }
 
     public function q_penglihatan()
@@ -82,15 +97,24 @@ class QuestionController extends Controller
         ]);
 
         $questions = QuestionPenglihatan::create($validateData);
-        Alert::success('Berhasil', "Data Question berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil dibuat");
     }
 
     public function penglihatan_destroy(QuestionPenglihatan $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "questions di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "questions di hapus");
+    }
+
+    public function qpenglihatan_update(Request $request, $id)
+    {
+        $q = QuestionPenglihatan::findOrFail($id);
+        $validateData = $request->validate([
+            'question_text' => 'required',
+            'interpretasi' => 'required',
+        ]);
+        $q->update($validateData);
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 
     public function q_perilaku()
@@ -108,8 +132,7 @@ class QuestionController extends Controller
         ]);
 
         $qperilaku->update($validateData);
-        Alert::success('Berhasil', "Data Question berhasil di Update");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 
     public function perilaku_store(Request $request)
@@ -119,15 +142,13 @@ class QuestionController extends Controller
         ]);
 
         $questions = QuestionPerilaku::create($validateData);
-        Alert::success('Berhasil', "Data Question berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil dibuat");
     }
 
     public function perilaku_destroy(QuestionPerilaku $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "questions di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "questions di hapus");
     }
 
     public function q_autis()
@@ -148,15 +169,24 @@ class QuestionController extends Controller
 
         $questions = QuestionAutis::create($validateData);
 
-        Alert::success('Berhasil', "Data Question berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil dibuat");
     }
 
     public function autis_destroy(QuestionAutis $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "questions di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "questions di hapus");
+    }
+
+    public function qautis_update(Request $request, $id)
+    {
+        $q = QuestionAutis::findOrFail($id);
+        $validateData = $request->validate([
+            'question_text' => 'required',
+            'no_urut' => 'required|integer|min:1',
+        ]);
+        $q->update($validateData);
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 
     public function q_gpph()
@@ -173,15 +203,21 @@ class QuestionController extends Controller
 
         $questions = QuestionGpph::create($validateData);
 
-        Alert::success('Berhasil', "Data Question berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question berhasil dibuat");
     }
 
     public function gpph_destroy(QuestionGpph $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "questions di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "questions di hapus");
+    }
+
+    public function qgpph_update(Request $request, $id)
+    {
+        $qgpph = QuestionGpph::findOrFail($id);
+        $validateData = $request->validate(['question_text' => 'required']);
+        $qgpph->update($validateData);
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 
     public function q_wawancara()
@@ -198,14 +234,20 @@ class QuestionController extends Controller
 
         $questions = QuestionWawancara::create($validateData);
 
-        Alert::success('Berhasil', "Data Question Wawancara berhasil dibuat");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Question Wawancara berhasil dibuat");
     }
 
     public function wawancara_destroy(QuestionWawancara $id)
     {
         $id->delete();
-        Alert::success('Berhasil', "Questions Wawancara di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Questions Wawancara di hapus");
+    }
+
+    public function qwawancara_update(Request $request, $id)
+    {
+        $qwawancara = QuestionWawancara::findOrFail($id);
+        $validateData = $request->validate(['question_text' => 'required']);
+        $qwawancara->update($validateData);
+        return redirect()->back()->with('success', "Data Question berhasil di Update");
     }
 }

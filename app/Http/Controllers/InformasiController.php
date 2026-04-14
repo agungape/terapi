@@ -30,7 +30,6 @@ class InformasiController extends Controller
             'informasi' => $request->informasi,
         ]);
 
-        Alert::success('Berhasil', "Informasi telah di update");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Informasi telah di update");
     }
 }

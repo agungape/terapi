@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Program extends Model
 {
@@ -12,13 +12,19 @@ class Program extends Model
 
     use HasFactory;
 
-    public function pemeriksaan(): HasOne
+    /**
+     * BUGFIX: sebelumnya hasOne — satu program bisa punya BANYAK pemeriksaan.
+     */
+    public function pemeriksaans(): HasMany
     {
-        return $this->hasOne('App\Models\Pemeriksaan');
+        return $this->hasMany('App\Models\Pemeriksaan');
     }
 
-    public function fisioterapis(): HasOne
+    /**
+     * BUGFIX: sebelumnya hasOne — satu program bisa punya BANYAK fisioterapi.
+     */
+    public function fisioterapis(): HasMany
     {
-        return $this->hasOne('App\Models\Fisioterapi');
+        return $this->hasMany('App\Models\Fisioterapi');
     }
 }

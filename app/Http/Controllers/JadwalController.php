@@ -133,9 +133,8 @@ class JadwalController extends Controller
         $data['pertemuan'] = $kunjungan_terakhirHasil;
 
         $jadwal = Jadwal::create($data);
-        Alert::success('Berhasil', "Data Jadwal berhasil dibuat");
 
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Jadwal berhasil dibuat");
     }
 
     /**
@@ -201,8 +200,7 @@ class JadwalController extends Controller
         $data['pertemuan'] = $jadwal->pertemuan;
 
         $jadwal->update($data);
-        Alert::success('Berhasil', "Data Jadwal berhasil diupdate");
-        return redirect()->route('jadwal.index');
+        return redirect()->route('jadwal.index')->with('success', "Data Jadwal berhasil diupdate");
     }
 
     /**
@@ -211,7 +209,6 @@ class JadwalController extends Controller
     public function destroy(Jadwal $jadwal)
     {
         $jadwal->delete();
-        Alert::success('Berhasil', "jadwal telah di hapus");
-        return redirect("/jadwal");
+        return redirect("/jadwal")->with('success', "jadwal telah di hapus");
     }
 }

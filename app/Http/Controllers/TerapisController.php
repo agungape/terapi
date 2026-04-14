@@ -23,10 +23,28 @@ class TerapisController extends Controller
         $this->middleware('permission:delete foto terapis', ['only' => ['deleteFoto']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $terapis = Terapis::orderBy('status', 'asc')->paginate(5);
-        return view('terapis.index', ['terapis' => $terapis]);
+        $query = Terapis::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', "%$search%")
+                  ->orWhere('nib', 'like', "%$search%")
+                  ->orWhere('telepon', 'like', "%$search%")
+                  ->orWhere('alamat', 'like', "%$search%");
+            });
+        }
+
+        $terapis = $query->orderBy('status', 'asc')->paginate(5)->withQueryString();
+        
+        // Calculate next ID for the modal
+        $lastTerapis = Terapis::orderBy('id', 'desc')->first();
+        $nextId = $lastTerapis ? $lastTerapis->id + 1 : 1;
+        $newNib = 'BSC' . str_pad($nextId, 2, '0', STR_PAD_LEFT);
+
+        return view('terapis.index', compact('terapis', 'newNib'));
     }
 
     /**
@@ -34,27 +52,9 @@ class TerapisController extends Controller
      */
     public function create()
     {
-        $lastTerapis = Terapis::orderBy('nib', 'desc')->first();
-        $role = [
-            'terapi_perilaku' => 'Terapi Perilaku',
-            'fisioterapi' => 'Fisioterapi & Sensori Integrasi'
-        ];
-
-        // Jika tidak ada terapis, mulai dengan BSC01
-        if ($lastTerapis) {
-            // Mengambil angka terakhir dari nib (kode terapis)
-            preg_match('/\d+/', $lastTerapis->nib, $matches);
-            $lastNumber = (int)$matches[0];
-
-            // Menambahkan 1 untuk kode baru
-            $newNumber = $lastNumber + 1;
-
-            // Format kode baru dengan menambahkan 0 di depan agar totalnya 5 karakter
-            $newKode = 'BSC' . str_pad($newNumber, 2, '0', STR_PAD_LEFT);  // Menggunakan 2 digit angka setelah BSC
-        } else {
-            // Jika belum ada terapis, mulai dengan BSC01
-            $newKode = 'BSC01';
-        }
+        $lastTerapis = Terapis::orderBy('id', 'desc')->first();
+        $nextId = $lastTerapis ? $lastTerapis->id + 1 : 1;
+        $newKode = 'BSC' . str_pad($nextId, 2, '0', STR_PAD_LEFT);
 
         // Membuat objek baru untuk terapis
         $terapi = new Terapis();
@@ -70,16 +70,27 @@ class TerapisController extends Controller
     {
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:5|unique:terapis,nib',
-            'nama' => 'required',
-            'alamat' => 'required',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string',
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
-            'role' => 'nullable',
+            'perguruan_tinggi' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'role' => 'required',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
+        if ($request->file('foto')) {
+            $file = $request->file('foto');
+            $extFile = $file->getClientOriginalExtension();
+            $namaFile = "terapis-" . time() . "." . $extFile;
+            $path = 'terapis/' . $namaFile;
+            Storage::disk('public')->put($path, file_get_contents($file));
+            $validateData['foto'] = $namaFile;
+        }
+
         $terapis = Terapis::create($validateData);
-        Alert::success('Berhasil', "Data Terapis $request->nama berhasil dibuat");
-        return redirect("/terapis");
+        return redirect("/terapis")->with('success', "Data Terapis $request->nama berhasil dibuat");
     }
 
     /**
@@ -115,14 +126,14 @@ class TerapisController extends Controller
     {
         $validateData = $request->validate([
             'nib' => 'required|alpha_num|size:5|unique:terapis,nib,' . $terapi->id,
-            'nama' => 'required',
+            'nama' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date|before_or_equal:today',
             'telepon' => 'required|numeric',
-            'alamat' => 'required',
-            'perguruan_tinggi' => 'required',
-            'jurusan' => 'required',
-            'role' => 'nullable',
-            'status' => 'required',
+            'alamat' => 'required|string',
+            'perguruan_tinggi' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'role' => 'required',
+            'status' => 'required|in:aktif,nonaktif',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         ]);
 
@@ -144,9 +155,8 @@ class TerapisController extends Controller
         }
 
         $terapi->update($validateData);
-        Alert::success('Berhasil', "Terapis $request->nama telah di update");
         // Trik agar halaman kembali ke halaman asal
-        return redirect()->back();
+        return redirect()->back()->with('success', "Terapis $request->nama telah di update");
     }
 
     /**
@@ -155,8 +165,7 @@ class TerapisController extends Controller
     public function destroy(Terapis $terapi)
     {
         $terapi->delete();
-        Alert::success('Berhasil', "$terapi->nama telah di hapus");
-        return redirect("/terapis");
+        return redirect("/terapis")->with('success', "$terapi->nama telah di hapus");
     }
 
     public function deleteFoto($id)
@@ -172,11 +181,9 @@ class TerapisController extends Controller
             // Update kolom foto di database menjadi null
             $terapis->update(['foto' => null]);
 
-            // Notifikasi sukses
-            Alert::success('Berhasil', "Foto terapis {$terapis->nama} berhasil dihapus");
+            return redirect()->back()->with('success', "Foto terapis {$terapis->nama} berhasil dihapus");
         } else {
-            // Notifikasi jika tidak ada foto
-            Alert::warning('Gagal', "terapis {$terapis->nama} tidak memiliki foto untuk dihapus");
+            return redirect()->back()->with('error', "terapis {$terapis->nama} tidak memiliki foto untuk dihapus");
         }
 
         return redirect()->back();
@@ -209,8 +216,7 @@ class TerapisController extends Controller
         $data['sertifikat'] = $namaFile;
 
         TerapisPelatihan::create($data);
-        Alert::success('Berhasil', "Sertifikat berhasil Di Upload");
-        return redirect('/terapis/' . $request->terapis_id);
+        return redirect('/terapis/' . $request->terapis_id)->with('success', "Sertifikat berhasil Di Upload");
     }
 
     public function sertifikat_show($sertifikat)

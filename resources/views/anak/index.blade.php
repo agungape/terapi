@@ -1,245 +1,327 @@
 @extends('layouts.master')
-@section('menuMaster', 'active')
-@section('masterShow', 'menu-is-opening menu-open')
-@section('menuAnak', 'active')
+@section('title', 'Data Anak')
+
 @section('content')
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Anak</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Anak</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<div class="space-y-8 animate-in fade-in duration-500"
+     x-data="{ 
+        showProgressModal: false, 
+        selectedPackages: [], 
+        selectedAnakName: '',
+        openProgress(name, packages) {
+            this.selectedAnakName = name;
+            this.selectedPackages = packages;
+            this.showProgressModal = true;
+        }
+     }">
+    
+    <!-- Top Bar / Breadcrumb -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-slate-600">Master Data Anak</span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <form action="{{ route('anak.index') }}" method="GET" class="relative group">
+                <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-500 transition-colors"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / NIB..." 
+                       class="bg-white border border-slate-200 rounded-xl pl-11 pr-4 py-2.5 text-xs font-bold focus:ring-4 focus:ring-red-50 focus:border-red-200 outline-none w-64 transition-all shadow-sm">
+            </form>
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row text-center">
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>{{ $aktif ?? 0 }}</h3>
-                                <p>Anak Aktif</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-android-notifications"></i>
-                            </div>
-                        </div>
-                    </div>
+            @can('create anak')
+            <a href="{{ route('anak.create') }}" class="bg-red-500 hover:bg-red-600 text-white py-2.5 px-6 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-red-200">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah Data Anak
+            </a>
+            @endcan
+        </div>
+    </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>{{ $nonaktif ?? 0 }}</h3>
-                                <p>Anak Tidak Aktif</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-android-notifications-off"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{ $pria }}</h3>
-                                <p>Anak Laki-Laki</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-male"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>{{ $wanita }}</h3>
-                                <p>Anak Perempuan</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-female"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            @can('create anak')
-                                <div class="card-header">
-                                    <a href="{{ route('anak.create') }}" class="btn btn-primary btn-sm"><i class="fa fa-plus">
-                                        </i> Tambah data
-                                    </a>
-                                </div>
-                            @endcan
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th> Aksi</th>
-                                            <th> Foto</th>
-                                            <th> Nama </th>
-                                            <th> Usia </th>
-                                            <th> Progres </th>
-                                            <th> Alamat </th>
-                                            <th> status </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @forelse ($anaks as  $anak)
-                                            <tr>
-                                                <td style="vertical-align: middle;">
-                                                    @can('delete anak')
-                                                        <form action="{{ route('anak.destroy', ['anak' => $anak->id]) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $anak->nama }}"
-                                                                data-table="anak">
-                                                                <i class="fa fa-trash fa-fw"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endcan
-                                                    @can('update anak')
-                                                        <a href="{{ route('anak.edit', ['anak' => $anak->id]) }}"
-                                                            class="btn btn-warning btn-sm">
-                                                            <i class="fa fa-edit"></i></a>
-                                                    @endcan
-                                                    @can('show anak')
-                                                        <a href="{{ route('anak.show', ['anak' => $anak->id]) }}"
-                                                            class="btn btn-info btn-sm">
-                                                            <i class="fas fa-address-card"></i>
-                                                        </a>
-                                                    @endcan
-                                                </td>
-                                                <td style="vertical-align: middle;"><img
-                                                        class="profile-user-img img-circle fixed-size"
-                                                        src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}"
-                                                        alt="User profile picture">
-                                                </td>
-                                                <td style="vertical-align: middle;">
-                                                    {{ $anak->nama }}
-                                                </td>
-                                                <td style="vertical-align: middle;"> {{ $anak->usia }} Tahun </td>
-
-                                                <td class="project_progress" style="vertical-align: middle;">
-                                                    <div class="progress progress-sm">
-                                                        <div class="progress-bar bg-green" role="progressbar"
-                                                            aria-valuenow="{{ $anak->progresnilai }}" aria-valuemin="0"
-                                                            aria-valuemax="100" style="width:  {{ $anak->progresnilai }}%">
-                                                        </div>
-                                                    </div>
-                                                    <small>
-                                                        {{ $anak->progresnilai }}% Selesai
-                                                    </small>
-                                                </td>
-
-                                                <td style="vertical-align: middle;"> {{ $anak->alamat }} </td>
-
-
-                                                <td style="vertical-align: middle;">
-                                                    @can('update anak')
-                                                        <form action="{{ route('anak.status') }}" method="POST">
-                                                            @csrf
-                                                            <input type="checkbox" class="status-checkbox"
-                                                                id="status-checkbox-{{ $anak->id }}"
-                                                                data-id="{{ $anak->id }}"
-                                                                {{ $anak->status === 'aktif' ? 'checked' : '' }}
-                                                                data-bootstrap-switch data-off-color="danger"
-                                                                data-on-color="success">
-                                                        </form>
-                                                    @endcan
-                                                </td>
-
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center"> data tidak ada...</td>
-                                            </tr>
-                                        @endforelse
-
-                                    </tbody>
-                                </table>
-
-                                <div class="mx-4 mt-3">
-                                    {{ $anaks->fragment('judul')->links() }}
-                                </div>
-
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Aktif -->
+        <div class="card-premium p-6 group border-b-4 border-b-emerald-500">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Aktif</span>
+                <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
                 </div>
             </div>
-        </section>
+            <h3 class="text-3xl font-black text-slate-800 tracking-tight">{{ $aktif ?? 0 }}</h3>
+            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Pasien Mengikuti Program</p>
+        </div>
+
+        <!-- Nonaktif -->
+        <div class="card-premium p-6 group border-b-4 border-b-slate-300">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Rehat</span>
+                <div class="p-2 bg-slate-50 text-slate-400 rounded-lg group-hover:bg-slate-400 group-hover:text-white transition-all">
+                    <i data-lucide="pause-circle" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-black text-slate-800 tracking-tight">{{ $nonaktif ?? 0 }}</h3>
+            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Pasien Non-Aktif</p>
+        </div>
+
+        <!-- Laki-laki -->
+        <div class="card-premium p-6 group border-b-4 border-b-blue-500">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Male</span>
+                <div class="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-all">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-black text-slate-800 tracking-tight">{{ $pria }}</h3>
+            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Anak Laki-Laki</p>
+        </div>
+
+        <!-- Perempuan -->
+        <div class="card-premium p-6 group border-b-4 border-b-pink-400">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Female</span>
+                <div class="p-2 bg-pink-50 text-pink-500 rounded-lg group-hover:bg-pink-500 group-hover:text-white transition-all">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <h3 class="text-3xl font-black text-slate-800 tracking-tight">{{ $wanita }}</h3>
+            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Anak Perempuan</p>
+        </div>
     </div>
+
+    <!-- Data Table -->
+    <div class="card-premium overflow-hidden">
+        <div class="p-6 border-b border-slate-100 bg-white flex items-center justify-between">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-red-500"></i> LIST PASIEN TERDAFTAR
+            </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Biodata</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usia</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pencapaian / Progres</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse ($anaks as $anak)
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shadow-sm shrink-0">
+                                    <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" 
+                                         alt="Foto" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $anak->nama }}</h4>
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-tighter">NIB: {{ $anak->nib ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs font-bold text-slate-600">{{ $anak->usia }} Tahun</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($anak->active_packages->count() > 0)
+                            <button @click="openProgress('{{ addslashes($anak->nama) }}', {{ $anak->packages_data->toJson() }})" 
+                                    class="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-500 hover:text-white transition-all group">
+                                <span class="text-[10px] font-black uppercase tracking-tight">{{ $anak->active_packages->count() }} Paket Aktif</span>
+                                <i data-lucide="bar-chart-3" class="w-3 h-3 transition-transform group-hover:scale-110"></i>
+                            </button>
+                            @else
+                            <span class="text-[10px] font-bold text-slate-300 italic uppercase">Belum ada paket aktif</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 max-w-[200px]">
+                            <p class="text-[10px] font-bold text-slate-500 line-clamp-2 leading-relaxed tracking-tight">{{ $anak->alamat }}</p>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @can('update anak')
+                            <div class="flex justify-center">
+                                <label class="relative inline-flex items-center cursor-pointer group">
+                                    <input type="checkbox" class="sr-only peer status-toggle" 
+                                           data-id="{{ $anak->id }}" {{ $anak->status === 'aktif' ? 'checked' : '' }}>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
+                                </label>
+                            </div>
+                            @else
+                            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border {{ $anak->status === 'aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
+                                {{ $anak->status }}
+                            </span>
+                            @endcan
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2">
+                                @can('show anak')
+                                <a href="{{ route('anak.show', $anak->id) }}" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Profil">
+                                    <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
+                                </a>
+                                @endcan
+                                
+                                @can('update anak')
+                                <a href="{{ route('anak.edit', $anak->id) }}" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100" title="Edit">
+                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                </a>
+                                @endcan
+
+                                @can('delete anak')
+                                <form action="{{ route('anak.destroy', $anak->id) }}" method="POST" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus" data-name="{{ $anak->nama }}" data-table="anak" title="Hapus">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="6" class="px-6 py-20 text-center text-slate-300 italic font-bold">Data anak belum terdaftar</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">
+            {{ $anaks->fragment('judul')->links() }}
+        </div>
+    </div>
+    
+    {{-- Modal Progress --}}
+    <div x-show="showProgressModal" 
+         class="fixed inset-0 z-[999] flex items-center justify-center px-4 overflow-hidden"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak>
+        
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showProgressModal = false"></div>
+        
+        <div class="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+             @click.away="showProgressModal = false">
+            
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-br from-red-500 to-red-600 px-10 py-8 relative text-white">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mb-1">Rincian Progress Paket</p>
+                    <h3 class="text-2xl font-black tracking-tight" x-text="selectedAnakName"></h3>
+                </div>
+                <i data-lucide="activity" class="w-32 h-32 text-white/10 absolute -right-6 -bottom-6 rotate-12"></i>
+                <button @click="showProgressModal = false" type="button" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors z-50 p-2">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-10 py-10 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                <template x-for="(pkg, index) in selectedPackages" :key="index">
+                    <div class="space-y-4 p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight" x-text="pkg.label"></h4>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase mt-0.5 tracking-widest" x-text="`Sesi: ${pkg.used} / ${pkg.total}`"></p>
+                            </div>
+                            <span class="text-lg font-black text-red-500" x-text="`${pkg.percent}%`"></span>
+                        </div>
+                        
+                        <div class="w-full h-3 bg-white rounded-full overflow-hidden border border-slate-100">
+                            <div class="h-full bg-red-500 rounded-full shadow-[0_0_12px_rgba(239,68,68,0.3)] transition-all duration-1000" 
+                                 :style="`width: ${pkg.percent}%`"
+                                 x-init="setTimeout(() => $el.style.width = pkg.percent + '%', 100)"></div>
+                        </div>
+
+                        <div class="flex justify-between items-center text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                            <span x-text="`${pkg.total - pkg.used} Sesi Tersisa`"></span>
+                            <span x-text="pkg.percent === 100 ? 'Selesai' : 'Berjalan'"></span>
+                        </div>
+                    </div>
+                </template>
+                
+                <template x-if="selectedPackages.length === 0">
+                    <div class="py-12 text-center text-slate-300 italic font-bold">
+                        Tidak ada paket aktif yang ditemukan
+                    </div>
+                </template>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-10 py-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button @click="showProgressModal = false" 
+                        class="bg-white border border-slate-200 text-slate-600 py-3 px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function() {
-            // Inisialisasi Bootstrap Switch
-            $("input[data-bootstrap-switch]").bootstrapSwitch();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
 
-            // Ketika checkbox diubah
-            $('.status-checkbox').on('switchChange.bootstrapSwitch', function(event, state) {
-                var anakId = $(this).data('id'); // Ambil ID anak dari atribut data-id
+        // AJAX Status Toggle Logic
+        $('.status-toggle').on('change', function() {
+            const anakId = $(this).data('id');
+            const state = $(this).is(':checked');
 
-                // Kirim request AJAX untuk mengubah status anak
-                $.ajax({
-                    url: "{{ route('anak.status') }}",
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id: anakId,
-                        status: state ? 'aktif' : 'nonaktif'
-                    },
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            // Tampilkan SweetAlert jika sukses
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            // Tampilkan SweetAlert jika terjadi kesalahan
-                            Swal.fire({
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat mengubah status anak.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        // Tampilkan SweetAlert untuk error
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Terjadi kesalahan: ' + xhr.responseText,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+            $.ajax({
+                url: "{{ route('anak.status') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: anakId,
+                    status: state ? 'aktif' : 'nonaktif'
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Toast.fire({ icon: 'success', title: 'Status berhasil diperbarui' });
+                    } else {
+                        Toast.fire({ icon: 'error', title: 'Gagal memperbarui status' });
                     }
-                });
+                },
+                error: function() {
+                    Toast.fire({ icon: 'error', title: 'Terjadi kesalahan sistem' });
+                }
             });
         });
-    </script>
+
+        // SweetAlert Delete Confirmation
+        $('.btn-hapus').on('click', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            const name = $(this).data('name');
+
+            Swal.fire({
+                title: 'Hapus Data Anak?',
+                text: "Anda akan menghapus data " + name + ". Tindakan ini tidak dapat dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#f1f5f9',
+                confirmButtonText: 'Ya, Hapus Data!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-[2rem] border-none shadow-2xl',
+                    confirmButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest',
+                    cancelButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest text-slate-500'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endsection

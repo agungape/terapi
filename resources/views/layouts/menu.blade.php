@@ -75,6 +75,15 @@
                                 </a>
                             </li>
                         @endcan
+                        
+                        @if (Auth::user()->hasAnyRole(['admin', 'super-admin']))
+                            <li class="nav-item">
+                                <a href="/alat-ukur" class="nav-link @yield('menuAlatUkur')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Alat Ukur</p>
+                                </a>
+                            </li>
+                        @endif
 
                         @can('view program anak')
                             <li class="nav-item">

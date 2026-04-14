@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-50 text-slate-800;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/90 backdrop-blur-md;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-2xl transition-all duration-200 font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-50;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-red-50 text-red-700 font-bold;
+  }
+
+  .card-premium {
+    @apply bg-white rounded-2xl border border-slate-200/80 shadow-[4px_0_24px_rgba(0,0,0,0.04)] overflow-hidden;
+  }
+
+  /* Global Pagination Premium Style */
+  .pagination-container nav {
+    @apply flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100;
+  }
+}
+
+/* Custom Scrollbar MCU Style */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #f1e2e2;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e1cbcb;
+}
+
+[x-cloak] { display: none !important; }

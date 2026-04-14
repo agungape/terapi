@@ -1,209 +1,210 @@
 @extends('layouts.master')
-@section('menuInformasiprofile', 'active')
-@section('masterInformasiprofile', 'menu-is-opening menu-open')
-@section('menuProfileuser', 'active')
+@section('title', 'Profil Saya')
+
 @section('content')
-
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Profile</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Profile</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <!-- Main content -->
-        <section class="content">
-            <!-- Default box -->
-            <div class="card">
-                <div class="card-body">
-                    @if ($terapis == null)
-                        <p>Tampilan Khusus Terapis</p>
-                    @else
-                        <div class="row">
-                            <!-- Bagian Logo -->
-
-                            <div class="col-md-5 col-12 text-center d-flex align-items-center justify-content-center mb-3">
-                                <form method="POST" action="{{ route('terapis.update', ['terapi' => $terapis->id]) }}"
-                                    enctype="multipart/form-data">
-                                    @method('PATCH')
-                                    @csrf
-                                    <div class="form-group row">
-                                        <div class="card card-primary card-outline shadow-sm p-4">
-                                            <h4 class="text-center">Upload Foto</h4>
-
-                                            <div class="mb-2 text-center">
-                                                <img id="previewImage"
-                                                    src="{{ asset($terapis->foto ? 'storage/terapis/' . $terapis->foto : 'assets/images/faces/face1.jpg') }}"
-                                                    class="rounded-circle img-thumbnail"
-                                                    style="width: 150px; height: 150px; object-fit: cover;">
-                                            </div>
-
-
-                                            <div class="mb-3 text-center">
-                                                <input type="file" name="foto" id="photoInput"
-                                                    class="form-control d-none" accept="image/*">
-                                                <button type="button" id="uploadButton" class="btn btn-primary">
-                                                    <i class="bi bi-upload"></i>
-                                                    {{ $terapis->foto ? 'Ubah Foto' : 'Upload Gambar' }}
-                                                </button>
-                                            </div>
-
-                                            <div class="text-center">
-                                                @if ($terapis->foto)
-                                                    <a href="{{ route('delete.fototerapis', $terapis->id) }}"
-                                                        class="btn btn-danger">Hapus
-                                                        Foto</a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                            </div>
-
-                            <!-- Bagian Form -->
-                            <div class="col-md-7 col-12">
-
-                                <!-- Nama -->
-                                <div class="form-group row">
-                                    <label for="inputName" class="col-sm-4 col-form-label">Nama</label>
-                                    <div class="col-sm-8">
-
-
-                                        {{-- hidden --}}
-                                        <input type="text" id="nib"
-                                            class="form-control @error('nib') is-invalid @enderror" name="nib"
-                                            value="{{ old('nib') ?? ($terapis->nib ?? '') }}" hidden>
-                                        <input type="text" id="status"
-                                            class="form-control @error('status') is-invalid @enderror" name="status"
-                                            value="{{ old('status') ?? ($terapis->status ?? '') }}" hidden>
-                                        {{-- hidden --}}
-
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                            name="nama" autofocus value="{{ old('nama') ?? ($terapis->nama ?? '') }}"
-                                            readonly>
-                                        @error('nama')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <!-- Nama Aplikasi -->
-                                <div class="form-group row">
-                                    <label for="tanggal_lahir" class="col-sm-4 col-form-label">Taggal Lahir</label>
-                                    <div class="col-sm-8">
-                                        <input type="date"
-                                            class="form-control @error('tanggal_lahir') is-invalid @enderror"
-                                            data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy"
-                                            data-mask name="tanggal_lahir"
-                                            value="{{ old('tanggal_lahir') ?? ($terapis->tanggal_lahir ?? '') }}">
-
-                                        @error('tanggal_lahir')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label for="inputSubject" class="col-sm-4 col-form-label">Perguruan Tinggi</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="inputSubject" name="perguruan_tinggi"
-                                            class="form-control @error('perguruan_tinggi') is-invalid @enderror"
-                                            value="{{ old('perguruan_tinggi') ?? ($terapis->perguruan_tinggi ?? '') }}"
-                                            placeholder="Universitas Halu Oleo" />
-                                    </div>
-                                    @error('perguruan_tinggi')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="form-group row">
-                                    <label for="inputSubject" class="col-sm-4 col-form-label">Jurusan</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="inputSubject" name="jurusan"
-                                            class="form-control @error('jurusan') is-invalid @enderror"
-                                            value="{{ old('jurusan') ?? ($terapis->jurusan ?? '') }}"
-                                            placeholder="S1 Psikologi" />
-                                    </div>
-                                    @error('jurusan')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                <!-- Telepon -->
-                                <div class="form-group row">
-                                    <label for="inputSubject" class="col-sm-4 col-form-label">Telepon</label>
-                                    <div class="col-sm-8">
-                                        <input type="text" id="inputSubject" name="telepon"
-                                            class="form-control @error('telepon') is-invalid @enderror"
-                                            value="{{ $terapis->telepon ?? '' }}" />
-                                    </div>
-                                    @error('telepon')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <!-- Alamat -->
-                                <div class="form-group row">
-                                    <label for="inputMessage" class="col-sm-4 col-form-label">Alamat</label>
-                                    <div class="col-sm-8">
-                                        <textarea id="inputMessage" class="form-control" name="alamat" rows="4">{{ $terapis->alamat }}</textarea>
-                                    </div>
-                                </div>
-                                <!-- Ketua -->
-                                <!-- Submit Button -->
-                                <div class="form-group row">
-                                    <div class="col-sm-12 text-right">
-                                        <button type="submit" class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-
-                            </div>
-                            </form>
-                        </div>
-
-                    @endif
-                </div>
+<div class="space-y-8 animate-in fade-in duration-500">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-slate-600">Akun</span>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-slate-600">Profil Saya</span>
             </div>
-        </section>
-
-        <!-- /.content -->
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Informasi Personal</h2>
+        </div>
     </div>
 
+    @if ($terapis == null)
+    <div class="card-premium p-12 bg-white flex flex-col items-center justify-center text-center">
+        <div class="w-20 h-20 bg-slate-50 rounded-[40px] flex items-center justify-center text-slate-200 mb-6 border border-slate-100 italic">
+            <i data-lucide="user-x" class="w-10 h-10"></i>
+        </div>
+        <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-2">Tampilan Khusus Terapis</h4>
+        <p class="text-[11px] text-slate-400 font-bold max-w-sm mb-8 leading-relaxed italic">Halaman ini dirancang khusus untuk manajemen profil tenaga terapis medis.</p>
+    </div>
+    @else
+    <form method="POST" action="{{ route('terapis.update', ['terapi' => $terapis->id]) }}" enctype="multipart/form-data">
+        @method('PATCH')
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Sidebar: Avatar & Status -->
+            <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-8">
+                <div class="card-premium p-8 bg-white text-center relative overflow-hidden group">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-slate-50 rounded-full group-hover:bg-red-50 transition-colors duration-500"></div>
+                    
+                    <div class="relative z-10 mx-auto w-40 h-40 rounded-full bg-white p-1.5 shadow-xl shadow-slate-200 rotate-1 group-hover:rotate-0 transition-transform duration-500">
+                        <div class="w-full h-full rounded-full overflow-hidden relative">
+                            <img id="previewImage" 
+                                 src="{{ asset($terapis->foto ? 'storage/terapis/' . $terapis->foto : 'assets/images/faces/face1.jpg') }}" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                 alt="Profile Avatar">
+                            <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer" id="uploadTriggerIcon">
+                                <i data-lucide="camera" class="w-8 h-8 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 space-y-4">
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ $terapis->nama }}</h3>
+                        <p class="text-[9px] font-black text-red-500 uppercase tracking-[0.2em] italic mb-6">Verified Practitioner</p>
+                        
+                        <div class="flex flex-col gap-3">
+                            <label for="photoInput" class="bg-slate-900 hover:bg-red-500 text-white py-3 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-pointer transition-all">
+                                <i data-lucide="upload" class="w-3.5 h-3.5 inline-block mr-2"></i> {{ $terapis->foto ? 'Ubah Foto Profil' : 'Upload Foto' }}
+                            </label>
+                            <input type="file" name="foto" id="photoInput" class="hidden" accept="image/*">
+                            
+                            @if ($terapis->foto)
+                            <a href="{{ route('delete.fototerapis', $terapis->id) }}" class="text-[10px] font-black text-red-500 uppercase tracking-widest hover:text-red-700 transition-colors py-2">
+                                <i data-lucide="trash-2" class="w-3 h-3 inline-block mr-1"></i> Hapus Foto
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-8 border-t border-slate-50 flex items-center justify-center gap-6">
+                        <div class="text-center">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-500 rounded text-[10px] font-black uppercase tracking-widest">Aktif</span>
+                        </div>
+                        <div class="w-px h-8 bg-slate-100"></div>
+                        <div class="text-center">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">NIB</p>
+                            <span class="text-[10px] font-black text-slate-800">{{ $terapis->nib ?? '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-premium p-8 bg-slate-900 text-white relative overflow-hidden group">
+                    <div class="relative z-10 space-y-4">
+                        <i data-lucide="award" class="w-8 h-8 text-red-500"></i>
+                        <p class="text-[10px] font-bold text-slate-400 leading-relaxed uppercase tracking-widest">Data yang Anda masukkan digunakan untuk administrasi laporan dan identitas pada sertifikat pelatihan.</p>
+                    </div>
+                    <div class="absolute -right-4 -bottom-4 text-white/5"><i data-lucide="user" class="w-24 h-24"></i></div>
+                </div>
+            </div>
+
+            <!-- Form: Detail Biography -->
+            <div class="lg:col-span-8">
+                <div class="card-premium bg-white">
+                    <div class="p-8 border-b border-slate-50">
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-[0.2em] flex items-center gap-3">
+                            <i data-lucide="user-edit" class="w-5 h-5 text-red-500"></i> Informasi Biografi
+                        </h3>
+                    </div>
+
+                    <div class="p-8 space-y-8">
+                        {{-- Data Hidden --}}
+                        <input type="hidden" name="nib" value="{{ $terapis->nib }}">
+                        <input type="hidden" name="status" value="{{ $terapis->status }}">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Nama Lengkap -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Lengkap</label>
+                                <div class="relative">
+                                    <i data-lucide="user" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    <input type="text" name="nama" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-xs font-bold text-slate-400 cursor-not-allowed italic" 
+                                           value="{{ $terapis->nama }}" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Tanggal Lahir -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Lahir</label>
+                                <div class="relative">
+                                    <i data-lucide="calendar" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    <input type="date" name="tanggal_lahir" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all border border-slate-100" 
+                                           value="{{ old('tanggal_lahir') ?? $terapis->tanggal_lahir }}">
+                                </div>
+                            </div>
+
+                            <!-- Perguruan Tinggi -->
+                            <div class="space-y-2 lg:col-span-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Almamater / Perguruan Tinggi</label>
+                                <div class="relative">
+                                    <i data-lucide="graduation-cap" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    <input type="text" name="perguruan_tinggi" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all border border-slate-100" 
+                                           value="{{ old('perguruan_tinggi') ?? $terapis->perguruan_tinggi }}" placeholder="Contoh: Universitas Gadjah Mada">
+                                </div>
+                            </div>
+
+                            <!-- Jurusan -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Bidang Keahlian / Jurusan</label>
+                                <div class="relative">
+                                    <i data-lucide="book-open" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    <input type="text" name="jurusan" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all border border-slate-100" 
+                                           value="{{ old('jurusan') ?? $terapis->jurusan }}" placeholder="Contoh: Terapi Wicara">
+                                </div>
+                            </div>
+
+                            <!-- Telepon -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nomor Kontak</label>
+                                <div class="relative">
+                                    <i data-lucide="smartphone" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                                    <input type="text" name="telepon" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-3.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all border border-slate-100" 
+                                           value="{{ $terapis->telepon }}" placeholder="08XXXXXXXXXX">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alamat -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Domisili Saat Ini</label>
+                            <div class="relative">
+                                <i data-lucide="map-pin" class="w-4 h-4 absolute left-4 top-4 text-slate-300"></i>
+                                <textarea name="alamat" rows="4" class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all border border-slate-100 resize-none" 
+                                          placeholder="Alamat Lengkap Anda...">{{ $terapis->alamat }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 border-t border-slate-50 flex justify-end gap-3">
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-4 px-10 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-red-100 transition-all flex items-center gap-3">
+                                <i data-lucide="save" class="w-4 h-4"></i> Update Profil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    @endif
+</div>
 @endsection
+
 @section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-        })
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
 
-        document.getElementById('uploadButton').addEventListener('click', function() {
-            document.getElementById('photoInput').click();
-        });
+        const photoInput = document.getElementById('photoInput');
+        const previewImage = document.getElementById('previewImage');
+        const uploadTriggerIcon = document.getElementById('uploadTriggerIcon');
 
-        document.getElementById('photoInput').addEventListener('change', function(event) {
-            let reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('previewImage').src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        });
-    </script>
+        if (photoInput && previewImage) {
+            photoInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
+            if (uploadTriggerIcon) {
+                uploadTriggerIcon.addEventListener('click', () => photoInput.click());
+            }
+        }
+    });
+</script>
 @endsection

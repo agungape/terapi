@@ -1,71 +1,64 @@
 @csrf
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Terapis</label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" readonly value="{{ $kunjungan->terapis->nama }}" />
-                <input type="hidden" class="form-control" readonly value="{{ $kunjungan->id }}" name="kunjungan_id" />
-            </div>
+<div class="space-y-6">
+    {{-- Terapis Info (read-only) --}}
+    <div class="space-y-2">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis Pelaksana</label>
+        <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <i data-lucide="user-check" class="w-4 h-4 text-emerald-500"></i>
+            <span class="text-sm font-black text-slate-700 uppercase">{{ $kunjungan->terapis->nama }}</span>
         </div>
+        <input type="hidden" name="kunjungan_id" value="{{ $kunjungan->id }}">
     </div>
-</div>
-<div class="row" id="form-wrapper">
-    <div class="col-md-12">
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Program</label>
-            <div class="col-sm-6">
-                <select class="form-control select2" style="width:100%" name="program_id[0]">
-                    @foreach ($program as $p)
-                        <option value="{{ $p->id }}">{{ $p->deskripsi }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-sm-4"> <button type="button" id="add-button" class="btn btn-sm btn-primary"><i
-                        class="fa fa-plus"></i></button></div>
-        </div>
-    </div>
-    <div class="col-md-9">
-        <div class="form-group row"><label class="col-sm-3 col-form-label">Skala</label>
-            <div class="col-sm-3">
-                <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary1" name="status[0]" value="dp" required>
-                    <label for="radioPrimary1"> DP
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary2" name="status[0]" value="ds" required>
-                    <label for="radioPrimary2"> DS
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="icheck-primary">
-                    <input type="radio" id="radioPrimary3" name="status[0]" value="tb" required>
-                    <label for="radioPrimary3"> TB
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-group row">
-            <div class="col-sm-12">
-                <textarea class="form-control @error('keterangan') is-invalid @enderror" name="keterangan" autofocus
-                    placeholder="keterangan" rows="6" required></textarea>
-            </div>
-            @error('keterangan')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
-    </div>
-</div>
 
-<button type="submit" class="btn btn-sm btn-primary me-2">{{ $tombol }}</button>
-<a href="{{ url()->previous() }}" class="btn btn-sm btn-warning">Cancel</a>
+    {{-- Program Items --}}
+    <div id="form-wrapper" class="space-y-4">
+        <div class="container-form space-y-4">
+            <div class="flex items-center gap-4">
+                <div class="flex-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Program Terapi <span class="text-red-500">*</span></label>
+                    <select class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none select2" name="program_id[0]">
+                        @foreach ($program as $p)
+                            <option value="{{ $p->id }}">{{ $p->deskripsi }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="button" id="add-button" class="shrink-0 mt-5 flex items-center gap-2 px-4 py-3 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+                </button>
+            </div>
+
+            {{-- Skala Radio --}}
+            <div class="flex flex-wrap gap-3">
+                <label class="cursor-pointer">
+                    <input type="radio" name="status[0]" value="dp" required class="sr-only peer">
+                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-red-400 peer-checked:bg-red-50 peer-checked:text-red-600 transition-all">DP</div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="status[0]" value="ds" class="sr-only peer">
+                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-emerald-400 peer-checked:bg-emerald-50 peer-checked:text-emerald-600 transition-all">DS</div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="status[0]" value="tb" class="sr-only peer">
+                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-600 transition-all">TB</div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    {{-- Keterangan --}}
+    <div class="space-y-2">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Catatan & Keterangan <span class="text-red-500">*</span></label>
+        <textarea name="keterangan" rows="4" required
+                  class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none resize-none placeholder:text-slate-300"
+                  placeholder="Tuliskan catatan perkembangan pasien..."></textarea>
+        @error('keterangan')
+            <p class="text-[10px] font-black text-red-500">{{ $message }}</p>
+        @enderror
+    </div>
+
+    {{-- Actions --}}
+    <div class="flex justify-end gap-3 pt-4 border-t border-slate-50">
+        <a href="{{ url()->previous() }}" class="px-8 py-3 bg-white border border-slate-200 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Batal</a>
+        <button type="submit" class="px-12 py-3 bg-slate-900 hover:bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl transition-all">{{ $tombol }}</button>
+    </div>
+</div>

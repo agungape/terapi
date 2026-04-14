@@ -29,8 +29,7 @@ class PsikologController extends Controller
         ]);
 
         $psikolog = Psikolog::create($validateData);
-        Alert::success('Berhasil', "Data berhasil dibuat");
-        return redirect('/psikolog');
+        return redirect('/psikolog')->with('success', "Data berhasil dibuat");
     }
 
     public function edit(Psikolog $psikolog)
@@ -48,15 +47,13 @@ class PsikologController extends Controller
         ]);
 
         $psikolog->update($validateData);
-        Alert::success('Berhasil', "Data berhasil di Ubah");
-        return redirect('/psikolog');
+        return redirect('/psikolog')->with('success', "Data berhasil di Ubah");
     }
 
     public function destroy($psikolog)
     {
         $hapus = Psikolog::findOrFail($psikolog);
         $hapus->delete();
-        Alert::success('Berhasil', "Data berhasil di Hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data berhasil di Hapus");
     }
 }

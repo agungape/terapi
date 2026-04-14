@@ -33,10 +33,9 @@ class MobileController extends Controller
 
     public function app()
     {
-        $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
-        $terapis = Terapis::where('status', 'aktif')->get();
+        $user  = auth()->user();
+        $anak  = $user->getAnakData(); // FIX: gunakan helper, bukan cari by nama
+        $terapis  = Terapis::where('status', 'aktif')->get();
         $informasi = Informasi::where('informasi', '!=', '')->first();
 
         $totalPertemuan = 20;
@@ -80,8 +79,7 @@ class MobileController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
+        $anak = $user->getAnakData(); // FIX: gunakan helper
 
         $kunjungan_terapi_perilaku = Kunjungan::where('anak_id', $anak->id)
             ->whereNotNull('pertemuan')
@@ -172,9 +170,7 @@ class MobileController extends Controller
     public function profile_edit()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
-
+        $anak = $user->getAnakData(); // FIX: gunakan helper
         return view('mobile.editprofile', compact('anak'));
     }
 
@@ -210,9 +206,7 @@ class MobileController extends Controller
     public function ubah_password()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
-
+        $anak = $user->getAnakData(); // FIX: gunakan helper
         return view('mobile.ubahpassword', compact('anak', 'user'));
     }
 
@@ -232,10 +226,7 @@ class MobileController extends Controller
     public function kunjungan()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
-
-        $anak = Anak::where('nama', $namaUser)->first();
+        $anak = $user->getAnakData(); // FIX: gunakan helper
 
         // Ambil semua kunjungan diurutkan berdasarkan sesi dan created_at
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
@@ -284,29 +275,36 @@ class MobileController extends Controller
     public function payment()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
+        $anak = $user->getAnakData(); // FIX: gunakan helper
 
-        // string (Pembayaran Anak) Wajib menggunakan SPASI
-        $pembayaran = Pemasukkan::where('deskripsi', 'Pembayaran Anak ' . $anak->nama)->orderBy('tanggal','DESC')->get();
+        if (!$anak) {
+            return view('mobile.payment', ['anak' => null, 'pembayaran' => collect()]);
+        }
+
+        // FIX: Query berdasarkan anak_id (relasi resmi), fallback ke nama jika anak_id belum tersedia
+        $pembayaran = Pemasukkan::with(['tarif', 'assessment'])
+            ->where(function ($q) use ($anak) {
+                $q->where('anak_id', $anak->id)
+                  ->orWhere('deskripsi', 'Pembayaran Anak ' . $anak->nama); // legacy support
+            })
+            ->orderBy('tanggal', 'DESC')
+            ->get();
+
         return view('mobile.payment', compact('anak', 'pembayaran'));
     }
 
     public function result()
     {
         $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
-        // string (Pembayaran Anak) Wajib menggunakan SPASI
+        $anak = $user->getAnakData(); // FIX: gunakan helper
         $assessment = Assessment::where('anak_id', $anak->id)->get();
         return view('mobile.hasil', compact('anak', 'assessment'));
     }
 
     public function tarif_detail($id)
     {
-        $user = auth()->user();
-        $namaUser = $user->name;
-        $anak = Anak::where('nama', $namaUser)->first();
+        $user  = auth()->user();
+        $anak  = $user->getAnakData(); // FIX: gunakan helper
         $tarif = Tarif::findOrFail($id);
         return view('mobile.paketdetail', compact('tarif', 'anak'));
     }

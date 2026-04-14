@@ -54,8 +54,7 @@ class UploadController extends Controller
         $data['path'] = $namaFile;
 
         Upload::create($data);
-        Alert::success('Berhasil', "Data berhasil Di Upload");
-        return redirect("/upload");
+        return redirect("/upload")->with('success', "Data berhasil Di Upload");
     }
 
     /**
@@ -97,8 +96,7 @@ class UploadController extends Controller
     public function destroy(Upload $upload)
     {
         $upload->delete();
-        Alert::success('Berhasil', "File $upload->path telah di hapus");
-        return redirect("/upload");
+        return redirect("/upload")->with('success', "File $upload->path telah di hapus");
     }
 
     function getStatusColor($status)
@@ -118,14 +116,12 @@ class UploadController extends Controller
     public function confirmStatus(Upload $upload)
     {
         $upload->update(['status_konfirmasi' => 'Confirmed']);
-        Alert::success('Berhasil', "File $upload->path telah di Konfirmasi");
-        return redirect("/upload");
+        return redirect("/upload")->with('success', "File $upload->path telah di Konfirmasi");
     }
 
     public function rejectStatus(Upload $upload)
     {
         $upload->update(['status_konfirmasi' => 'Rejected']);
-        Alert::success('Berhasil', "File $upload->path telah di Di Tolak");
-        return redirect("/upload");
+        return redirect("/upload")->with('success', "File $upload->path telah di Di Tolak");
     }
 }

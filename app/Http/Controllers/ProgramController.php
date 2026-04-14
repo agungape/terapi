@@ -39,8 +39,7 @@ class ProgramController extends Controller
             'jenis' => 'required',
         ]);
         $program = Program::create($validateData);
-        Alert::success('Berhasil', "Data program $request->deskripsi berhasil dibuat");
-        return redirect("/program#card-{$program->id}");
+        return redirect("/program#card-{$program->id}")->with('success', "Data program $request->deskripsi berhasil dibuat");
     }
 
     /**
@@ -64,7 +63,12 @@ class ProgramController extends Controller
      */
     public function update(Request $request, Program $program)
     {
-        //
+        $validateData = $request->validate([
+            'deskripsi' => 'required',
+            'jenis' => 'required',
+        ]);
+        $program->update($validateData);
+        return redirect("/program")->with('success', "Data program $request->deskripsi berhasil diperbarui");
     }
 
     /**
@@ -73,7 +77,6 @@ class ProgramController extends Controller
     public function destroy(Program $program)
     {
         $program->delete();
-        Alert::success('Berhasil', "$program->nama telah di hapus");
-        return redirect("/program");
+        return redirect("/program")->with('success', "$program->nama telah di hapus");
     }
 }

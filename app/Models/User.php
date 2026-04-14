@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,37 +13,23 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'username',
         'email',
         'password',
         'terapis_id',
-        'is_active' // tambahkan ini
+        'anak_id',      // Link langsung ke data anak (untuk role anak/orang tua)
+        'is_active',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'        => 'boolean',
         'email_verified_at' => 'datetime',
     ];
 
@@ -54,8 +38,33 @@ class User extends Authenticatable
         return 'username';
     }
 
+    /**
+     * Terapis yang terhubung dengan user ini.
+     */
     public function terapis()
     {
         return $this->belongsTo(Terapis::class);
+    }
+
+    /**
+     * Data anak yang terhubung dengan user ini (untuk role anak/orang tua).
+     * Ini adalah relasi RESMI pengganti pencarian via nama.
+     */
+    public function anak()
+    {
+        return $this->belongsTo(Anak::class);
+    }
+
+    /**
+     * Helper: dapatkan data anak dari user yang login.
+     * Prioritaskan via anak_id, fallback ke nama (legacy support).
+     */
+    public function getAnakData(): ?Anak
+    {
+        if ($this->anak_id) {
+            return $this->anak;
+        }
+        // Legacy fallback: cari berdasarkan nama
+        return Anak::where('nama', $this->name)->first();
     }
 }

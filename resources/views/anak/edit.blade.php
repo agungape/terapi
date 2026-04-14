@@ -1,55 +1,22 @@
 @extends('layouts.master')
-@section('menuMaster', 'active')
-@section('masterShow', 'menu-is-opening menu-open')
-@section('menuAnak', 'active')
+@section('title', 'Edit Biodata Pasien')
+
 @section('content')
-
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Anak</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Data Anak</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
-
-        <section class="content">
-            <div class="container-fluid">
-                <form method="POST" action="{{ route('anak.update', ['anak' => $anak->id]) }}"
-                    enctype="multipart/form-data">
-                    @method('PATCH')
-                    @include('anak.form', ['tombol' => 'Update'])
-                </form>
-            </div>
-        </section>
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <a href="{{ route('anak.index') }}" class="hover:text-red-500 transition-colors">Data Pasien</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-slate-600">Update Biodata</span>
+        </div>
     </div>
-@endsection
-@section('scripts')
-    {{-- @include('anak.ajax') --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-        })
 
-        document.getElementById('uploadButton').addEventListener('click', function() {
-            document.getElementById('photoInput').click();
-        });
-
-        document.getElementById('photoInput').addEventListener('change', function(event) {
-            let reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('previewImage').src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        });
-    </script>
+    <form method="POST" action="{{ route('anak.update', ['anak' => $anak->id]) }}" enctype="multipart/form-data">
+        @method('PATCH')
+        @include('anak.form', ['tombol' => 'Update Data Pasien'])
+    </form>
+</div>
 @endsection

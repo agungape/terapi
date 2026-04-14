@@ -52,8 +52,7 @@ class PermissionController extends Controller
         $data['name'] = $request->name;
 
         Permission::create($data);
-        Alert::success('Berhasil', "Data Permission $request->name berhasil dibuat");
-        return redirect('permissions');
+        return redirect()->route('permissions.index')->with('success', "Data Permission $request->name berhasil dibuat");
     }
 
     public function edit(Permission $permission)
@@ -74,15 +73,13 @@ class PermissionController extends Controller
         $permission->update([
             'name' => $request->name
         ]);
-        Alert::success('Berhasil', "Data Permission $request->name berhasil diupdate");
-        return redirect('permissions');
+        return redirect()->route('permissions.index')->with('success', "Data Permission $request->name berhasil diupdate");
     }
 
     public function destroy($permissionId)
     {
         $permission = Permission::find($permissionId);
         $permission->delete();
-        Alert::success('Berhasil', "Data Permission berhasil dihapus");
-        return redirect('permissions');
+        return redirect('permissions')->with('success', "Data Permission berhasil dihapus");
     }
 }

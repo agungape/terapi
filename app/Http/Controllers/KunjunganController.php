@@ -51,6 +51,8 @@ class KunjunganController extends Controller
             'status' => 'required',
         ]);
 
+        $anak = Anak::findOrFail($request->anak_id);
+
         // Validasi agar dalam hari yang sama tidak bisa mendaftar lebih dari 1x terapi perilaku
         if ($request->jenis_terapi == 'terapi_perilaku') {
             $today = Carbon::today();
@@ -61,92 +63,113 @@ class KunjunganController extends Controller
                 ->first();
 
             if ($cek) {
-                Alert::error('Gagal Mendaftar', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.")->autoClose(6000);
-                return back();
+                return back()->with('error', "Anak $request->nama sudah mendaftar hari ini. Silakan coba lagi besok.");
             }
         }
 
-        // Ambil data kunjungan terakhir untuk jenis terapi ini
+        // --- LOGIKA TRANSISI MULUS (SMOOTH TRANSITION) DENGAN LINK KWITANSI ---
+        
+        // 1. Dapatkan kwitansi aktif (FIFO) jika ada
+        $kwitansiAktif = $anak->kwitansiAktif($request->jenis_terapi);
+        
+        // 2. Cari kunjungan terakhir untuk mengambil context
         $kunjungan_terakhir = Kunjungan::where('anak_id', $request->anak_id)
             ->where('jenis_terapi', $request->jenis_terapi)
-            ->orderBy('created_at', 'desc')
+            ->whereNull('catatan')
+            ->orderBy('id', 'desc')
             ->first();
 
         $nextPertemuan = 1;
         $nextSesi = 1;
+        $finalTarifId = null;
+        $finalPemasukkanId = null;
 
         if ($kunjungan_terakhir) {
+            // Tentukan batas pertemuan
+            $limitLama = 20;
+            if ($kunjungan_terakhir->tarif_id) {
+                $tarifLama = Tarif::find($kunjungan_terakhir->tarif_id);
+                $limitLama = $tarifLama ? ($tarifLama->jumlah_pertemuan ?? 20) : 20;
+            }
+
             // Jika status terakhir adalah HADIR atau IZIN HANGUS, maka tingkatkan pertemuan
             if ($kunjungan_terakhir->status == 'hadir' || $kunjungan_terakhir->status == 'izin_hangus') {
-
-                if ($kunjungan_terakhir->pertemuan < 20) {
+                
+                if ($kunjungan_terakhir->pertemuan < $limitLama) {
+                    // LANJUTKAN SESI LAMA
                     $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
                     $nextSesi = $kunjungan_terakhir->sesi ?? 1;
+                    $finalTarifId = $kunjungan_terakhir->tarif_id;
+                    $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id; // Ikuti kwitansi yang sama
                 } else {
-                    // Jika pertemuan sudah 20, naikkan sesi dan reset pertemuan
+                    // MULAI SESI (SEASON) BARU
                     $nextPertemuan = 1;
                     $nextSesi = ($kunjungan_terakhir->sesi ?? 1) + 1;
+                    $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+                    $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
                 }
             } else {
-                // Jika status terakhir adalah IZIN SAKIT, pertahankan nomor pertemuan yang sama
+                // IZIN/SAKIT: nomor tetap sama
                 $nextPertemuan = $kunjungan_terakhir->pertemuan;
                 $nextSesi = $kunjungan_terakhir->sesi ?? 1;
+                $finalTarifId = $kunjungan_terakhir->tarif_id;
+                $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
             }
+        } else {
+            // DATA BARU SAMA SEKALI
+            $nextPertemuan = 1;
+            $nextSesi = 1;
+            $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+            $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
         }
 
-        // Tentukan pertemuan dan sesi untuk kunjungan baru
         $pertemuan = $nextPertemuan;
         $sesi = $nextSesi;
+
+        // --- OTOMASI PENYELESAIAN SESI ---
+        $statusSesi = 'aktif';
+        $maxPertemuan = 20;
+        if ($finalTarifId) {
+            $tarifInfo = Tarif::find($finalTarifId);
+            $maxPertemuan = $tarifInfo ? ($tarifInfo->jumlah_pertemuan ?? 20) : 20;
+        }
+
+        if (($request->status == 'hadir' || $request->status == 'izin_hangus') && $pertemuan >= $maxPertemuan) {
+            $statusSesi = 'selesai';
+        }
 
         $data = [
             'anak_id' => $request->anak_id,
             'terapis_id' => $request->terapis_id,
+            'tarif_id' => $finalTarifId,
+            'pemasukkan_id' => $finalPemasukkanId,
             'jenis_terapi' => $request->jenis_terapi,
             'catatan' => $request->catatan,
             'status' => $request->status,
             'pertemuan' => $pertemuan,
             'sesi' => $sesi,
+            'status_sesi' => $statusSesi,
         ];
 
         $kunjungan = Kunjungan::create($data);
-        Alert::success('Berhasil', "Data Anak $request->nama berhasil didaftarkan")->autoClose(4000);
-        return redirect("/data");
-    }
-
-    // Tambahkan method baru untuk handle selesai sesi
-    public function selesaiSesi(Request $request): RedirectResponse
-    {
-        $validateData = $request->validate([
-            'anak_id' => 'required|exists:App\Models\Anak,id',
-            'jenis_terapi' => 'required',
-        ]);
-
-        // Ambil data kunjungan terakhir untuk jenis terapi ini
-        $kunjungan_terakhir = Kunjungan::where('anak_id', $request->anak_id)
-            ->where('jenis_terapi', $request->jenis_terapi)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        if ($kunjungan_terakhir) {
-            // Buat record baru untuk menandai selesai sesi
-            $data = [
-                'anak_id' => $request->anak_id,
-                'terapis_id' => $kunjungan_terakhir->terapis_id,
-                'jenis_terapi' => $request->jenis_terapi,
-                'catatan' => 'Sesi selesai',
-                'status' => 'hadir',
-                'pertemuan' => null,
-                'sesi' => ($kunjungan_terakhir->sesi ?? 1) + 1,
-            ];
-
-            Kunjungan::create($data);
-            Alert::success('Berhasil', "Sesi terapi untuk anak ini telah diselesaikan dan akan dimulai sesi baru")->autoClose(4000);
-            return redirect("/data");
+        
+        // Notifikasi cerdas
+        $msg = "Data Anak $request->nama berhasil didaftarkan.";
+        if ($finalTarifId) {
+            $sisa = $maxPertemuan - $pertemuan;
+            
+            if ($statusSesi == 'selesai') {
+                $msg .= " SEASON SELESAI OTOMATIS! Kuota paket telah habis.";
+            } else {
+                $msg .= " Sisa: $sisa sesi.";
+            }
         } else {
-            Alert::error('Gagal', "Tidak ada data kunjungan sebelumnya")->autoClose(4000);
+            if ($statusSesi == 'selesai') {
+                $msg .= " SEASON SELESAI OTOMATIS (Batas 20 Pertemuan).";
+            }
         }
 
-        return back();
+        return redirect("/data")->with('success', $msg);
     }
 
     public function riwayatAnak()
@@ -156,12 +179,12 @@ class KunjunganController extends Controller
             ->latest()
             ->paginate(10);
 
-        // Ambil daftar sesi yang sudah selesai (memiliki catatan 'Sesi selesai')
-        $completedSessions = Kunjungan::where('catatan', 'Sesi selesai')
+        // Ambil daftar sesi yang sudah selesai (berdasarkan kolom status_sesi)
+        $completedSessions = Kunjungan::where('status_sesi', 'selesai')
             ->select('anak_id', 'sesi', 'jenis_terapi')
             ->get()
             ->map(function ($item) {
-                return $item->anak_id . '-' . ($item->sesi - 1) . '-' . $item->jenis_terapi;
+                return $item->anak_id . '-' . $item->sesi . '-' . $item->jenis_terapi;
             })
             ->toArray();
 
@@ -188,9 +211,18 @@ class KunjunganController extends Controller
 
         // Cek apakah sesi saat ini sudah selesai
         $isCurrentSessionCompleted = Kunjungan::where('anak_id', $kunjungan->anak_id)
-            ->where('sesi', '>', $kunjungan->sesi)
+            ->where('sesi', $kunjungan->sesi)
             ->where('jenis_terapi', $kunjungan->jenis_terapi)
-            ->where('catatan', 'Sesi selesai')
+            ->where(function($q) use ($kunjungan) {
+                $q->where('status_sesi', 'selesai')
+                  ->orWhereExists(function ($query) use ($kunjungan) {
+                      $query->select(DB::raw(1))
+                            ->from('kunjungans as k2')
+                            ->whereColumn('k2.anak_id', 'kunjungans.anak_id')
+                            ->whereColumn('k2.jenis_terapi', 'kunjungans.jenis_terapi')
+                            ->where('k2.sesi', '>', $kunjungan->sesi);
+                  });
+            })
             ->exists();
 
         return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'isCurrentSessionCompleted'));
@@ -215,11 +247,11 @@ class KunjunganController extends Controller
 
         $kunjungan = $query->paginate(10);
 
-        $completedSessions = Kunjungan::where('catatan', 'Sesi selesai')
+        $completedSessions = Kunjungan::where('status_sesi', 'selesai')
             ->select('anak_id', 'sesi', 'jenis_terapi')
             ->get()
             ->map(function ($item) {
-                return $item->anak_id . '-' . ($item->sesi - 1) . '-' . $item->jenis_terapi;
+                return $item->anak_id . '-' . $item->sesi . '-' . $item->jenis_terapi;
             })
             ->toArray();
 
@@ -241,8 +273,7 @@ class KunjunganController extends Controller
     public function destroy(Kunjungan $kunjungan)
     {
         $kunjungan->delete();
-        Alert::success('Berhasil', "kunjungan anak telah di hapus")->autoClose(4000);
-        return redirect()->back();
+        return redirect()->back()->with('success', "kunjungan anak telah di hapus");
     }
 
     public function tambahTerapis(Request $request, Kunjungan $kunjungan)
@@ -253,21 +284,18 @@ class KunjunganController extends Controller
 
         // Pengecekan 1: Terapis pendamping tidak boleh sama dengan terapis utama
         if ($validated['terapis_id_pendamping'] == $kunjungan->terapis_id) {
-            Alert::error('Gagal', 'Terapis pendamping tidak boleh sama dengan terapis utama')->autoClose(4000);
-            return redirect()->back();
+            return redirect()->back()->with('error', 'Terapis pendamping tidak boleh sama dengan terapis utama');
         }
 
         // Pengecekan 2: Maksimal 2 terapis (1 utama + 1 pendamping)
         if ($kunjungan->terapis_id_pendamping) {
-            Alert::error('Gagal', 'Maksimal hanya boleh ada 2 terapis (1 utama + 1 pendamping)')->autoClose(4000);
-            return redirect()->back();
+            return redirect()->back()->with('error', 'Maksimal hanya boleh ada 2 terapis (1 utama + 1 pendamping)');
         }
 
         // Update terapis pendamping
         $kunjungan->update(['terapis_id_pendamping' => $validated['terapis_id_pendamping']]);
 
-        Alert::success('Berhasil', "Terapis pendamping berhasil ditambahkan")->autoClose(4000);
-        return redirect()->back();
+        return redirect()->back()->with('success', "Terapis pendamping berhasil ditambahkan");
     }
 
     public function updateStatus(Request $request, Kunjungan $kunjungan)
@@ -276,10 +304,49 @@ class KunjunganController extends Controller
             'status' => 'required|in:hadir,izin,sakit,izin_hangus',
         ]);
 
-        $kunjungan->update(['status' => $validated['status']]);
+        $oldStatus = $kunjungan->status;
+        $newStatus = $validated['status'];
 
-        Alert::success('Berhasil', "Status telah di Perbaharui")->autoClose(4000);
-        return redirect()->back();
+        // Daftar status yang terhitung dalam kuota paket (memotong saldo)
+        $quotaStatuses = ['hadir', 'izin_hangus'];
+
+        // Case A: Berubah dari "Tidak Potong Kuota" menjadi "Potong Kuota"
+        if (!in_array($oldStatus, $quotaStatuses) && in_array($newStatus, $quotaStatuses)) {
+            // Cari kwitansi aktif jika belum ada
+            if (!$kunjungan->pemasukkan_id) {
+                $kwitansi = $kunjungan->anak->kwitansiAktif($kunjungan->jenis_terapi);
+                if ($kwitansi) {
+                    $kunjungan->pemasukkan_id = $kwitansi->id;
+                    $kunjungan->tarif_id = $kwitansi->tarif_id;
+                }
+            }
+        }
+        
+        // Case B: Berubah dari "Potong Kuota" menjadi "Tidak Potong Kuota"
+        if (in_array($oldStatus, $quotaStatuses) && !in_array($newStatus, $quotaStatuses)) {
+            $kunjungan->pemasukkan_id = null;
+            // Jika sebelumnya ini yang menutup sesi, kembalikan jadi aktif
+            $kunjungan->status_sesi = 'aktif';
+        }
+
+        $kunjungan->status = $newStatus;
+
+        // Re-check status_sesi (apakah sudah limit atau belum)
+        $maxPertemuan = 20;
+        if ($kunjungan->tarif_id) {
+            $tarif = Tarif::find($kunjungan->tarif_id);
+            $maxPertemuan = $tarif ? ($tarif->jumlah_pertemuan ?? 20) : 20;
+        }
+
+        if (in_array($kunjungan->status, $quotaStatuses) && $kunjungan->pertemuan >= $maxPertemuan) {
+            $kunjungan->status_sesi = 'selesai';
+        } else {
+            $kunjungan->status_sesi = 'aktif';
+        }
+
+        $kunjungan->save();
+
+        return redirect()->back()->with('success', "Status dan Sinkronisasi Kuota telah diperbaharui");
     }
 
     public function updateTerapis(Request $request, Kunjungan $kunjungan)
@@ -290,7 +357,6 @@ class KunjunganController extends Controller
 
         $kunjungan->update(['terapis_id' => $validated['terapis_id']]);
 
-        Alert::success('Berhasil', "Terapis telah di Perbaharui")->autoClose(4000);
-        return redirect()->back();
+        return redirect()->back()->with('success', "Terapis telah di Perbaharui");
     }
 }

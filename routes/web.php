@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnakController;
 use App\Http\Controllers\AnalisiskinerjaController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\AlatUkurController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\FisioterapiController;
@@ -35,17 +36,10 @@ use Database\Factories\ObservasiFactory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 // route website
@@ -55,31 +49,23 @@ Route::get('/about', [FrontendController::class, 'about']);
 Route::get('/blog', [FrontendController::class, 'blog']);
 Route::get('/contact', [FrontendController::class, 'contact']);
 Route::get('/therapists', [FrontendController::class, 'therapists']);
-// akhir route website
 
 Route::get('/barcode/scan', [ObservasiController::class, 'scanBarcode'])->name('barcode.scan');
-Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcode'])->name('barcode.scan');
-
+Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcode'])->name('barcode.assessment.scan');
 
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
 
 Auth::routes();
 
 Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog']], function () {
 
     Route::resource('/roles', RoleController::class);
-    Route::put('/roles/{id}', [RoleController::class, 'update'])->name('roles.update');
-    Route::delete('/roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::get('/manajemen-menu', [RoleController::class, 'manajemen_menu']);
     Route::get('roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionToRole']);
     Route::put('roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole']);
 
-    Route::resource('/permissions', App\Http\Controllers\PermissionController::class);
-    Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
-    Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+    Route::resource('/permissions', PermissionController::class);
 
     Route::resource('/users', UserController::class);
     Route::post('/users/anak', [UserController::class, 'store_anak'])->name('usersanak.store');
@@ -102,12 +88,15 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
 
     Route::get('/q-pendengaran', [QuestionController::class, 'index'])->name('question.pendengaran');
     Route::post('/q-pendengaran/simpan', [QuestionController::class, 'pendengaran_store'])->name('qpendengaran.store');
+    Route::put('/q-pendengaran/update/{id}', [QuestionController::class, 'qpendengaran_update'])->name('qpendengaran.update');
     Route::delete('/q-pendengaran/{id}', [QuestionController::class, 'hapus_pendengaran'])->name('qpendengaran.destroy');
     Route::get('/q-umur', [QuestionController::class, 'umur'])->name('question.umur');
-    Route::delete('/q-umur/{id}', [QuestionController::class, 'hapus_umur'])->name('age.destroy');
     Route::post('/q-umur/simpan', [QuestionController::class, 'umur_store'])->name('age.store');
+    Route::put('/q-umur/update/{id}', [QuestionController::class, 'age_update'])->name('age.update');
+    Route::delete('/q-umur/{id}', [QuestionController::class, 'hapus_umur'])->name('age.destroy');
     Route::get('/q-penglihatan', [QuestionController::class, 'q_penglihatan'])->name('question.penglihatan');
     Route::post('/q-penglihatan/simpan', [QuestionController::class, 'penglihatan_store'])->name('qpenglihatan.store');
+    Route::put('/q-penglihatan/update/{id}', [QuestionController::class, 'qpenglihatan_update'])->name('qpenglihatan.update');
     Route::delete('/q-penglihatan/{id}', [QuestionController::class, 'penglihatan_destroy'])->name('qpenglihatan.destroy');
     Route::get('/q-perilaku', [QuestionController::class, 'q_perilaku'])->name('question.perilaku');
     Route::post('/q-perilaku/simpan', [QuestionController::class, 'perilaku_store'])->name('qperilaku.store');
@@ -115,14 +104,16 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::delete('/q-perilaku/{id}', [QuestionController::class, 'perilaku_destroy'])->name('qperilaku.destroy');
     Route::get('/q-autis', [QuestionController::class, 'q_autis'])->name('question.autis');
     Route::post('/q-autis/simpan', [QuestionController::class, 'autis_store'])->name('qautis.store');
+    Route::put('/q-autis/update/{id}', [QuestionController::class, 'qautis_update'])->name('qautis.update');
     Route::delete('/q-autis/{id}', [QuestionController::class, 'autis_destroy'])->name('qautis.destroy');
     Route::get('/q-gpph', [QuestionController::class, 'q_gpph'])->name('question.gpph');
     Route::post('/q-gpph/simpan', [QuestionController::class, 'gpph_store'])->name('qgpph.store');
+    Route::put('/q-gpph/update/{id}', [QuestionController::class, 'qgpph_update'])->name('qgpph.update');
     Route::delete('/q-gpph/{id}', [QuestionController::class, 'gpph_destroy'])->name('qgpph.destroy');
     Route::get('/q-wawancara', [QuestionController::class, 'q_wawancara'])->name('question.wawancara');
     Route::post('/q-wawancara/simpan', [QuestionController::class, 'wawancara_store'])->name('qwawancara.store');
+    Route::put('/q-wawancara/update/{id}', [QuestionController::class, 'qwawancara_update'])->name('qwawancara.update');
     Route::delete('/q-wawancara/{id}', [QuestionController::class, 'wawancara_destroy'])->name('qwawancara.destroy');
-
 
     Route::post('/tarif/upload-gambar', [TarifController::class, 'uploadGambar'])->name('tarif.uploadGambar');
     Route::delete('/tarif/hapus-gambar/{id}', [TarifController::class, 'hapusGambar'])->name('tarif.hapusGambar');
@@ -141,19 +132,20 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
     Route::get('/laporan-keuangan', [KeuanganController::class, 'laporan_keuangan'])->name('keuangan.laporan');
     Route::get('/keuangan/laporan/pdf/{startDate}/{endDate}', [KeuanganController::class, 'laporan_pdf'])->name('keuangan.laporan.pdf');
+    Route::get('/pemasukkan/layanan', [KeuanganController::class, 'getLayananByAnak'])->name('pemasukkan.layanan');
 
+    Route::resource('/alat-ukur', AlatUkurController::class);
 
-    Route::get('/kunjungan/{anak}', [KunjunganController::class, 'create'])->name('kunjungan.create');
+    Route::get('/kunjungan/{anak}/create', [KunjunganController::class, 'create'])->name('kunjungan.create.anak');
     Route::get('/terapis/pelatihan/{terapi}', [TerapisController::class, 'terapis_pelatihan'])->name('terapis.pelatihan');
     Route::post('/terapis/pelatihan', [TerapisController::class, 'pelatihan_store'])->name('pelatihans.store');
     Route::get('/terapis/sertifikat/{sertifikat}', [TerapisController::class, 'sertifikat_show'])->name('sertifikat.show');
     Route::resource('/kunjungan', KunjunganController::class);
     Route::get('/pencarian/proses', [PencarianController::class, 'proses']);
     Route::get('/get-terapis-by-jenis', [KunjunganController::class, 'getTerapisByJenis'])->name('get.terapis.by.jenis');
-    Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.show');
+    Route::get('/data/{kunjungan}', [KunjunganController::class, 'show'])->name('kunjungan.detail');
     Route::get('/search-kunjungan', [KunjunganController::class, 'search_kunjungan'])->name('kunjungan.pencarian');
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');
-    Route::post('/kunjungan/selesai-sesi', [KunjunganController::class, 'selesaiSesi'])->name('kunjungan.selesai-sesi');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
     Route::post('/fisioterapi', [FisioterapiController::class, 'store'])->name('fisioterapi.store');
     Route::put('/data/{kunjungan}/tambah-terapis', [KunjunganController::class, 'tambahTerapis'])->name('kunjungan.tambah-terapis');
@@ -183,17 +175,11 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');
     Route::get('/delete-fototerapis/{id}', [TerapisController::class, 'deletefoto'])->name('delete.fototerapis');
 
-
     Route::get('/analisis-kinerja', [AnalisiskinerjaController::class, 'analisis_kinerja'])->name('analisis.kinerja');
 
-    // route assessment
+    Route::get('/history-wawancara/{anak}', [AssessmentController::class, 'getWawancara'])->name('assessment.get_wawancara');
     Route::resource('/assessment', AssessmentController::class);
-
-    // route psikolog
     Route::resource('/psikolog', PsikologController::class);
-
-
-    // route e-commerce
 
     Route::get('/products-services', [ShopeeAffiliateController::class, 'index'])->name('products.index');
 });
@@ -203,8 +189,7 @@ Route::group(['middleware' => ['role:super-admin|admin|psikolog|anak|terapis']],
 });
 
 Route::group(['middleware' => ['role:anak']], function () {
-
-    Route::get('/app', [App\Http\Controllers\MobileController::class, 'app'])->name('app');
+    Route::get('/app', [MobileController::class, 'app'])->name('app');
     Route::get('/app/profile', [MobileController::class, 'profile'])->name('mobile.profile');
     Route::get('/app/profile/edit', [MobileController::class, 'profile_edit'])->name('mobile.editprofile');
     Route::patch('/app/profile/{anak}', [MobileController::class, 'profile_update'])->name('mobile.updateprofile');

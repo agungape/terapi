@@ -1,139 +1,176 @@
 <script>
-    // General scripts
-    document.addEventListener('DOMContentLoaded', function() {
-        // File upload handling
-        $('input[type="file"]').on('change', function() {
-            let filenames = [];
-            let files = this.files;
+    // General scripts & Data Fetching
+    $(document).ready(function() {
+        // Init Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
 
-            for (let i in files) {
-                if (files.hasOwnProperty(i)) {
-                    filenames.push(files[i].name);
-                }
+        // Fetch Riwayat Wawancara (Anamnesa) from Observasi Module
+        $('#nama_anak').on('change', function() {
+            let anakId = $(this).val();
+            let container = $('#wawancara-container');
+            
+            if (!anakId) {
+                container.html('<div class="text-center text-slate-400 flex flex-col items-center justify-center h-full"><i data-lucide="info" class="w-6 h-6 mb-2 text-slate-300"></i>Pilih nama anak terlebih dahulu.</div>');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
             }
 
-            $(this).next('.custom-file-label').addClass("selected").html(filenames.join(', '));
+            container.html('<div class="text-center text-blue-500 flex flex-col items-center justify-center h-full"><i data-lucide="loader-2" class="w-6 h-6 mb-2 animate-spin"></i>Sedang menarik data riwayat klinis...</div>');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            const baseUrl = window.location.origin + window.location.pathname.split('/assessment')[0];
+            fetch(`${baseUrl}/history-wawancara/${anakId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.message);
+                    }
+                    if (data.length === 0) {
+                        container.html('<div class="text-amber-500 flex items-center gap-2 text-xs"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Belum ada riwayat wawancara klinis.</div>');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        return;
+                    }
+
+                    let html = '<div class="space-y-4 pr-2">';
+                    
+                    data.forEach((item, index) => {
+                        let answer = item.answer ? item.answer.trim() : '';
+                        
+                        if (answer && answer !== '-' && answer !== '') {
+                            let question = item.question_wawancara ? item.question_wawancara.question_text : 'Poin Riwayat';
+                            
+                            html += `
+                                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                    <h6 class="text-xs font-bold text-slate-700 mb-1">${question}</h6>
+                                    <div class="text-slate-500 text-[11px]">${answer}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    html += '</div>';
+                    container.html(html);
+                })
+                .catch(error => {
+                    container.html(`<div class="text-red-500 text-xs"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Gagal: ${error.message}</div>`);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    console.error('AJAX Error:', error);
+                });
         });
+
+        if ($('#nama_anak').val()) {
+            $('#nama_anak').trigger('change');
+        }
 
         // Initialize Select2
         if (typeof $ !== 'undefined') {
             $('.select2').select2({
                 theme: 'bootstrap4'
             });
+        }
 
-            // Initialize custom file input
-            if (typeof bsCustomFileInput !== 'undefined') {
-                bsCustomFileInput.init();
+        // Modal handling or other scripts can go here
+
+        // Generic Items Handler (Add/Remove) for Rujukan & Prioritas
+        $(document).on('click', '.add-item', function() {
+            const targetId = $(this).data('target');
+            const container = $(targetId);
+            const placeholder = container.find('input').first().attr('placeholder') || 'Tambahkan item...';
+            
+            const newItem = `
+                <div class="input-group mb-2 relative flex items-center">
+                    <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" placeholder="${placeholder}">
+                    <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>`;
+            container.append(newItem);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+
+        $(document).on('click', '.remove-item', function() {
+            $(this).closest('div.relative').remove();
+        });
+
+        // Form Submit Handler for all Combined Fields
+        $('form').on('submit', function(e) {
+            function syncContainer(containerId, hiddenFieldId) {
+                const items = [];
+                $(`${containerId} input`).each(function() {
+                    const val = $(this).val().trim();
+                    if (val) items.push(val);
+                });
+                $(`${hiddenFieldId}`).val(items.join('\n\n'));
             }
-        }
 
-        // Tab navigation
-        function switchTab(targetTabId) {
-            // Deactivate all tabs
-            document.querySelectorAll('.tab-pane').forEach(tab => {
-                tab.classList.remove('active');
-                tab.classList.remove('show');
-            });
-
-            // Deactivate all nav links
-            document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // Activate target tab
-            document.getElementById(targetTabId).classList.add('active');
-            document.getElementById(targetTabId).classList.add('show');
-            document.querySelector(`.nav-pills a[href="#${targetTabId}"]`).classList.add('active');
-        }
-
-        // Next/Previous buttons
-        document.querySelectorAll('.next-tab, .prev-tab').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTabId = this.classList.contains('next-tab') ?
-                    this.getAttribute('data-next') :
-                    this.getAttribute('data-prev');
-                switchTab(targetTabId);
-            });
+            syncContainer('#rujukan_container', '#saran_rujukan_combined');
+            syncContainer('#prioritas_container', '#prioritas_terapi_combined');
         });
 
-        // Tab links
-        document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetTabId = this.getAttribute('href').substring(1);
-                switchTab(targetTabId);
-            });
-        });
+        // Other handlers
     });
 </script>
 
 <script>
     // Behavioral observation scripts
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const container = document.getElementById('perilaku-container');
         const addButton = document.getElementById('btn-tambah-perilaku');
         const combinedField = document.getElementById('perilaku_combined');
 
-        function updateRemoveButtons() {
-            const fields = container.querySelectorAll('.mb-3');
-            fields.forEach((field, index) => {
-                const btn = field.querySelector('.btn-remove');
-                btn.disabled = index === 0;
-            });
-        }
+        if(container && addButton && combinedField){
+            function updateRemoveButtons() {
+                const fields = container.querySelectorAll('.relative');
+                fields.forEach((field, index) => {
+                    const btn = field.querySelector('.btn-remove');
+                    if(btn) btn.disabled = index === 0;
+                });
+            }
 
-        function updateCombinedField() {
-            const inputs = container.querySelectorAll('.input-perilaku');
-            const combinedText = Array.from(inputs)
-                .map(input => input.value.trim())
-                .filter(text => text !== '')
-                .join('\n\n');
-            combinedField.value = combinedText;
-        }
+            function updateCombinedField() {
+                const inputs = container.querySelectorAll('.input-perilaku');
+                const combinedText = Array.from(inputs)
+                    .map(input => input.value.trim())
+                    .filter(text => text !== '')
+                    .join('\n\n');
+                combinedField.value = combinedText;
+            }
 
-        addButton.addEventListener('click', function() {
-            const newIndex = container.querySelectorAll('.input-perilaku').length;
-            const newField = document.createElement('div');
-            newField.className = 'mb-3 position-relative';
-            newField.innerHTML = `
-                <input type="text" class="form-control input-perilaku"
-                    name="perilaku[]" placeholder="Masukkan perilaku khas tambahan">
-                <button class="btn btn-sm btn-outline-danger btn-remove position-absolute"
-                    style="right: 5px; top: 5px;" type="button">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            container.appendChild(newField);
-            updateRemoveButtons();
-        });
-
-        container.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-remove') ||
-                e.target.parentElement.classList.contains('btn-remove')) {
-                const btn = e.target.classList.contains('btn-remove') ?
-                    e.target : e.target.parentElement;
-                btn.closest('.mb-3').remove();
+            addButton.addEventListener('click', function() {
+                const newField = document.createElement('div');
+                newField.className = 'relative mb-3 flex items-center';
+                newField.innerHTML = `
+                    <input type="text" class="form-control input-perilaku w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
+                        name="perilaku[]" placeholder="Masukkan perilaku khas tambahan">
+                    <button class="btn-remove absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(newField);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 updateRemoveButtons();
-                updateCombinedField();
-            }
-        });
+            });
 
-        container.addEventListener('input', function(e) {
-            if (e.target.classList.contains('input-perilaku')) {
-                updateCombinedField();
-            }
-        });
-
-        // Initialize with existing data if any
-        const initialData = `{{ old('perilaku_combined') }}`;
-        if (initialData && initialData.trim() !== '') {
-            const behaviors = initialData.split('\n\n');
-
-            behaviors.forEach((behavior, index) => {
-                if (index > 0) {
-                    addButton.click();
+            container.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-remove');
+                if (btn) {
+                    btn.closest('.relative').remove();
+                    updateRemoveButtons();
+                    updateCombinedField();
                 }
-                container.querySelectorAll('.input-perilaku')[index].value = behavior;
+            });
+
+            container.addEventListener('input', function(e) {
+                if (e.target.classList.contains('input-perilaku')) {
+                    updateCombinedField();
+                }
             });
         }
     });
@@ -141,71 +178,57 @@
 
 <script>
     // Assessment source scripts
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const container = document.getElementById('sumber-asesmen-container');
         const addButton = document.getElementById('btn-tambah-sumber');
         const combinedField = document.getElementById('sumber_asesmen_combined');
 
-        function updateRemoveButtons() {
-            const fields = container.querySelectorAll('.mb-3');
-            fields.forEach((field, index) => {
-                const btn = field.querySelector('.btn-remove-sumber');
-                btn.disabled = index === 0;
-            });
-        }
+        if(container && addButton && combinedField){
+            function updateRemoveButtons() {
+                const fields = container.querySelectorAll('.relative');
+                fields.forEach((field, index) => {
+                    const btn = field.querySelector('.btn-remove-sumber');
+                    if(btn) btn.disabled = index === 0;
+                });
+            }
 
-        function updateCombinedField() {
-            const inputs = container.querySelectorAll('.input-sumber-asesmen');
-            const combinedText = Array.from(inputs)
-                .map(input => input.value.trim())
-                .filter(text => text !== '')
-                .join('\n\n');
-            combinedField.value = combinedText;
-        }
+            function updateCombinedField() {
+                const inputs = container.querySelectorAll('.input-sumber-asesmen');
+                const combinedText = Array.from(inputs)
+                    .map(input => input.value.trim())
+                    .filter(text => text !== '')
+                    .join('\n\n');
+                combinedField.value = combinedText;
+            }
 
-        addButton.addEventListener('click', function() {
-            const newIndex = container.querySelectorAll('.input-sumber-asesmen').length;
-            const newField = document.createElement('div');
-            newField.className = 'mb-3 position-relative';
-            newField.innerHTML = `
-                <input type="text" class="form-control input-sumber-asesmen"
-                    name="sumber_asesmen[]" placeholder="Tambahan sumber asesmen...">
-                <button class="btn btn-sm btn-outline-danger btn-remove-sumber position-absolute"
-                    style="right: 5px; top: 5px;" type="button">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            container.appendChild(newField);
-            updateRemoveButtons();
-        });
-
-        container.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-remove-sumber') ||
-                e.target.parentElement.classList.contains('btn-remove-sumber')) {
-                const btn = e.target.classList.contains('btn-remove-sumber') ?
-                    e.target : e.target.parentElement;
-                btn.closest('.mb-3').remove();
+            addButton.addEventListener('click', function() {
+                const newField = document.createElement('div');
+                newField.className = 'relative mb-3 flex items-center';
+                newField.innerHTML = `
+                    <input type="text" class="form-control input-sumber-asesmen w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
+                        name="sumber_asesmen[]" placeholder="Tambahan sumber asesmen...">
+                    <button class="btn-remove-sumber absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(newField);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 updateRemoveButtons();
-                updateCombinedField();
-            }
-        });
+            });
 
-        container.addEventListener('input', function(e) {
-            if (e.target.classList.contains('input-sumber-asesmen')) {
-                updateCombinedField();
-            }
-        });
-
-        // Initialize with existing data if any
-        const initialData = `{{ old('sumber_asesmen_combined') }}`;
-        if (initialData && initialData.trim() !== '') {
-            const sources = initialData.split('\n\n');
-
-            sources.forEach((source, index) => {
-                if (index > 0) {
-                    addButton.click();
+            container.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-remove-sumber');
+                if (btn) {
+                    btn.closest('.relative').remove();
+                    updateRemoveButtons();
+                    updateCombinedField();
                 }
-                container.querySelectorAll('.input-sumber-asesmen')[index].value = source;
+            });
+
+            container.addEventListener('input', function(e) {
+                if (e.target.classList.contains('input-sumber-asesmen')) {
+                    updateCombinedField();
+                }
             });
         }
     });
@@ -213,95 +236,22 @@
 
 <script>
     // Examination result scripts
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const container = document.getElementById('hasil-pemeriksaan-container');
         const addButton = document.getElementById('btn-tambah-hasil');
         const combinedField = document.getElementById('hasil_pemeriksaan_combined');
 
-        function updateRemoveButtons() {
-            const fields = container.querySelectorAll('.mb-3');
-            fields.forEach((field, index) => {
-                const btn = field.querySelector('.btn-remove-hasil');
-                btn.disabled = index === 0;
-            });
-        }
-
-        function updateCombinedField() {
-            const textareas = container.querySelectorAll('.input-hasil-pemeriksaan');
-            const combinedText = Array.from(textareas)
-                .map(ta => ta.value.trim())
-                .filter(text => text !== '')
-                .join('\n\n');
-            combinedField.value = combinedText;
-        }
-
-        addButton.addEventListener('click', function() {
-            const newIndex = container.querySelectorAll('.input-hasil-pemeriksaan').length;
-            const newField = document.createElement('div');
-            newField.className = 'mb-3 position-relative';
-            newField.innerHTML = `
-                <textarea class="form-control input-hasil-pemeriksaan"
-                    name="hasil_pemeriksaan[]" rows="2"
-                    placeholder="Tambahan analisis hasil pemeriksaan..."></textarea>
-                <button class="btn btn-sm btn-outline-danger btn-remove-hasil position-absolute"
-                    style="right: 5px; top: 5px;" type="button">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            container.appendChild(newField);
-            updateRemoveButtons();
-        });
-
-        container.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-remove-hasil') ||
-                e.target.parentElement.classList.contains('btn-remove-hasil')) {
-                const btn = e.target.classList.contains('btn-remove-hasil') ?
-                    e.target : e.target.parentElement;
-                btn.closest('.mb-3').remove();
-                updateRemoveButtons();
-                updateCombinedField();
-            }
-        });
-
-        container.addEventListener('input', function(e) {
-            if (e.target.classList.contains('input-hasil-pemeriksaan')) {
-                updateCombinedField();
-            }
-        });
-
-        // Initialize with existing data if any
-        const initialData = `{{ old('hasil_pemeriksaan_combined') }}`;
-        if (initialData && initialData.trim() !== '') {
-            const analyses = initialData.split('\n\n');
-
-            analyses.forEach((analysis, index) => {
-                if (index > 0) {
-                    addButton.click();
-                }
-                container.querySelectorAll('.input-hasil-pemeriksaan')[index].value = analysis;
-            });
-        }
-    });
-</script>
-
-<script>
-    // Recommendation scripts
-    document.addEventListener('DOMContentLoaded', function() {
-        function setupRekomendasi(containerId, addButtonId, combinedFieldId) {
-            const container = document.getElementById(containerId);
-            const addButton = document.getElementById(addButtonId);
-            const combinedField = document.getElementById(combinedFieldId);
-
+        if(container && addButton && combinedField){
             function updateRemoveButtons() {
-                const fields = container.querySelectorAll('.mb-3');
+                const fields = container.querySelectorAll('.relative');
                 fields.forEach((field, index) => {
-                    const btn = field.querySelector('.btn-remove-rekomendasi');
-                    btn.disabled = index === 0;
+                    const btn = field.querySelector('.btn-remove-hasil');
+                    if(btn) btn.disabled = index === 0;
                 });
             }
 
             function updateCombinedField() {
-                const textareas = container.querySelectorAll('.input-rekomendasi');
+                const textareas = container.querySelectorAll('.input-hasil-pemeriksaan');
                 const combinedText = Array.from(textareas)
                     .map(ta => ta.value.trim())
                     .filter(text => text !== '')
@@ -311,111 +261,207 @@
 
             addButton.addEventListener('click', function() {
                 const newField = document.createElement('div');
-                newField.className = 'mb-3 position-relative';
+                newField.className = 'relative mb-3 flex items-start';
                 newField.innerHTML = `
-                    <textarea class="form-control input-rekomendasi"
-                        name="${containerId.replace('-container', '')}[]" rows="2"
-                        placeholder="Tambahan rekomendasi..."></textarea>
-                    <button class="btn btn-sm btn-outline-danger btn-remove-rekomendasi position-absolute"
-                        style="right: 5px; top: 5px;" type="button">
-                        <i class="fas fa-times"></i>
+                    <textarea class="form-control input-hasil-pemeriksaan w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
+                        name="hasil_pemeriksaan[]" rows="2"
+                        placeholder="Tambahan analisis hasil pemeriksaan..."></textarea>
+                    <button class="btn-remove-hasil absolute right-2 top-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
+                        <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
                 `;
                 container.appendChild(newField);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 updateRemoveButtons();
-                updateCombinedField();
             });
 
             container.addEventListener('click', function(e) {
-                if (e.target.classList.contains('btn-remove-rekomendasi') ||
-                    e.target.parentElement.classList.contains('btn-remove-rekomendasi')) {
-                    const btn = e.target.classList.contains('btn-remove-rekomendasi') ?
-                        e.target : e.target.parentElement;
-                    btn.closest('.mb-3').remove();
+                const btn = e.target.closest('.btn-remove-hasil');
+                if (btn) {
+                    btn.closest('.relative').remove();
                     updateRemoveButtons();
                     updateCombinedField();
                 }
             });
 
             container.addEventListener('input', function(e) {
-                if (e.target.classList.contains('input-rekomendasi')) {
+                if (e.target.classList.contains('input-hasil-pemeriksaan')) {
                     updateCombinedField();
                 }
             });
+        }
+    });
+</script>
 
-            // Initialize with existing data if any
-            const initialData = containerId.includes('orangtua') ?
-                `{{ old('rekomendasi_orangtua_combined') }}` :
-                `{{ old('rekomendasi_terapi_combined') }}`;
+<script>
+    // Recommendation scripts
+    $(document).ready(function() {
+        function setupRekomendasi(containerId, addButtonId, combinedFieldId) {
+            const container = document.getElementById(containerId);
+            const addButton = document.getElementById(addButtonId);
+            const combinedField = document.getElementById(combinedFieldId);
 
-            if (initialData && initialData.trim() !== '') {
-                const recommendations = initialData.split('\n\n');
+            if(container && addButton && combinedField){
+                function updateRemoveButtons() {
+                    const fields = container.querySelectorAll('.relative');
+                    fields.forEach((field, index) => {
+                        const btn = field.querySelector('.btn-remove-rekomendasi');
+                        if(btn) btn.disabled = index === 0;
+                    });
+                }
 
-                recommendations.forEach((rec, index) => {
-                    if (index > 0) {
-                        addButton.click();
+                function updateCombinedField() {
+                    const textareas = container.querySelectorAll('.input-rekomendasi');
+                    const combinedText = Array.from(textareas)
+                        .map(ta => ta.value.trim())
+                        .filter(text => text !== '')
+                        .join('\n\n');
+                    combinedField.value = combinedText;
+                }
+
+                addButton.addEventListener('click', function() {
+                    const newField = document.createElement('div');
+                    newField.className = 'relative mb-3 flex items-start';
+                    newField.innerHTML = `
+                        <textarea class="form-control input-rekomendasi w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
+                            name="${containerId.replace('-container', '')}[]" rows="2"
+                            placeholder="Tambahan rekomendasi..."></textarea>
+                        <button class="btn-remove-rekomendasi absolute right-2 top-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    `;
+                    container.appendChild(newField);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    updateRemoveButtons();
+                    updateCombinedField();
+                });
+
+                container.addEventListener('click', function(e) {
+                    const btn = e.target.closest('.btn-remove-rekomendasi');
+                    if(btn){
+                        btn.closest('.relative').remove();
+                        updateRemoveButtons();
+                        updateCombinedField();
                     }
-                    container.querySelectorAll('.input-rekomendasi')[index].value = rec;
+                });
+
+                container.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('input-rekomendasi')) {
+                        updateCombinedField();
+                    }
                 });
             }
         }
 
         // Setup both recommendation forms
-        setupRekomendasi('rekomendasi-orangtua-container', 'btn-tambah-orangtua',
-            'rekomendasi_orangtua_combined');
+        setupRekomendasi('rekomendasi-orangtua-container', 'btn-tambah-orangtua', 'rekomendasi_orangtua_combined');
         setupRekomendasi('rekomendasi-terapi-container', 'btn-tambah-terapi', 'rekomendasi_terapi_combined');
     });
 </script>
 
 <script>
     // Approval scripts
-    document.addEventListener('DOMContentLoaded', function() {
+    $(document).ready(function() {
         const radioYa = document.getElementById('persetujuan_ya');
         const radioTidak = document.getElementById('persetujuan_tidak');
         const alasanGroup = document.getElementById('alasan-tidak-setuju-group');
 
-        function toggleAlasanField() {
-            if (radioTidak.checked) {
-                alasanGroup.style.display = 'block';
-                document.getElementById('alasan_tidak_setuju').required = true;
-            } else {
-                alasanGroup.style.display = 'none';
-                document.getElementById('alasan_tidak_setuju').required = false;
+        if(radioYa && radioTidak && alasanGroup){
+            function toggleAlasanField() {
+                if (radioTidak.checked) {
+                    $('#alasan-tidak-setuju-group').slideDown(300);
+                    document.getElementById('alasan_tidak_setuju').required = true;
+                } else {
+                    $('#alasan-tidak-setuju-group').slideUp(300);
+                    document.getElementById('alasan_tidak_setuju').required = false;
+                }
+            }
+
+            radioYa.addEventListener('change', toggleAlasanField);
+            radioTidak.addEventListener('change', toggleAlasanField);
+
+            document.querySelector('form').addEventListener('submit', function(e) {
+                if (!radioYa.checked && !radioTidak.checked) {
+                    e.preventDefault();
+                    alert('Silakan pilih persetujuan terlebih dahulu');
+                }
+            });
+            
+            // Re-trigger on init to fix refresh states
+            if(radioTidak.checked){
+                $('#alasan-tidak-setuju-group').show();
             }
         }
-
-        radioYa.addEventListener('change', toggleAlasanField);
-        radioTidak.addEventListener('change', toggleAlasanField);
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            if (!radioYa.checked && !radioTidak.checked) {
-                e.preventDefault();
-                alert('Silakan pilih persetujuan terlebih dahulu');
-            }
-        });
     });
 </script>
 
 <script>
+    // Alat Ukur Table Handler
     $(document).ready(function() {
-        // Inisialisasi select2
-        $('.select2').select2();
+        const body = document.getElementById('alat-ukur-body');
+        const btnAdd = document.getElementById('btn-tambah-alat');
+        let rowCount = body.querySelectorAll('tr').length;
 
-        // Script untuk menampilkan alasan jika tidak setuju
-        $('input[name="persetujuan_psikolog"]').change(function() {
-            if ($(this).val() === '0') {
-                $('#alasan-tidak-setuju-group').show();
-                $('#alasan_tidak_setuju').prop('required', true);
-            } else {
-                $('#alasan-tidak-setuju-group').hide();
-                $('#alasan_tidak_setuju').prop('required', false);
-            }
-        });
+        function updateRemoveButtons() {
+            const rows = body.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                const btn = row.querySelector('.btn-remove-alat');
+                if(btn) btn.disabled = rows.length === 1;
+            });
+        }
 
-        // Jika edit, cek nilai persetujuan saat load
-        if ($('input[name="persetujuan_psikolog"]:checked').val() === '0') {
-            $('#alasan-tidak-setuju-group').show();
-            $('#alasan_tidak_setuju').prop('required', true);
+        if(btnAdd && body) {
+            btnAdd.addEventListener('click', function() {
+                const newRow = document.createElement('tr');
+                newRow.className = 'alat-ukur-row group hover:bg-slate-50 transition-colors';
+                
+                // Build options from the first row's select if available
+                const firstSelect = body.querySelector('select');
+                let optionsHtml = '<option value="">-- Pilih Alat Ukur --</option>';
+                if (firstSelect) {
+                    optionsHtml = firstSelect.innerHTML;
+                }
+
+                newRow.innerHTML = `
+                    <td class="px-2 py-3">
+                        <select name="alat_ukur[${rowCount}][nama]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs font-bold focus:ring-0 appearance-none">
+                            ${optionsHtml}
+                        </select>
+                    </td>
+                    <td class="px-2 py-3">
+                        <input type="text" name="alat_ukur[${rowCount}][skor_raw]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
+                    </td>
+                    <td class="px-2 py-3">
+                        <input type="text" name="alat_ukur[${rowCount}][skor_standar]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
+                    </td>
+                    <td class="px-2 py-3">
+                        <input type="text" name="alat_ukur[${rowCount}][persentil]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
+                    </td>
+                    <td class="px-2 py-3">
+                        <input type="text" name="alat_ukur[${rowCount}][klasifikasi]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0" placeholder="...">
+                    </td>
+                    <td class="px-2 py-3">
+                        <input type="text" name="alat_ukur[${rowCount}][catatan]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0" placeholder="...">
+                    </td>
+                    <td class="px-2 py-3 text-center">
+                        <button type="button" class="btn-remove-alat p-1.5 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-black">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(newRow);
+                rowCount++;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                updateRemoveButtons();
+            });
+
+            body.addEventListener('click', function(e) {
+                const btn = e.target.closest('.btn-remove-alat');
+                if (btn && !btn.disabled) {
+                    btn.closest('tr').remove();
+                    updateRemoveButtons();
+                }
+            });
         }
     });
 </script>

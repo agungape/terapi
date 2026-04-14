@@ -145,8 +145,7 @@ class ObservasiController extends Controller
         $data['jenis'] = 'ATEC';
 
         $atec = HasilPemeriksaan::create($data);
-        Alert::toast("data Observasi berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi berhasil di Tambahkan");
     }
 
     public function observasi_pendengaran(Request $request)
@@ -160,31 +159,37 @@ class ObservasiController extends Controller
         $answers = $request->input('answers');
 
         $isPenyimpangan = false;
+        $jumlahTidak = 0;
 
         foreach ($answers as $questionId => $answer) {
             if ($answer === 'tidak') {
                 $isPenyimpangan = true;
+                $jumlahTidak++;
             }
 
             QuestionResponse::create([
-                'anak_id' => $anakId,
+                'anak_id'     => $anakId,
                 'question_id' => $questionId,
-                'answer' => $answer,
+                'answer'      => $answer,
             ]);
         }
 
-        // Tentukan hasil akhir
         $hasil = $isPenyimpangan ? 'Penyimpangan' : 'Sesuai Umur';
+        $totalSoal = count($answers);
 
-        // Simpan ke tabel hasil pemeriksaan
         HasilPemeriksaan::create([
-            'anak_id' => $anakId,
-            'jenis' => 'Penyimpangan Pendengaran',
-            'hasil' => $hasil,
+            'anak_id'             => $anakId,
+            'jenis'               => 'Penyimpangan Pendengaran',
+            'hasil'               => $hasil,
+            'total_skor'          => $jumlahTidak,                          // Jumlah jawaban TIDAK
+            'interpretasi'        => $isPenyimpangan
+                ? "$jumlahTidak dari $totalSoal pertanyaan dijawab TIDAK — indikasi penyimpangan pendengaran."
+                : 'Semua pertanyaan dijawab YA — tidak ada indikasi penyimpangan pendengaran.',
+            'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
-        Alert::toast("data Observasi Penngengaran berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        Alert::toast("Data Observasi Pendengaran berhasil di Tambahkan", 'success');
+        return redirect()->back()->with('success', "Data Observasi Pendengaran berhasil di Tambahkan");
     }
 
     public function observasi_penglihatan(Request $request)
@@ -214,7 +219,7 @@ class ObservasiController extends Controller
 
 
         Alert::toast("data Observasi Penglihatan berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Penglihatan berhasil di Tambahkan");
     }
 
     public function observasi_perilaku(Request $request)
@@ -224,35 +229,41 @@ class ObservasiController extends Controller
             'answers' => 'required|array',
         ]);
 
-        $anakId = $request->input('anak_id');
+        $anakId  = $request->input('anak_id');
         $answers = $request->input('answers');
 
         $isPenyimpangan = false;
+        $jumlahYa = 0;
 
         foreach ($answers as $questionId => $answer) {
             if ($answer === 'ya') {
                 $isPenyimpangan = true;
+                $jumlahYa++;
             }
 
             QuestionResponsePerilaku::create([
-                'anak_id' => $anakId,
+                'anak_id'              => $anakId,
                 'question_perilaku_id' => $questionId,
-                'answer' => $answer,
+                'answer'               => $answer,
             ]);
         }
 
-        // Tentukan hasil akhir
-        $hasil = $isPenyimpangan ? 'Penyimpangan' : 'Normal';
+        $totalSoal = count($answers);
+        $hasil     = $isPenyimpangan ? 'Penyimpangan' : 'Normal';
 
-        // Simpan ke tabel hasil pemeriksaan
         HasilPemeriksaan::create([
-            'anak_id' => $anakId,
-            'jenis' => 'Penyimpangan Perilaku',
-            'hasil' => $hasil,
+            'anak_id'             => $anakId,
+            'jenis'               => 'Penyimpangan Perilaku',
+            'hasil'               => $hasil,
+            'total_skor'          => $jumlahYa,
+            'interpretasi'        => $isPenyimpangan
+                ? "$jumlahYa dari $totalSoal pertanyaan dijawab YA — kemungkinan masalah perilaku/emosional (KMPE)."
+                : 'Tidak ada pertanyaan dijawab YA — tidak ada indikasi penyimpangan perilaku.',
+            'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
-        Alert::toast("data Observasi Perilaku berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        Alert::toast("Data Observasi Perilaku berhasil di Tambahkan", 'success');
+        return redirect()->back()->with('success', "Data Observasi Perilaku berhasil di Tambahkan");
     }
 
     public function observasi_autis(Request $request)
@@ -262,44 +273,45 @@ class ObservasiController extends Controller
             'answers' => 'required|array',
         ]);
 
-        $anakId = $request->input('anak_id');
+        $anakId  = $request->input('anak_id');
         $answers = $request->input('answers');
 
-        // Critical item berdasarkan no_urut
-        $criticalNoUrut = [2, 7, 9, 13, 14, 15];
-
-        // Ambil ID pertanyaan critical dari tabel question_autis
-        $criticalQuestionIds = QuestionAutis::whereIn('no_urut', $criticalNoUrut)
-            ->pluck('id')
-            ->toArray();
+        $criticalNoUrut   = [2, 7, 9, 13, 14, 15];
+        $criticalQuestionIds = QuestionAutis::whereIn('no_urut', $criticalNoUrut)->pluck('id')->toArray();
 
         $jumlahTidak = 0;
+        $totalTidak  = 0;
 
         foreach ($answers as $questionId => $answer) {
-            // Cek apakah pertanyaan ini termasuk critical dan jawabannya TIDAK
             if (in_array($questionId, $criticalQuestionIds) && strtolower($answer) === 'tidak') {
                 $jumlahTidak++;
             }
+            if (strtolower($answer) === 'tidak') {
+                $totalTidak++;
+            }
 
             QuestionResponseAutis::create([
-                'anak_id' => $anakId,
+                'anak_id'          => $anakId,
                 'question_autis_id' => $questionId,
-                'answer' => $answer,
+                'answer'           => $answer,
             ]);
         }
 
-        // Tentukan hasil akhir berdasarkan jumlah 'tidak' pada critical item
         $hasil = $jumlahTidak >= 2 ? 'Risiko Autisme' : 'Tidak Berisiko';
 
-        // Simpan ke tabel hasil pemeriksaan
         HasilPemeriksaan::create([
-            'anak_id' => $anakId,
-            'jenis' => 'Autisme',
-            'hasil' => $hasil,
+            'anak_id'             => $anakId,
+            'jenis'               => 'Autisme',
+            'hasil'               => $hasil,
+            'total_skor'          => $jumlahTidak,        // Jumlah critical items dijawab TIDAK
+            'interpretasi'        => $jumlahTidak >= 2
+                ? "$jumlahTidak dari 6 critical item M-CHAT dijawab TIDAK — risiko autisme terdeteksi (total: $totalTidak TIDAK)."
+                : "Hanya $jumlahTidak dari 6 critical item dijawab TIDAK — tidak berisiko autisme.",
+            'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
-        Alert::toast("data Observasi Autism berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        Alert::toast("Data Observasi Autisme berhasil di Tambahkan", 'success');
+        return redirect()->back()->with('success', "Data Observasi Autisme berhasil di Tambahkan");
     }
 
     public function observasi_gpph(Request $request)
@@ -309,34 +321,37 @@ class ObservasiController extends Controller
             'answers' => 'required|array',
         ]);
 
-        $anakId = $request->anak_id;
-        $answers = $request->answers;
-
+        $anakId     = $request->anak_id;
+        $answers    = $request->answers;
         $totalScore = 0;
 
         foreach ($answers as $questionId => $value) {
-            $score = (int)$value;
+            $score       = (int) $value;
             $totalScore += $score;
 
-            // Simpan setiap jawaban
             QuestionResponseGpph::create([
-                'anak_id' => $anakId,
+                'anak_id'          => $anakId,
                 'question_gpph_id' => $questionId,
-                'answer' => $score,
+                'answer'           => $score,
             ]);
         }
 
-        // Hitung hasil GPPH
         $hasil = $totalScore < 13 ? 'Normal' : 'Kemungkinan GPPH';
 
+        // FIX: Sebelumnya total_skor TIDAK disimpan — sekarang diperbaiki
         HasilPemeriksaan::create([
-            'anak_id' => $anakId,
-            'jenis' => 'GPPH',
-            'hasil' => $hasil,
+            'anak_id'             => $anakId,
+            'jenis'               => 'GPPH',
+            'hasil'               => $hasil,
+            'total_skor'          => $totalScore,
+            'interpretasi'        => $totalScore < 13
+                ? "Total skor GPPH: $totalScore (< 13) — tidak ada indikasi GPPH."
+                : "Total skor GPPH: $totalScore (≥ 13) — kemungkinan Gangguan Pemusatan Perhatian dan Hiperaktif.",
+            'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
-        Alert::toast("data Observasi GPPH berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        Alert::toast("Data Observasi GPPH berhasil di Tambahkan", 'success');
+        return redirect()->back()->with('success', "Data Observasi GPPH berhasil di Tambahkan");
     }
 
     public function observasi_wawancara(Request $request)
@@ -365,7 +380,7 @@ class ObservasiController extends Controller
         ]);
 
         Alert::toast("data Observasi Wawancara berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Wawancara berhasil di Tambahkan");
     }
 
     public function observasi_hpperilaku(Request $request)
@@ -376,8 +391,7 @@ class ObservasiController extends Controller
         ]);
 
         $hpperilaku = HpPerilaku::create($validateData);
-        Alert::toast("data Observasi Perilaku berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Perilaku berhasil di Tambahkan");
     }
 
     public function hpperilaku_update(Request $request, HpPerilaku $id): RedirectResponse
@@ -387,8 +401,7 @@ class ObservasiController extends Controller
         ]);
 
         $id->update($validateData);
-        Alert::toast("data Observasi Perilaku berhasil di Perbarui", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Perilaku berhasil di Perbarui");
     }
 
     public function observasi_hpsensorik(Request $request)
@@ -399,8 +412,7 @@ class ObservasiController extends Controller
         ]);
 
         $hpsensorik = HpSensorik::create($validateData);
-        Alert::toast("data Observasi Sensorik berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Sensorik berhasil di Tambahkan");
     }
 
     public function hpsensorik_update(Request $request, HpSensorik $id): RedirectResponse
@@ -410,8 +422,7 @@ class ObservasiController extends Controller
         ]);
 
         $id->update($validateData);
-        Alert::toast("data Observasi Sensorik berhasil di Perbarui", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "data Observasi Sensorik berhasil di Perbarui");
     }
 
 

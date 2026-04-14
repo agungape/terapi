@@ -1,122 +1,120 @@
 @extends('layouts.master')
-@section('menuLayananterapi', 'active')
-@section('masterLayananterapi', 'menu-is-opening menu-open')
-@section('menuObservasi', 'active')
+@section('title', 'Hasil Observasi GPPH')
+
 @section('content')
+<div class="space-y-8 animate-in fade-in duration-500 pb-20">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-1">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <a href="{{ route('observasi.index') }}" class="hover:text-red-500 transition-colors">Observasi</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <a href="{{ route('observasi.show', $anak->id) }}" class="hover:text-red-500 transition-colors">Detail Pasien</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-slate-600">Hasil GPPH</span>
+            </div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Evaluasi Perhatian & Hiperaktivitas</h2>
+        </div>
+        
+        <a href="{{ route('observasi.show', ['anak' => $anak->id]) }}" class="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+        </a>
+    </div>
 
-    <div class="content-wrapper">
-        <section class="content">
-            <div class="container-fluid">
-
-                {{-- FORM UTAMA --}}
-
-                <div class="row">
-                    {{-- Kolom Form --}}
-                    <div class="col-12 col-md-4">
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                <h4 class="card-title">Observasi Anak</h4>
-                            </div>
-                            <div class="card-body">
-                                {{-- Data Anak --}}
-                                <div class="form-group">
-                                    <label>Nama</label>
-                                    <input type="hidden" name="anak_id" value="{{ $anak->id }}">
-                                    <input type="text" class="form-control" disabled value="{{ $anak->nama }}">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Umur</label>
-                                    <input type="text" class="form-control" disabled value="{{ $umur }}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Summary Stats -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="card-premium p-8 bg-white text-center flex flex-col items-center">
+                <div class="w-24 h-24 rounded-[2rem] bg-slate-50 border-4 border-white shadow-xl overflow-hidden mb-4">
+                    <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" class="w-full h-full object-cover">
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header p-2">
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <ul class="nav nav-pills">
-                                            <li class="nav-item"><a class="nav-link active" href="#gpph"
-                                                    data-toggle="tab">GPPH</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <a href="{{ route('observasi.show', ['anak' => $anak->id]) }}"
-                                            class="btn btn-warning btn-sm">
-                                            Kembali
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="card-body">
-                                <div class="tab-content">
-
-                                    {{-- observasi autis --}}
-                                    <div class="active tab-pane" id="gpph">
-
-                                        {{-- DAFTAR PERTANYAAN --}}
-                                        <div class="row justify-content-center">
-                                            <div class="col-lg-10">
-                                                <div class="card shadow-sm">
-                                                    <div class="card-header bg-success text-white text-center">
-                                                        <h6 class="mb-0">HASIL INSTRUMEN PEMERIKSAAN GANGGUAN PEMUSATAN
-                                                            PERHATIAN DAN HIPERAKTIVITAS (GPPH)</h6>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-bordered table-hover">
-                                                                <thead class="thead-light">
-                                                                    <tr class="text-center">
-                                                                        <th style="width: 5%;">No</th>
-                                                                        <th style="width: 55%;">Kegiatan yang Diamati
-                                                                        </th>
-                                                                        <th style="width: 10%;">Skor</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    @foreach ($qrgpph as $index => $q)
-                                                                        <tr>
-                                                                            <td class="text-center align-middle">
-                                                                                {{ $index + 1 }}</td>
-                                                                            <td class="align-middle">
-                                                                                {{ $q->question_gpph->question_text }}</td>
-
-                                                                            <td>{{ $q->answer }}</td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                    <tr class="table-secondary">
-                                                                        <td colspan="2"
-                                                                            class="text-right font-weight-bold">Total
-                                                                            Skor</td>
-                                                                        <td class="text-center font-weight-bold"
-                                                                            id="totalScore">{{ $total }}</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
+                <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ $anak->nama }}</h3>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 italic">Hasil Penilaian GPPH</p>
+                
+                <div class="w-full mt-8 bg-red-500 rounded-3xl p-8 text-white shadow-xl shadow-red-100 relative overflow-hidden group">
+                    <i data-lucide="activity" class="w-24 h-24 absolute -right-4 -top-4 text-white/10 group-hover:scale-110 transition-transform"></i>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-80">Total Akumulasi Skor</p>
+                    <div class="flex items-baseline gap-2">
+                        <h2 class="text-5xl font-black italic">{{ $total }}</h2>
+                        <span class="text-xs font-bold opacity-60">Points</span>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
 
+            <div class="card-premium p-8 bg-slate-900 text-white space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest flex items-center gap-2 italic">
+                    <i data-lucide="info" class="w-4 h-4 text-red-500"></i> Interpretasi Skor
+                </h4>
+                <div class="space-y-3">
+                    <div class="flex gap-3 text-[10px] font-bold text-slate-400 leading-relaxed uppercase tracking-wider">
+                        <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-1 shrink-0"></div>
+                        <span>Skor di atas ambang batas menunjukkan perlunya intervensi perilaku yang intensif.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="lg:col-span-8">
+            <div class="card-premium bg-white overflow-hidden shadow-xl shadow-slate-200/50">
+                <div class="px-8 py-6 bg-slate-900 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <i data-lucide="eye" class="w-5 h-5 text-red-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest mb-0.5">INSTITUT PSIKOLOGI BRAIN & HEART</h4>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Daftar Kegiatan Yang Diamati</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest w-16">#</th>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Deskripsi Perilaku</th>
+                                <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @foreach ($qrgpph as $index => $q)
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-8 py-5 text-[10px] font-black text-slate-300">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                <td class="px-8 py-5">
+                                    <p class="text-xs font-bold text-slate-600 leading-relaxed tracking-tight uppercase italic">{{ $q->question_gpph->question_text }}</p>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-black border border-slate-200">
+                                        {{ $q->answer }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot class="bg-slate-900 text-white">
+                            <tr>
+                                <td colspan="2" class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-right italic">Grand Total Accumulation</td>
+                                <td class="px-8 py-6 text-center">
+                                    <span class="text-xl font-black italic text-red-500">{{ $total }}</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() { lucide.createIcons(); });
+</script>
+@endsection
+

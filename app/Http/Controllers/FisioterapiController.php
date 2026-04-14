@@ -41,10 +41,8 @@ class FisioterapiController extends Controller
                 ]);
             }
 
-            Alert::success('Berhasil', "Pemeriksaan berhasil ditambahkan")->autoClose(4000);
-            return redirect()->back();
+            return redirect()->back()->with('success', "Pemeriksaan berhasil ditambahkan");
         } else
-            Alert::error('Gagal menyimpan data', "data telah dibuat pada kunjungan ini!!! Hubungi admin untuk melakukan perubahan data")->autoClose(6000);
-        return redirect()->back();
+            return redirect()->back()->with('error', "data telah dibuat pada kunjungan ini!!! Hubungi admin untuk melakukan perubahan data");
     }
 }

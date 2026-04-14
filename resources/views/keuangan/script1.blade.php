@@ -85,22 +85,110 @@
         });
 
         $(document).ready(function() {
-            function updateJumlah() {
-                var tarif = $('#tarif_id').find(':selected').data('tarif'); // Ambil tarif dari data-tarif
-                if (tarif) {
-                    $('#jumlah').val(tarif).prop('readonly', true); // Isi input dengan tarif & readonly
-                } else {
-                    $('#jumlah').val('').prop('readonly', false); // Kosongkan jika tidak ada pilihan
+            // Setup CSRF untuk request AJAX
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            }
-
-            // Panggil fungsi saat halaman pertama kali dimuat
-            updateJumlah();
-
-            // Tambahkan event listener untuk mengupdate jumlah saat select berubah
-            $('#tarif_id').change(function() {
-                updateJumlah();
             });
+
+            // Handle dropdown Anak -> fetch layanan AJAX
+            $('#anak_id').on('change', function() {
+                var anakId = $(this).val();
+                var anakNama = $(this).find('option:selected').data('nama');
+                
+                $('#hidden_deskripsi').val('Pembayaran Anak ' + (anakNama || ''));
+                var layananSelect = $('#layanan_select');
+                
+                if (anakId) {
+                    layananSelect.empty().append('<option value="">Memuat layanan...</option>').prop('disabled', true);
+                    
+                    $.ajax({
+                        url: "/pemasukkan/layanan",
+                        type: "GET",
+                        data: { anak_id: anakId },
+                        success: function(response) {
+                            layananSelect.empty().append('<option value="">-- Pilih Layanan --</option>');
+                            
+                            // Group 1: Assessment Belum Lunas
+                            if (response.assessments && response.assessments.length > 0) {
+                                var optgroup = $('<optgroup label="Assessment Belum Lunas">');
+                                response.assessments.forEach(function(item) {
+                                    optgroup.append(`<option value="assessment|${item.id}|0|1">${item.label} - ${item.tujuan}</option>`);
+                                });
+                                layananSelect.append(optgroup);
+                            }
+                            
+                            // Group 2: Paket Terapi
+                            if (response.paket_terapi && response.paket_terapi.length > 0) {
+                                var optgroup = $('<optgroup label="Paket Terapi">');
+                                response.paket_terapi.forEach(function(item) {
+                                    var text = `${item.nama} (${item.jumlah_pertemuan} Sesi) - sisa ${item.sisa}`;
+                                    var opt = `<option value="paket_terapi|${item.id}|${item.tarif}|${item.jumlah_pertemuan}">${text}</option>`;
+                                    optgroup.append(opt);
+                                });
+                                layananSelect.append(optgroup);
+                            }
+                            
+                            layananSelect.prop('disabled', false).trigger('change');
+                        },
+                        error: function() {
+                            layananSelect.empty().append('<option value="">Gagal memuat layanan</option>');
+                        }
+                    });
+                } else {
+                    layananSelect.empty().append('<option value="">-- Pilih Anak Terlebih Dahulu --</option>').prop('disabled', true);
+                    resetPricing();
+                }
+            });
+
+            // Ketika Layanan dipilih, update hidden inputs dan jumlah bayar
+            $('#layanan_select').on('change', function() {
+                var val = $(this).val();
+                if (!val) {
+                    resetPricing();
+                    return;
+                }
+                
+                var parts = val.split('|');
+                var jenis = parts[0];  // assessment atau paket_terapi
+                var id = parts[1];
+                var tarif = parts[2];
+                var sesi = parts[3];
+                
+                // Update hidden
+                $('#hidden_jenis_layanan').val(jenis);
+                if (jenis === 'assessment') {
+                    $('#hidden_assessment_id').val(id);
+                    $('#hidden_tarif_id').val('');
+                } else {
+                    $('#hidden_tarif_id').val(id);
+                    $('#hidden_assessment_id').val('');
+                }
+                
+                // Setup visual
+                if(jenis === 'paket_terapi') {
+                    $('#info_layanan').removeClass('d-none');
+                    $('#info_sesi').text(sesi);
+                } else {
+                    $('#info_layanan').addClass('d-none');
+                }
+                
+                // Format rupiah
+                let formatted = parseInt(tarif).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                // Asumsi untuk paket_terapi tarif sudah diset di controller. 
+                if(tarif > 0) {
+                    $('#jumlah').val(formatted).prop('readonly', true);
+                } else {
+                    $('#jumlah').val('').prop('readonly', false);
+                }
+            });
+
+            function resetPricing() {
+                $('#hidden_jenis_layanan, #hidden_assessment_id, #hidden_tarif_id').val('');
+                $('#jumlah').val('').prop('readonly', false);
+                $('#info_layanan').addClass('d-none');
+            }
         });
     </script>
     {{-- script pemasukkan --}}

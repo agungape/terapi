@@ -23,21 +23,55 @@ class AnakController extends Controller
         $this->middleware('permission:delete anak', ['only' => ['destroy']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $anaks = Anak::orderByRaw("status = 'aktif' DESC")
+        $query = Anak::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', "%$search%")
+                  ->orWhere('nib', 'like', "%$search%")
+                  ->orWhere('alamat', 'like', "%$search%");
+            });
+        }
+
+        $anaks = $query->orderByRaw("status = 'aktif' DESC")
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(5)
+            ->withQueryString();
 
         $aktif = Anak::where('status', 'aktif')->count();
         $nonaktif = Anak::where('status', 'nonaktif')->count();
         $pria = Anak::where('status', 'aktif')->where('jenis_kelamin', 'L')->count();
         $wanita = Anak::where('status', 'aktif')->where('jenis_kelamin', 'P')->count();
 
+        // Menyiapkan rincian paket aktif untuk setiap anak
         foreach ($anaks as $a) {
-            $progres = Kunjungan::where('anak_id', $a->id)->whereIn('status', ['hadir', 'sakit'])->count();
-            // Hitung progres berdasarkan jumlah kunjungan
-            $a->progresnilai = ($progres >= 20) ? 100 : ($progres * 5); // 5% untuk setiap kunjungan
+            $a->active_packages = $a->pemasukkans()
+                ->where('jenis_layanan', 'paket_terapi')
+                ->whereNotNull('tarif_id')
+                ->with('tarif')
+                ->get()
+                ->filter(function($p) {
+                    return $p->sisa_pertemuan > 0;
+                });
+            
+            // Map data untuk modal Alpine.js agar lebih ringan
+            $a->packages_data = $a->active_packages->map(function($p) {
+                // total diambil dari master tarif
+                $total = $p->tarif->jumlah_pertemuan ?? 0;
+                // sudah_terpakai adalah accessor di Pemasukkan.php yang menghitung Kunjungan
+                $used = $p->sudah_terpakai ?? 0;
+                $percent = $total > 0 ? min(100, round(($used / $total) * 100)) : 0;
+                
+                return [
+                    'label' => $p->tarif->nama ?? 'Paket Terapi',
+                    'total' => $total,
+                    'used' => $used,
+                    'percent' => $percent
+                ];
+            });
         }
 
         return view('anak.index', compact('anaks', 'aktif', 'nonaktif', 'pria', 'wanita'));
@@ -134,8 +168,7 @@ class AnakController extends Controller
         }
 
         $anak = Anak::create($validateData);
-        Alert::success('Berhasil', "Data Anak $request->nama berhasil dibuat");
-        return redirect("/anak#card-{$anak->id}");
+        return redirect("/anak#card-{$anak->id}")->with('success', "Data Anak $request->nama berhasil dibuat");
     }
 
     /**
@@ -150,7 +183,16 @@ class AnakController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('anak.detail', compact('kunjungan', 'fisioterapi', 'anak'));
+        $activePackages = \App\Models\Pemasukkan::with('tarif')
+            ->where('anak_id', $anak->id)
+            ->where('jenis_layanan', 'paket_terapi')
+            ->whereNotNull('tarif_id')
+            ->get()
+            ->filter(function($p) {
+                return $p->sisa_pertemuan > 0;
+            });
+
+        return view('anak.detail', compact('kunjungan', 'fisioterapi', 'anak', 'activePackages'));
     }
 
 
@@ -247,9 +289,8 @@ class AnakController extends Controller
         }
 
         $anak->update($validateData);
-        Alert::success('Berhasil', "Anak $request->nama telah di update");
         // Trik agar halaman kembali ke halaman asal
-        return redirect('/anak');
+        return redirect('/anak')->with('success', "Anak $request->nama telah di update");
     }
 
     public function deleteFoto($id)
@@ -265,11 +306,10 @@ class AnakController extends Controller
             // Update kolom foto di database menjadi null
             $anak->update(['foto' => null]);
 
-            // Notifikasi sukses
-            Alert::success('Berhasil', "Foto Anak {$anak->nama} berhasil dihapus");
+            return redirect()->back()->with('success', "Foto Anak {$anak->nama} berhasil dihapus");
         } else {
             // Notifikasi jika tidak ada foto
-            Alert::warning('Gagal', "Anak {$anak->nama} tidak memiliki foto untuk dihapus");
+            return redirect()->back()->with('warning', "Anak {$anak->nama} tidak memiliki foto untuk dihapus");
         }
 
         return redirect()->back();
@@ -281,10 +321,13 @@ class AnakController extends Controller
      */
     public function destroy(Anak $anak)
     {
-        Storage::disk('public')->delete('anak/' . $anak->foto);
+        $nama = $anak->nama;
+        if ($anak->foto) {
+            Storage::disk('public')->delete('anak/' . $anak->foto);
+        }
+        
         $anak->delete();
-        Alert::success('Berhasil', "$anak->nama telah di hapus");
-        return redirect("/anak");
+        return redirect()->route('anak.index')->with('success', "Data anak $nama berhasil dihapus dari sistem.");
     }
 
     public function ubahStatus(Request $request)

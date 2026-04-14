@@ -1,268 +1,224 @@
 @extends('website.master')
-@section('menuServices', 'active')
-@section('content')
+@section('menuServices', 'nav-link-active')
 
+@section('content')
     <!-- Page Header -->
-    <section class="page-header py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h1 class="display-4 fw-bold">Layanan Kami</h1>
-                    <nav aria-label="breadcrumb" class="d-flex justify-content-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/" class="text-white">Beranda</a></li>
-                            <li class="breadcrumb-item active text-white" aria-current="page">Layanan</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+    <section class="relative pt-32 pb-24 bg-brand-slate overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-red/10 rounded-full blur-3xl"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            <h5 class="text-xs font-black text-brand-red uppercase tracking-[0.3em] mb-4 italic animate-in fade-in slide-in-from-bottom-2">Layanan Profesional Kami</h5>
+            <h1 class="text-4xl lg:text-6xl font-black text-white uppercase italic tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-4">Layanan Kami</h1>
+            <nav class="flex justify-center">
+                <ol class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <li><a href="/" class="hover:text-brand-red transition-colors">Beranda</a></li>
+                    <li class="w-1 h-1 bg-slate-700 rounded-full"></li>
+                    <li class="text-slate-300">Layanan</li>
+                </ol>
+            </nav>
         </div>
     </section>
 
     <!-- Services Content -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
-                        <div class="card-header bg-white border-0">
-                            <h5 class="fw-bold mb-0">Daftar Layanan</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="list-group list-group-flush">
-                                <a href="#speech-therapy" class="list-group-item list-group-item-action">Terapi
-                                    Wicara</a>
-                                <a href="#behavioral-therapy" class="list-group-item list-group-item-action">Terapi
-                                    Perilaku</a>
-                                <a href="#physiotherapy" class="list-group-item list-group-item-action">Fisioterapi
+    <section class="py-32 bg-white scroll-mt-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-20">
+                <!-- Sidebar Nav -->
+                <aside class="lg:w-1/3 xl:w-1/4">
+                    <div class="sticky top-28 space-y-8">
+                        <div class="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+                            <h5 class="text-xs font-black text-brand-slate uppercase tracking-[0.2em] mb-8 border-l-4 border-brand-red pl-4">Daftar Layanan</h5>
+                            <nav class="space-y-2">
+                                <a href="#speech-therapy" class="flex items-center gap-4 p-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white hover:text-brand-red hover:shadow-sm transition-all group">
+                                    <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-brand-red group-hover:text-white transition-all"><i data-lucide="message-square" class="w-4 h-4"></i></span>
+                                    Terapi Wicara
                                 </a>
-                                <a href="#sensory-integration" class="list-group-item list-group-item-action">Terapi Sensori
-                                    Integrasi</a>
-                                <a href="#child-psychology-assessment"
-                                    class   ="list-group-item list-group-item-action">Assesmen
-                                    Psikologis</a>
-                            </div>
+                                <a href="#behavioral-therapy" class="flex items-center gap-4 p-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white hover:text-brand-red hover:shadow-sm transition-all group">
+                                    <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-brand-red group-hover:text-white transition-all"><i data-lucide="brain" class="w-4 h-4"></i></span>
+                                    Terapi Perilaku
+                                </a>
+                                <a href="#physiotherapy" class="flex items-center gap-4 p-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white hover:text-brand-red hover:shadow-sm transition-all group">
+                                    <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-brand-red group-hover:text-white transition-all"><i data-lucide="move" class="w-4 h-4"></i></span>
+                                    Fisioterapi
+                                </a>
+                                <a href="#sensory-integration" class="flex items-center gap-4 p-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white hover:text-brand-red hover:shadow-sm transition-all group">
+                                    <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-brand-red group-hover:text-white transition-all"><i data-lucide="activity" class="w-4 h-4"></i></span>
+                                    Sensori Integrasi
+                                </a>
+                                <a href="#psychology-assessment" class="flex items-center gap-4 p-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-500 hover:bg-white hover:text-brand-red hover:shadow-sm transition-all group">
+                                    <span class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-brand-red group-hover:text-white transition-all"><i data-lucide="clipboard-check" class="w-4 h-4"></i></span>
+                                    Assessment
+                                </a>
+                            </nav>
+                        </div>
+                        
+                        <div class="bg-brand-red rounded-[2rem] p-8 text-white relative overflow-hidden group">
+                            <i data-lucide="phone-call" class="absolute -bottom-6 -right-6 w-32 h-32 opacity-10 group-hover:scale-110 transition-transform duration-500"></i>
+                            <h4 class="text-sm font-black uppercase italic tracking-tight mb-4 text-balance">Butuh Konsultasi Lebih Lanjut?</h4>
+                            <p class="text-[10px] font-bold text-red-50 opacity-90 mb-8 leading-relaxed">Tim kami siap membantu menjawab segala pertanyaan Anda.</p>
+                            <a href="https://wa.me/6285123238404" target="_blank" class="w-full bg-white text-brand-red py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center block hover:bg-brand-slate hover:text-white transition-all italic">Chat WhatsApp Sekarang</a>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="service-detail mb-5" id="speech-therapy">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-primary-light text-primary me-4">
-                                <i class="fas fa-comment-medical fa-2x"></i>
+                </aside>
+
+                <!-- Details -->
+                <div class="flex-1 space-y-32">
+                    <!-- Speech Therapy -->
+                    <div id="speech-therapy" class="scroll-mt-32 uppercase tracking-tight">
+                        <div class="flex items-center gap-6 mb-10">
+                            <div class="w-16 h-16 bg-red-50 text-brand-red rounded-3xl flex items-center justify-center border border-red-100 shadow-sm">
+                                <i data-lucide="message-square" class="w-8 h-8"></i>
                             </div>
-                            <h3 class="fw-bold mb-0">Terapi Wicara</h3>
+                            <h3 class="text-3xl font-black text-brand-slate uppercase italic tracking-tight">Terapi Wicara</h3>
                         </div>
-                        <p>Terapi wicara adalah layanan yang ditujukan untuk membantu anak-anak dengan kesulitan dalam
-                            berkomunikasi, baik secara verbal maupun non-verbal. Layanan ini mencakup berbagai gangguan
-                            bicara dan bahasa.</p>
+                        <p class="text-slate-500 text-sm leading-relaxed lowercase first-letter:uppercase font-medium mb-12 max-w-2xl">
+                            Terapi wicara adalah layanan yang ditujukan untuk membantu anak-anak dengan kesulitan dalam berkomunikasi, baik secara verbal maupun non-verbal. Layanan ini mencakup berbagai gangguan bicara dan bahasa yang menghambat interaksi sosial.
+                        </p>
 
-                        <h5 class="fw-bold mt-4">Manfaat Terapi Wicara:</h5>
-                        <ul class="mb-4">
-                            <li>Meningkatkan kemampuan artikulasi dan pengucapan kata</li>
-                            <li>Mengembangkan kosakata dan pemahaman bahasa</li>
-                            <li>Meningkatkan kemampuan berkomunikasi secara fungsional</li>
-                            <li>Mengatasi gangguan kelancaran bicara (gagap)</li>
-                            <li>Membantu anak dengan gangguan pendengaran</li>
-                        </ul>
-
-                        <h5 class="fw-bold">Indikasi Anak Membutuhkan Terapi Wicara:</h5>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Anak usia 2 tahun belum mengucapkan kata</li>
-                                    <li>Ucapan tidak jelas setelah usia 3 tahun</li>
-                                    <li>Kosakata sangat terbatas</li>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100">
+                                <h5 class="text-[11px] font-black text-brand-slate uppercase tracking-widest mb-6 border-b border-slate-200 pb-3 italic">Manfaat Utama:</h5>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Meningkatkan kemampuan artikulasi</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mengembangkan kosa kata</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Komunikasi fungsional</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mengatasi gangguan kelancaran</span></li>
                                 </ul>
                             </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Sulit menyusun kalimat</li>
-                                    <li>Gagap atau bicara tidak lancar</li>
-                                    <li>Anak dengan diagnosis tertentu (autisme, down syndrome)</li>
+                            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <h5 class="text-[11px] font-black text-brand-slate uppercase tracking-widest mb-6 border-b border-slate-200 pb-3 italic">Indikasi Kebutuhan:</h5>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3"><i data-lucide="alert-circle" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Anak 2 tahun belum mengucap kata</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="alert-circle" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ucapan tidak jelas >3 tahun</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="alert-circle" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kosa kata sangat terbatas</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="alert-circle" class="w-4 h-4 text-amber-500 mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sulit menyusun kalimat</span></li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="bg-light p-4 rounded">
-                            <h5 class="fw-bold">Proses Terapi:</h5>
-                            <p>Setiap anak akan melalui proses assesmen awal untuk menentukan program terapi yang
-                                sesuai. Terapi dilakukan 1-2 kali seminggu dengan durasi 45-60 menit per sesi. Orang tua
-                                akan mendapatkan laporan perkembangan dan panduan latihan di rumah.</p>
-                            <a href="https://wa.me/6285123238404" class="btn btn-primary mt-2">Konsultasi Sekarang</a>
+                        <div class="flex items-center gap-4 bg-brand-slate p-1 rounded-2xl">
+                             <a href="https://wa.me/6285123238404" class="w-full bg-brand-red text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-white hover:text-brand-slate transition-all italic">Konsultasikan Sekarang</a>
                         </div>
                     </div>
 
-                    <div class="service-detail mb-5" id="behavioral-therapy">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-primary-light text-primary me-4">
-                                <i class="fas fa-user-check fa-2x"></i>
+                    <!-- Behavioral Therapy -->
+                    <div id="behavioral-therapy" class="scroll-mt-32 uppercase tracking-tight">
+                        <div class="flex items-center gap-6 mb-10">
+                            <div class="w-16 h-16 bg-red-50 text-brand-red rounded-3xl flex items-center justify-center border border-red-100 shadow-sm">
+                                <i data-lucide="brain" class="w-8 h-8"></i>
                             </div>
-                            <h3 class="fw-bold mb-0">Terapi Perilaku</h3>
+                            <h3 class="text-3xl font-black text-brand-slate uppercase italic tracking-tight">Terapi Perilaku (ABA)</h3>
                         </div>
-                        <p>Terapi perilaku membantu anak-anak yang mengalami tantangan emosional atau perilaku, seperti
-                            tantrum, kesulitan mengikuti instruksi, atau gangguan pemusatan perhatian. Terapi ini bertujuan
-                            untuk membentuk perilaku positif melalui pendekatan yang terstruktur dan konsisten.</p>
+                        <p class="text-slate-500 text-sm leading-relaxed lowercase first-letter:uppercase font-medium mb-12 max-w-2xl">
+                            Terapi perilaku membantu anak-anak yang mengalami tantangan emosional atau perilaku seperti tantrum, kesulitan mengikuti instruksi, atau gangguan pemusatan perhatian melalui pendekatan ilmiah yang terstruktur.
+                        </p>
 
-                        <h5 class="fw-bold mt-4">Manfaat Terapi Perilaku:</h5>
-                        <ul class="mb-4">
-                            <li>Mengurangi perilaku agresif atau destruktif</li>
-                            <li>Meningkatkan kemampuan mengikuti aturan dan instruksi</li>
-                            <li>Membantu anak mengelola emosi secara sehat</li>
-                            <li>Menumbuhkan keterampilan sosial yang positif</li>
-                            <li>Memperbaiki fokus dan konsentrasi</li>
-                        </ul>
-
-                        <div class="bg-light p-4 rounded">
-                            <h5 class="fw-bold">Proses Terapi:</h5>
-                            <p>Terapis akan melakukan observasi dan penilaian perilaku anak secara menyeluruh untuk menyusun
-                                program intervensi yang sesuai. Sesi terapi berlangsung sekitar 45–60 menit dan dilakukan
-                                1–2 kali seminggu, dengan keterlibatan aktif dari orang tua untuk penerapan strategi di
-                                rumah.</p>
-                            <a href="https://wa.me/6285123238404" class="btn btn-primary mt-2">Konsultasi Sekarang</a>
-                        </div>
-                    </div>
-
-                    <div class="service-detail mb-5" id="physiotherapy">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-success-light text-success me-4">
-                                <i class="fas fa-walking fa-2x"></i>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                            <div class="p-8 bg-slate-50 rounded-3xl border border-slate-100">
+                                <h5 class="text-[11px] font-black text-brand-slate uppercase tracking-widest mb-6 border-b border-slate-200 pb-3 italic">Manfaat Utama:</h5>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mengurangi perilaku agresif</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Meningkatkan kepatuhan</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Manajemen emosi sehat</span></li>
+                                    <li class="flex items-start gap-3"><i data-lucide="check-circle" class="w-4 h-4 text-brand-red mt-0.5 shrink-0"></i> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Keterampilan sosial positif</span></li>
+                                </ul>
                             </div>
-                            <h3 class="fw-bold mb-0">Fisioterapi</h3>
-                        </div>
-                        <p>Fisioterapi membantu anak-anak yang mengalami keterlambatan perkembangan motorik kasar, kelemahan
-                            otot, atau gangguan gerak. Terapi ini bertujuan untuk meningkatkan kekuatan, koordinasi, dan
-                            mobilitas anak.</p>
-
-                        <h5 class="fw-bold mt-4">Manfaat Fisioterapi:</h5>
-                        <ul class="mb-4">
-                            <li>Meningkatkan kekuatan otot dan stabilitas tubuh</li>
-                            <li>Melatih koordinasi dan keseimbangan</li>
-                            <li>Mendukung keterampilan berjalan, berdiri, dan duduk</li>
-                            <li>Membantu mengatasi gangguan muskuloskeletal</li>
-                            <li>Memperbaiki postur dan fleksibilitas tubuh</li>
-                        </ul>
-
-                        <div class="bg-light p-4 rounded">
-                            <h5 class="fw-bold">Proses Terapi:</h5>
-                            <p>Fisioterapis akan melakukan evaluasi fisik untuk menilai kemampuan gerak anak dan menentukan
-                                rencana terapi. Sesi berlangsung selama 45–60 menit, dengan frekuensi 1–3 kali seminggu
-                                tergantung kondisi anak.</p>
-                            <a href="https://wa.me/6285123238404" class="btn btn-success mt-2">Konsultasi Sekarang</a>
-                        </div>
-                    </div>
-
-                    <div class="service-detail mb-5" id="sensory-integration">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-success-light text-success me-4">
-                                <i class="fas fa-brain fa-2x"></i>
+                            <div class="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <h5 class="text-[11px] font-black text-brand-slate uppercase tracking-widest mb-6 border-b border-slate-200 pb-3 italic">Proses Terapi:</h5>
+                                <p class="text-[10px] font-bold text-slate-400 leading-relaxed lowercase first-letter:uppercase">Observasi awal untuk menyusun program intervensi spesifik. Sesi berdurasi 45-60 menit, dilakukan 1-2 kali seminggu dengan keterlibatan orang tua.</p>
                             </div>
-                            <h3 class="fw-bold mb-0">Terapi Integrasi Sensori</h3>
                         </div>
-                        <p>Terapi integrasi sensori ditujukan untuk anak-anak yang mengalami kesulitan dalam memproses dan
-                            merespon rangsangan dari lingkungan, seperti suara, sentuhan, atau gerakan. Tujuannya adalah
-                            membantu anak merespon rangsangan secara tepat dan nyaman.</p>
-
-                        <h5 class="fw-bold mt-4">Manfaat Terapi Integrasi Sensori:</h5>
-                        <ul class="mb-4">
-                            <li>Meningkatkan toleransi terhadap rangsangan sensori</li>
-                            <li>Membantu anak lebih fokus dan tenang</li>
-                            <li>Memperbaiki keterampilan motorik dan keseimbangan</li>
-                            <li>Mengurangi perilaku menghindar atau berlebih terhadap rangsangan</li>
-                            <li>Menunjang perkembangan belajar dan sosial</li>
-                        </ul>
-
-                        <div class="bg-light p-4 rounded">
-                            <h5 class="fw-bold">Proses Terapi:</h5>
-                            <p>Terapis akan melakukan asesmen sensori untuk memahami profil sensori anak. Sesi terapi
-                                melibatkan aktivitas bermain yang dirancang untuk menstimulasi sistem sensori secara
-                                terstruktur. Durasi terapi 45–60 menit, dilakukan 1–3 kali seminggu.</p>
-                            <a href="https://wa.me/6285123238404" class="btn btn-success mt-2">Konsultasi Sekarang</a>
-                        </div>
+                         <a href="https://wa.me/6285123238404" class="w-full sm:w-auto bg-brand-slate text-white px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-brand-red transition-all italic block sm:inline-block">Ambil Janji Konsultasi</a>
                     </div>
 
-                    <div class="service-detail mb-5" id="child-psychology-assessment">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-warning-light text-warning me-4">
-                                <i class="fas fa-child fa-2x"></i>
+                    <!-- Fisioterapi -->
+                    <div id="physiotherapy" class="scroll-mt-32 uppercase tracking-tight">
+                        <div class="flex items-center gap-6 mb-10">
+                            <div class="w-16 h-16 bg-red-50 text-brand-red rounded-3xl flex items-center justify-center border border-red-100 shadow-sm">
+                                <i data-lucide="move" class="w-8 h-8"></i>
                             </div>
-                            <h3 class="fw-bold mb-0">Assessment Psikologi Anak</h3>
+                            <h3 class="text-3xl font-black text-brand-slate uppercase italic tracking-tight">Fisioterapi</h3>
                         </div>
-                        <p>Assessment psikologi anak bertujuan untuk memahami kondisi emosional, perilaku, dan perkembangan
-                            kognitif anak. Proses ini penting untuk mendeteksi dini hambatan perkembangan dan memberikan
-                            rekomendasi penanganan yang sesuai.</p>
-
-                        <h5 class="fw-bold mt-4">Tujuan Assessment Psikologi:</h5>
-                        <ul class="mb-4">
-                            <li>Mengetahui potensi dan hambatan perkembangan anak</li>
-                            <li>Mendiagnosis gangguan tumbuh kembang atau perilaku</li>
-                            <li>Memberikan arahan terapi atau intervensi yang tepat</li>
-                            <li>Membantu orang tua memahami kebutuhan emosional anak</li>
-                            <li>Meningkatkan dukungan di rumah dan sekolah</li>
-                        </ul>
-
-                        <div class="bg-light p-4 rounded">
-                            <h5 class="fw-bold">Proses Assessment:</h5>
-                            <p>Psikolog anak akan melakukan wawancara dengan orang tua, observasi langsung, serta penggunaan
-                                alat tes psikologis sesuai usia dan kebutuhan anak. Hasil assessment disampaikan dalam
-                                bentuk laporan dan rekomendasi lanjutan.</p>
-                            <a href="https://wa.me/6285123238404" class="btn btn-warning mt-2">Konsultasi Sekarang</a>
+                        <p class="text-slate-500 text-sm leading-relaxed lowercase first-letter:uppercase font-medium mb-12 max-w-2xl">
+                            Fisioterapi membantu anak yang mengalami keterlambatan perkembangan motorik kasar, kelemahan otot, atau gangguan gerak untuk meningkatkan kekuatan, koordinasi, dan mobilitas.
+                        </p>
+                        <div class="bg-slate-50 rounded-3xl p-10 border border-slate-100 mb-12">
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div>
+                                    <h5 class="text-[11px] font-black text-brand-slate uppercase tracking-widest mb-6 italic">Target Perkembangan:</h5>
+                                    <ul class="space-y-4">
+                                        <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-brand-red rounded-full"></span> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Kekuatan Otot & Stabilitas</span></li>
+                                        <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-brand-red rounded-full"></span> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Koordinasi & Keseimbangan</span></li>
+                                        <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 bg-brand-red rounded-full"></span> <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Keterampilan Berjalan</span></li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                    <p class="text-[10px] font-bold text-slate-400 leading-relaxed italic lowercase first-letter:uppercase">Fisioterapis kami melakukan evaluasi fisik mendalam untuk rencana kustom. Frekuensi ideal 1-3 kali seminggu berdasarkan kondisi medis.</p>
+                                </div>
+                             </div>
                         </div>
+                         <a href="https://wa.me/6285123238404" class="w-full sm:w-auto bg-brand-red text-white px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center hover:bg-brand-slate transition-all italic block sm:inline-block shadow-xl shadow-red-100">Hubungi Fisioterapis</a>
                     </div>
-
                 </div>
             </div>
         </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Pertanyaan Umum</h2>
-                <p class="text-muted">Temukan jawaban atas pertanyaan yang sering diajukan</p>
+    <section class="py-32 bg-slate-50 uppercase tracking-tight">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-20 space-y-4">
+                <h5 class="text-xs font-black text-brand-red uppercase tracking-[0.2em] italic">FAQ</h5>
+                <h2 class="text-3xl lg:text-4xl font-black text-brand-slate uppercase italic tracking-tight">Pertanyaan Umum</h2>
+                <div class="w-20 h-1 bg-brand-red mx-auto"></div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item border-0 shadow-sm mb-3">
-                            <h3 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne">
-                                    Berapa lama anak perlu mengikuti terapi?
-                                </button>
-                            </h3>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                                data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Durasi terapi bervariasi tergantung kondisi anak dan respons terhadap terapi.
-                                    Rata-rata anak membutuhkan 6-12 bulan terapi intensif sebelum menunjukkan
-                                    perkembangan signifikan. Terapis akan melakukan evaluasi berkala untuk menyesuaikan
-                                    program.
-                                </div>
-                            </div>
+
+            <div class="space-y-4" x-data="{ active: 1 }">
+                <!-- FAQ 1 -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <button @click="active = (active === 1 ? 0 : 1)" class="w-full p-8 text-left flex items-center justify-between group">
+                        <span class="text-sm font-black text-brand-slate uppercase tracking-widest group-hover:text-brand-red transition-colors">Berapa lama anak perlu mengikuti terapi?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-300 transition-transform duration-300" :class="active === 1 ? 'rotate-180 text-brand-red' : ''"></i>
+                    </button>
+                    <div x-show="active === 1" x-collapse x-cloak>
+                        <div class="px-8 pb-8 pt-0 border-t border-slate-50">
+                            <p class="text-slate-500 text-[11px] font-bold leading-relaxed lowercase first-letter:uppercase mt-6">
+                                Durasi terapi bervariasi tergantung kondisi anak dan respons terhadap terapi. Rata-rata anak membutuhkan 6-12 bulan terapi intensif sebelum menunjukkan perkembangan signifikan. Terapis akan melakukan evaluasi berkala untuk menyesuaikan program.
+                            </p>
                         </div>
-                        <div class="accordion-item border-0 shadow-sm mb-3">
-                            <h3 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseTwo">
-                                    Apakah orang tua boleh mengikuti sesi terapi?
-                                </button>
-                            </h3>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                                data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Kami sangat menganjurkan orang tua untuk mengamati sesi terapi agar dapat
-                                    melanjutkan latihan di rumah. Beberapa sesi bahkan dirancang khusus untuk melibatkan
-                                    orang tua secara aktif dalam proses terapi.
-                                </div>
-                            </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <button @click="active = (active === 2 ? 0 : 2)" class="w-full p-8 text-left flex items-center justify-between group">
+                        <span class="text-sm font-black text-brand-slate uppercase tracking-widest group-hover:text-brand-red transition-colors">Apakah orang tua boleh mengikuti sesi terapi?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-300 transition-transform duration-300" :class="active === 2 ? 'rotate-180 text-brand-red' : ''"></i>
+                    </button>
+                    <div x-show="active === 2" x-collapse x-cloak>
+                        <div class="px-8 pb-8 pt-0 border-t border-slate-50">
+                            <p class="text-slate-500 text-[11px] font-bold leading-relaxed lowercase first-letter:uppercase mt-6">
+                                Kami sangat menganjurkan orang tua untuk mengamati sesi terapi agar dapat melanjutkan latihan di rumah. Beberapa sesi bahkan dirancang khusus untuk melibatkan orang tua secara aktif dalam proses terapi guna mempercepat hasil.
+                            </p>
                         </div>
-                        <!-- Item FAQ lainnya -->
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <button @click="active = (active === 3 ? 0 : 3)" class="w-full p-8 text-left flex items-center justify-between group">
+                        <span class="text-sm font-black text-brand-slate uppercase tracking-widest group-hover:text-brand-red transition-colors">Bagaimana jika anak rewel saat terapi?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-300 transition-transform duration-300" :class="active === 3 ? 'rotate-180 text-brand-red' : ''"></i>
+                    </button>
+                    <div x-show="active === 3" x-collapse x-cloak>
+                        <div class="px-8 pb-8 pt-0 border-t border-slate-50">
+                            <p class="text-slate-500 text-[11px] font-bold leading-relaxed lowercase first-letter:uppercase mt-6">
+                                Terapis kami terlatih untuk menangani perilaku anak melalui pendekatan bermain. Rewel di awal adalah hal wajar sebagai bentuk adaptasi dengan lingkungan baru.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
 @endsection
+

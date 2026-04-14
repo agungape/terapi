@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
+use App\Models\Assessment;
 use App\Models\Kategori;
+use App\Models\Kunjungan;
 use App\Models\Pemasukkan;
 use App\Models\Pengeluaran;
 use App\Models\SaldoKas;
@@ -35,11 +37,10 @@ class KeuanganController extends Controller
 
     public function pemasukkan_json()
     {
-        $pemasukkan = Pemasukkan::with('kategori')->select('pemasukkans.*');
+        $pemasukkan = Pemasukkan::with(['kategori', 'anak', 'tarif'])->select('pemasukkans.*');
         return DataTables::of($pemasukkan)
-            ->addColumn('kategori_nama', function ($row) {
-                return $row->kategori ? $row->kategori->nama : '-'; // Nama kategori atau fallback "-"
-            })
+            ->addColumn('kategori_nama', fn($row) => $row->kategori ? $row->kategori->nama : '-')
+            ->addColumn('anak_nama', fn($row) => $row->anak ? $row->anak->nama : '-')
             ->make(true);
     }
 
@@ -47,9 +48,7 @@ class KeuanganController extends Controller
     {
         $pengeluaran = Pengeluaran::with('kategori')->select('pengeluarans.*');
         return DataTables::of($pengeluaran)
-            ->addColumn('kategori_nama', function ($row) {
-                return $row->kategori ? $row->kategori->nama : '-'; // Nama kategori atau fallback "-"
-            })
+            ->addColumn('kategori_nama', fn($row) => $row->kategori ? $row->kategori->nama : '-')
             ->make(true);
     }
 
@@ -57,298 +56,320 @@ class KeuanganController extends Controller
     {
         $selectedYear = $request->input('year', date('Y'));
 
-        // Ambil daftar tahun dari tabel pemasukan
         $years_pemasukkan = Pemasukkan::selectRaw('YEAR(tanggal) as year')
-            ->groupBy('year')
-            ->pluck('year');
+            ->groupBy('year')->pluck('year');
 
         $years_pengeluaran = Pengeluaran::selectRaw('YEAR(tanggal) as year')
-            ->groupBy('year')
-            ->pluck('year');
+            ->groupBy('year')->pluck('year');
 
-        // Ambil data pemasukan berdasarkan tahun yang dipilih
         $data_pemasukkan = Pemasukkan::selectRaw('MONTH(tanggal) as month, SUM(jumlah) as total')
             ->whereYear('tanggal', $selectedYear)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+            ->groupBy('month')->orderBy('month')->get();
 
         $data_pengeluaran = Pengeluaran::selectRaw('MONTH(tanggal) as month, SUM(jumlah) as total')
             ->whereYear('tanggal', $selectedYear)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+            ->groupBy('month')->orderBy('month')->get();
 
         if ($request->ajax()) {
             return response()->json([
-                'incomeData' => $data_pemasukkan,
+                'incomeData'  => $data_pemasukkan,
                 'expenseData' => $data_pengeluaran,
             ]);
         }
 
+        $saldoKas        = SaldoKas::first();
+        $totalPemasukan  = Pemasukkan::getTotalPemasukan();
+        $formattedPemasukan = number_format($totalPemasukan, 0, ',', '.');
+        $totalPengeluaran   = Pengeluaran::getTotalPengeluaran();
+        $formattedPengeluaran = number_format($totalPengeluaran, 0, ',', '.');
 
-        $saldoKas = SaldoKas::first();
-        // Hitung total pemasukan
-        $totalPemasukan = Pemasukkan::getTotalPemasukan();
-        $formattedPemasukan = 'Rp ' . rtrim(rtrim(number_format($totalPemasukan, 2, ',', '.'), '0'), ',');
-        // hitung total pengeluaran
-        $totalPengeluaran = Pengeluaran::getTotalPengeluaran();
-        $formattedPengeluaran = 'Rp ' . rtrim(rtrim(number_format($totalPengeluaran, 2, ',', '.'), '0'), ',');
-
-
-        return view('keuangan.rekapkas', compact('saldoKas', 'selectedYear', 'years_pemasukkan', 'years_pengeluaran', 'formattedPemasukan', 'formattedPengeluaran', 'data_pemasukkan', 'data_pengeluaran'));
+        return view('keuangan.rekapkas', compact(
+            'saldoKas', 'selectedYear', 'years_pemasukkan', 'years_pengeluaran',
+            'formattedPemasukan', 'formattedPengeluaran', 'data_pemasukkan', 'data_pengeluaran'
+        ));
     }
 
     public function kategori()
     {
-        $jenis = [
-            'Pemasukkan'  => 'Pemasukkan',
-            'Pengeluaran' => 'Pengeluaran'
-        ];
+        $jenis    = ['Pemasukkan' => 'Pemasukkan', 'Pengeluaran' => 'Pengeluaran'];
         $kategoris = Kategori::latest()->paginate(10);
         return view('keuangan.kategori', compact('kategoris', 'jenis'));
     }
 
     public function kategori_store(Request $request)
     {
-        $validateData = $request->validate([
-            'nama' => 'required',
-            'jenis' => 'required',
-        ]);
-        $kategori = Kategori::create($validateData);
-        Alert::success('Berhasil', "Data program $request->nama berhasil dibuat");
-        return redirect()->back();
+        $validateData = $request->validate(['nama' => 'required', 'jenis' => 'required']);
+        Kategori::create($validateData);
+        return redirect()->back()->with('success', "Data kategori $request->nama berhasil dibuat");
     }
 
     public function kategori_destroy(Kategori $kategori)
     {
         $kategori->delete();
-        Alert::success('Berhasil', "kategori telah di hapus");
-        return redirect()->back();
+        return redirect()->back()->with('success', "Kategori telah di hapus");
     }
+
+    // ======================================================
+    // ENDPOINT AJAX: Ambil layanan tersedia untuk anak tertentu
+    // ======================================================
+
+    /**
+     * GET /pemasukkan/layanan/{anak_id}
+     * Digunakan oleh form pemasukkan via AJAX untuk mengisi dropdown layanan.
+     */
+    public function getLayananByAnak(Request $request)
+    {
+        $request->validate(['anak_id' => 'required|exists:anaks,id']);
+        $anakId = $request->anak_id;
+
+        // Ambil semua pembayaran paket aktif (yang masih ada sisa sesi)
+        $pemasukkans = Pemasukkan::with('tarif')
+            ->where('anak_id', $anakId)
+            ->where('jenis_layanan', 'paket_terapi')
+            ->whereNotNull('tarif_id')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $paketTerapi = $pemasukkans->map(function ($p) {
+            return [
+                'id'                => $p->tarif_id,
+                'pemasukkan_id'     => $p->id,
+                'nama'              => $p->tarif->nama ?? 'Paket Tanpa Nama',
+                'tarif'             => $p->getRawOriginal('jumlah'),
+                'jumlah_pertemuan'  => $p->tarif->jumlah_pertemuan ?? 20,
+                'terpakai'          => $p->sudah_terpakai,
+                'sisa'              => $p->sisa_pertemuan,
+                'sudah_lunas'       => true, // Karena masuk ke tabel pemasukkan berarti sudah lunas/terbayar
+                'jenis_terapi'      => $p->tarif->jenis_terapi ?? '',
+            ];
+        });
+
+        // Ambil assessment yang belum lunas untuk anak ini
+        $assessments = Assessment::where('anak_id', $anakId)
+            ->where('status_bayar', 'belum_bayar')
+            ->get()
+            ->map(fn($a) => [
+                'id'           => $a->id,
+                'label'        => 'Assessment - ' . ($a->tanggal_assessment?->format('d/m/Y') ?? 'Tanpa Tanggal'),
+                'tujuan'       => $a->tujuan_pemeriksaan,
+            ]);
+
+        return response()->json([
+            'paket_terapi' => $paketTerapi,
+            'assessments'  => $assessments,
+        ]);
+    }
+
+    // ======================================================
+    // PEMASUKKAN
+    // ======================================================
 
     public function pemasukkan()
     {
-
-        $saldoKas = SaldoKas::first();
-        $anaks = Anak::where('status', 'aktif')->get();
-        $kategori = Kategori::where('nama', 'Pembayaran Anak')->first();
-        $kategoris = Kategori::where('nama', '!=', 'Pembayaran Anak')->where('jenis', '!=', 'Pengeluaran')->get();
-        $pemasukkans = Pemasukkan::orderBy('tanggal', 'DESC')->paginate(10);
-        $tarif = Tarif::latest()->get();
+        $saldoKas     = SaldoKas::first();
+        $anaks        = Anak::where('status', 'aktif')->get();
+        $kategori     = Kategori::firstOrCreate(
+            ['nama' => 'Pembayaran Anak'],
+            ['jenis' => 'Pemasukkan']
+        );
+        $kategoris    = Kategori::where('nama', '!=', 'Pembayaran Anak')->where('jenis', '!=', 'Pengeluaran')->get();
+        $pemasukkans  = Pemasukkan::with(['anak', 'tarif', 'kategori'])->orderBy('tanggal', 'DESC')->paginate(10);
+        $tarif        = Tarif::where('is_active', true)->latest()->get();
         $dataTerakhir = Pemasukkan::latest('updated_at')->first();
         $totalPemasukan = Pemasukkan::getTotalPemasukan();
+        $formattedPemasukan = number_format($totalPemasukan, 0, ',', '.');
 
-        $formattedPemasukan = 'Rp ' . rtrim(rtrim(number_format($totalPemasukan, 2, ',', '.'), '0'), ',');
-
-        return view('keuangan.pemasukkan', compact('pemasukkans', 'kategori', 'kategoris', 'anaks', 'saldoKas', 'dataTerakhir', 'formattedPemasukan', 'tarif'));
+        return view('keuangan.pemasukkan', compact(
+            'pemasukkans', 'kategori', 'kategoris', 'anaks',
+            'saldoKas', 'dataTerakhir', 'formattedPemasukan', 'tarif'
+        ));
     }
 
     public function pemasukkan_store(Request $request)
     {
         $validateData = $request->validate([
-            'tanggal' => 'required|date',
-            'deskripsi' => 'required',
-            'kategori_id' => 'required|exists:App\Models\Kategori,id',
-            'tarif_id' => 'nullable|exists:App\Models\Tarif,id',
-            'jumlah' => 'required',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tanggal'        => 'required|date',
+            'deskripsi'      => 'required',
+            'kategori_id'    => 'required|exists:App\Models\Kategori,id',
+            'tarif_id'       => 'nullable|exists:App\Models\Tarif,id',
+            'anak_id'        => 'nullable|exists:App\Models\Anak,id',
+            'assessment_id'  => 'nullable|exists:App\Models\Assessment,id',
+            'jenis_layanan'  => 'nullable|in:assessment,paket_terapi,lainnya',
+            'metode_bayar'   => 'nullable|in:tunai,transfer',
+            'sesi_dibayar'   => 'nullable|integer',
+            'jumlah'         => 'required',
+            'gambar'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // hitung penambahan saldo dari SALDO AWAL
-        $jumlahPembayaran = $request->input('jumlah');
+        // Bersihkan format ribuan dari jumlah
+        $jumlahBersih = (int) str_replace('.', '', $request->jumlah);
 
-        // Hapus titik dari jumlah pembayaran
-        $jumlahPembayaranbaru = (int)str_replace('.', '', $jumlahPembayaran);
+        // Ambil saldo kas
+        $saldo    = SaldoKas::latest()->first();
+        $saldoAwal = $saldo ? (int) $saldo->getRawOriginal('saldo_awal') : 0;
 
-        // Ambil saldo terakhir dari tabel saldo_kas
-        $saldo = SaldoKas::latest()->first();
+        // Hitung saldo akhir
+        $saldoAkhir = $saldoAwal + $jumlahBersih;
 
-        if ($saldo == true) {
-            $saldoAwal = (int) str_replace(['Rp', '.', ' '], '', $saldo->saldo_awal);
-        }
-
-
-        // Hitung saldo akhir setelah pemasukkan
-        if ($saldo == null) {
-            $saldoAkhir = 0 + $jumlahPembayaranbaru;
-        } else {
-            $saldoAkhir =  $saldoAwal + $jumlahPembayaranbaru;
-        }
-
-
-
-        // upload bukti transfer
+        // Upload bukti transfer (jika ada)
+        $namaFile = null;
         if ($request->file('gambar')) {
-            $file = $request->file('gambar');
-            $extFile = $file->getClientOriginalExtension();
-            $namaFile =
-                "gambar-" . time() . "." . $extFile;
-            $path = 'bukti-transfer/' . $namaFile;
-            Storage::disk('public')->put($path, file_get_contents($file));
-            $data['gambar'] = $namaFile;
+            $file      = $request->file('gambar');
+            $extFile   = $file->getClientOriginalExtension();
+            $namaFile  = "gambar-" . time() . "." . $extFile;
+            Storage::disk('public')->put('bukti-transfer/' . $namaFile, file_get_contents($file));
         }
 
-
-        $data['tanggal'] = $request->tanggal;
-        $data['tarif_id'] = $request->tarif_id;
-        $data['deskripsi'] = $request->deskripsi;
-        $data['kategori_id'] = $request->kategori_id;
-        $data['jumlah'] = $jumlahPembayaranbaru;
-
-        $data['saldo_akhir'] = $saldoAkhir;
-
-        $saldoKasAkhir['saldo_awal'] = $saldoAkhir;
-
-        if ($saldo == null) {
-            $saldoKas = SaldoKas::create($saldoKasAkhir);
+        // Simpan atau update saldo kas
+        if (!$saldo) {
+            SaldoKas::create(['saldo_awal' => $saldoAkhir]);
         } else {
-            $saldo->update([
-                'saldo_awal' => $saldoAkhir
-            ]);
+            $saldo->update(['saldo_awal' => $saldoAkhir]);
         }
 
-        $pemasukkan = Pemasukkan::create($data);
-        Alert::toast("data Pemasukkan berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        // Simpan pemasukkan
+        $pemasukkan = Pemasukkan::create([
+            'tanggal'       => $request->tanggal,
+            'tarif_id'      => $request->tarif_id,
+            'deskripsi'     => $request->deskripsi,
+            'kategori_id'   => $request->kategori_id,
+            'anak_id'       => $request->anak_id,
+            'assessment_id' => $request->assessment_id,
+            'jenis_layanan' => $request->jenis_layanan,
+            'metode_bayar'  => $request->metode_bayar,
+            'sesi_dibayar'  => $request->sesi_dibayar,
+            'jumlah'        => $jumlahBersih,
+            'saldo_akhir'   => $saldoAkhir,
+            'gambar'        => $namaFile,
+        ]);
+
+        // Jika pembayaran untuk assessment, update status_bayar assessment
+        if ($request->assessment_id && $request->jenis_layanan === 'assessment') {
+            Assessment::where('id', $request->assessment_id)
+                ->update(['status_bayar' => 'lunas']);
+        }
+
+        return redirect()->back()->with('success', "Data Pemasukkan berhasil di Tambahkan");
     }
 
     public function pemasukkan_destroy(Pemasukkan $pemasukkan)
     {
         $saldoKas = SaldoKas::latest()->first();
-        $saldoAwal = (int) str_replace(['Rp', '.', ' '], '', $saldoKas->saldo_awal);
 
-        $formatjumlah = $pemasukkan->jumlah;
-        $saldoJumlah = (int) str_replace(['Rp', '.', ' '], '', $formatjumlah);
-        $saldo = $saldoAwal - $saldoJumlah;
+        // FIX: Gunakan getRawOriginal() agar tidak perlu parse string "Rp"
+        $saldoAwal   = (int) $saldoKas->getRawOriginal('saldo_awal');
+        $jumlahBayar = (int) $pemasukkan->getRawOriginal('jumlah');
+        $saldoBaru   = $saldoAwal - $jumlahBayar;
 
-        $saldoKas->update([
-            'saldo_awal' => $saldo
-        ]);
+        $saldoKas->update(['saldo_awal' => $saldoBaru]);
+
+        // Revert status_bayar assessment jika ada
+        if ($pemasukkan->assessment_id) {
+            Assessment::where('id', $pemasukkan->assessment_id)
+                ->update(['status_bayar' => 'belum_bayar']);
+        }
+
         $pemasukkan->delete();
-        Storage::delete('public/bukti-transfer/' . $pemasukkan->gambar);
-        Alert::success('Berhasil', "data telah di hapus");
-        return redirect()->back();
+
+        if ($pemasukkan->gambar) {
+            Storage::delete('public/bukti-transfer/' . $pemasukkan->gambar);
+        }
+
+        return redirect()->back()->with('success', "Data pemasukkan telah di hapus");
     }
+
+    // ======================================================
+    // PENGELUARAN
+    // ======================================================
 
     public function pengeluaran()
     {
-
-        $saldoKas = SaldoKas::first();
-
-        $kategoris = Kategori::where('jenis', '!=', 'Pemasukkan')->get();
-        $pengeluarans = Pengeluaran::latest()->paginate(10);
-
-        $dataTerakhir = Pengeluaran::latest('updated_at')->first();
+        $saldoKas       = SaldoKas::first();
+        $kategoris      = Kategori::where('jenis', '!=', 'Pemasukkan')->get();
+        $pengeluarans   = Pengeluaran::latest()->paginate(10);
+        $dataTerakhir   = Pengeluaran::latest('updated_at')->first();
         $totalPengeluaran = Pengeluaran::getTotalPengeluaran();
-        $formattedPengeluaran = 'Rp ' . rtrim(rtrim(number_format($totalPengeluaran, 2, ',', '.'), '0'), ',');
+        $formattedPengeluaran = number_format($totalPengeluaran, 0, ',', '.');
         return view('keuangan.pengeluaran', compact('pengeluarans', 'kategoris', 'saldoKas', 'dataTerakhir', 'formattedPengeluaran'));
     }
 
     public function pengeluaran_store(Request $request)
     {
-        $validateData = $request->validate([
-            'tanggal' => 'required|date',
-            'deskripsi' => 'required',
+        $request->validate([
+            'tanggal'     => 'required|date',
+            'deskripsi'   => 'required',
             'kategori_id' => 'required|exists:App\Models\Kategori,id',
-            'jumlah' => 'required',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'jumlah'      => 'required',
+            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // hitung penambahan saldo dari SALDO AWAL
-        $jumlahPembayaran = $request->input('jumlah');
+        $jumlahBersih = (int) str_replace('.', '', $request->jumlah);
 
-        // Hapus titik dari jumlah pembayaran
-        $jumlahPembayaranbaru = (int)str_replace('.', '', $jumlahPembayaran);
+        $saldo    = SaldoKas::latest()->first();
+        $saldoAwal = $saldo ? (int) $saldo->getRawOriginal('saldo_awal') : 0;
+        $saldoAkhir = $saldoAwal - $jumlahBersih;
 
-        // Ambil saldo terakhir dari tabel saldo_kas
-        $saldo = SaldoKas::latest()->first();
-
-        if ($saldo == true) {
-            $saldoAwal = (int) str_replace(['Rp', '.', ' '], '', $saldo->saldo_awal);
-        }
-
-
-        // Hitung saldo akhir setelah pemasukkan
-        $saldoAkhir =  $saldoAwal - $jumlahPembayaranbaru;
-
-
-
-
-        // upload bukti transfer
+        $namaFile = null;
         if ($request->file('gambar')) {
-            $file = $request->file('gambar');
-            $extFile = $file->getClientOriginalExtension();
-            $namaFile =
-                "gambar-" . time() . "." . $extFile;
-            $path = 'sturk-bayar/' . $namaFile;
-            Storage::disk('public')->put($path, file_get_contents($file));
-            $data['gambar'] = $namaFile;
+            $file     = $request->file('gambar');
+            $extFile  = $file->getClientOriginalExtension();
+            $namaFile = "gambar-" . time() . "." . $extFile;
+            Storage::disk('public')->put('sturk-bayar/' . $namaFile, file_get_contents($file));
         }
 
+        $saldo->update(['saldo_awal' => $saldoAkhir]);
 
-        $data['tanggal'] = $request->tanggal;
-        $data['deskripsi'] = $request->deskripsi;
-        $data['kategori_id'] = $request->kategori_id;
-        $data['jumlah'] = $jumlahPembayaranbaru;
-        $data['saldo_akhir'] = $saldoAkhir;
-
-
-        $saldo->update([
-            'saldo_awal' => $saldoAkhir
+        Pengeluaran::create([
+            'tanggal'     => $request->tanggal,
+            'deskripsi'   => $request->deskripsi,
+            'kategori_id' => $request->kategori_id,
+            'jumlah'      => $jumlahBersih,
+            'saldo_akhir' => $saldoAkhir,
+            'gambar'      => $namaFile,
         ]);
 
-
-        $pengeluaran = Pengeluaran::create($data);
-        Alert::toast("data Pengeluaran berhasil di Tambahkan", 'success');
-        return redirect()->back();
+        return redirect()->back()->with('success', "Data Pengeluaran berhasil di Tambahkan");
     }
 
     public function pengeluaran_destroy(Pengeluaran $pengeluaran)
     {
-        $saldoKas = SaldoKas::latest()->first();
-        $saldoAwal = (int) str_replace(['Rp', '.', ' '], '', $saldoKas->saldo_awal);
+        $saldoKas    = SaldoKas::latest()->first();
+        // FIX: Gunakan getRawOriginal() agar tidak perlu parse string "Rp"
+        $saldoAwal   = (int) $saldoKas->getRawOriginal('saldo_awal');
+        $jumlahBayar = (int) $pengeluaran->getRawOriginal('jumlah');
+        $saldoBaru   = $saldoAwal + $jumlahBayar;
 
-        $formatjumlah = $pengeluaran->jumlah;
-        $saldoJumlah = (int) str_replace(['Rp', '.', ' '], '', $formatjumlah);
-        $saldo = $saldoAwal + $saldoJumlah;
-
-        $saldoKas->update([
-            'saldo_awal' => $saldo
-        ]);
+        $saldoKas->update(['saldo_awal' => $saldoBaru]);
         $pengeluaran->delete();
-        if ($pengeluaran->gambar == true) {
+
+        if ($pengeluaran->gambar) {
             Storage::delete('public/bukti-transfer/' . $pengeluaran->gambar);
         }
-        Alert::success('Berhasil', "data telah di hapus");
-        return redirect()->back();
+
+        return redirect()->back()->with('success', "Data pengeluaran telah di hapus");
     }
+
+    // ======================================================
+    // LAPORAN KEUANGAN
+    // ======================================================
 
     public function laporan_keuangan(Request $request)
     {
         $dateRange = $request->input('date_range');
 
-        // Pastikan date_range ada dan memiliki format yang benar
         if ($dateRange) {
-            // Pisahkan tanggal mulai dan tanggal selesai
             $dates = explode(' - ', $dateRange);
-
-            // Periksa apakah array dates memiliki dua elemen
             if (count($dates) == 2) {
                 $startDate = $dates[0];
-                $endDate = $dates[1];
+                $endDate   = $dates[1];
             } else {
-                // Jika format tidak valid, set tanggal default
                 $startDate = now()->startOfMonth()->toDateString();
-                $endDate = now()->endOfMonth()->toDateString();
+                $endDate   = now()->endOfMonth()->toDateString();
             }
         } else {
-            // Jika date_range kosong, set tanggal default
             $startDate = now()->startOfMonth()->toDateString();
-            $endDate = now()->endOfMonth()->toDateString();
+            $endDate   = now()->endOfMonth()->toDateString();
         }
-
-
 
         $financialReport = DB::table('pemasukkans')
             ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
@@ -361,22 +382,19 @@ class KeuanganController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        // Hitung saldo akhir
         $currentBalance = 0;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
                 $currentBalance += $item->jumlah;
             } elseif ($item->jenis === 'pengeluaran') {
                 $currentBalance -= $item->jumlah;
-            } elseif ($item->jenis === 'saldo') {
-                $currentBalance = $item->saldo_awal; // Update saldo berdasarkan data saldo_kas
             }
             $item->current_balance = $currentBalance;
             return $item;
         });
+
         return view('keuangan.laporan', compact('financialReport', 'startDate', 'endDate'));
     }
-
 
     public function laporan_pdf(Request $request, $startDate, $endDate)
     {
@@ -391,7 +409,6 @@ class KeuanganController extends Controller
             ->orderBy('tanggal')
             ->get();
 
-        // dd($financialReport);
         $currentBalance = 0;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
@@ -403,21 +420,19 @@ class KeuanganController extends Controller
             return $item;
         });
 
-        // Render view to HTML
         $html = view('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'))->render();
 
-        // Init mPDF
         $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'margin_top' => 20,
-            'margin_right' => 15,
+            'mode'          => 'utf-8',
+            'format'        => 'A4',
+            'margin_top'    => 20,
+            'margin_right'  => 15,
             'margin_bottom' => 20,
-            'margin_left' => 15,
-            'default_font' => 'sans-serif'
+            'margin_left'   => 15,
+            'default_font'  => 'sans-serif',
         ]);
 
         $mpdf->WriteHTML($html);
-        return $mpdf->Output("laporan_keuangan_{$startDate}_{$endDate}.pdf", 'I'); // 'I' = inline
+        return $mpdf->Output("laporan_keuangan_{$startDate}_{$endDate}.pdf", 'I');
     }
 }

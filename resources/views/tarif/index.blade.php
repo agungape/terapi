@@ -1,268 +1,402 @@
 @extends('layouts.master')
-@section('menuMaster', 'active')
-@section('masterShow', 'menu-is-opening menu-open')
-@section('menuTarif', 'active')
+@section('title', 'Manajemen Tarif & Paket')
+
 @section('content')
-    <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Paket Terapi</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                            <li class="breadcrumb-item active">Data Tarif Harga</li>
-                        </ol>
-                    </div>
-                </div>
-            </div><!-- /.container-fluid -->
-        </section>
+<div class="space-y-8 animate-in fade-in duration-500" 
+     x-data="{ 
+        showModal: false,
+        modalMode: 'create', // 'create' or 'edit'
+        modalTitle: '',
+        formAction: '',
+        
+        // Form Data
+        id: '',
+        nama: '',
+        deskripsi: '',
+        tarif: '',
+        jumlah_pertemuan: '',
+        jenis_terapi: 'terapi_perilaku',
+        is_active: true,
+        imagePreview: null,
+        existingImage: null,
 
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            @can('create tarif')
-                                <div class="card-header">
-                                    <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
-                                        data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah Data
-                                    </a>
-                                </div>
-                            @endcan
-                            <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Jenis terapi</th>
-                                            <th>Tarif</th>
-                                            <th>Aksi</th>
-                                            <th>Hapus Data</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+        init() {
+            lucide.createIcons();
+            @if ($errors->any())
+                this.modalMode = '{{ old('id') ? 'edit' : 'create' }}';
+                this.modalTitle = this.modalMode === 'edit' ? 'Edit Paket Terapi' : 'Tambah Paket Baru';
+                this.formAction = this.modalMode === 'edit' ? `/tarif/{{ old('id') }}` : '{{ route('tarif.store') }}';
+                
+                this.id = '{{ old('id') }}';
+                this.nama = '{{ old('nama') }}';
+                this.deskripsi = '{{ old('deskripsi') }}';
+                this.tarif = '{{ old('tarif') }}';
+                this.jumlah_pertemuan = '{{ old('jumlah_pertemuan') }}';
+                this.jenis_terapi = '{{ old('jenis_terapi') }}';
+                this.is_active = {{ old('is_active') ? 'true' : 'false' }};
+                
+                this.showModal = true;
+            @endif
+        },
 
-                                        @foreach ($tarif as $t)
-                                            <tr>
-                                                <td scope="row">{{ $tarif->firstItem() + $loop->iteration - 1 }}</td>
-                                                <td>{{ $t->nama }}</td>
-                                                <td>{{ $t->tarif }}</td>
-                                                <td>
+        openCreate() {
+            this.modalMode = 'create';
+            this.modalTitle = 'Tambah Paket Baru';
+            this.formAction = '{{ url('tarif') }}';
+            this.resetForm();
+            this.showModal = true;
+        },
 
-                                                    @if ($t->gambar)
-                                                        <form action="{{ route('tarif.hapusGambar', $t->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                                data-name="{{ $t->nama }}"><i
-                                                                    class="fa fa-trash"></i></button>
-                                                        </form>
-                                                        <!-- Tombol untuk membuka modal -->
-                                                        <button type="button" class="btn btn-info btn-sm"
-                                                            data-toggle="modal"
-                                                            data-target="#modalGambar{{ $t->id }}">
-                                                            <i class="fa fa-eye"></i>
-                                                        </button>
+        openEdit(item) {
+            this.modalMode = 'edit';
+            this.modalTitle = 'Edit Paket Terapi';
+            this.formAction = '{{ url('tarif') }}/' + item.id;
+            console.log('Target URL Update:', this.formAction);
+            
+            this.id = item.id;
+            this.nama = item.nama;
+            this.deskripsi = item.deskripsi;
+            this.tarif = this.formatNumber(item.tarif);
+            this.jumlah_pertemuan = item.jumlah_pertemuan;
+            this.jenis_terapi = item.jenis_terapi;
+            this.is_active = !!item.is_active;
+            this.existingImage = item.gambar ? `/storage/tarif/${item.gambar}` : null;
+            this.imagePreview = null;
+            
+            this.showModal = true;
+        },
 
-                                                        <!-- Modal Bootstrap -->
-                                                        <div class="modal fade" id="modalGambar{{ $t->id }}"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="modalLabel{{ $t->id }}"
-                                                            aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title"
-                                                                            id="modalLabel{{ $t->id }}">Gambar Paket
-                                                                            Terapi</h5>
-                                                                        <button type="button" class="close"
-                                                                            data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body text-center">
-                                                                        <img src="{{ asset('storage/tarif/' . $t->gambar) }}"
-                                                                            class="img-fluid rounded"
-                                                                            alt="Gambar Paket Terapi">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @else
-                                                        <button type="button"
-                                                            class="btn btn-success btn-sm btn-upload-gambar"
-                                                            data-toggle="modal" data-target="#modalUploadGambar"
-                                                            data-id="{{ $t->id }}" data-nama="{{ $t->nama }}">
-                                                            <i class="fa fa-image"></i>
-                                                        </button>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('tarif.edit', ['tarif' => $t->id]) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fa fa-edit"></i> Edit Data</a>
-                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <form action="{{ route('tarif.destroy', ['tarif' => $t->id]) }}"
-                                                            method="POST">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm btn-hapus"
-                                                                title="Hapus Data" data-name="{{ $t->nama }}"
-                                                                data-table="tarif"><i class="fa fa-trash"></i>
-                                                                Hapus Data
-                                                            </button>
-                                                        </form>
+        resetForm() {
+            this.id = '';
+            this.nama = '';
+            this.deskripsi = '';
+            this.tarif = '';
+            this.jumlah_pertemuan = '10';
+            this.jenis_terapi = 'terapi_perilaku';
+            this.is_active = true;
+            this.imagePreview = null;
+            this.existingImage = null;
+        },
 
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+        handleImageChange(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.imagePreview = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        },
 
-                                    </tbody>
-                                </table>
+        formatPrice(e) {
+            let val = e.target.value.replace(/[^\d]/g, '');
+            this.tarif = this.formatNumber(val);
+        },
 
-                                <div class="mx-4 mt-3">
-                                    {{ $tarif->fragment('judul')->links() }}
-                                </div>
-
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div>
+        formatNumber(n) {
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+     }">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
+                <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Portal</a>
+                <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                <span class="text-slate-600">Tarif & Layanan</span>
             </div>
-        </section>
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight italic uppercase">Katalog Paket <span class="text-red-500">Terapi</span></h1>
+        </div>
+        
+        @can('create tarif')
+        <button @click="openCreate()" class="bg-slate-900 hover:bg-red-600 text-white py-4 px-8 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3 transition-all shadow-xl shadow-slate-200 group">
+            <i data-lucide="plus" class="w-4 h-4 group-hover:rotate-90 transition-transform"></i> Tambah Paket Baru
+        </button>
+        @endcan
     </div>
 
+    <!-- Filter & Statistics -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            @php $currentJenis = request('jenis', 'semua'); @endphp
+            <a href="{{ route('tarif.index', ['jenis' => 'semua']) }}" 
+               class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 {{ $currentJenis == 'semua' ? 'bg-red-500 text-white shadow-lg shadow-red-200' : 'bg-white text-slate-400 border border-slate-100 hover:border-red-200 hover:text-red-500' }}">
+                Semua Program
+            </a>
+            <a href="{{ route('tarif.index', ['jenis' => 'terapi_perilaku']) }}" 
+               class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 {{ $currentJenis == 'terapi_perilaku' ? 'bg-red-500 text-white shadow-lg shadow-red-200' : 'bg-white text-slate-400 border border-slate-100 hover:border-red-200 hover:text-red-500' }}">
+                Terapi Perilaku
+            </a>
+            <a href="{{ route('tarif.index', ['jenis' => 'fisioterapi']) }}" 
+               class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 {{ $currentJenis == 'fisioterapi' ? 'bg-red-500 text-white shadow-lg shadow-red-200' : 'bg-white text-slate-400 border border-slate-100 hover:border-red-200 hover:text-red-500' }}">
+                Fisioterapi
+            </a>
+        </div>
 
-    <form action="{{ route('tarif.store') }}" method="POST" enctype="multipart/form-data" id="tarifForm">
-        @csrf
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Tambah Paket</h5>
+        <div class="hidden sm:flex items-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white px-6 py-3 rounded-xl border border-slate-100 shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>{{ $tarif->total() }} Total Paket</span>
+            </div>
+            <div class="w-px h-3 bg-slate-200"></div>
+            <span>Page {{ $tarif->currentPage() }} of {{ $tarif->lastPage() }}</span>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        @forelse ($tarif as $t)
+        <div class="group bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col relative">
+            
+            <!-- Quick Action Menu -->
+            <div class="absolute top-4 right-4 z-10 flex gap-2">
+                <button @click="openEdit({{ $t->toJson() }})" class="p-2.5 bg-white/90 backdrop-blur-sm text-amber-600 rounded-xl shadow-sm border border-slate-100 hover:bg-amber-600 hover:text-white transition-all duration-300">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                </button>
+                <form action="{{ route('tarif.destroy', $t->id) }}" method="POST" class="inline">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="p-2.5 bg-white/90 backdrop-blur-sm text-red-600 rounded-xl shadow-sm border border-slate-100 hover:bg-red-600 hover:text-white transition-all duration-300 btn-hapus" 
+                            data-name="{{ $t->nama }}">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Card Image Area -->
+            <div class="h-48 overflow-hidden relative bg-slate-100 shrink-0">
+                @if($t->gambar)
+                    <img src="{{ asset('storage/tarif/' . $t->gambar) }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="{{ $t->nama }}">
+                @else
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-3">
+                        <i data-lucide="image" class="w-10 h-10 opacity-20"></i>
+                        <span class="text-[9px] font-black uppercase tracking-widest opacity-50">No Brand Visual</span>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Nama Paket Terapi</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="nama">
-                            </div>
+                @endif
+                
+                {{-- Category Badge --}}
+                <div class="absolute bottom-4 left-4">
+                    @if($t->jenis_terapi == 'terapi_perilaku')
+                        <span class="px-3 py-1 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg">Behavioral</span>
+                    @elseif($t->jenis_terapi == 'fisioterapi')
+                        <span class="px-3 py-1 bg-blue-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg">Physio</span>
+                    @else
+                        <span class="px-3 py-1 bg-slate-800 text-white text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg">General</span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-8 flex-1 flex flex-col">
+                <div class="mb-4">
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-red-500 transition-colors line-clamp-2 leading-snug">{{ $t->nama }}</h3>
+                    <p class="text-[10px] font-bold text-slate-400 mt-2 line-clamp-3 leading-relaxed">{{ $t->deskripsi ?? 'Optimalisasi tumbuh kembang anak melalui sistem terapi terpadu dan personal.' }}</p>
+                </div>
+
+                <div class="mt-auto space-y-4">
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Quota Sesi</span>
+                            <span class="text-xs font-black text-slate-700 tracking-tight italic">{{ $t->jumlah_pertemuan }} Pertemuan</span>
                         </div>
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Deskripsi</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="deskripsi">
-                            </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5 block">Investasi</span>
+                            <span class="text-lg font-black text-red-500 tracking-tighter">Rp {{ number_format($t->tarif, 0, ',', '.') }}</span>
                         </div>
-                        <div class="form-group row">
-                            <label for="exampleInputMobile" class="col-sm-4 col-form-label">Tarif</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="tarif" id="tarif">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary me-2">Save</button>
                     </div>
                 </div>
             </div>
+
+            @if(!$t->is_active)
+            <div class="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-20 flex items-center justify-center">
+                <span class="px-6 py-2 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-xl">Non-Aktif</span>
+            </div>
+            @endif
         </div>
+        @empty
+        <div class="col-span-full py-32 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm border-dashed">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="package-search" class="w-10 h-10 text-slate-200"></i>
+            </div>
+            <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest">Belum ada paket terapi ditemukan</h3>
+            <p class="text-xs text-slate-300 mt-2">Gunakan tombol 'Tambah Paket' untuk memulai layanan baru</p>
+        </div>
+        @endforelse
+    </div>
 
-    </form>
+    <!-- Pagination -->
+    <div class="flex justify-center pt-8">
+        {{ $tarif->links() }}
+    </div>
 
-    <!-- Modal Upload Gambar -->
-    <div class="modal fade" id="modalUploadGambar" tabindex="-1" aria-labelledby="modalUploadGambarLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalUploadGambarLabel">Tambah Gambar untuk <span id="namaPaket"></span>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <!-- Unified Modal -->
+    <div x-show="showModal" 
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-cloak>
+        
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="showModal = false"></div>
+        
+        <div class="relative bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-slate-900 px-10 py-10 shrink-0 text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 mb-1" x-text="modalMode === 'create' ? 'Paket Baru' : 'Modifikasi Layanan'"></p>
+                    <h3 class="text-2xl font-black tracking-tight italic uppercase" x-text="modalTitle"></h3>
                 </div>
-                <form action="{{ route('tarif.uploadGambar') }}" method="POST" enctype="multipart/form-data">
+                <i data-lucide="settings" class="w-48 h-48 text-white/5 absolute -right-12 -top-12 rotate-12"></i>
+                <button type="button" @click="showModal = false" class="absolute top-10 right-10 text-white/30 hover:text-white transition-colors cursor-pointer z-50">
+                    <i data-lucide="x" class="w-6 h-6 pointer-events-none"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar">
+
+                <form :action="formAction" method="POST" enctype="multipart/form-data" class="p-10 space-y-8">
                     @csrf
-                    <div class="modal-body">
-                        <input type="hidden" name="tarif_id" id="tarif_id_modal">
-                        <div class="input-group">
-                            <div class="custom-file">
-                                <input type="file" id="unggah-gambar" class="custom-file-input" name="gambar"
-                                    accept="image/*" required autofocus>
-                                <label class="custom-file-label" for="exampleInputFile">Pilih
-                                    file</label>
+                    <template x-if="modalMode === 'edit'">
+                        <input type="hidden" name="_method" value="PUT">
+                    </template>
+                    <input type="hidden" name="id" x-model="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {{-- Image Input Area --}}
+                        <div class="space-y-3">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Visual Produk</label>
+                            <div class="relative h-48 rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 overflow-hidden group hover:border-red-200 transition-colors flex items-center justify-center">
+                                
+                                <template x-if="imagePreview">
+                                    <img :src="imagePreview" class="w-full h-full object-cover">
+                                </template>
+                                <template x-if="!imagePreview && existingImage">
+                                    <img :src="existingImage" class="w-full h-full object-cover opacity-60">
+                                </template>
+                                <template x-if="!imagePreview && !existingImage">
+                                    <div class="flex flex-col items-center gap-2 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="image-plus" class="w-8 h-8 text-slate-300"></i>
+                                        <span class="text-[9px] font-black text-slate-300 uppercase">Upload Icon/Foto</span>
+                                    </div>
+                                </template>
+
+                                <input type="file" name="gambar" @change="handleImageChange" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                
+                                <template x-if="imagePreview || existingImage">
+                                    <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[9px] font-black uppercase pointer-events-none">
+                                        Ganti Gambar
+                                    </div>
+                                </template>
                             </div>
                         </div>
-                        <img id="preview2" src="#" alt="Preview Gambar" style="display: none;">
+
+                        {{-- Main Config --}}
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Paket</label>
+                                <input type="text" name="nama" x-model="nama" required placeholder="Contoh: Paket 12 Sesi Hemat"
+                                       class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none @error('nama') ring-2 ring-red-500 @enderror">
+                                @error('nama') <p class="text-[9px] font-bold text-red-500 ml-2 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Kategori Layanan</label>
+                                <select name="jenis_terapi" x-model="jenis_terapi" required
+                                        class="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none appearance-none cursor-pointer @error('jenis_terapi') ring-2 ring-red-500 @enderror">
+                                    <option value="" disabled selected>Pilih Layanan</option>
+                                    <option value="terapi_perilaku">Terapi Perilaku</option>
+                                    <option value="fisioterapi">Fisioterapi</option>
+                                </select>
+                                @error('jenis_terapi') <p class="text-[9px] font-bold text-red-500 ml-2 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Upload</button>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Deskripsi & Keunggulan</label>
+                        <textarea name="deskripsi" x-model="deskripsi" rows="3" placeholder="Apa saja yang didapatkan orang tua dan anak dalam paket ini?"
+                                  class="w-full bg-slate-50 border-none rounded-3xl px-6 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none resize-none min-h-[100px]"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nominal Investasi (Rp)</label>
+                            <div class="relative">
+                                <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">Rp</span>
+                                <input type="text" name="tarif" x-model="tarif" @input="formatPrice" required
+                                       class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-6 py-4 text-sm font-black text-red-600 focus:ring-4 focus:ring-red-50 transition-all outline-none @error('tarif') ring-2 ring-red-500 @enderror">
+                                @error('tarif') <p class="text-[9px] font-bold text-red-500 ml-2 mt-1">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Total Pertemuan</label>
+                            <input type="number" name="jumlah_pertemuan" x-model="jumlah_pertemuan" required min="1"
+                                   class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black focus:ring-4 focus:ring-red-50 transition-all outline-none @error('jumlah_pertemuan') ring-2 ring-red-500 @enderror">
+                            @error('jumlah_pertemuan') <p class="text-[9px] font-bold text-red-500 ml-2 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 bg-slate-50 p-6 rounded-3xl">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="is_active" class="sr-only peer" :checked="is_active" @change="is_active = $event.target.checked">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest">Status Paket Aktif</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Paket yang tidak aktif tidak dapat dipilih saat pendaftaran</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 shrink-0 py-4">
+                        <button type="button" @click="showModal = false" class="text-slate-500 py-4 px-8 text-xs font-black uppercase tracking-widest hover:text-slate-700 transition-colors cursor-pointer">Batal</button>
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-4 px-12 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-red-200 transition-all flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Paket
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-
+</div>
 @endsection
+
 @section('scripts')
-    <script>
-        function formatHarga(input) {
-            let value = input.value.replace(/[^\d]/g, '');
-            if (value.length > 15) {
-                value = value.substring(0, 15);
-            }
-            if (value.length > 3) {
-                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            }
-            input.value = value;
-        }
-        document.getElementById('tarif').addEventListener('input', function(event) {
-            formatHarga(event.target);
-        });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
 
-        document.getElementById('tarifForm').addEventListener('submit', function(event) {
-            var hargaInput = document.getElementById('tarif');
-            hargaInput.value = hargaInput.value.replace(/\./g, '');
-        });
+        // SweetAlert Delete Button
+        $('.btn-hapus').on('click', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            const name = $(this).data('name');
 
-        $(document).ready(function() {
-            $('.btn-upload-gambar').click(function() {
-                var tarifId = $(this).data('id');
-                var namaPaket = $(this).data('nama');
-                $('#tarif_id_modal').val(tarifId);
-                $('#namaPaket').text(namaPaket);
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: `Apakah Anda yakin ingin menghapus paket '${name}'? Tindakan ini tidak dapat dibatalkan.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#f1f5f9',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-[2.5rem] border-none shadow-2xl',
+                    confirmButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4',
+                    cancelButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4 text-slate-500'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
             });
         });
-
-        document.getElementById('unggah-gambar').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('preview2');
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                preview.style.display = 'none';
-            }
-        });
-    </script>
+    });
+</script>
 @endsection

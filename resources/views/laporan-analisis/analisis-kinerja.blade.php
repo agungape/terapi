@@ -2,293 +2,315 @@
 @section('title', 'Analisis Kinerja Terapis')
 
 @section('content')
-    <div class="content-wrapper">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1><i class="fas fa-chart-line mr-2"></i>Analisis Kinerja Terapis</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-                            <li class="breadcrumb-item active">Kinerja Terapis</li>
-                        </ol>
-                    </div>
-                </div>
+<div class="space-y-8 animate-in fade-in duration-500">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-slate-600">Laporan Analisis</span>
+            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+            <span class="text-slate-600">Kinerja Terapis</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <div class="px-4 py-2 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest">Live Analysis</span>
             </div>
-        </section>
-
-        <section class="content">
-            <div class="container-fluid">
-                <!-- Filter Tanggal -->
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h3 class="card-title"><i class="fas fa-filter mr-2"></i>Filter Periode</h3>
-                    </div>
-                    <form method="GET" action="">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label>Tanggal Mulai</label>
-                                        <input type="date" name="tanggal_mulai" class="form-control"
-                                            value="{{ request('tanggal_mulai', now()->startOfMonth()->format('Y-m-d')) }}"
-                                            max="{{ now()->format('Y-m-d') }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label>Tanggal Selesai</label>
-                                        <input type="date" name="tanggal_selesai" class="form-control"
-                                            value="{{ request('tanggal_selesai', now()->endOfMonth()->format('Y-m-d')) }}"
-                                            max="{{ now()->format('Y-m-d') }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-2 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary btn-block">
-                                        <i class="fas fa-search mr-1"></i> Filter
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Info Boxes -->
-                <div class="row">
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="info-box">
-                            <span class="info-box-icon bg-info elevation-1">
-                                <i class="fas fa-user-md"></i>
-                            </span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Total Terapis</span>
-                                <span class="info-box-number">{{ $totalTerapis }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="info-box mb-3">
-                            <span class="info-box-icon bg-success elevation-1">
-                                <i class="fas fa-calendar-alt"></i>
-                            </span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Total Kunjungan</span>
-                                <span class="info-box-number">{{ $totalKunjungan }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="info-box mb-3">
-                            <span class="info-box-icon bg-warning elevation-1">
-                                <i class="fas fa-user-clock"></i>
-                            </span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Rata-rata/Terapis</span>
-                                <span
-                                    class="info-box-number">{{ $totalTerapis > 0 ? round($totalKunjungan / $totalTerapis, 1) : 0 }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-3">
-                        <div class="info-box mb-3">
-                            <span class="info-box-icon bg-danger elevation-1">
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <div class="info-box-content">
-                                <span class="info-box-text">Terapis Terbaik</span>
-                                <span class="info-box-number">{{ $terapisTerbaik->nama ?? '-' }}
-                                    ({{ $terapisTerbaik->total_kunjungan ?? 0 }})</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Charts -->
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h3 class="card-title">Distribusi Kunjungan per Terapis</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart">
-                                    <canvas id="barChart"
-                                        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card card-danger">
-                            <div class="card-header">
-                                <h3 class="card-title">Persentase Beban Kerja</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="pieChart"
-                                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabel Terapis -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Daftar Terapis</h3>
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 200px;">
-                                        <input type="text" id="searchInput" class="form-control float-right"
-                                            placeholder="Cari...">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-default" id="searchBtn">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Terapis</th>
-                                            <th>Spesialisasi</th>
-                                            <th>Total Kunjungan</th>
-                                            <th>Progress</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($daftarTerapis as $index => $terapis)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $terapis->nama }}</td>
-                                                <td>{{ $terapis->role }}</td>
-                                                <td>{{ $terapis->total_kunjungan }}</td>
-                                                <td>
-                                                    <div class="progress progress-xs">
-                                                        <div class="progress-bar
-                                                    @if ($terapis->total_kunjungan > $maxKunjungan * 0.7) bg-success
-                                                    @elseif($terapis->total_kunjungan > $maxKunjungan * 0.4) bg-warning
-                                                    @else bg-danger @endif"
-                                                            style="width: {{ ($terapis->total_kunjungan / $maxKunjungan) * 100 }}%">
-                                                        </div>
-                                                    </div>
-                                                    <small>{{ round(($terapis->total_kunjungan / $maxKunjungan) * 100, 1) }}%</small>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('terapis.show', $terapis->id) }}"
-                                                        class="btn btn-sm btn-info" title="Detail">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="card-footer clearfix">
-                                {{ $daftarTerapis->appends(request()->query())->links() }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
+
+    <!-- Filter Header -->
+    <div class="card-premium p-8 bg-white border-none shadow-xl shadow-slate-200/50">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="p-3 bg-red-50 text-red-500 rounded-2xl">
+                    <i data-lucide="filter" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-800 uppercase tracking-tight leading-none mb-1">Filter Kinerja</h3>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pilih periode analisis untuk melihat statistik</p>
+                </div>
+            </div>
+
+            <form method="GET" action="" class="flex flex-wrap items-end gap-4">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Mulai</label>
+                    <input type="date" name="tanggal_mulai" 
+                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all"
+                           value="{{ request('tanggal_mulai', now()->startOfMonth()->format('Y-m-d')) }}"
+                           max="{{ now()->format('Y-m-d') }}">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Selesai</label>
+                    <input type="date" name="tanggal_selesai" 
+                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all"
+                           value="{{ request('tanggal_selesai', now()->endOfMonth()->format('Y-m-d')) }}"
+                           max="{{ now()->format('Y-m-d') }}">
+                </div>
+                <button type="submit" class="bg-slate-900 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-slate-200">
+                    <i data-lucide="search" class="w-4 h-4"></i> Apply Filter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card-premium p-6 bg-white flex items-center gap-5 group hover:border-red-100 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                <i data-lucide="user-cog" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Terapis</p>
+                <h3 class="text-xl font-black text-slate-800">{{ $totalTerapis }}</h3>
+            </div>
+        </div>
+
+        <div class="card-premium p-6 bg-white flex items-center gap-5 group hover:border-red-100 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                <i data-lucide="calendar-check" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Kunjungan</p>
+                <h3 class="text-xl font-black text-slate-800">{{ $totalKunjungan }}</h3>
+            </div>
+        </div>
+
+        <div class="card-premium p-6 bg-white flex items-center gap-5 group hover:border-red-100 transition-all">
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-all">
+                <i data-lucide="gauge" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rata-rata / Terapis</p>
+                <h3 class="text-xl font-black text-slate-800">{{ $totalTerapis > 0 ? round($totalKunjungan / $totalTerapis, 1) : 0 }}</h3>
+            </div>
+        </div>
+
+        <div class="card-premium p-6 bg-slate-900 text-white relative overflow-hidden group">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Terapis Terbaik</p>
+                <h3 class="text-sm font-black text-white truncate pr-2 uppercase italic tracking-tight">
+                    {{ $terapisTerbaik->nama ?? '-' }}
+                </h3>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="px-2 py-0.5 bg-red-500 text-white rounded text-[9px] font-black uppercase tracking-widest">
+                        {{ $terapisTerbaik->total_kunjungan ?? 0 }} Kunjungan
+                    </span>
+                </div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 text-white/5 group-hover:text-white/10 transition-colors">
+                <i data-lucide="star" class="w-24 h-24"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8">
+            <div class="card-premium bg-white h-full">
+                <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-red-500"></i> Distribusi Kunjungan
+                    </h3>
+                </div>
+                <div class="p-8">
+                    <div class="relative h-[400px]">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-4">
+            <div class="card-premium bg-white h-full">
+                <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-red-500"></i> Beban Kerja %
+                    </h3>
+                </div>
+                <div class="p-8">
+                    <div class="relative h-[300px]">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                    <div class="mt-8 space-y-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic leading-relaxed text-center">
+                            Dataset dihitung berdasarkan total rekapan kunjungan yang tercatat dalam sistem.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="card-premium overflow-hidden bg-white shadow-xl shadow-slate-200/50">
+        <div class="p-6 border-b border-slate-50 bg-white flex items-center justify-between">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                <i data-lucide="list" class="w-4 h-4 text-red-500"></i> DAFTAR PERFORMA TERAPIS
+            </h3>
+            <div class="relative group">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-red-500 transition-colors"></i>
+                <input type="text" id="searchInput" 
+                       class="bg-slate-50 border-none rounded-xl pl-9 pr-4 py-2 text-[10px] font-bold text-slate-600 outline-none focus:ring-4 focus:ring-red-50 transition-all w-48"
+                       placeholder="Cari Terapis...">
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest w-16">#</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Terapis</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Spesialisasi</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Kunjungan</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency Progress</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Opsi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @foreach ($daftarTerapis as $index => $terapis)
+                    <tr class="hover:bg-slate-50/50 transition-colors group/row">
+                        <td class="px-6 py-5 text-xs font-black text-slate-300 italic">{{ $daftarTerapis->firstItem() + $index }}</td>
+                        <td class="px-6 py-5">
+                            <span class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $terapis->nama }}</span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-slate-200">{{ $terapis->role }}</span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-black text-slate-800">{{ $terapis->total_kunjungan }}</span>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Sessions</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            @php 
+                                $percent = $maxKunjungan > 0 ? ($terapis->total_kunjungan / $maxKunjungan) * 100 : 0;
+                                $colorClass = $percent > 70 ? 'bg-emerald-500' : ($percent > 40 ? 'bg-amber-500' : 'bg-red-500');
+                            @endphp
+                            <div class="space-y-1.5 min-w-[120px]">
+                                <div class="flex items-center justify-between text-[9px] font-black uppercase tracking-widest italic">
+                                    <span class="text-slate-400">Yield</span>
+                                    <span class="text-slate-800">{{ round($percent, 1) }}%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="{{ $colorClass }} h-full transition-all duration-1000" style="width: {{ $percent }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-center">
+                                <a href="{{ route('terapis.show', $terapis->id) }}" 
+                                   class="p-2 bg-slate-900 text-white rounded-xl hover:bg-red-500 transition-all shadow-lg shadow-slate-200" title="Detail Performa">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">
+            {{ $daftarTerapis->appends(request()->query())->links() }}
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
-    <script>
-        $(function() {
-            // Bar Chart
-            var barChartCanvas = $('#barChart').get(0).getContext('2d')
-            var barChartData = {
-                labels: {!! json_encode($namaTerapis) !!},
-                datasets: [{
-                    label: 'Total Kunjungan',
-                    backgroundColor: 'rgba(60,141,188,0.9)',
-                    borderColor: 'rgba(60,141,188,0.8)',
-                    data: {!! json_encode($totalKunjunganPerTerapis) !!}
-                }]
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
 
-            var barChartOptions = {
+        // Common Chart Defaults
+        Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+        Chart.defaults.font.size = 11;
+        Chart.defaults.color = '#94a3b8';
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const namaTerapis = {!! json_encode($namaTerapis) !!};
+        const totalKunjungan = {!! json_encode($totalKunjunganPerTerapis) !!};
+
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: namaTerapis,
+                datasets: [{
+                    label: 'Total Sesi Kunjungan',
+                    data: totalKunjungan,
+                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                    borderColor: 'rgb(239, 68, 68)',
+                    borderWidth: 0,
+                    borderRadius: 8,
+                    maxBarThickness: 40
+                }]
+            },
+            options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            stepSize: 1
-                        }
-                    }]
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
+                        ticks: { stepSize: 1 }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
                 }
             }
+        });
 
-            new Chart(barChartCanvas, {
-                type: 'bar',
-                data: barChartData,
-                options: barChartOptions
-            })
-
-            // Pie Chart
-            var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-            var pieData = {
-                labels: {!! json_encode($namaTerapis) !!},
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: namaTerapis,
                 datasets: [{
-                    data: {!! json_encode($totalKunjunganPerTerapis) !!},
-                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de',
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                    data: totalKunjungan,
+                    backgroundColor: [
+                        '#0f172a', '#ef4444', '#10b981', '#f59e0b', '#3b82f6', 
+                        '#6366f1', '#a855f7', '#ec4899', '#14b8a6', '#f97316'
                     ],
+                    borderWidth: 4,
+                    borderColor: '#ffffff'
                 }]
-            }
-
-            new Chart(pieChartCanvas, {
-                type: 'pie',
-                data: pieData,
-                options: {
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    tooltips: {
-                        callbacks: {
-                            label: function(tooltipItem, data) {
-                                var dataset = data.datasets[tooltipItem.datasetIndex];
-                                var total = dataset.data.reduce(function(previousValue, currentValue) {
-                                    return previousValue + currentValue;
-                                });
-                                var currentValue = dataset.data[tooltipItem.index];
-                                var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                                return data.labels[tooltipItem.index] + ': ' + currentValue + ' (' +
-                                    percentage + '%)';
-                            }
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { size: 9, weight: 'bold' }
                         }
                     }
                 }
-            });
+            }
+        });
 
-            // Pencarian client-side
-            $('#searchBtn').click(function() {
-                var value = $('#searchInput').val().toLowerCase();
-                $('table tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+        // Client-side search
+        $('#searchInput').on('keyup', function() {
+            const value = $(this).val().toLowerCase();
+            $("table tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
-    </script>
+    });
+</script>
 @endsection

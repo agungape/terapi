@@ -13,10 +13,14 @@ class SaldoKas extends Model
 
     protected $fillable = ['saldo_awal'];
 
-    protected function saldoawal(): Attribute
+    protected $casts = [
+        'saldo_awal' => 'decimal:2',
+    ];
+
+    protected function saldoawalFormatted(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => 'Rp ' . rtrim(rtrim(number_format($value, 2, ',', '.'), '0'), ',')
+            get: fn() => 'Rp ' . rtrim(rtrim(number_format($this->saldo_awal, 2, ',', '.'), '0'), ',')
         );
     }
 }

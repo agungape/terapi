@@ -50,8 +50,7 @@ class RoleController extends Controller
             'name' => $request->name
         ]);
 
-        Alert::success('Berhasil', "Data Role $request->name berhasil dibuat");
-        return redirect('roles');
+        return redirect()->route('roles.index')->with('success', "Data Role $request->name berhasil dibuat");
     }
 
     public function edit(Role $role)
@@ -75,16 +74,14 @@ class RoleController extends Controller
             'name' => $request->name
         ]);
 
-        Alert::success('Berhasil', "Data Role $request->name berhasil di Update");
-        return redirect('roles');
+        return redirect()->route('roles.index')->with('success', "Data Role $request->name berhasil di Update");
     }
 
     public function destroy($roleId)
     {
         $role = Role::find($roleId);
         $role->delete();
-        Alert::success('Berhasil', "Data Role berhasil di Hapus");
-        return redirect('roles');
+        return redirect('roles')->with('success', "Data Role berhasil di Hapus");
     }
 
     public function addPermissionToRole($roleId)
@@ -118,7 +115,6 @@ class RoleController extends Controller
         $role = Role::findOrFail($roleId);
         $role->syncPermissions($request->permission);
 
-        Alert::toast('data role berhasil di perbarui', 'success')->timerProgressBar();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'data role berhasil di perbarui');
     }
 }

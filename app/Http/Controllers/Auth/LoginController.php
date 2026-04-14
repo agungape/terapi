@@ -71,8 +71,7 @@ class LoginController extends Controller
         if ($view === 'admin') {
             if ($user->hasRole('anak')) {
                 Auth::logout();
-                Alert::toast('Anda tidak memiliki akses ke tampilan Website.', 'error');
-                return redirect()->route('login');
+                return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke tampilan Website.');
             }
             return redirect(RouteServiceProvider::HOME);
         }

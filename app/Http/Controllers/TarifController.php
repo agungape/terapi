@@ -12,9 +12,15 @@ class TarifController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tarif = tarif::latest()->paginate(5);
+        $query = Tarif::latest();
+        
+        if ($request->filled('jenis') && $request->jenis !== 'semua') {
+            $query->where('jenis_terapi', $request->jenis);
+        }
+
+        $tarif = $query->paginate(12)->withQueryString();
         return view('tarif.index', compact('tarif'));
     }
 
@@ -32,69 +38,34 @@ class TarifController extends Controller
     public function store(Request $request)
     {
         $validateData = $request->validate([
-            'nama' => 'required',
-            'deskripsi' => 'nullable',
-            'tarif' => 'required',
+            'nama'              => 'required',
+            'deskripsi'         => 'nullable',
+            'tarif'             => 'required',
+            'jumlah_pertemuan'  => 'nullable|integer|min:1',
+            'jenis_terapi'      => 'required|in:terapi_perilaku,fisioterapi',
+            'is_active'         => 'nullable',
+            'gambar'            => 'nullable|image|max:2048'
         ]);
 
-        $tarif = Tarif::create($validateData);
-        Alert::success('Berhasil', "Data tarif berhasil dibuat");
-        return redirect("/tarif");
-    }
+        $validateData['is_active'] = $request->has('is_active');
 
-    public function uploadGambar(Request $request)
-    {
-        // Validasi request
-        $request->validate([
-            'tarif_id' => 'required|exists:tarifs,id',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:10248',
-        ]);
-
-        // Ambil tarif berdasarkan ID
-        $tarif = Tarif::findOrFail($request->tarif_id);
-
-        // Simpan gambar ke storage
+        $tarif = new Tarif();
+        $tarif->nama = $validateData['nama'];
+        $tarif->deskripsi = $validateData['deskripsi'];
+        $tarif->tarif = (int) str_replace('.', '', $validateData['tarif']);
+        $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'];
+        $tarif->jenis_terapi = $validateData['jenis_terapi'];
+        $tarif->is_active = $validateData['is_active'];
+        
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($tarif->gambar) {
-                Storage::delete('public/tarif/' . $tarif->gambar);
-            }
-
-            // Simpan gambar baru
             $file = $request->file('gambar');
-            $extFile = $file->getClientOriginalExtension();
-            $namaFile =
-                "gambar-" . time() . "." . $extFile;
-            $path = 'tarif/' . $namaFile;
-            Storage::disk('public')->put($path, file_get_contents($file));
-
-            // Update database dengan nama file
+            $namaFile = "tarif-" . time() . "." . $file->getClientOriginalExtension();
+            $file->storeAs('tarif', $namaFile, 'public');
             $tarif->gambar = $namaFile;
-            $tarif->save();
         }
 
-        Alert::success('Berhasil', "data gambar berhasil dibuat");
-        return redirect()->back();
-    }
-
-    public function hapusGambar($id)
-    {
-        // Ambil data tarif berdasarkan ID
-        $tarif = Tarif::findOrFail($id);
-
-        // Cek apakah ada gambar
-        if ($tarif->gambar) {
-            // Hapus file dari storage
-            Storage::delete('public/tarif/' . $tarif->gambar);
-
-            // Set kolom gambar menjadi null
-            $tarif->gambar = null;
-            $tarif->save();
-
-            Alert::success('Berhasil', "data gambar berhasil dihapus");
-        }
-
-        return redirect()->back();
+        $tarif->save();
+        return redirect()->route('tarif.index')->with('success', "Paket terapi $tarif->nama berhasil dibuat.");
     }
 
     /**
@@ -102,13 +73,7 @@ class TarifController extends Controller
      */
     public function show(Tarif $tarif) {}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Tarif $tarif)
-    {
-        return view('tarif.edit', compact('tarif'));
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -116,15 +81,36 @@ class TarifController extends Controller
     public function update(Request $request, Tarif $tarif)
     {
         $validateData = $request->validate([
-            'nama' => 'required',
-            'deskripsi' => 'nullable',
-            'tarif' => 'required',
+            'nama'              => 'required',
+            'deskripsi'         => 'nullable',
+            'tarif'             => 'required',
+            'jumlah_pertemuan'  => 'nullable|integer|min:1',
+            'jenis_terapi'      => 'required|in:terapi_perilaku,fisioterapi',
+            'is_active'         => 'nullable',
+            'gambar'            => 'nullable|image|max:2048'
         ]);
 
-        $tarif->update($validateData);
-        Alert::success('Berhasil', "Paket Terapi telah di update");
-        // Trik agar halaman kembali ke halaman asal
-        return redirect("/tarif");
+        $tarif->nama = $validateData['nama'];
+        $tarif->deskripsi = $validateData['deskripsi'] ?? $tarif->deskripsi;
+        $tarif->tarif = (int) str_replace('.', '', $validateData['tarif']);
+        $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'] ?? $tarif->jumlah_pertemuan;
+        $tarif->jenis_terapi = $validateData['jenis_terapi'];
+        $tarif->is_active = $validateData['is_active'];
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
+            if ($tarif->gambar) {
+                Storage::disk('public')->delete('tarif/' . $tarif->gambar);
+            }
+            
+            $file = $request->file('gambar');
+            $namaFile = "tarif-" . time() . "." . $file->getClientOriginalExtension();
+            $file->storeAs('tarif', $namaFile, 'public');
+            $tarif->gambar = $namaFile;
+        }
+
+        $tarif->save();
+        return redirect()->route('tarif.index')->with('success', "Paket terapi $tarif->nama (Kategori: $tarif->jenis_terapi) berhasil diperbarui.");
     }
 
     /**
@@ -134,7 +120,6 @@ class TarifController extends Controller
     {
         Storage::disk('public')->delete('tarif/' . $tarif->gambar);
         $tarif->delete();
-        Alert::success('Berhasil', "$tarif->nama telah di hapus");
-        return redirect("/tarif");
+        return redirect("/tarif")->with('success', "$tarif->nama telah di hapus");
     }
 }

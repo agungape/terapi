@@ -13,9 +13,45 @@ class Kunjungan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['anak_id', 'terapis_id', 'catatan', 'status', 'pertemuan', 'jenis_terapi', 'sesi', 'terapis_id_pendamping'];
+    protected $fillable = [
+        'anak_id',
+        'terapis_id',
+        'tarif_id',
+        'pertemuan',
+        'catatan',
+        'status',
+        'jenis_terapi',
+        'sesi',
+        'terapis_id_pendamping',
+        'status_sesi',
+        'pemasukkan_id'
+    ];
 
-    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Nama pertemuan otomatis (e.g., "Pertemuan 5 / Season 2 (Paket ABC)")
+     */
+    public function getNamaPertemuanAttribute(): string
+    {
+        $label = "Pertemuan {$this->pertemuan}";
+        if ($this->sesi) {
+            $label .= " / Season {$this->sesi}";
+        }
+        
+        if ($this->tarif_id && $this->tarif) {
+            $label .= " ({$this->tarif->nama})";
+        }
+
+        if ($this->status_sesi == 'selesai') {
+            $label .= " (SELESAI)";
+        }
+        
+        return $label;
+    }
 
     public function anak(): BelongsTo
     {
@@ -47,7 +83,12 @@ class Kunjungan extends Model
         return $this->belongsTo(Tarif::class);
     }
 
-    public function getCreatedAtAttribute()
+    public function pemasukkan(): BelongsTo
+    {
+        return $this->belongsTo(Pemasukkan::class);
+    }
+
+    public function getCreatedAtIDAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])
             ->locale('id') // Menggunakan bahasa Indonesia

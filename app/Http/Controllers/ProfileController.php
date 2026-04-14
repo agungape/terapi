@@ -66,9 +66,8 @@ class ProfileController extends Controller
 
 
         $profile = Profile::create($data);
-        Alert::toast("data Profile $request->nama berhasil di Perbaharui", 'success')->timerProgressBar();
         // Trik agar halaman kembali ke halaman asal
-        return redirect("/profile");
+        return redirect("/profile")->with('success', "data Profile $request->nama berhasil di Perbaharui");
     }
 
     public function profile_user()
@@ -132,9 +131,8 @@ class ProfileController extends Controller
         }
 
         $profile->update($data);
-        Alert::toast("data Profile $request->nama berhasil di Perbaharui", 'success');
         // Trik agar halaman kembali ke halaman asal
-        return redirect("/profile");
+        return redirect("/profile")->with('success', "data Profile $request->nama berhasil di Perbaharui");
     }
 
     /**

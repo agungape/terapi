@@ -1,6 +1,20 @@
 @csrf
 <div class="space-y-10 animate-in fade-in duration-700" x-data="{ step: 1 }">
     
+    @if ($errors->any())
+    <div class="card-premium p-6 bg-red-50 border-red-100 animate-bounce">
+        <div class="flex items-center gap-4 text-red-600">
+            <div class="p-3 bg-white rounded-2xl shadow-sm">
+                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h4 class="text-xs font-black uppercase tracking-widest">Pendaftaran Gagal</h4>
+                <p class="text-[10px] font-bold opacity-80 mt-1">Mohon periksa kembali field yang berwarna merah di bawah ini.</p>
+            </div>
+        </div>
+    </div>
+    @endif
+    
     <!-- Premium Stepper -->
     <div class="card-premium p-8 bg-white border-none shadow-xl shadow-slate-200/50">
         <div class="flex items-center justify-between max-w-2xl mx-auto relative mb-2">
@@ -90,34 +104,38 @@
                         <div class="flex gap-4">
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="jenis_kelamin" value="L" class="hidden peer" {{ old('jenis_kelamin', $anak->jenis_kelamin) == 'L' ? 'checked' : '' }}>
-                                <div class="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center">Laki-Laki</div>
+                                <div class="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center @error('jenis_kelamin') border-red-300 bg-red-50 @enderror">Laki-Laki</div>
                             </label>
                             <label class="flex-1 cursor-pointer group">
                                 <input type="radio" name="jenis_kelamin" value="P" class="hidden peer" {{ old('jenis_kelamin', $anak->jenis_kelamin) == 'P' ? 'checked' : '' }}>
-                                <div class="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center">Perempuan</div>
+                                <div class="px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center @error('jenis_kelamin') border-red-300 bg-red-50 @enderror">Perempuan</div>
                             </label>
                         </div>
+                        @error('jenis_kelamin') <p class="text-[10px] text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tempat Lahir</label>
                         <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') ?? ($anak->tempat_lahir ?? '') }}" placeholder="Kota kelahiran..."
-                               class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-red-50 transition-all outline-none">
+                               class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-red-50 transition-all outline-none @error('tempat_lahir') border-red-300 bg-red-50 @enderror">
+                        @error('tempat_lahir') <p class="text-[10px] text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Lahir</label>
                         <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') ?? ($anak->tanggal_lahir ?? '') }}"
-                               class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-red-600 focus:ring-4 focus:ring-red-50 transition-all outline-none">
+                               class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-red-600 focus:ring-4 focus:ring-red-50 transition-all outline-none @error('tanggal_lahir') border-red-300 bg-red-50 @enderror">
+                        @error('tanggal_lahir') <p class="text-[10px] text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendidikan Saat Ini</label>
-                        <select name="pendidikan" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none">
+                        <select name="pendidikan" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-red-50 transition-all appearance-none @error('pendidikan') border-red-300 bg-red-50 @enderror">
                             @foreach ($pendidikan as $value => $label)
                                 <option value="{{ $value }}" {{ $value == old('pendidikan', $anak->pendidikan) ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
+                        @error('pendidikan') <p class="text-[10px] text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-2 md:col-span-2">
@@ -128,7 +146,8 @@
 
                     <div class="space-y-2 md:col-span-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Domisili</label>
-                        <textarea name="alamat" rows="3" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-red-50 transition-all outline-none resize-none placeholder:italic" placeholder="Jl. Alamat lengkap nomor rumah, RT/RW, dsb...">{{ old('alamat') ?? ($anak->alamat ?? '') }}</textarea>
+                        <textarea name="alamat" rows="3" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-red-50 transition-all outline-none resize-none placeholder:italic @error('alamat') border-red-300 bg-red-50 @enderror" placeholder="Jl. Alamat lengkap nomor rumah, RT/RW, dsb...">{{ old('alamat') ?? ($anak->alamat ?? '') }}</textarea>
+                        @error('alamat') <p class="text-[10px] text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-2">

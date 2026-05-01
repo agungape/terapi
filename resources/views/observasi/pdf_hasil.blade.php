@@ -1,325 +1,414 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <title>Observasi_{{ $anak->nama }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Laporan Hasil Observasi Klinis - Bright Star of Child</title>
     <style>
+        /* Modern CSS for DomPDF - Optimized to prevent infinite loops */
+        @page {
+            margin: 1.5cm 1.5cm 2.5cm 1.5cm; /* Large bottom margin */
+        }
+
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            color: #1f2937;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
         }
 
-        .logo {
-            width: 80px;
-        }
-
-        .kop-border {
-            border-top: 3px double black;
-            margin-bottom: 15px;
-        }
-
-        .qr {
-            width: 120px;
-        }
-
-        .section-title {
-            background-color: #2c7be5;
-            color: white;
-            padding: 8px 15px;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 6px 6px 0 0;
-            margin-bottom: 0;
-        }
-
-        .section-content {
-            border: 1px solid #e3ebf6;
-            border-top: none;
-            padding: 15px;
-            border-radius: 0 0 6px 6px;
-        }
-
-        .result-table {
+        /* Fixed Footer - TABLE BASED (Most stable for DomPDF) */
+        footer {
+            position: fixed;
+            bottom: -1.5cm;
+            left: 0px;
+            right: 0px;
+            height: 15px;
             width: 100%;
+        }
+
+        /* Kop Surat & Layout */
+        .logo-img {
+            width: 70px;
+            height: auto;
+        }
+
+        .logo-lg {
+            width: 85px;
+            height: auto;
+        }
+
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #1a1a2e;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
             border-collapse: collapse;
         }
 
-        .result-table th,
-        .result-table td {
-            border: 1px solid #e3ebf6;
-            padding: 10px;
+        .kop-title { font-size: 16pt; font-weight: 800; color: #1a1a2e; text-transform: uppercase; margin: 0; padding: 0; line-height: 1; }
+        .kop-tagline { font-size: 9.5pt; font-weight: 600; color: #0d7377; margin: 0; padding: 0; line-height: 1.2; }
+        .kop-address { font-size: 7.5pt; color: #4b5563; line-height: 1.3; margin-top: 3px; }
+
+        .doc-title {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
         }
 
-        .result-table th {
-            background-color: #f0f5ff;
+        /* Cards */
+        .info-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
         }
+
+        .info-title {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0d7377;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-left: 3px solid #0d7377;
+            padding-left: 8px;
+        }
+
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 3px 0; font-size: 9.5pt; vertical-align: top; }
+        .label { color: #6b7280; width: 120px; }
+        .value { font-weight: 600; color: #111827; }
+
+        .section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #111827;
+            margin: 15px 0 8px 0;
+            text-transform: uppercase;
+            background-color: #f3f4f6;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Results Table */
+        .result-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .result-table th { background-color: #1a1a2e; color: white; text-align: left; padding: 6px 10px; font-size: 8.5pt; }
+        .result-table td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; font-size: 9pt; vertical-align: top; }
+        .result-table tr:nth-child(even) { background-color: #fdfdfd; }
+
+        .confidential-box {
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            padding: 4px 10px;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+            background-color: #fef2f2;
+        }
+
+        header {
+            position: fixed;
+            top: -1.0cm;
+            left: 0px;
+            right: 0px;
+            height: 25px;
+            width: 100%;
+            text-align: right;
+        }
+
+        .badge { padding: 2px 8px; border-radius: 10px; font-size: 7.5pt; font-weight: bold; display: inline-block; }
+        .badge-normal { background-color: #d1fae5; color: #065f46; }
+        .badge-abnormal { background-color: #fee2e2; color: #991b1b; }
+        .badge-warning { background-color: #fef3c7; color: #92400e; }
+
+        .content-box {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #0d7377;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            font-size: 9.5pt;
+            color: #374151;
+            text-align: justify;
+        }
+
+        .sig-block { text-align: center; width: 220px; float: right; margin-top: 20px; }
+        .sig-name { font-weight: bold; text-decoration: underline; font-size: 10pt; }
+
+        .footnote { font-size: 8pt; color: #9ca3af; font-style: italic; }
+
+        /* Utilities */
+        .page-break { page-break-before: always; }
+        .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
+<body>
+    <header>
+        <div class="confidential-box">RAHASIA</div>
+    </header>
 
-<body class="px-4 py-3">
-    <!-- Kop Surat -->
-    <div class="text-center">
-        <div class="row align-items-center">
-            <table border="0">
-                <tr>
-                    <td>
-                        <div class="col-2">
-                            <img src="{{ public_path('assets/images/logo_bright_star.jpg') }}" alt="Logo"
-                                class="logo">
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <div class="col-10">
-                            <h5 style="font-weight: bold; margin: 0;">BRIGHT STAR OF CHILD</h5>
-                            <h5 style="font-weight: bold; margin: 0;">Pusat Layanan Terapi Anak Spesial
-                            </h5>
-                            <p class="mb-0" style="font-size: 10pt;">
-                                Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
-                                Tenggara 93462<br>Telp 085123238404 | Website : https://brightchild.id | Email :
-                                brightstarofchild12@gmail.com
-                            </p>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-
-        </div>
-        <div class="kop-border"></div>
-        <h6 class="text-decoration-underline" style="font-weight: bold">LAPORAN OBSERVASI</h6>
-    </div>
-
-    <!-- ISI SESUAI PERMINTAAN -->
-    <div class="info-box mb-4">
-        <table class="table table-borderless">
+    <!-- STABLE FOOTER (TABLE BASED) -->
+    <footer>
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
             <tr>
-                <td width="20%"><strong>Nama Anak</strong></td>
-                <td width="40%">: {{ $anak->nama }}</td>
-                <td width="20%"><strong>Tanggal Lahir</strong></td>
-                <td width="20%">: {{ \Carbon\Carbon::parse($anak->tanggal_lahir)->translatedFormat('d F Y') }}</td>
+                <td width="85%" height="10" style="background-color: #0d7377;"></td>
+                <td width="15%" height="10" style="background-color: #f59e0b;"></td>
+            </tr>
+        </table>
+    </footer>
+
+    <!-- KOP SURAT (LOGO KIRI & KANAN) -->
+    <table class="header-table">
+        <tr>
+            <td width="80" align="left" valign="middle">
+                <img src="{{ $logo }}" class="logo-img">
+            </td>
+            <td align="center" valign="middle">
+                <h1 class="kop-title">Bright Star of Child</h1>
+                <p class="kop-tagline">Pusat Layanan Terapi Anak Spesial</p>
+                <p class="kop-address">
+                    Jl. Mokodompit, Kel. Inolobu, Kec. Wawotobi, Kab. Konawe, Prov. Sulawesi Tenggara 93462<br>
+                    Telp: 085123238404 | Web: brightchild.id | Email: brightstarofchild12@gmail.com
+                </p>
+            </td>
+            <td width="100" align="right" valign="middle">
+                <img src="{{ $logo_pji }}" class="logo-lg">
+            </td>
+        </tr>
+    </table>
+
+    <div class="doc-title">Laporan Hasil Observasi</div>
+
+    <!-- IDENTITAS -->
+    <div class="info-card">
+        <div class="info-title">Identitas Anak</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">Nama Anak</td>
+                <td width="10">:</td>
+                <td class="value">{{ ucwords(strtolower($anak->nama)) }}</td>
+                <td class="label">No. Rekam Medis</td>
+                <td width="10">:</td>
+                <td class="value" style="color:#0d7377;">{{ $anak->nomor_induk_baru ?? '-' }}</td>
             </tr>
             <tr>
-                <td><strong>Tanggal Observasi</strong></td>
-                <td>: {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</td>
-                <td><strong>Usia</strong></td>
-                <td>: {{ $anak->usia }} tahun</td>
+                <td class="label">Tanggal Lahir</td>
+                <td>:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($anak->tanggal_lahir)->format('d-m-Y') }}</td>
+                <td class="label">Tgl. Pemeriksaan</td>
+                <td>:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Usia</td>
+                <td>:</td>
+                <td class="value">{{ $anak->usia }} Tahun</td>
+                <td class="label">Pemeriksa</td>
+                <td>:</td>
+                <td class="value">Inne Pusvitasari, S.Psi.</td>
             </tr>
         </table>
     </div>
 
-    <div class="section mb-4" style="page-break-after: always;">
-        <div class="section-title">HASIL OBSERVASI</div>
-        <div class="section-content">
-            <table width="100%" style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 15px;">
-                <thead>
-                    <tr style="background-color: #8ccedf; color: #fff;">
-                        <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">Alat
-                            Observasi</th>
-                        <th style="padding: 10px; border: 1px solid #dee2e6;" width="60%" class="text-center">Hasil
-                        </th>
+    <!-- I. PEMERIKSAAN OBJEKTIF -->
+    <div class="section-title">I. Pemeriksaan Objektif (Kuantitatif)</div>
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>Jenis Pemeriksaan</th>
+                <th width="70" align="center">Hasil</th>
+                <th width="140">Nilai Rujukan</th>
+                <th>Interpretasi / Rekomendasi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($hasil as $jenis => $items)
+                @if ($jenis == 'Penyimpangan Perilaku')
+                    <tr>
+                        <td><strong>{{ $penyimpangan_perilaku }}</strong><br><small style="color:#6b7280;">KMME</small></td>
+                        <td align="center"><span style="color: {{ $jumlahJawabanYaPerilaku >= 2 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanYaPerilaku }}{{ $jumlahJawabanYaPerilaku >= 2 ? ' *' : '' }}</span></td>
+                        <td>&lt; 2 (Jawaban "YA")</td>
+                        <td>
+                            <span class="badge {{ $jumlahJawabanYaPerilaku >= 2 ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $jumlahJawabanYaPerilaku >= 2 ? 'Ada Masalah Mental Emosional' : 'Normal' }}
+                            </span>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($hasil as $jenis => $items)
-                        @if ($jenis == 'Penyimpangan Perilaku')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $penyimpangan_perilaku }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <div style="padding: 6px; color: #333;">
-                                        <b>Hasil Deteksi:</b><br>
-                                        Dari 14 indikator, terdapat <b>{{ $jumlahJawabanYaPerilaku }}</b> jawaban
-                                        <b>"YA"</b>.<br>
-                                        @if ($jumlahJawabanYaPerilaku >= 2)
-                                            Berdasarkan ketentuan, jika terdapat 2 atau lebih jawaban "YA",
-                                            maka:<br><br>
-                                            <b>➡ Kemungkinan anak mengalami permasalahan mental emosional</b><br>
-                                            Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
-                                            melakukan terapi perilaku.
-                                        @else
-                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah mental
-                                            emosional pada anak.
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @elseif ($jenis == 'Penyimpangan Pendengaran')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $penyimpangan_pendengaran }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <div style="padding: 6px; color: #333;">
-                                        <b>Hasil Deteksi:</b><br>
-                                        Dari {{ $jumlahPertanyaanPendengaran }} indikator, terdapat
-                                        <b>{{ $jumlahJawabanTidakPendengaran }}</b> jawaban
-                                        <b>"TIDAK"</b>.<br>
-                                        @if ($jumlahJawabanTidakPendengaran >= 1)
-                                            Berdasarkan ketentuan, jika terdapat 1 atau lebih jawaban "TIDAK",
-                                            maka:<br><br>
-                                            <b>➡ Kemungkinan anak mengalami permasalahan pendengaran</b><br>
-                                            Disarankan untuk konsultasi lebih lanjut ke dokter atau psikolog dan
-                                            melakukan terapi perilaku.
-                                        @else
-                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> masalah
-                                            pendengaran pada anak.
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @elseif ($jenis == 'Penyimpangan Penglihatan')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $penyimpangan_penglihatan }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <div style="padding: 6px; color: #333;">
-                                        <b>Hasil Deteksi:</b><br>
-                                        Dari hasil pemeriksaan,
-                                        @if ($jawabanPenglihatan->hasil == 'Curiga Gangguan Penglihatan')
-                                            Anak kesulitan atau tidak dapat mencocokkan kartu "E" sampai baris
-                                            ketiga<br><br>
-                                            <b>➡</b> {{ $jawabanPenglihatan->hasil }}.
-                                        @else
-                                            Anak dapat mencocokkan kartu "E" sampai baris ketiga<br>
-                                            <b><span style="color:green;">✔</span> </b>{{ $jawabanPenglihatan->hasil }}
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @elseif ($jenis == 'Autisme')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $autis }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <div style="padding: 6px; color: #333;">
-                                        <b>Hasil Deteksi:</b><br>
-                                        Dari 23 indikator, terdapat <b>{{ $jumlahJawabanTidakAutis }}</b> jawaban
-                                        <b>"TIDAK"</b>.<br>
-                                        @if ($jumlahJawabanTidakAutis >= 2)
-                                            Jika terdapat 2 atau lebih jawaban "TIDAK",Pada Indikator Penentuan
-                                            maka:<br><br>
-                                            <b>➡ Beresiko tinggi</b> anak mengalami hambatan dalam komunikasi dan
-                                            keterlambatan dalam berbicara.<br>
-                                            Disarankan untuk konsultasi dengan dokter/psikolog dan melakukan
-                                            terapi perilaku.
-                                        @else
-                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> hambatan
-                                            komunikasi dan keterlambatan bicara.
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @elseif ($jenis == 'GPPH')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $gpph }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <div style="padding: 6px; color: #333;">
-                                        <b>Hasil Deteksi:</b><br>
-                                        Total nilai dari 10 indikator adalah <b>{{ $totalNilaiGpph }}</b>.<br>
-                                        @if ($totalNilaiGpph >= 13)
-                                            Jika total nilai 13 atau lebih, maka:<br><br>
-                                            <b>➡ Anak kemungkinan mengalami kesulitan dalam pemusatan perhatian dan
-                                                hiperaktifitas.</b>
-                                        @else
-                                            <b><span style="color:green;">✔</span> Tidak terdeteksi</b> kesulitan dalam
-                                            pemusatan perhatian dan
-                                            hiperaktifitas.
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @elseif ($jenis == 'ATEC')
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    Autism Treatment Evaluation Checklist (ATEC)
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    <img src="{{ asset('storage/atec/' . $atec->hasil) }}"
-                                        style="width: 61%; height: auto; max-height: 400px; object-fit: scale-down; border-radius: 6px;"
-                                        alt="Hasil ATEC">
-                                </td>
-                            </tr>
-                        @endif
+                @elseif ($jenis == 'Penyimpangan Pendengaran')
+                    <tr>
+                        <td><strong>{{ $penyimpangan_pendengaran }}</strong><br><small style="color:#6b7280;">TDD</small></td>
+                        <td align="center"><span style="color: {{ $jumlahJawabanTidakPendengaran >= 1 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanTidakPendengaran }}{{ $jumlahJawabanTidakPendengaran >= 1 ? ' *' : '' }}</span></td>
+                        <td>= 0 (Jawaban "TIDAK")</td>
+                        <td>
+                            <span class="badge {{ $jumlahJawabanTidakPendengaran >= 1 ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $jumlahJawabanTidakPendengaran >= 1 ? 'Curiga Gangguan Pendengaran' : 'Pendengaran Normal' }}
+                            </span>
+                        </td>
+                    </tr>
+                @elseif ($jenis == 'Penyimpangan Penglihatan')
+                    @php $hasilLihat = optional($jawabanPenglihatan)->hasil; @endphp
+                    <tr>
+                        <td><strong>{{ $penyimpangan_penglihatan }}</strong><br><small style="color:#6b7280;">TDL — E-Chart</small></td>
+                        <td align="center"><span style="color: {{ $hasilLihat == 'Curiga Gangguan Penglihatan' ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $hasilLihat == 'Curiga Gangguan Penglihatan' ? 'Gagal *' : 'Lulus' }}</span></td>
+                        <td>Baris 3 (Lulus)</td>
+                        <td>
+                            <span class="badge {{ $hasilLihat == 'Curiga Gangguan Penglihatan' ? 'badge-warning' : 'badge-normal' }}">
+                                {{ $hasilLihat == 'Curiga Gangguan Penglihatan' ? 'Curiga Gangguan Penglihatan' : 'Penglihatan Normal' }}
+                            </span>
+                        </td>
+                    </tr>
+                @elseif ($Autis ?? $jenis == 'Autisme')
+                    <tr>
+                        <td><strong>{{ $autis }}</strong><br><small style="color:#6b7280;">M-CHAT</small></td>
+                        <td align="center"><span style="color: {{ $jumlahJawabanTidakAutis >= 2 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanTidakAutis }}{{ $jumlahJawabanTidakAutis >= 2 ? ' *' : '' }}</span></td>
+                        <td>&lt; 2 (Resiko Rendah)</td>
+                        <td>
+                            <span class="badge {{ $jumlahJawabanTidakAutis >= 2 ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $jumlahJawabanTidakAutis >= 2 ? 'Risiko Tinggi Autisme' : 'Risiko Rendah Autisme' }}
+                            </span>
+                        </td>
+                    </tr>
+                @elseif ($jenis == 'GPPH')
+                    <tr>
+                        <td><strong>{{ $gpph }}</strong><br><small style="color:#6b7280;">GPPH</small></td>
+                        <td align="center"><span style="color: {{ $totalNilaiGpph >= 13 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $totalNilaiGpph }}{{ $totalNilaiGpph >= 13 ? ' *' : '' }}</span></td>
+                        <td>&lt; 13 (Normal)</td>
+                        <td>
+                            <span class="badge {{ $totalNilaiGpph >= 13 ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $totalNilaiGpph >= 13 ? 'Kemungkinan GPPH' : 'Normal (Bukan GPPH)' }}
+                            </span>
+                        </td>
+                    </tr>
+                @elseif ($jenis == 'ATEC Kuesioner' || $jenis == 'ATEC')
+                    @php 
+                        $atecSkor = optional($atec)->total_skor ?? 0; 
+                        $atecInterp = optional($atec)->interpretasi ?? '-'; 
+                    @endphp
+                    <tr>
+                        <td><strong>ATEC</strong><br><small style="color:#6b7280;">Autism Evaluation</small></td>
+                        <td align="center"><span style="color: {{ $atecSkor > 50 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $atecSkor }}{{ $atecSkor > 50 ? ' *' : '' }}</span></td>
+                        <td>&lt; 50 (Hambatan Ringan)</td>
+                        <td>
+                            <div style="font-size:8.5pt; line-height:1.4;">
+                                @if(str_contains($atecInterp, 'I.Wicara'))
+                                    @php
+                                        // Bersihkan string dan pecah berdasarkan koma atau titik
+                                        $cleanInterp = str_replace(['. Total ATEC:', ' (Makin rendah makin baik).'], [', Total ATEC:', ''], $atecInterp);
+                                        $points = explode(',', $cleanInterp);
+                                    @endphp
+                                    @foreach($points as $point)
+                                        <div style="margin-bottom:1px;">&bull; {{ trim($point) }}</div>
+                                    @endforeach
+                                    <div style="font-size:7pt; color:#6b7280; margin-top:2px;">(Makin rendah makin baik)</div>
+                                @else
+                                    {{ $atecInterp }}
+                                @endif
+                            </div>
+                            <div style="margin-top:5px;">
+                                <span class="badge {{ $atecSkor > 50 ? 'badge-abnormal' : 'badge-normal' }}">
+                                    {{ $atecSkor > 50 ? 'Saran: Intervensi Intensif' : 'Saran: Pemantauan Rutin' }}
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                @elseif ($jenis == 'KPSP' && !empty($kpsp))
+                    <tr>
+                        <td><strong>KPSP</strong><br><small style="color:#6b7280;">Pra Skrining</small></td>
+                        <td align="center"><span style="color: {{ $kpsp->total_skor < 9 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $kpsp->total_skor }}{{ $kpsp->total_skor < 9 ? ' *' : '' }}</span></td>
+                        <td>9 - 10 (Sesuai)</td>
+                        <td><span class="badge {{ $kpsp->total_skor < 9 ? 'badge-abnormal' : 'badge-normal' }}">{{ ucwords(strtolower($kpsp->interpretasi)) }}</span></td>
+                    </tr>
+                @elseif ($jenis == 'Anthropometri' && !empty($anthropometris))
+                    @foreach ($anthropometris as $anthro)
+                    <tr>
+                        <td><strong>Pertumbuhan Fisik</strong><br><small style="color:#6b7280;">BB & TB</small></td>
+                        <td align="center"><strong>{{ (float)$anthro->berat_badan }}kg / {{ (float)$anthro->tinggi_badan }}cm</strong></td>
+                        <td>Standar WHO</td>
+                        <td>
+                            @php 
+                                $bbStatus = $anthro->status_bb_u ?? '-';
+                                $tbStatus = $anthro->status_tb_u ?? '-';
+                                $isOk = (strpos(strtolower($bbStatus), 'baik') !== false) && (strpos(strtolower($tbStatus), 'normal') !== false);
+                            @endphp
+                            <div style="font-size:8pt; margin-bottom:2px;">BB/U: {{ $bbStatus }} | TB/U: {{ $tbStatus }}</div>
+                            <span class="badge {{ $isOk ? 'badge-normal' : 'badge-warning' }}">
+                                {{ $isOk ? 'Pertumbuhan Normal' : 'Perlu Konsultasi Gizi' }}
+                            </span>
+                        </td>
+                    </tr>
                     @endforeach
-                </tbody>
-            </table>
+                @endif
+            @endforeach
+        </tbody>
+    </table>
+    <div class="footnote">(*) Nilai di luar rujukan normal.</div>
 
+    <!-- PAGE BREAK -->
+    <div class="page-break"></div>
 
-        </div>
-    </div>
-
-    {{-- @if (!empty($wawancara))
-        <div class="section mb-4">
-            <div class="section-title">HASIL WAWANCARA</div>
-            <div class="section-content">
-                <table width="100%"
-                    style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 15px;">
-                    <thead>
-                        <tr style="background-color: #8ccedf; color: #fff;">
-                            <th style="padding: 10px; border: 1px solid #dee2e6;" width="40%" class="text-center">
-                                Pertanyaan</th>
-                            <th style="padding: 10px; border: 1px solid #dee2e6;" width="60%" class="text-center">
-                                jawaban
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($wawancara as $w)
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #dee2e6; vertical-align: top;">
-                                    {{ $w->question_wawancara->question_text }}
-                                </td>
-                                <td style="padding: 10px; border: 1px solid #dee2e6;">
-                                    {{ $w->answer }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    @endif --}}
-
+    <!-- II. OBSERVASI PERILAKU -->
     @if (!empty($hpperilaku))
-        <div class="section mb-4">
-            <div class="section-title">HASIL OBSERVASI PERILAKU</div>
-            <div class="section-content">
-
-                {!! $hpperilaku->deskripsi !!}
-            </div>
+        <div class="section-title">II. Hasil Observasi Perilaku (Kualitatif)</div>
+        <div class="content-box">
+            {!! str_replace(['border-left: 4px solid #10b981;', 'border-left: 4px solid #f43f5e;'], '', $hpperilaku->deskripsi) !!}
         </div>
     @endif
 
+    <!-- III. OBSERVASI SENSORIK -->
     @if (!empty($hpsensorik))
-        <div class="section mb-4">
-            <div class="section-title">HASIL OBSERVASI SENSORIK</div>
-            <div class="section-content">
-                {!! $hpsensorik->deskripsi !!}
-
-            </div>
+        <div class="section-title">III. Hasil Observasi Sensorik (Kualitatif)</div>
+        <div class="content-box">
+            {!! str_replace(['border-left: 4px solid #10b981;', 'border-left: 4px solid #f43f5e;'], '', $hpsensorik->deskripsi) !!}
         </div>
     @endif
 
-    <!-- Tanda Tangan dan QR Code -->
-    <div class="row mt-5">
-        <div class="col-6"></div>
-        <div class="col-6 text-center" style="page-break-inside: avoid;">
-            <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}<br>
-                Terapis</p>
+    <!-- IV. HASIL WAWANCARA -->
+    @if ($wawancara->isNotEmpty())
+        <div class="section-title">IV. Hasil Wawancara Orang Tua / Pengasuh</div>
+        <table class="result-table" style="margin-top: 5px;">
+            <thead>
+                <tr>
+                    <th width="30">No</th>
+                    <th>Pertanyaan</th>
+                    <th width="80" align="center">Jawaban</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($wawancara as $index => $w)
+                    <tr>
+                        <td align="center">{{ $index + 1 }}</td>
+                        <td>{{ $w->question_wawancara->question_text ?? '-' }}</td>
+                        <td align="center"><strong>{{ strtoupper($w->answer) }}</strong></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
-            {{-- QR code --}}
-            <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode" class="barcode"><br><br>
+    <p style="margin-top: 10px; font-size: 9.5pt;">Demikian laporan ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
 
-            <p style="font-weight: bold; margin: 0;">Inne Pusvitasari, S.Psi.</p>
+    <!-- SIGNATURE -->
+    <div class="clearfix">
+        <div class="sig-block">
+            <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
+            <p style="font-weight:bold; margin: 2px 0;">Terapis Penanggung Jawab,</p>
+            <div style="margin: 8px 0;">
+                <img src="data:image/png;base64,{{ $barcode }}" width="70" height="70">
+            </div>
+            <p class="sig-name">Inne Pusvitasari, S.Psi.</p>
         </div>
     </div>
-</body>
 
+</body>
 </html>

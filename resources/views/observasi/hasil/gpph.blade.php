@@ -86,7 +86,7 @@
                             <tr class="hover:bg-slate-50/50 transition-colors group">
                                 <td class="px-8 py-5 text-[10px] font-black text-slate-300">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
                                 <td class="px-8 py-5">
-                                    <p class="text-xs font-bold text-slate-600 leading-relaxed tracking-tight uppercase italic">{{ $q->question_gpph->question_text }}</p>
+                                    <p class="text-xs font-bold text-slate-600 leading-relaxed tracking-tight uppercase italic">{{ $q->question_gpph->question_text ?? 'Pertanyaan tidak ditemukan / dihapus' }}</p>
                                 </td>
                                 <td class="px-8 py-5 text-center">
                                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-700 text-[10px] font-black border border-slate-200">

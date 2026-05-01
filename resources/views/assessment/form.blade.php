@@ -1,6 +1,6 @@
 <div x-data="{ 
     step: 1, 
-    totalSteps: 6,
+    totalSteps: 5,
     nextStep() { if(this.step < this.totalSteps) this.step++; window.scrollTo({top: 0, behavior: 'smooth'}); },
     prevStep() { if(this.step > 1) this.step--; window.scrollTo({top: 0, behavior: 'smooth'}); }
 }" class="space-y-6">
@@ -24,9 +24,8 @@
                         <template x-if="i === 1"><span>Identitas</span></template>
                         <template x-if="i === 2"><span>Observasi</span></template>
                         <template x-if="i === 3"><span>Diagnosa</span></template>
-                        <template x-if="i === 4"><span>Skoring</span></template>
-                        <template x-if="i === 5"><span>Saran</span></template>
-                        <template x-if="i === 6"><span>Final</span></template>
+                        <template x-if="i === 4"><span>Saran</span></template>
+                        <template x-if="i === 5"><span>Final</span></template>
                     </span>
                 </div>
             </template>
@@ -106,12 +105,21 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="tujuan_pemeriksaan" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
-                                <i data-lucide="bullseye" class="w-4 h-4 text-slate-400"></i> Tujuan Pemeriksaan <span class="text-red-500">*</span>
-                            </label>
-                            <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 form-control @error('tujuan_pemeriksaan') border-red-500 @enderror" id="tujuan_pemeriksaan" name="tujuan_pemeriksaan" rows="2" placeholder="Contoh: Evaluasi kesiapan sekolah, diagnosa awal..." required>{{ old('tujuan_pemeriksaan') }}</textarea>
-                            @error('tujuan_pemeriksaan')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="tujuan_pemeriksaan" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
+                                    <i data-lucide="target" class="w-4 h-4 text-slate-400"></i> Tujuan Pemeriksaan <span class="text-red-500">*</span>
+                                </label>
+                                <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 form-control @error('tujuan_pemeriksaan') border-red-500 @enderror" id="tujuan_pemeriksaan" name="tujuan_pemeriksaan" rows="2" placeholder="Contoh: Evaluasi kesiapan sekolah, diagnosa awal..." required>{{ old('tujuan_pemeriksaan') }}</textarea>
+                                @error('tujuan_pemeriksaan')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                            </div>
+                            <div>
+                                <label for="keluhan_utama" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
+                                    <i data-lucide="message-square" class="w-4 h-4 text-slate-400"></i> Keluhan Utama (Chief Complaint)
+                                </label>
+                                <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 form-control @error('keluhan_utama') border-red-500 @enderror" id="keluhan_utama" name="keluhan_utama" rows="2" placeholder="Tuliskan keluhan utama dari orang tua/pengasuh...">{{ old('keluhan_utama') }}</textarea>
+                                @error('keluhan_utama')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                            </div>
                         </div>
 
                         <div>
@@ -144,7 +152,33 @@
                         </div>
                         <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">II. Hasil Observasi Perilaku</h5>
                     </div>
-                    <div class="p-6 space-y-6">
+                    <div class="p-6 space-y-8">
+                        <!-- Observasi Status Klinis -->
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                            <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                                <i data-lucide="brain" class="w-4 h-4 text-emerald-500"></i> Observasi Status Klinis
+                            </h6>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                @foreach([
+                                    ['mood_anak', 'smile', 'Mood Anak', 'Ceria, kooperatif, sedih, dll'],
+                                    ['validitas_hasil', 'check-square', 'Validitas Hasil', 'Valid, cukup valid, kurang valid'],
+                                    ['catatan_rapport', 'users', 'Catatan Rapport', 'Terjalin baik, butuh waktu, dll'],
+                                    ['kontak_mata', 'eye', 'Kontak Mata', 'Adekuat, terbatas, tidak ada'],
+                                    ['komunikasi', 'message-circle', 'Komunikasi', 'Verbal, non-verbal, minim'],
+                                    ['interaksi_sosial', 'handshake', 'Interaksi Sosial', 'Aktif, pasif, menarik diri']
+                                ] as $field)
+                                <div>
+                                    <label for="{{ $field[0] }}" class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                                        <i data-lucide="{{ $field[1] }}" class="w-3.5 h-3.5 text-slate-400"></i> {{ $field[2] }}
+                                    </label>
+                                    <input type="text" name="{{ $field[0] }}" id="{{ $field[0] }}" 
+                                           class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-emerald-100 focus:border-emerald-500 @error($field[0]) border-red-500 @enderror" 
+                                           placeholder="{{ $field[3] }}" value="{{ old($field[0]) }}">
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+
                         <div>
                             <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
                                 <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i> Perilaku yang Teramati <span class="text-red-500">*</span>
@@ -212,112 +246,16 @@
                 </div>
             </div>
 
-            <!-- Step 4: Skor & Alat Ukur -->
+
+
+            <!-- Step 4: Rekomendasi -->
             <div x-show="step === 4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
-                <div class="card-premium">
-                    <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3 rounded-t-2xl">
-                        <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
-                            <i data-lucide="calculator" class="w-5 h-5"></i>
-                        </div>
-                        <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">IV. Skor Pengujian Alat Ukur</h5>
-                    </div>
-                    <div class="p-6 space-y-8">
-                        <!-- Skor Overview Grid -->
-                        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-                            @foreach([['Kognitif', 'skor_kognitif'], ['Bahasa', 'skor_bahasa'], ['Motorik', 'skor_motorik'], ['Sos-Emosional', 'skor_sosial_emosional'], ['Adaptif', 'skor_perilaku_adaptif']] as $item)
-                            <div class="space-y-2">
-                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ $item[0] }}</label>
-                                <input type="number" name="{{ $item[1] }}" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500" value="{{ old($item[1]) }}">
-                            </div>
-                            @endforeach
-                            <div class="space-y-2">
-                                <label class="text-[9px] font-black text-red-500 uppercase tracking-widest italic">IQ Total</label>
-                                <input type="number" name="skor_iq_total" class="form-control w-full border-2 border-red-50 rounded-xl px-4 py-3 text-sm font-black text-red-600 focus:ring-2 focus:ring-red-100 focus:border-red-500 bg-red-50/30" value="{{ old('skor_iq_total') }}">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Klasifikasi IQ</label>
-                                <textarea name="klasifikasi" rows="2" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500" placeholder="Contoh: Rata-rata, Superior, dll">{{ old('klasifikasi') }}</textarea>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Interpretasi Skor</label>
-                                <textarea name="interpretasi_skor" rows="2" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500" placeholder="Detail interpretasi hasil tes...">{{ old('interpretasi_skor') }}</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Alat Ukur Table -->
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest">
-                                    <i data-lucide="ruler" class="w-4 h-4 text-slate-400"></i> Detail Alat Ukur Psikologi
-                                </label>
-                                <button type="button" id="btn-tambah-alat" class="bg-slate-900 text-white hover:bg-black py-2 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-slate-200">
-                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Baris
-                                </button>
-                            </div>
-
-                            <div class="overflow-x-auto border border-slate-100 rounded-2xl bg-white shadow-sm">
-                                <table class="w-full text-left" id="table-alat-ukur">
-                                    <thead class="bg-slate-50 border-b border-slate-100">
-                                        <tr>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Alat Ukur</th>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest w-24">Raw</th>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest w-24">Std</th>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest w-24">%tile</th>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Klasifikasi</th>
-                                            <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Catatan</th>
-                                            <th class="px-4 py-3 text-center w-16"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-50" id="alat-ukur-body">
-                                        <tr class="alat-ukur-row group">
-                                            <td class="px-2 py-3">
-                                                <select name="alat_ukur[0][nama]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs font-bold focus:ring-0 appearance-none">
-                                                    <option value="">-- Pilih Alat Ukur --</option>
-                                                    @foreach($alatukurs as $tool)
-                                                        <option value="{{ $tool->singkatan }}">{{ $tool->singkatan }} - {{ $tool->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="px-2 py-3">
-                                                <input type="text" name="alat_ukur[0][skor_raw]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                                            </td>
-                                            <td class="px-2 py-3">
-                                                <input type="text" name="alat_ukur[0][skor_standar]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                                            </td>
-                                            <td class="px-2 py-3">
-                                                <input type="text" name="alat_ukur[0][persentil]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                                            </td>
-                                            <td class="px-2 py-3">
-                                                <input type="text" name="alat_ukur[0][klasifikasi]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                                            </td>
-                                            <td class="px-2 py-3">
-                                                <input type="text" name="alat_ukur[0][catatan]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                                            </td>
-                                            <td class="px-2 py-3 text-center">
-                                                <button type="button" class="btn-remove-alat p-1.5 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all" disabled>
-                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 5: Rekomendasi -->
-            <div x-show="step === 5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="card-premium">
                     <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3 rounded-t-2xl">
                         <div class="p-2 bg-pink-100 text-pink-600 rounded-lg">
                             <i data-lucide="heart" class="w-5 h-5"></i>
                         </div>
-                        <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">V. Rekomendasi Penanganan</h5>
+                        <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">IV. Rekomendasi Penanganan</h5>
                     </div>
                     <div class="p-6 space-y-8">
                         @foreach([['Pihak Keluarga', 'rekomendasi-orangtua-container', 'rekomendasi_orangtua[]'], ['Intervensi Terapi', 'rekomendasi-terapi-container', 'rekomendasi_terapi[]']] as $rec)
@@ -338,40 +276,23 @@
                             </button>
                         </div>
                         @endforeach
+                        <input type="hidden" name="rekomendasi_orangtua_combined" id="rekomendasi_orangtua_combined">
+                        <input type="hidden" name="rekomendasi_terapi_combined" id="rekomendasi_terapi_combined">
+                    </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                            @foreach([['Saran Rujukan', 'rujukan_container', 'saran_rujukan_combined'], ['Prioritas Terapi', 'prioritas_container', 'prioritas_terapi_combined']] as $ref)
-                            <div>
-                                <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
-                                    <i data-lucide="plus-square" class="w-4 h-4 text-slate-400"></i> {{ $ref[0] }}
-                                </label>
-                                <div id="{{ $ref[1] }}" class="combined-input-container space-y-3">
-                                    <div class="input-group mb-2 relative flex items-center">
-                                        <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 pr-12" placeholder="...">
-                                        <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <button type="button" class="mt-3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-2 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors add-item" data-target="#{{ $ref[1] }}">
-                                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Poin
-                                </button>
-                                <input type="hidden" name="{{ $ref[2] }}" id="{{ $ref[2] }}">
-                            </div>
-                            @endforeach
-                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <!-- Step 6: Persetujuan -->
-            <div x-show="step === 6" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
+            <!-- Step 5: Persetujuan -->
+            <div x-show="step === 5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="card-premium">
                     <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3 rounded-t-2xl">
                         <div class="p-2 bg-slate-900 text-white rounded-lg">
                             <i data-lucide="check-circle" class="w-5 h-5"></i>
                         </div>
-                        <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">VI. Finalisasi & Persetujuan Psikolog</h5>
+                        <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">V. Finalisasi & Persetujuan Psikolog</h5>
                     </div>
                     <div class="p-6 space-y-6">
                         <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white relative overflow-hidden">
@@ -402,7 +323,6 @@
                     </div>
                 </div>
             </div>
-        </div>
 
         <!-- Wizard Navigation Footer -->
         <div class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
@@ -418,7 +338,7 @@
                     x-show="step < totalSteps" 
                     @click="nextStep()" 
                     class="bg-red-500 hover:bg-red-600 text-white py-4 px-12 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 transition-all shadow-lg shadow-red-200">
-                Berikutnya <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                Lanjutkan <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
 
             <button type="submit" 

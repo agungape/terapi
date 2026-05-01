@@ -158,6 +158,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/observasi/{anak}', [ObservasiController::class, 'show'])->name('observasi.show');
     Route::post('/observasi/mulai', [ObservasiController::class, 'observasi_mulai'])->name('observasi.mulai');
     Route::post('/observasi/atec', [ObservasiController::class, 'observasi_atec'])->name('observasi.atec');
+    Route::post('/observasi/atec-digital', [ObservasiController::class, 'observasi_atec_digital'])->name('observasi.atec_digital');
     Route::post('/observasi/hpperilaku', [ObservasiController::class, 'observasi_hpperilaku'])->name('observasi.hpperilaku');
     Route::post('/observasi/hpsensorik', [ObservasiController::class, 'observasi_hpsensorik'])->name('observasi.hpsensorik');
     Route::post('/observasi-pendengaran/simpan', [ObservasiController::class, 'observasi_pendengaran'])->name('obpendengaran.store');
@@ -165,11 +166,16 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::post('/observasi-perilaku/simpan', [ObservasiController::class, 'observasi_perilaku'])->name('observasi.perilaku');
     Route::post('/observasi-autis/simpan', [ObservasiController::class, 'observasi_autis'])->name('observasi.autis');
     Route::post('/observasi-gpph/simpan', [ObservasiController::class, 'observasi_gpph'])->name('observasi.gpph');
+    Route::post('/observasi-kpsp/simpan', [ObservasiController::class, 'observasi_kpsp'])->name('observasi.kpsp');
+    Route::post('/observasi-anthropometri/simpan', [ObservasiController::class, 'observasi_anthropometri'])->name('observasi.anthropometri');
+    Route::post('/observasi-anthropometri/update/{id}', [ObservasiController::class, 'update_anthropometri'])->name('observasi.anthropometri.update');
+    Route::delete('/observasi-anthropometri/{id}', [ObservasiController::class, 'hapus_anthropometri'])->name('observasi.anthropometri.destroy');
     Route::post('/observasi-wawancara/simpan', [ObservasiController::class, 'observasi_wawancara'])->name('observasi.wawancara');
     Route::post('/observasi/cetak', [ObservasiController::class, 'cetakObservasi'])->name('observasi.cetak');
     Route::patch('/observasi/hpperilaku/{id}', [ObservasiController::class, 'hpperilaku_update'])->name('hpperilaku.update');
     Route::patch('/observasi/hpsensorik/{id}', [ObservasiController::class, 'hpsensorik_update'])->name('hpsensorik.update');
     Route::get('/observasi/detail/{hasil}', [ObservasiController::class, 'detail'])->name('observasi.detail');
+    Route::delete('/observasi/destroy_hasil/{id}', [ObservasiController::class, 'destroy_hasil'])->name('observasi.destroy_hasil');
 
     Route::post('/upload-foto/{id}', [AnakController::class, 'uploadfoto'])->name('upload.foto');
     Route::get('/delete-foto/{id}', [AnakController::class, 'deletefoto'])->name('delete.foto');

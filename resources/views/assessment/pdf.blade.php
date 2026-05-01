@@ -267,6 +267,10 @@
                     {{ \Carbon\Carbon::parse($assessment->anak->tanggal_lahir)->diffInYears($assessment->tanggal_assessment) }}
                     tahun</td>
             </tr>
+            <tr>
+                <td><strong>Keluhan Utama</strong></td>
+                <td colspan="3">: {{ $assessment->keluhan_utama ?? '-' }}</td>
+            </tr>
         </table>
     </div>
 
@@ -292,7 +296,45 @@
             <thead>
                 <tr>
                     <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">B.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">OBSERVASI AWAL ANAK</td>
+                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">STATUS KLINIS & OBSERVASI AWAL</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="5%"></td>
+                    <td colspan="3">
+                        <table class="result-table" style="margin-top: 10px">
+                            <tr>
+                                <th width="33%">Mood Anak</th>
+                                <th width="33%">Validitas Hasil</th>
+                                <th width="33%">Catatan Rapport</th>
+                            </tr>
+                            <tr>
+                                <td>{{ $assessment->mood_anak ?? '-' }}</td>
+                                <td>{{ $assessment->validitas_hasil ?? '-' }}</td>
+                                <td>{{ $assessment->catatan_rapport ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Kontak Mata</th>
+                                <th>Komunikasi</th>
+                                <th>Interaksi Sosial</th>
+                            </tr>
+                            <tr>
+                                <td>{{ $assessment->kontak_mata ?? '-' }}</td>
+                                <td>{{ $assessment->komunikasi ?? '-' }}</td>
+                                <td>{{ $assessment->interaksi_sosial ?? '-' }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">C.</td>
+                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">HASIL OBSERVASI PERILAKU</td>
                 </tr>
             </thead>
             <tbody>
@@ -325,7 +367,7 @@
         <table class="table table-borderless">
             <thead>
                 <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">C.</td>
+                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">D.</td>
                     <td colspan="3" class="bg-primary p-2" style="border-left: 0">SUMBER ASESMEN</td>
                 </tr>
             </thead>
@@ -344,7 +386,7 @@
         <table class="table table-borderless">
             <thead>
                 <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">D.</td>
+                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">E.</td>
                     <td colspan="3" class="bg-primary p-2" style="border-left: 0">HASIL PEMERIKSAAN</td>
                 </tr>
             </thead>
@@ -378,8 +420,8 @@
         <table class="table table-borderless">
             <thead>
                 <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">E.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">SARAN</td>
+                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">F.</td>
+                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">SARAN & REKOMENDASI</td>
                 </tr>
             </thead>
             <tbody>

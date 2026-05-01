@@ -118,12 +118,21 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="tujuan_pemeriksaan" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
-                            <i data-lucide="bullseye" class="w-4 h-4 text-slate-400"></i> Tujuan Pemeriksaan <span class="text-amber-500">*</span>
-                        </label>
-                        <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 form-control @error('tujuan_pemeriksaan') border-red-500 @enderror" id="tujuan_pemeriksaan" name="tujuan_pemeriksaan" rows="2" placeholder="Contoh: Evaluasi kesiapan sekolah, diagnosa awal..." required>{{ old('tujuan_pemeriksaan', $assessment->tujuan_pemeriksaan) }}</textarea>
-                        @error('tujuan_pemeriksaan')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="tujuan_pemeriksaan" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
+                                <i data-lucide="target" class="w-4 h-4 text-slate-400"></i> Tujuan Pemeriksaan <span class="text-amber-500">*</span>
+                            </label>
+                            <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 form-control @error('tujuan_pemeriksaan') border-red-500 @enderror" id="tujuan_pemeriksaan" name="tujuan_pemeriksaan" rows="2" placeholder="Contoh: Evaluasi kesiapan sekolah, diagnosa awal..." required>{{ old('tujuan_pemeriksaan', $assessment->tujuan_pemeriksaan) }}</textarea>
+                            @error('tujuan_pemeriksaan')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                        </div>
+                        <div>
+                            <label for="keluhan_utama" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
+                                <i data-lucide="message-square" class="w-4 h-4 text-slate-400"></i> Keluhan Utama (Chief Complaint)
+                            </label>
+                            <textarea class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 form-control @error('keluhan_utama') border-red-500 @enderror" id="keluhan_utama" name="keluhan_utama" rows="2" placeholder="Tuliskan keluhan utama dari orang tua/pengasuh...">{{ old('keluhan_utama', $assessment->keluhan_utama) }}</textarea>
+                            @error('keluhan_utama')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
+                        </div>
                     </div>
 
                     <div>
@@ -164,7 +173,33 @@
                     </div>
                     <h5 class="text-sm font-extrabold text-slate-700 m-0 tracking-tight">Hasil Observasi Awal</h5>
                 </div>
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-8">
+                    <!-- Observasi Status Klinis -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                            <i data-lucide="brain" class="w-4 h-4 text-emerald-500"></i> Observasi Status Klinis
+                        </h6>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            @foreach([
+                                ['mood_anak', 'smile', 'Mood Anak', 'Ceria, kooperatif, sedih, dll'],
+                                ['validitas_hasil', 'check-square', 'Validitas Hasil', 'Valid, cukup valid, kurang valid'],
+                                ['catatan_rapport', 'users', 'Catatan Rapport', 'Terjalin baik, butuh waktu, dll'],
+                                ['kontak_mata', 'eye', 'Kontak Mata', 'Adekuat, terbatas, tidak ada'],
+                                ['komunikasi', 'message-circle', 'Komunikasi', 'Verbal, non-verbal, minim'],
+                                ['interaksi_sosial', 'handshake', 'Interaksi Sosial', 'Aktif, pasif, menarik diri']
+                            ] as $field)
+                            <div>
+                                <label for="{{ $field[0] }}" class="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">
+                                    <i data-lucide="{{ $field[1] }}" class="w-3.5 h-3.5 text-slate-400"></i> {{ $field[2] }}
+                                </label>
+                                <input type="text" name="{{ $field[0] }}" id="{{ $field[0] }}" 
+                                       class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:ring-2 focus:ring-emerald-100 focus:border-emerald-500 @error($field[0]) border-red-500 @enderror" 
+                                       placeholder="{{ $field[3] }}" value="{{ old($field[0], $assessment->{$field[0]}) }}">
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <div>
                         <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
                             <i data-lucide="activity" class="w-4 h-4 text-slate-400"></i> Observasi Awal Anak <span class="text-amber-500">*</span>
@@ -304,68 +339,7 @@
                         <textarea class="hidden" id="rekomendasi_terapi_combined" name="rekomendasi_terapi_combined"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                        <div>
-                            <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
-                                <i data-lucide="building" class="w-4 h-4 text-red-500"></i> Saran Rujukan Medis
-                            </label>
-                            <div id="rujukan_container" class="combined-input-container space-y-3">
-                                @php $rujukanArr = explode("\n\n", $assessment->saran_rujukan ?? ''); @endphp
-                                @foreach($rujukanArr as $rujukan)
-                                    @if(trim($rujukan) != '')
-                                    <div class="input-group mb-2 relative flex items-center">
-                                        <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" value="{{ $rujukan }}">
-                                        <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                    @endif
-                                @endforeach
-                                @if(empty(trim($assessment->saran_rujukan ?? '')))
-                                    <div class="input-group mb-2 relative flex items-center">
-                                        <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" placeholder="Contoh: Dokter Spesialis Anak">
-                                        <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
-                            <button type="button" class="mt-3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-2 px-4 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors add-item" data-target="#rujukan_container">
-                                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Rujukan
-                            </button>
-                            <input type="hidden" name="saran_rujukan_combined" id="saran_rujukan_combined" value="{{ $assessment->saran_rujukan }}">
-                        </div>
-                        <div>
-                            <label class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
-                                <i data-lucide="list-ordered" class="w-4 h-4 text-amber-500"></i> Prioritas Intervensi/Terapi
-                            </label>
-                            <div id="prioritas_container" class="combined-input-container space-y-3">
-                                @php $prioritasArr = explode("\n\n", $assessment->prioritas_terapi ?? ''); @endphp
-                                @foreach($prioritasArr as $prioritas)
-                                    @if(trim($prioritas) != '')
-                                    <div class="input-group mb-2 relative flex items-center">
-                                        <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" value="{{ $prioritas }}">
-                                        <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                    @endif
-                                @endforeach
-                                @if(empty(trim($assessment->prioritas_terapi ?? '')))
-                                    <div class="input-group mb-2 relative flex items-center">
-                                        <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" placeholder="Contoh: Prioritas 1: Terapi Sensori Integrasi">
-                                        <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
-                            <button type="button" class="mt-3 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-2 px-4 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors add-item" data-target="#prioritas_container">
-                                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Prioritas
-                            </button>
-                            <input type="hidden" name="prioritas_terapi_combined" id="prioritas_terapi_combined" value="{{ $assessment->prioritas_terapi }}">
-                        </div>
-                    </div>
+
 
                     <div>
                         <label for="catatan_tambahan" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">

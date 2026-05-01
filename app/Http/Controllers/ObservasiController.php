@@ -17,6 +17,13 @@ use App\Models\QuestionResponseGpph;
 use App\Models\QuestionResponsePerilaku;
 use App\Models\QuestionResponseWawancara;
 use App\Models\QuestionWawancara;
+use App\Models\KpspKelompokUsia;
+use App\Models\KpspPertanyaan;
+use App\Models\KpspJawaban;
+use App\Models\KpspHasil;
+use App\Models\Anthropometri;
+use App\Models\QuestionAtec;
+use App\Models\QuestionResponseAtec;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -66,7 +73,23 @@ class ObservasiController extends Controller
         $qautis = QuestionAutis::orderBy('no_urut')->get();
         $qgpph = QuestionGpph::orderBy('created_at', 'ASC')->get();
         $qwawancara = QuestionWawancara::all();
-        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph', 'hpperilaku', 'hpsensorik', 'qwawancara'));
+        $qatec = QuestionAtec::orderBy('section')->orderBy('no_urut')->get();
+        $kpspKelompokUsias = KpspKelompokUsia::with('pertanyaans')->orderBy('usia_bulan')->get();
+        $anthropometris = Anthropometri::where('anak_id', $anak->id)->orderBy('tanggal_pengukuran', 'desc')->get();
+        return view('observasi.show', compact('anak', 'hasil', 'umur', 'ageGroups', 'sesuaiUmur', 'penyimpangan', 'qpenglihatan', 'qperilaku', 'qautis', 'interPerilaku', 'penyimpanganPerilaku', 'qgpph', 'hpperilaku', 'hpsensorik', 'qwawancara', 'qatec', 'kpspKelompokUsias', 'anthropometris'));
+    }
+
+    public function destroy_hasil(Request $request, $id)
+    {
+        $jenis = $request->input('jenis_model');
+        if ($jenis === 'HpPerilaku') {
+            HpPerilaku::findOrFail($id)->delete();
+        } elseif ($jenis === 'HpSensorik') {
+            HpSensorik::findOrFail($id)->delete();
+        } else {
+            HasilPemeriksaan::findOrFail($id)->delete();
+        }
+        return back()->with('success', 'Data log pemeriksaan berhasil dihapus');
     }
 
     public function detail(HasilPemeriksaan $hasil)
@@ -119,6 +142,40 @@ class ObservasiController extends Controller
                 ->get();
             return view('observasi.hasil.wawancara', compact('anak', 'umur', 'qrwawancara'));
         }
+
+        if ($hasil->jenis == 'KPSP') {
+            $kpspHasil = KpspHasil::where('anak_id', $hasil->anak_id)
+                ->whereDate('tanggal_pemeriksaan', $hasil->created_at->toDateString())
+                ->with('kelompokUsia')
+                ->first();
+
+            $kpspJawaban = KpspJawaban::with('pertanyaan')
+                ->where('anak_id', $hasil->anak_id)
+                ->where('kpsp_kelompok_usia_id', $kpspHasil->kpsp_kelompok_usia_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+
+            return view('observasi.hasil.kpsp', compact('anak', 'umur', 'kpspHasil', 'kpspJawaban'));
+        }
+
+        if ($hasil->jenis == 'ATEC Kuesioner') {
+            $qratec = QuestionResponseAtec::where('anak_id', $hasil->anak_id)
+                ->whereDate('created_at', $hasil->created_at->toDateString())
+                ->get();
+            
+            // Calculate subscores
+            $subskor = ['I' => 0, 'II' => 0, 'III' => 0, 'IV' => 0];
+            $questions = QuestionAtec::whereIn('id', $qratec->pluck('question_atec_id'))->get()->keyBy('id');
+            
+            foreach ($qratec as $resp) {
+                if(isset($questions[$resp->question_atec_id])) {
+                    $sec = $questions[$resp->question_atec_id]->section;
+                    $subskor[$sec] += $resp->answer;
+                }
+            }
+
+            return view('observasi.hasil.atec', compact('anak', 'umur', 'qratec', 'subskor', 'hasil'));
+        }
     }
 
 
@@ -146,6 +203,53 @@ class ObservasiController extends Controller
 
         $atec = HasilPemeriksaan::create($data);
         return redirect()->back()->with('success', "data Observasi berhasil di Tambahkan");
+    }
+
+    public function observasi_atec_digital(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $answers = $request->input('answers');
+        
+        $totalSkor = 0;
+        $subskor = ['I' => 0, 'II' => 0, 'III' => 0, 'IV' => 0];
+
+        // Dapatkan semua pertanyaan untuk pemetaan section
+        $questions = QuestionAtec::whereIn('id', array_keys($answers))->get()->keyBy('id');
+
+        foreach ($answers as $qId => $scoreStr) {
+            $score = (int) $scoreStr;
+            $totalSkor += $score;
+            
+            if (isset($questions[$qId])) {
+                $section = $questions[$qId]->section;
+                $subskor[$section] += $score;
+            }
+
+            QuestionResponseAtec::create([
+                'anak_id' => $anakId,
+                'question_atec_id' => $qId,
+                'answer' => $score,
+            ]);
+        }
+
+        $interpretasi = "I.Wicara: {$subskor['I']}, II.Sosial: {$subskor['II']}, III.Sensorik: {$subskor['III']}, IV.Fisik: {$subskor['IV']}. Total ATEC: {$totalSkor}. (Makin rendah makin baik).";
+
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'ATEC Kuesioner',
+            'hasil' => 'Skor ' . $totalSkor,
+            'total_skor' => $totalSkor,
+            'interpretasi' => $interpretasi,
+            'tanggal_pemeriksaan' => now()->toDateString(),
+        ]);
+
+        Alert::toast("Kuesioner ATEC berhasil disimpan", 'success');
+        return redirect()->back()->with('success', "Kuesioner ATEC berhasil disimpan");
     }
 
     public function observasi_pendengaran(Request $request)
@@ -237,7 +341,6 @@ class ObservasiController extends Controller
 
         foreach ($answers as $questionId => $answer) {
             if ($answer === 'ya') {
-                $isPenyimpangan = true;
                 $jumlahYa++;
             }
 
@@ -248,6 +351,13 @@ class ObservasiController extends Controller
             ]);
         }
 
+        $isPenyimpangan = $jumlahYa >= 1; // Standard KMME: 1 atau lebih jawaban Ya berindikasi masalah
+        // WAIT: user plan kata "≥2 jawaban Ya -> kemungkinan masalah". Oh wait. 
+        // Let's re-read user plan: "Interpretasi: ≥2 jawaban "Ya" → kemungkinan masalah mental emosional → rujuk"
+        // Wait, Kemenkes KMME standard: "Bila ada 1 atau lebih jawaban Ya, maka anak kemungkinan mengalami masalah mental emosional." But user plan literally says "≥2 jawaban "Ya" -> kemungkinan masalah mental emosional".
+        // I will follow user plan explicitly:
+        $isPenyimpangan = $jumlahYa >= 2;
+
         $totalSoal = count($answers);
         $hasil     = $isPenyimpangan ? 'Penyimpangan' : 'Normal';
 
@@ -257,8 +367,8 @@ class ObservasiController extends Controller
             'hasil'               => $hasil,
             'total_skor'          => $jumlahYa,
             'interpretasi'        => $isPenyimpangan
-                ? "$jumlahYa dari $totalSoal pertanyaan dijawab YA — kemungkinan masalah perilaku/emosional (KMPE)."
-                : 'Tidak ada pertanyaan dijawab YA — tidak ada indikasi penyimpangan perilaku.',
+                ? "$jumlahYa dari $totalSoal pertanyaan dijawab YA — kemungkinan masalah mental emosional (KMME)."
+                : "Hanya $jumlahYa pertanyaan dijawab YA — tidak ada indikasi masalah mental emosional.",
             'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
@@ -276,15 +386,15 @@ class ObservasiController extends Controller
         $anakId  = $request->input('anak_id');
         $answers = $request->input('answers');
 
-        $criticalNoUrut   = [2, 7, 9, 13, 14, 15];
+        $criticalNoUrut   = [5, 7, 11, 12, 13];
         $criticalQuestionIds = QuestionAutis::whereIn('no_urut', $criticalNoUrut)->pluck('id')->toArray();
 
-        $jumlahTidak = 0;
+        $jumlahTidakCritical = 0;
         $totalTidak  = 0;
 
         foreach ($answers as $questionId => $answer) {
             if (in_array($questionId, $criticalQuestionIds) && strtolower($answer) === 'tidak') {
-                $jumlahTidak++;
+                $jumlahTidakCritical++;
             }
             if (strtolower($answer) === 'tidak') {
                 $totalTidak++;
@@ -297,16 +407,16 @@ class ObservasiController extends Controller
             ]);
         }
 
-        $hasil = $jumlahTidak >= 2 ? 'Risiko Autisme' : 'Tidak Berisiko';
+        $hasil = ($jumlahTidakCritical >= 1 || $totalTidak >= 3) ? 'Risiko Autisme' : 'Tidak Berisiko';
 
         HasilPemeriksaan::create([
             'anak_id'             => $anakId,
             'jenis'               => 'Autisme',
             'hasil'               => $hasil,
-            'total_skor'          => $jumlahTidak,        // Jumlah critical items dijawab TIDAK
-            'interpretasi'        => $jumlahTidak >= 2
-                ? "$jumlahTidak dari 6 critical item M-CHAT dijawab TIDAK — risiko autisme terdeteksi (total: $totalTidak TIDAK)."
-                : "Hanya $jumlahTidak dari 6 critical item dijawab TIDAK — tidak berisiko autisme.",
+            'total_skor'          => $totalTidak,
+            'interpretasi'        => ($jumlahTidakCritical >= 1 || $totalTidak >= 3)
+                ? "$jumlahTidakCritical critical item dijawab TIDAK, total $totalTidak TIDAK — Risiko autisme terdeteksi (CHAT)."
+                : "Tidak ada critical item dijawab TIDAK, total $totalTidak TIDAK — Tidak berisiko autisme.",
             'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
@@ -383,6 +493,118 @@ class ObservasiController extends Controller
         return redirect()->back()->with('success', "data Observasi Wawancara berhasil di Tambahkan");
     }
 
+    public function observasi_kpsp(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'kpsp_kelompok_usia_id' => 'required|exists:kpsp_kelompok_usias,id',
+            'answers' => 'required|array',
+        ]);
+
+        $anakId = $request->input('anak_id');
+        $kelompokUsiaId = $request->input('kpsp_kelompok_usia_id');
+        $answers = $request->input('answers');
+
+        $totalYa = 0;
+        $totalTidak = 0;
+
+        foreach ($answers as $questionId => $answer) {
+            if ($answer === 'ya') {
+                $totalYa++;
+            } else {
+                $totalTidak++;
+            }
+
+            KpspJawaban::create([
+                'anak_id' => $anakId,
+                'kpsp_kelompok_usia_id' => $kelompokUsiaId,
+                'kpsp_pertanyaan_id' => $questionId,
+                'jawaban' => $answer,
+            ]);
+        }
+
+        if ($totalYa >= 9) {
+            $interpretasi = 'S';
+            $hasilTeks = 'Sesuai';
+            $deskripsi = "Perkembangan anak Sesuai dengan umur (S).";
+        } elseif ($totalYa >= 7) {
+            $interpretasi = 'M';
+            $hasilTeks = 'Meragukan';
+            $deskripsi = "Perkembangan anak Meragukan (M).";
+        } else {
+            $interpretasi = 'P';
+            $hasilTeks = 'Penyimpangan';
+            $deskripsi = "Kemungkinan ada Penyimpangan (P).";
+        }
+
+        KpspHasil::create([
+            'anak_id' => $anakId,
+            'kpsp_kelompok_usia_id' => $kelompokUsiaId,
+            'tanggal_pemeriksaan' => now()->toDateString(),
+            'total_ya' => $totalYa,
+            'total_tidak' => $totalTidak,
+            'interpretasi' => $interpretasi,
+            'catatan' => $deskripsi,
+        ]);
+
+        HasilPemeriksaan::create([
+            'anak_id' => $anakId,
+            'jenis' => 'KPSP',
+            'hasil' => $hasilTeks,
+            'total_skor' => $totalYa,
+            'interpretasi' => $deskripsi,
+            'tanggal_pemeriksaan' => now()->toDateString(),
+        ]);
+
+        Alert::toast("Data Observasi KPSP berhasil di Tambahkan", 'success');
+        return redirect()->back()->with('success', "Data Observasi KPSP berhasil di Tambahkan");
+    }
+
+    public function observasi_anthropometri(Request $request)
+    {
+        $request->validate([
+            'anak_id' => 'required|exists:anaks,id',
+            'berat_badan' => 'required|numeric',
+            'tinggi_badan' => 'required|numeric',
+            'lingkar_kepala' => 'nullable|numeric',
+            'lingkar_lengan_atas' => 'nullable|numeric',
+            'status_bb_u' => 'nullable|string',
+            'status_tb_u' => 'nullable|string',
+            'status_bb_tb' => 'nullable|string',
+            'status_lk_u' => 'nullable|string',
+            'catatan' => 'nullable|string',
+        ]);
+
+        $anak = Anak::findOrFail($request->anak_id);
+        $usia_bulan = Carbon::parse($anak->tanggal_lahir)->diffInMonths(now());
+
+        Anthropometri::create([
+            'anak_id' => $request->anak_id,
+            'tanggal_pengukuran' => now()->toDateString(),
+            'berat_badan' => $request->berat_badan,
+            'tinggi_badan' => $request->tinggi_badan,
+            'lingkar_kepala' => $request->lingkar_kepala,
+            'lingkar_lengan_atas' => $request->lingkar_lengan_atas,
+            'usia_bulan' => $usia_bulan,
+            'status_bb_u' => $request->status_bb_u,
+            'status_tb_u' => $request->status_tb_u,
+            'status_bb_tb' => $request->status_bb_tb,
+            'status_lk_u' => $request->status_lk_u,
+            'catatan' => $request->catatan,
+        ]);
+
+        HasilPemeriksaan::create([
+            'anak_id' => $request->anak_id,
+            'jenis' => 'Anthropometri',
+            'hasil' => 'Pemeriksaan Fisik',
+            'interpretasi' => "BB: {$request->berat_badan}kg, TB: {$request->tinggi_badan}cm",
+            'tanggal_pemeriksaan' => now()->toDateString(),
+        ]);
+
+        Alert::toast("Data Pertumbuhan Fisik (Anthropometri) berhasil disimpan", 'success');
+        return redirect()->back()->with('success', "Data Pertumbuhan Fisik berhasil disimpan");
+    }
+
     public function observasi_hpperilaku(Request $request)
     {
         $validateData =  $request->validate([
@@ -445,11 +667,16 @@ class ObservasiController extends Controller
             ->groupBy('jenis');
 
         $atec = HasilPemeriksaan::where('anak_id', $anak->id)
-            ->where('jenis', 'ATEC')
+            ->whereIn('jenis', ['ATEC', 'ATEC Kuesioner'])
             ->whereDate('created_at', $tanggal)
             ->first();
 
-        $wawancara = QuestionResponseWawancara::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
+        $wawancara = QuestionResponseWawancara::with('question_wawancara')
+            ->where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->whereNotNull('answer')
+            ->where('answer', '!=', '')
+            ->get();
         $jumlahPertanyaanPendengaran = QuestionResponse::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
             ->count();
@@ -504,18 +731,38 @@ class ObservasiController extends Controller
         // Generate QR Code dengan data JSON
         $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 2, 2);
 
+        $anthropometris = Anthropometri::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
+        $kpsp = HasilPemeriksaan::where('anak_id', $anak->id)->where('jenis', 'KPSP')->whereDate('created_at', $tanggal)->first();
+
+        // Encode logo ke Base64 agar pasti terbaca oleh DomPDF
+        $logoPath = public_path('assets/website/images/logo.jpg');
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoBase64 = 'data:image/jpeg;base64,' . $logoData;
+        }
+
+        $logoPjiPath = public_path('assets/website/images/pji-removebg-preview.png');
+        $logoPjiBase64 = '';
+        if (file_exists($logoPjiPath)) {
+            $pjiData = base64_encode(file_get_contents($logoPjiPath));
+            $logoPjiBase64 = 'data:image/jpeg;base64,' . $pjiData;
+        }
+
         // Siapkan data untuk view
         $data = [
             'anak' => $anak,
             'barcode' => $barcode,
+            'logo' => $logoBase64,
+            'logo_pji' => $logoPjiBase64,
             'atec' => $atec,
             'hasil' => $hasil,
             'tanggal' => $tanggal,
-            'penyimpangan_perilaku' => "Deteksi dini penyimpangan perilaku dan emosional algoritma pemeriksaan KMPE",
-            'penyimpangan_pendengaran' => "Deteksi dini penyimpangan pendengaran",
-            'penyimpangan_penglihatan' => "Deteksi dini penyimpangan penglihatan",
-            'autis' => "Deteksi dini Autis pada anak algoritma pemeriksaan M-CHAT",
-            'gpph' => "Deteksi dini gangguan pemusatan perhatian dan hiperaktif (GPPH) pada anak prasekolah algoritma pemeriksaan GPPH",
+            'penyimpangan_perilaku' => "Kuesioner Masalah Mental Emosional (KMME)",
+            'penyimpangan_pendengaran' => "Tes Daya Dengar (TDD)",
+            'penyimpangan_penglihatan' => "Tes Daya Lihat (TDL)",
+            'autis' => "Checklist for Autism in Toddlers (CHAT)",
+            'gpph' => "Gangguan Pemusatan Perhatian dan Hiperaktif (GPPH)",
             'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,
             'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
             'jumlahPertanyaanPendengaran' => $jumlahPertanyaanPendengaran,
@@ -524,44 +771,28 @@ class ObservasiController extends Controller
             'totalNilaiGpph' => $totalNilaiGpph,
             'hpperilaku' => $hpperilaku,
             'hpsensorik' => $hpsensorik,
-            'wawancara' => $wawancara
+            'wawancara' => $wawancara,
+            'anthropometris' => $anthropometris,
+            'kpsp' => $kpsp
         ];
 
         // Render view ke HTML
         $html = view('observasi.pdf_hasil', $data)->render();
 
-        // Konfigurasi MPDF
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font' => 'times',
-            'margin_top' => 18,
-            'margin_bottom' => 15,
-            'margin_left' => 15,
-            'margin_right' => 15,
+        // Gunakan DomPDF (barryvdh/laravel-dompdf)
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('observasi.pdf_hasil', $data);
+
+        // Konfigurasi DomPDF
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'sans-serif'
         ]);
 
-        // Atur metadata dan header/footer
-        $mpdf->SetTitle("Laporan Observasi - {$anak->nama}");
-        $mpdf->SetAuthor(config('app.name'));
-        $mpdf->SetCreator(config('app.name'));
+        $filename = 'Laporan-Observasi-' . \Illuminate\Support\Str::slug($anak->nama) . '.pdf';
 
-        $mpdf->SetHeader("RAHASIA||Halaman {PAGENO}");
-        $mpdf->SetFooter("||Layanan Terapi Anak Spesial");
-
-        // Tambahkan HTML ke PDF
-        $mpdf->WriteHTML($html);
-
-        // Generate nama file
-        $filename = 'Laporan-Observasi-' . Str::slug($anak->nama) . '.pdf';
-
-        // Output PDF ke browser untuk preview
-        return response($mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-            'Cache-Control' => 'public, must-revalidate, max-age=0',
-            'Pragma' => 'public',
-        ]);
+        return $pdf->stream($filename);
     }
 
     public function scanBarcode(Request $request)
@@ -574,5 +805,21 @@ class ObservasiController extends Controller
 
         // Tampilkan view hasil scan
         return view('observasi.barcode_hasil', compact('data'));
+    }
+
+    public function update_anthropometri(Request $request, $id)
+    {
+        $anthropometri = Anthropometri::findOrFail($id);
+        $anthropometri->update($request->all());
+
+        return redirect()->back()->with('success', 'Data Anthropometri berhasil diperbarui');
+    }
+
+    public function hapus_anthropometri($id)
+    {
+        $anthropometri = Anthropometri::findOrFail($id);
+        $anthropometri->delete();
+
+        return redirect()->back()->with('success', 'Data Anthropometri berhasil dihapus');
     }
 }

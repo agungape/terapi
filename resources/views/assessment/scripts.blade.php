@@ -1,3 +1,6 @@
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
     // General scripts & Data Fetching
     $(document).ready(function() {
@@ -5,6 +8,30 @@
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+
+        // Tab Navigation Logic for Edit Form
+        $('.nav-link[data-toggle="tab"]').on('click', function(e) {
+            e.preventDefault();
+            const target = $(this).attr('href');
+            
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+            
+            $('.tab-pane').removeClass('active');
+            $(target).addClass('active');
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        $(document).on('click', '.next-tab', function() {
+            const next = $(this).data('next');
+            $(`.nav-link[href="#${next}"]`).trigger('click');
+        });
+
+        $(document).on('click', '.prev-tab', function() {
+            const prev = $(this).data('prev');
+            $(`.nav-link[href="#${prev}"]`).trigger('click');
+        });
 
         // Fetch Riwayat Wawancara (Anamnesa) from Observasi Module
         $('#nama_anak').on('change', function() {
@@ -78,41 +105,7 @@
 
         // Modal handling or other scripts can go here
 
-        // Generic Items Handler (Add/Remove) for Rujukan & Prioritas
-        $(document).on('click', '.add-item', function() {
-            const targetId = $(this).data('target');
-            const container = $(targetId);
-            const placeholder = container.find('input').first().attr('placeholder') || 'Tambahkan item...';
-            
-            const newItem = `
-                <div class="input-group mb-2 relative flex items-center">
-                    <input type="text" class="form-control w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12" placeholder="${placeholder}">
-                    <button class="remove-item absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" type="button">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>`;
-            container.append(newItem);
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        });
 
-        $(document).on('click', '.remove-item', function() {
-            $(this).closest('div.relative').remove();
-        });
-
-        // Form Submit Handler for all Combined Fields
-        $('form').on('submit', function(e) {
-            function syncContainer(containerId, hiddenFieldId) {
-                const items = [];
-                $(`${containerId} input`).each(function() {
-                    const val = $(this).val().trim();
-                    if (val) items.push(val);
-                });
-                $(`${hiddenFieldId}`).val(items.join('\n\n'));
-            }
-
-            syncContainer('#rujukan_container', '#saran_rujukan_combined');
-            syncContainer('#prioritas_container', '#prioritas_terapi_combined');
-        });
 
         // Other handlers
     });
@@ -395,73 +388,3 @@
     });
 </script>
 
-<script>
-    // Alat Ukur Table Handler
-    $(document).ready(function() {
-        const body = document.getElementById('alat-ukur-body');
-        const btnAdd = document.getElementById('btn-tambah-alat');
-        let rowCount = body.querySelectorAll('tr').length;
-
-        function updateRemoveButtons() {
-            const rows = body.querySelectorAll('tr');
-            rows.forEach((row, index) => {
-                const btn = row.querySelector('.btn-remove-alat');
-                if(btn) btn.disabled = rows.length === 1;
-            });
-        }
-
-        if(btnAdd && body) {
-            btnAdd.addEventListener('click', function() {
-                const newRow = document.createElement('tr');
-                newRow.className = 'alat-ukur-row group hover:bg-slate-50 transition-colors';
-                
-                // Build options from the first row's select if available
-                const firstSelect = body.querySelector('select');
-                let optionsHtml = '<option value="">-- Pilih Alat Ukur --</option>';
-                if (firstSelect) {
-                    optionsHtml = firstSelect.innerHTML;
-                }
-
-                newRow.innerHTML = `
-                    <td class="px-2 py-3">
-                        <select name="alat_ukur[${rowCount}][nama]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs font-bold focus:ring-0 appearance-none">
-                            ${optionsHtml}
-                        </select>
-                    </td>
-                    <td class="px-2 py-3">
-                        <input type="text" name="alat_ukur[${rowCount}][skor_raw]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                    </td>
-                    <td class="px-2 py-3">
-                        <input type="text" name="alat_ukur[${rowCount}][skor_standar]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                    </td>
-                    <td class="px-2 py-3">
-                        <input type="text" name="alat_ukur[${rowCount}][persentil]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0">
-                    </td>
-                    <td class="px-2 py-3">
-                        <input type="text" name="alat_ukur[${rowCount}][klasifikasi]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0" placeholder="...">
-                    </td>
-                    <td class="px-2 py-3">
-                        <input type="text" name="alat_ukur[${rowCount}][catatan]" class="form-control w-full bg-transparent border-none px-2 py-1 text-xs focus:ring-0" placeholder="...">
-                    </td>
-                    <td class="px-2 py-3 text-center">
-                        <button type="button" class="btn-remove-alat p-1.5 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-black">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </td>
-                `;
-                body.appendChild(newRow);
-                rowCount++;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                updateRemoveButtons();
-            });
-
-            body.addEventListener('click', function(e) {
-                const btn = e.target.closest('.btn-remove-alat');
-                if (btn && !btn.disabled) {
-                    btn.closest('tr').remove();
-                    updateRemoveButtons();
-                }
-            });
-        }
-    });
-</script>

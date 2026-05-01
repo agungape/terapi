@@ -28,9 +28,16 @@ class DatabaseSeeder extends Seeder
 
         $faker = Faker::create('id_ID');
         $faker->seed(123);
+        $this->call(PekerjaanSeeder::class);
         $this->call(AnakSeeder::class);
-        $this->call(TerapisSeeder::class);
-        $this->call(ProgramSeeder::class);
-        $this->call(KunjunganSeeder::class);
+        $this->call(RolePermissionSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(RoleUserSeeder::class);
+        $this->call(QuestionSeeder::class);
+        $this->call(KmmeSeeder::class);
+        $this->call(ChatSeeder::class);
+        $this->call(GpphSeeder::class);
+        $this->call(QuestionWawancaraSeeder::class);
+        $this->call(KpspSeeder::class);
     }
 }

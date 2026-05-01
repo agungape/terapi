@@ -84,7 +84,7 @@
                             <tr class="hover:bg-slate-50/50 transition-colors group">
                                 <td class="px-8 py-5 text-[10px] font-black text-slate-300">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
                                 <td class="px-8 py-5">
-                                    <p class="text-xs font-bold text-slate-600 leading-relaxed tracking-tight group-hover:text-slate-900 transition-colors uppercase italic">{{ $q->question_perilaku->question_text }}</p>
+                                    <p class="text-xs font-bold text-slate-600 leading-relaxed tracking-tight group-hover:text-slate-900 transition-colors uppercase italic">{{ $q->question_perilaku->question_text ?? 'Pertanyaan tidak ditemukan / dihapus' }}</p>
                                 </td>
                                 <td class="px-8 py-5 text-center">
                                     <span class="inline-block px-5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border {{ strtolower($q->answer) == 'ya' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100' }}">

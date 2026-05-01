@@ -56,14 +56,12 @@ class AssessmentController extends Controller
         $roles = $user->getRoleNames();
         $anaks = Anak::where('status', 'aktif')->latest()->get();
 
-        $alatukurs = AlatUkur::where('is_active', true)->get();
-
         if ($roles->contains('psikolog')) {
             $psikologs = Psikolog::where('nama', $user->name)->first();
-            return view('assessment.create', compact('anaks', 'psikologs', 'roles', 'alatukurs'));
+            return view('assessment.create', compact('anaks', 'psikologs', 'roles'));
         } else {
             $psikologs = Psikolog::latest()->get();
-            return view('assessment.create', compact('anaks', 'psikologs', 'roles', 'alatukurs'));
+            return view('assessment.create', compact('anaks', 'psikologs', 'roles'));
         }
     }
 
@@ -96,22 +94,8 @@ class AssessmentController extends Controller
             'kontak_mata'           => $validated['kontak_mata'] ?? null,
             'komunikasi'            => $validated['komunikasi'] ?? null,
             'interaksi_sosial'      => $validated['interaksi_sosial'] ?? null,
-            'saran_rujukan'         => $this->prepareJsonData($validated['saran_rujukan_combined'] ?? ''),
-            'prioritas_terapi'      => $this->prepareJsonData($validated['prioritas_terapi_combined'] ?? ''),
-
-            // Penilaian Psikologis
-            'skor_kognitif'         => $request->skor_kognitif,
-            'skor_bahasa'           => $request->skor_bahasa,
-            'skor_motorik'          => $request->skor_motorik,
-            'skor_sosial_emosional' => $request->skor_sosial_emosional,
-            'skor_perilaku_adaptif' => $request->skor_perilaku_adaptif,
-            'skor_iq_total'         => $request->skor_iq_total,
-            'klasifikasi'           => $request->klasifikasi,
-            'interpretasi_skor'     => $request->interpretasi_skor,
             'status_bayar'          => 'Menunggu Pembayaran',
         ]);
-
-        $this->syncAlatUkur($assessment, $request->alat_ukur);
 
         return redirect("/assessment")->with('success', "Data Assessment berhasil dibuat dan status diatur ke Menunggu Pembayaran");
     }
@@ -159,21 +143,7 @@ class AssessmentController extends Controller
             'kontak_mata'           => $validated['kontak_mata'] ?? null,
             'komunikasi'            => $validated['komunikasi'] ?? null,
             'interaksi_sosial'      => $validated['interaksi_sosial'] ?? null,
-            'saran_rujukan'         => $this->prepareJsonData($validated['saran_rujukan_combined'] ?? ''),
-            'prioritas_terapi'      => $this->prepareJsonData($validated['prioritas_terapi_combined'] ?? ''),
-
-            // Penilaian Psikologis
-            'skor_kognitif'         => $request->skor_kognitif,
-            'skor_bahasa'           => $request->skor_bahasa,
-            'skor_motorik'          => $request->skor_motorik,
-            'skor_sosial_emosional' => $request->skor_sosial_emosional,
-            'skor_perilaku_adaptif' => $request->skor_perilaku_adaptif,
-            'skor_iq_total'         => $request->skor_iq_total,
-            'klasifikasi'           => $request->klasifikasi,
-            'interpretasi_skor'     => $request->interpretasi_skor,
         ]);
-
-        $this->syncAlatUkur($assessment, $request->alat_ukur);
 
         return redirect("/assessment")->with('success', "Data Assessment berhasil di Update");
     }
@@ -233,32 +203,7 @@ class AssessmentController extends Controller
         return view('assessment.barcode_hasil', compact('data'));
     }
 
-    protected function syncAlatUkur(Assessment $assessment, $alatUkurData)
-    {
-        if (is_array($alatUkurData)) {
-            $syncData = [];
-            foreach ($alatUkurData as $au) {
-                if (!empty($au['nama'])) {
-                    $alatUkurModel = \App\Models\AlatUkur::firstOrCreate(
-                        ['nama' => $au['nama']],
-                        ['domain' => 'lainnya', 'is_active' => true]
-                    );
 
-                    $syncData[$alatUkurModel->id] = [
-                        'skor_raw'      => $au['skor_raw'] ?? null,
-                        'skor_standar'  => $au['skor_standar'] ?? null,
-                        'persentil'     => $au['skor_persentil'] ?? $au['persentil'] ?? null,
-                        'klasifikasi'   => $au['klasifikasi'] ?? null,
-                        'catatan'       => $au['catatan'] ?? null,
-                        'is_manual'     => isset($au['is_manual']) ? (bool)$au['is_manual'] : true,
-                    ];
-                }
-            }
-            $assessment->alatUkurs()->sync($syncData);
-        } else {
-            $assessment->alatUkurs()->detach();
-        }
-    }
 
     protected function prepareJsonData(string $combinedData): array
     {
@@ -276,7 +221,7 @@ class AssessmentController extends Controller
             'psikolog_id' => 'required|exists:App\Models\Psikolog,id',
             'tanggal_assessment' => 'required|date',
             'tujuan_pemeriksaan' => 'required|string',
-            'keluhan_utama' => 'required|string',
+            'keluhan_utama' => 'nullable|string',
             'kesimpulan_observasi' => 'required|string',
             'sumber_asesmen_combined' => 'required|string',
             'perilaku_combined' => 'required|string',
@@ -288,13 +233,6 @@ class AssessmentController extends Controller
             'catatan_tambahan' => 'nullable|string',
             'persetujuan_psikolog' => 'required|in:0,1',
             'alasan_tidak_setuju' => 'required_if:persetujuan_psikolog,0|nullable|string',
-            'skor_kognitif' => 'nullable|integer',
-            'skor_bahasa' => 'nullable|integer',
-            'skor_motorik' => 'nullable|integer',
-            'skor_sosial_emosional' => 'nullable|integer',
-            'skor_perilaku_adaptif' => 'nullable|integer',
-            'skor_iq_total' => 'nullable|integer',
-            'alat_ukur' => 'nullable|array',
             
             // New Clinical Fields
             'mood_anak' => 'nullable|string',
@@ -303,8 +241,6 @@ class AssessmentController extends Controller
             'kontak_mata' => 'nullable|string',
             'komunikasi' => 'nullable|string',
             'interaksi_sosial' => 'nullable|string',
-            'saran_rujukan_combined' => 'nullable|string',
-            'prioritas_terapi_combined' => 'nullable|string',
         ]);
     }
 }

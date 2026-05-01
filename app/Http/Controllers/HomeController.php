@@ -70,6 +70,7 @@ class HomeController extends Controller
 
         // 5. Statistik Paket Menipis (Sisa 0 - 2 Sesi pada Paket Terbaru)
         $lowQuotaPackages = Pemasukkan::with(['anak', 'tarif'])
+            ->whereHas('anak')
             ->where('jenis_layanan', 'paket_terapi')
             ->whereNotNull('tarif_id')
             ->whereNotNull('anak_id')
@@ -109,6 +110,7 @@ class HomeController extends Controller
 
         // 8. Aktivitas Terbaru
         $recentVisits = Kunjungan::with(['anak', 'terapis'])
+            ->whereHas('anak')
             ->latest()
             ->take(5)
             ->get()
@@ -118,6 +120,7 @@ class HomeController extends Controller
             });
 
         $recentPayments = Pemasukkan::with(['anak'])
+            ->whereHas('anak')
             ->latest()
             ->take(5)
             ->get()

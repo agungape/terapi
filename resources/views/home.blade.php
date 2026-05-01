@@ -243,7 +243,7 @@
                             </div>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center justify-between mb-1">
-                                    <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak->nama }}</h4>
+                                    <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak?->nama ?? 'Data Terhapus' }}</h4>
                                     <span class="text-[8px] font-bold text-slate-400 uppercase italic">{{ $activity->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="text-[10px] font-bold text-slate-400 line-clamp-1 uppercase tracking-tight">
@@ -274,7 +274,7 @@
             <div class="card-premium p-6 hover:shadow-2xl transition-all group border-l-4 border-l-red-500">
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h4 class="text-sm font-black text-slate-800 uppercase italic">{{ $pkg->anak->nama }}</h4>
+                        <h4 class="text-sm font-black text-slate-800 uppercase italic">{{ $pkg->anak?->nama ?? 'Data Terhapus' }}</h4>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ str_ireplace('_', ' ', $pkg->tarif->nama_tarif) }}</p>
                     </div>
                     <div class="bg-red-50 text-red-600 px-3 py-1 rounded-lg text-[11px] font-black border border-red-100">
@@ -283,9 +283,9 @@
                 </div>
                 <div class="flex gap-3">
                     @php
-                        $phone = $pkg->anak->telepon_ibu ?? $pkg->anak->telepon_ayah ?? '';
+                        $phone = $pkg->anak?->telepon_ibu ?? $pkg->anak?->telepon_ayah ?? '';
                         $formattedPhone = preg_replace('/^0/', '62', preg_replace('/[^\d]/', '', $phone));
-                        $waMsg = "Halo Bapak/Ibu, menginfokan jatah terapi " . $pkg->anak->nama . " sisa " . $pkg->sisa_pertemuan . " sesi lagi. Mohon segera melakukan perpanjangan paket. Terima kasih.";
+                        $waMsg = "Halo Bapak/Ibu, menginfokan jatah terapi " . ($pkg->anak?->nama ?? 'Ananda') . " sisa " . $pkg->sisa_pertemuan . " sesi lagi. Mohon segera melakukan perpanjangan paket. Terima kasih.";
                     @endphp
                     <a href="https://wa.me/{{ $formattedPhone }}?text={{ urlencode($waMsg) }}" target="_blank" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
                         <i class="fab fa-whatsapp"></i> WhatsApp

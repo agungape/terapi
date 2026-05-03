@@ -44,6 +44,7 @@ class ProfileController extends Controller
             'telepon' => 'required',
             'ketua' => 'required',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'warna_primer' => 'nullable|string|max:7',
         ]);
 
         if ($request->file('logo')) {
@@ -62,6 +63,7 @@ class ProfileController extends Controller
         $data['telepon'] = $request->telepon;
         $data['email'] = $request->email;
         $data['ketua'] = $request->ketua;
+        $data['warna_primer'] = $request->warna_primer ?? '#ef4444';
 
 
 
@@ -107,8 +109,8 @@ class ProfileController extends Controller
             'telepon' => 'required',
             'ketua' => 'required',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'warna_primer' => 'nullable|string|max:7',
         ]);
-
 
         $data['nama'] = $request->nama;
         $data['nama_apk'] = $request->nama_apk;
@@ -116,6 +118,7 @@ class ProfileController extends Controller
         $data['telepon'] = $request->telepon;
         $data['email'] = $request->email;
         $data['ketua'] = $request->ketua;
+        $data['warna_primer'] = $request->warna_primer ?? '#ef4444';
 
         if ($request->file('logo')) {
             $file = $request->file('logo');

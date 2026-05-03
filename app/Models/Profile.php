@@ -9,5 +9,5 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'nama_apk', 'alamat', 'ketua', 'telepon', 'email', 'logo'];
+    protected $fillable = ['nama', 'nama_apk', 'alamat', 'ketua', 'telepon', 'email', 'logo', 'warna_primer'];
 }

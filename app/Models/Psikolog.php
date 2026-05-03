@@ -10,7 +10,7 @@ class Psikolog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'alamat', 'telepon'];
+    protected $fillable = ['nama', 'str', 'sipp', 'alamat', 'telepon'];
 
     public function assessments(): HasMany
     {

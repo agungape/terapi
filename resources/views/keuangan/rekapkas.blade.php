@@ -75,13 +75,18 @@
     </div>
 
     <!-- Charts & Tables Section -->
-    <div class="space-y-12">
+    <div class="space-y-16 pb-20">
         
         <!-- Pemasukkan Section -->
-        <div class="space-y-6">
-            <div class="flex items-center gap-3">
-                <div class="h-8 w-1.5 bg-emerald-500 rounded-full"></div>
-                <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase">Analisis Pemasukkan</h2>
+        <div class="space-y-8">
+            <div class="flex items-center gap-4 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50">
+                <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
+                    <i data-lucide="trending-up" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-black text-slate-800 tracking-tight uppercase">Analisis Pemasukkan</h2>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Laporan Pendapatan Berdasarkan Kategori & Waktu</p>
+                </div>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -90,11 +95,11 @@
                     <div class="flex items-center justify-between mb-8">
                         <div class="space-y-1">
                             <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest">Daftar Transaksi Masuk</h4>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Data real-time dari sistem kasir</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter italic">Data sinkronisasi sistem pembayaran otomatis</p>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
+                    <div class="table-responsive">
                         <table class="w-full text-left" id="data-tables">
                             <thead>
                                 <tr class="bg-slate-50 border-b border-slate-100">
@@ -105,7 +110,7 @@
                                     <th class="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Tanggal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-50 text-xs font-bold text-slate-600 hover:bg-slate-50/50">
+                            <tbody class="divide-y divide-slate-50 text-xs font-bold text-slate-600">
                                 <!-- Ajax Content -->
                             </tbody>
                         </table>
@@ -115,43 +120,46 @@
                 <!-- Graphic -->
                 <div class="lg:col-span-4 card-premium bg-white p-8 space-y-8">
                     <div class="space-y-4">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Tahun</label>
-                        <select id="yearFilter_pemasukkan" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3 text-xs font-black tracking-widest uppercase outline-none focus:ring-4 focus:ring-emerald-50 transition-all">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Filter Tahun Statistik</label>
+                        <select id="yearFilter_pemasukkan" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black tracking-tight uppercase outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-200 transition-all appearance-none cursor-pointer">
                             @foreach ($years_pemasukkan as $year)
-                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>Statistik {{ $year }}</option>
+                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>Statistik Tahun {{ $year }}</option>
                             @endforeach
                         </select>
                     </div>
                     
-                    <div class="relative aspect-square">
+                    <div class="relative pt-4">
                         <canvas id="pemasukanChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <hr class="border-slate-100">
-
         <!-- Pengeluaran Section -->
-        <div class="space-y-6">
-            <div class="flex items-center gap-3">
-                <div class="h-8 w-1.5 bg-red-500 rounded-full"></div>
-                <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase">Analisis Pengeluaran</h2>
+        <div class="space-y-8">
+            <div class="flex items-center gap-4 bg-red-50/50 p-4 rounded-2xl border border-red-100/50">
+                <div class="w-12 h-12 bg-slate-900 text-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-slate-200">
+                    <i data-lucide="trending-down" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-black text-slate-800 tracking-tight uppercase">Analisis Pengeluaran</h2>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monitoring Biaya Operasional & Pengeluaran Kas</p>
+                </div>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <!-- Graphic -->
                 <div class="lg:col-span-4 card-premium bg-white p-8 space-y-8 order-2 lg:order-1">
                     <div class="space-y-4">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pilih Tahun</label>
-                        <select id="yearFilter_pengeluaran" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3 text-xs font-black tracking-widest uppercase outline-none focus:ring-4 focus:ring-red-50 transition-all">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Filter Tahun Statistik</label>
+                        <select id="yearFilter_pengeluaran" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black tracking-tight uppercase outline-none focus:ring-4 focus:ring-red-50 focus:border-red-200 transition-all appearance-none cursor-pointer">
                             @foreach ($years_pengeluaran as $year)
-                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>Statistik {{ $year }}</option>
+                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>Statistik Tahun {{ $year }}</option>
                             @endforeach
                         </select>
                     </div>
                     
-                    <div class="relative aspect-square">
+                    <div class="relative pt-4">
                         <canvas id="pengeluaranChart"></canvas>
                     </div>
                 </div>
@@ -161,11 +169,11 @@
                     <div class="flex items-center justify-between mb-8">
                         <div class="space-y-1">
                             <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest">Daftar Biaya Keluar</h4>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Monitor pengeluaran operasional klinik</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter italic">Laporan pengeluaran dana operasional harian</p>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
+                    <div class="table-responsive">
                         <table class="w-full text-left" id="data-tables2">
                             <thead>
                                 <tr class="bg-slate-50 border-b border-slate-100">
@@ -176,7 +184,7 @@
                                     <th class="px-4 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Tanggal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-50 text-xs font-bold text-slate-600 hover:bg-slate-50/50">
+                            <tbody class="divide-y divide-slate-50 text-xs font-bold text-slate-600">
                                 <!-- Ajax Content -->
                             </tbody>
                         </table>

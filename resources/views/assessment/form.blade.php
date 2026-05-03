@@ -52,7 +52,7 @@
                                     <label for="nama_anak" class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
                                         <i data-lucide="smile" class="w-4 h-4 text-slate-400"></i> Nama Anak <span class="text-red-500">*</span>
                                     </label>
-                                    <select class="form-control select2 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('anak_id') is-invalid @enderror" name="anak_id" id="nama_anak" required>
+                                    <select class="custom-select2-init w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('anak_id') is-invalid @enderror" name="anak_id" id="select-anak" required>
                                         <option value="">-- Pilih Anak --</option>
                                         @foreach ($anaks as $anak)
                                             <option value="{{ $anak->id }}" {{ old('anak_id') == $anak->id ? 'selected' : '' }}>
@@ -70,7 +70,7 @@
                                         <input type="hidden" name="psikolog_id" value="{{ auth()->user()->id }}">
                                         <input type="text" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 text-slate-500 cursor-not-allowed" value="{{ auth()->user()->nama }}" readonly>
                                     @else
-                                        <select class="form-control select2 w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('psikolog_id') is-invalid @enderror" name="psikolog_id" required>
+                                        <select class="custom-select2-init w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('psikolog_id') is-invalid @enderror" name="psikolog_id" id="select-psikolog" required>
                                             <option value="">-- Pilih Psikolog --</option>
                                             @foreach ($psikologs as $psikolog)
                                                 <option value="{{ $psikolog->id }}" {{ old('psikolog_id') == $psikolog->id ? 'selected' : '' }}>
@@ -90,12 +90,12 @@
                                     <input type="date" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('tanggal_assessment') border-red-500 @enderror" name="tanggal_assessment" id="tanggal_assessment" value="{{ old('tanggal_assessment', date('Y-m-d')) }}" required>
                                     @error('tanggal_assessment')<span class="text-xs text-red-500 mt-1 d-block"><strong>{{ $message }}</strong></span>@enderror
                                 </div>
-                                
+
                                 <div>
                                     <p class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-2">
                                         <i data-lucide="history" class="w-4 h-4 text-slate-400"></i> Riwayat Anamnesa (Wawancara)
                                     </p>
-                                    <div id="wawancara-container" class="border border-slate-200 rounded-xl p-4 bg-slate-50 text-sm string text-slate-500 h-28 overflow-y-auto">
+                                    <div id="wawancara-container" class="border border-slate-200 rounded-xl p-4 bg-slate-50 text-sm string text-slate-500 min-h-[15rem] overflow-y-auto">
                                         <div class="text-center text-slate-400 flex flex-col items-center justify-center h-full">
                                             <i data-lucide="info" class="w-6 h-6 mb-2 text-slate-300"></i>
                                             Pilih nama anak terlebih dahulu.

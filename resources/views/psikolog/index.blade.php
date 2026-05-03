@@ -9,12 +9,14 @@
         formData: {
             id: '',
             nama: '',
+            str: '',
+            sipp: '',
             alamat: '',
             telepon: ''
         },
         openCreateModal() {
             this.editMode = false;
-            this.formData = { id: '', nama: '', alamat: '', telepon: '' };
+            this.formData = { id: '', nama: '', str: '', sipp: '', alamat: '', telepon: '' };
             this.modalOpen = true;
         },
         openEditModal(data) {
@@ -22,6 +24,8 @@
             this.formData = { 
                 id: data.id, 
                 nama: data.nama, 
+                str: data.str,
+                sipp: data.sipp,
                 alamat: data.alamat, 
                 telepon: data.telepon 
             };
@@ -60,6 +64,7 @@
                     <tr>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-12">#</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Psikolog</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">STR / SIPP</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Telepon</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Aksi</th>
@@ -75,6 +80,12 @@
                                     {{ strtoupper(substr($p->nama, 0, 2)) }}
                                 </div>
                                 <span class="text-xs font-black text-slate-700 uppercase tracking-tight group-hover:text-red-500 transition-colors">{{ $p->nama }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="space-y-1">
+                                <p class="text-[10px] font-bold text-slate-500">STR: <span class="text-slate-800">{{ $p->str ?? '-' }}</span></p>
+                                <p class="text-[10px] font-bold text-slate-500">SIPP: <span class="text-slate-800">{{ $p->sipp ?? '-' }}</span></p>
                             </div>
                         </td>
                         <td class="px-6 py-4 max-w-[250px]">
@@ -94,7 +105,7 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 @can('update psikolog')
-                                <button @click="openEditModal({ id: '{{ $p->id }}', nama: '{{ $p->nama }}', alamat: `{!! addslashes($p->alamat) !!}`, telepon: '{{ $p->telepon }}' })"
+                                <button @click="openEditModal({ id: '{{ $p->id }}', nama: '{{ $p->nama }}', str: '{{ $p->str }}', sipp: '{{ $p->sipp }}', alamat: `{!! addslashes($p->alamat) !!}`, telepon: '{{ $p->telepon }}' })"
                                    class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </button>
@@ -161,6 +172,19 @@
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Nama Lengkap & Gelar</label>
                                 <input type="text" name="nama" x-model="formData.nama" required placeholder="dr. Name, M.Psi..."
                                        class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Nomor STR</label>
+                                    <input type="text" name="str" x-model="formData.str" placeholder="XP00..."
+                                           class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Nomor SIPP</label>
+                                    <input type="text" name="sipp" x-model="formData.sipp" placeholder="2013..."
+                                           class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none">
+                                </div>
                             </div>
 
                             <div class="space-y-2">

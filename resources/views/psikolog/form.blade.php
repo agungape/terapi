@@ -41,6 +41,26 @@
                         @error('nama') <p class="text-[10px] font-black text-red-500">{{ $message }}</p> @enderror
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nomor STR</label>
+                            <input type="text" name="str"
+                                   value="{{ old('str') ?? ($psikolog->str ?? '') }}"
+                                   placeholder="Contoh: XP000010..."
+                                   class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-red-50 focus:bg-white transition-all outline-none @error('str') ring-2 ring-red-300 @enderror">
+                            @error('str') <p class="text-[10px] font-black text-red-500">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nomor SIPP</label>
+                            <input type="text" name="sipp"
+                                   value="{{ old('sipp') ?? ($psikolog->sipp ?? '') }}"
+                                   placeholder="Contoh: 20130221..."
+                                   class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-red-50 focus:bg-white transition-all outline-none @error('sipp') ring-2 ring-red-300 @enderror">
+                            @error('sipp') <p class="text-[10px] font-black text-red-500">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Alamat Praktik</label>
                         <textarea name="alamat" rows="3" placeholder="Alamat lengkap klinik atau tempat praktik..."

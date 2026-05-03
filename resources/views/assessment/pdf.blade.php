@@ -4,486 +4,371 @@
 <head>
     <meta charset="UTF-8">
     <title>Hasil Assessment - {{ $assessment->anak->nama }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .logo {
-            width: 80px;
+        /* Modern CSS for DomPDF - Consistent with Observasi */
+        @page {
+            margin: 1.5cm 1.5cm 2.5cm 1.5cm;
         }
 
-        .kop-border {
-            border-top: 3px double black;
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            color: #1f2937;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fixed Footer */
+        footer {
+            position: fixed;
+            bottom: -1.5cm;
+            left: 0px;
+            right: 0px;
+            height: 15px;
+            width: 100%;
+        }
+
+        /* Kop Surat & Layout */
+        .logo-img { width: 70px; height: auto; }
+        .logo-lg { width: 85px; height: auto; }
+
+    <style>
+        /* Modern CSS for DomPDF - Consistent with Observasi */
+        @page {
+            margin: 1.5cm 1.5cm 2.5cm 1.5cm;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10pt;
+            color: #1f2937;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fixed Footer */
+        footer {
+            position: fixed;
+            bottom: -1.5cm;
+            left: 0px;
+            right: 0px;
+            height: 15px;
+            width: 100%;
+        }
+
+        /* Kop Surat & Layout */
+        .logo-img { width: 70px; height: auto; }
+        .logo-lg { width: 85px; height: auto; }
+
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #1a1a2e;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+
+        .kop-title { font-size: 16pt; font-weight: 800; color: #1a1a2e; text-transform: uppercase; margin: 0; padding: 0; line-height: 1; }
+        .kop-tagline { font-size: 9.5pt; font-weight: 600; color: #0d7377; margin: 0; padding: 0; line-height: 1.2; }
+        .kop-address { font-size: 7.5pt; color: #4b5563; line-height: 1.3; margin-top: 3px; }
+
+        .doc-title {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        /* Cards */
+        .info-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 15px;
             margin-bottom: 15px;
         }
 
-        .card {
-            border-radius: 5px;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .card-header {
-            border-radius: 5px 5px 0 0 !important;
-            background-color: #2c7be5;
-            color: white;
+        .info-title {
+            font-size: 8pt;
             font-weight: bold;
-            padding: 10px 15px;
+            color: #0d7377;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-left: 3px solid #0d7377;
+            padding-left: 8px;
         }
 
-        .bg-primary {
-            background-color: #b5c0cab7;
-            color: rgb(10, 10, 10);
-            font-weight: bold;
-            /* text-align: center; */
-            font-size: 12px;
-            border: 1;
-        }
-
-        .bullet-icon {
-            font-size: 1.2rem;
-            color: #2c7be5;
-            line-height: 1.4;
-        }
-
-        .qr {
-            width: 120px;
-        }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 3px 0; font-size: 9.5pt; vertical-align: top; }
+        .label { color: #6b7280; width: 120px; }
+        .value { font-weight: 600; color: #111827; }
 
         .section-title {
-            background-color: #2c7be5;
-            color: white;
-            padding: 8px 15px;
+            font-size: 9.5pt;
             font-weight: bold;
-            text-align: center;
-            border-radius: 6px 6px 0 0;
-            margin-bottom: 0;
-            font-size: 14px;
+            color: #111827;
+            margin: 15px 0 8px 0;
+            text-transform: uppercase;
+            background-color: #f3f4f6;
+            padding: 6px 10px;
+            border-radius: 4px;
         }
 
-        .section-content {
-            border: 1px solid #e3ebf6;
-            border-top: none;
-            padding: 15px;
-            border-radius: 0 0 6px 6px;
-            background-color: #fff;
+        /* Tables */
+        .result-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .result-table th { background-color: #1a1a2e; color: white; text-align: left; padding: 6px 10px; font-size: 8pt; }
+        .result-table td { padding: 7px 10px; border: 1px solid #e5e7eb; font-size: 9pt; vertical-align: top; }
+
+        .confidential-box {
+            border: 1px solid #dc2626;
+            color: #dc2626;
+            padding: 4px 10px;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+            background-color: #fef2f2;
         }
 
-        .result-table {
+        header {
+            position: fixed;
+            top: -1.0cm;
+            left: 0px;
+            right: 0px;
+            height: 25px;
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
+            text-align: right;
         }
 
-        .result-table th,
-        .result-table td {
-            border: 1px solid #e3ebf6;
-            padding: 10px;
-            font-size: 12px;
+        .content-box {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #0d7377;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            font-size: 9.5pt;
+            color: #374151;
+            text-align: justify;
         }
 
-        .result-table th {
-            background-color: #f0f5ff;
-            font-weight: bold;
-        }
-
-        .bullet-list {
-            list-style-type: none;
-            padding-left: 0;
-            margin-bottom: 15px;
-        }
-
-        .bullet-list li {
+        .bullet-item {
+            margin-bottom: 5px;
             position: relative;
-            padding-left: 25px;
-            margin-bottom: 8px;
+            padding-left: 15px;
         }
-
-        .bullet-list li:before {
+        .bullet-item::before {
             content: "•";
             position: absolute;
-            left: 10px;
-            font-weight: bold;
-            color: #2c7be5;
-            font-size: 16px;
-        }
-
-        .signature-area {
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .signature-line {
-            width: 300px;
-            border-top: 1px solid black;
-            margin: 0 auto;
-            margin-top: 60px;
-        }
-
-        .info-box {
-            margin-bottom: 20px;
-            background-color: #dbe4eebd;
-            padding: 15px;
-            border-radius: 5px;
-        }
-
-        .table-borderless {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table-borderless td {
-            padding: 5px 0;
-            vertical-align: top;
-        }
-
-        .section-container {
-            margin-bottom: 20px;
-        }
-
-        .bullet-point {
-            font-size: 17px;
-            color: #07080a;
+            left: 0;
+            color: #0d7377;
             font-weight: bold;
         }
 
-        .bullet-point-second {
-            font-size: 17px;
-            color: #7f8288;
+        .sub-section-title {
             font-weight: bold;
-        }
-
-        .text-decoration-underline {
+            color: #0d7377;
+            font-size: 9pt;
+            margin: 10px 0 5px 0;
             text-decoration: underline;
         }
 
-        /* Tambahan class baru */
-        .text-bold {
-            font-weight: bold;
-        }
+        .sig-block { text-align: center; width: 250px; float: right; margin-top: 20px; }
+        .sig-name { font-weight: bold; text-decoration: underline; font-size: 10pt; }
+        .sig-meta { font-size: 8pt; color: #4b5563; margin-top: 2px; }
 
-        .mt-3 {
-            margin-top: 1rem !important;
-        }
-
-        .mb-3 {
-            margin-bottom: 1rem !important;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem !important;
-        }
-
-        .p-2 {
-            padding: 0.5rem !important;
-        }
-
-        .me-2 {
-            margin-right: 0.5rem !important;
-        }
-
-        .px-4 {
-            padding-left: 1.5rem !important;
-            padding-right: 1.5rem !important;
-        }
-
-        .py-3 {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
-        .text-center {
-            text-align: center !important;
-        }
-
-        .align-items-center {
-            align-items: center !important;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -15px;
-            margin-left: -15px;
-        }
-
-        .col-2 {
-            flex: 0 0 16.666667%;
-            max-width: 16.666667%;
-        }
-
-        .col-10 {
-            flex: 0 0 83.333333%;
-            max-width: 83.333333%;
-        }
+        .page-break { page-break-before: always; }
+        .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
 
-<body class="px-4 py-3">
-    <!-- Kop Surat -->
-    <div class="text-center">
-        <div class="row align-items-center">
-            <table border="0">
-                <tr>
-                    <td>
-                        <div class="col-2">
-                            <img src="{{ public_path('assets/images/logo_bright_star.jpg') }}" alt="Logo"
-                                class="logo">
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <div class="col-10">
-                            <h5 style="font-weight: bold; margin: 0;">BRIGHT STAR OF CHILD</h5>
-                            <h5 style="font-weight: bold; margin: 0;">Pusat Layanan Terapi Anak Spesial
-                            </h5>
-                            <p class="mb-0" style="font-size: 10pt;">
-                                Jln. Mokodompit, Kel.Inolobu, Kec.Wawotobi, Kab.Konawe, Prov.Sulawesi
-                                Tenggara 93462<br>Telp 085123238404 | Website : https://brightchild.id | Email :
-                                brightstarofchild12@gmail.com
-                            </p>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+<body>
+    <header>
+        <div class="confidential-box">RAHASIA</div>
+    </header>
+
+    <footer>
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+            <tr>
+                <td width="85%" height="10" style="background-color: #0d7377;"></td>
+                <td width="15%" height="10" style="background-color: #f59e0b;"></td>
+            </tr>
+        </table>
+    </footer>
+
+    <!-- KOP SURAT -->
+    <table class="header-table">
+        <tr>
+            <td width="80" align="left" valign="middle">
+                <img src="{{ $logo }}" class="logo-img">
+            </td>
+            <td align="center" valign="middle">
+                <h1 class="kop-title">Bright Star of Child</h1>
+                <p class="kop-tagline">Pusat Layanan Terapi Anak Spesial</p>
+                <p class="kop-address">
+                    Jl. Mokodompit, Kel. Inolobu, Kec. Wawotobi, Kab. Konawe, Prov. Sulawesi Tenggara 93462<br>
+                    Telp: 085123238404 | Web: brightchild.id | Email: brightstarofchild12@gmail.com
+                </p>
+            </td>
+            <td width="100" align="right" valign="middle">
+                <img src="{{ $logo_pji }}" class="logo-lg">
+            </td>
+        </tr>
+    </table>
+
+    <div class="doc-title">Hasil Pemeriksaan Psikologis</div>
+
+    <!-- IDENTITAS -->
+    <div class="info-card">
+        <div class="info-title">Identitas Anak & Pemeriksa</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">Nama Anak</td>
+                <td width="10">:</td>
+                <td class="value">{{ ucwords(strtolower($assessment->anak->nama)) }}</td>
+                <td class="label">No. Rekam Medis</td>
+                <td width="10">:</td>
+                <td class="value" style="color:#0d7377;">{{ $assessment->anak->nomor_induk_baru ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td class="label">Tanggal Lahir</td>
+                <td>:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($assessment->anak->tanggal_lahir)->format('d-m-Y') }}</td>
+                <td class="label">Tgl. Pemeriksaan</td>
+                <td>:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Usia</td>
+                <td>:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($assessment->anak->tanggal_lahir)->diffInYears($tanggal) }} Tahun</td>
+                <td class="label">Psikolog</td>
+                <td>:</td>
+                <td class="value">{{ $assessment->psikolog->nama ?? 'Astri Yunita, S.Psi.,M.Psi.,Psikolog' }}</td>
+            </tr>
+            <tr>
+                <td class="label">Keluhan Utama</td>
+                <td>:</td>
+                <td colspan="4" class="value">{{ $assessment->keluhan_utama ?? '-' }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- A. TUJUAN -->
+    <div class="section-title">A. Tujuan Pemeriksaan Psikologis</div>
+    <div class="content-box">
+        {{ $assessment->tujuan_pemeriksaan }}
+    </div>
+
+    <!-- B. STATUS KLINIS -->
+    <div class="section-title">B. Status Klinis & Observasi Awal</div>
+    <table class="result-table">
+        <tr>
+            <th width="33%">Mood Anak</th>
+            <th width="33%">Validitas Hasil</th>
+            <th width="33%">Catatan Rapport</th>
+        </tr>
+        <tr>
+            <td>{{ $assessment->mood_anak ?? '-' }}</td>
+            <td>{{ $assessment->validitas_hasil ?? '-' }}</td>
+            <td>{{ $assessment->catatan_rapport ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Kontak Mata</th>
+            <th>Komunikasi</th>
+            <th>Interaksi Sosial</th>
+        </tr>
+        <tr>
+            <td>{{ $assessment->kontak_mata ?? '-' }}</td>
+            <td>{{ $assessment->komunikasi ?? '-' }}</td>
+            <td>{{ $assessment->interaksi_sosial ?? '-' }}</td>
+        </tr>
+    </table>
+
+    <!-- C. HASIL OBSERVASI PERILAKU -->
+    <div class="section-title">C. Hasil Observasi Perilaku</div>
+    <div class="content-box">
+        @foreach ($observasi_awal as $item)
+            <div class="bullet-item">{{ $item }}</div>
+        @endforeach
+        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e5e7eb;">
+            <strong>Kesimpulan Observasi:</strong><br>
+            <span style="font-style: italic; color: #111827;">{{ $assessment->kesimpulan_observasi }}</span>
         </div>
-        <div class="kop-border"></div>
-        <h6 style="font-weight: bold">HASIL PEMERIKSAAN PSIKOLOGIS</h6>
     </div>
 
-    <!-- Data Anak -->
-    <div class="info-box mb-4">
-        <table class="table table-borderless">
-            <tr>
-                <td width="20%"><strong>Nama Anak</strong></td>
-                <td width="40%">: {{ $assessment->anak->nama }}</td>
-                <td width="20%"><strong>Tanggal Lahir</strong></td>
-                <td width="20%">:
-                    {{ \Carbon\Carbon::parse($assessment->anak->tanggal_lahir)->translatedFormat('d F Y') }}</td>
-            </tr>
-            <tr>
-                <td><strong>Tanggal Pemeriksaan</strong></td>
-                <td>: {{ \Carbon\Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y') }}</td>
-                <td><strong>Usia</strong></td>
-                <td>:
-                    {{ \Carbon\Carbon::parse($assessment->anak->tanggal_lahir)->diffInYears($assessment->tanggal_assessment) }}
-                    tahun</td>
-            </tr>
-            <tr>
-                <td><strong>Keluhan Utama</strong></td>
-                <td colspan="3">: {{ $assessment->keluhan_utama ?? '-' }}</td>
-            </tr>
-        </table>
+    <!-- D. SUMBER ASESMEN -->
+    <div class="section-title">D. Sumber Asesmen</div>
+    <div class="content-box">
+        @foreach ($sumber_asesmen as $item)
+            <div class="bullet-item">{{ $item }}</div>
+        @endforeach
     </div>
 
-    <!-- A. TUJUAN PEMERIKSAAN PSIKOLOGIS -->
-    <div class="section-container mb-2">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">A.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">TUJUAN PEMERIKSAAN PSIKOLOGIS</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="5%"></td>
-                    <td width="3%"> <span class="bullet-point">•</span></td>
-                    <td colspan="2" style="text-align: justify;">{{ $assessment->tujuan_pemeriksaan }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">B.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">STATUS KLINIS & OBSERVASI AWAL</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="5%"></td>
-                    <td colspan="3">
-                        <table class="result-table" style="margin-top: 10px">
-                            <tr>
-                                <th width="33%">Mood Anak</th>
-                                <th width="33%">Validitas Hasil</th>
-                                <th width="33%">Catatan Rapport</th>
-                            </tr>
-                            <tr>
-                                <td>{{ $assessment->mood_anak ?? '-' }}</td>
-                                <td>{{ $assessment->validitas_hasil ?? '-' }}</td>
-                                <td>{{ $assessment->catatan_rapport ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Kontak Mata</th>
-                                <th>Komunikasi</th>
-                                <th>Interaksi Sosial</th>
-                            </tr>
-                            <tr>
-                                <td>{{ $assessment->kontak_mata ?? '-' }}</td>
-                                <td>{{ $assessment->komunikasi ?? '-' }}</td>
-                                <td>{{ $assessment->interaksi_sosial ?? '-' }}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">C.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">HASIL OBSERVASI PERILAKU</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($observasi_awal as $item)
-                    <tr>
-                        <td width="5%"></td>
-                        <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2" style="text-align: justify;">
-                            {{ $item }}
-                        </td>
-                    </tr>
-                @endforeach
-                <tr>
-                    <td width="5%"></td>
-                    <td width="3%"></td>
-                    <td colspan="2">
-                        <div class="info-box">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td width="20%">Kesimpulan :</td>
-
-                                    <td style="text-align: justify;"><i>{{ $assessment->kesimpulan_observasi }}</i></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">D.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">SUMBER ASESMEN</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($sumber_asesmen as $item)
-                    <tr>
-                        <td width="5%"></td>
-                        <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2" style="text-align: justify;">
-                            {{ $item }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">E.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">HASIL PEMERIKSAAN</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($hasil_pemeriksaan as $item)
-                    <tr>
-                        <td width="5%"></td>
-                        <td width="3%"><span class="bullet-point">•</span></td>
-                        <td colspan="2" style="text-align: justify;">
-                            {{ $item }}
-                        </td>
-                    </tr>
-                @endforeach
-                <tr>
-                    <td width="5%"></td>
-                    <td width="3%"></td>
-                    <td colspan="2">
-                        <div class="info-box">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td width="20%">Diagnosa :</td>
-
-                                    <td style="text-align: justify;"><i>{{ $assessment->diagnosa }}</i></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <td width="5%" class="bg-primary p-2 text-center" style="border-right: 0">F.</td>
-                    <td colspan="3" class="bg-primary p-2" style="border-left: 0">SARAN & REKOMENDASI</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="5%"></td>
-                    <td width="3%"> <span class="bullet-point">•</span></td>
-                    <td colspan="2">Bagi Orang Tua</td>
-                </tr>
-                @foreach ($rekomendasi_orangtua as $item)
-                    <tr>
-                        <td width="5%"></td>
-                        <td width="3%"></td>
-                        <td width="3%"><span class="bullet-point-second">•</span></td>
-                        <td style="text-align: justify;">
-                            {{ $item }}
-                        </td>
-                    </tr>
-                @endforeach
-                <tr>
-                    <td width="5%"></td>
-                    <td width="3%"> <span class="bullet-point">•</span></td>
-                    <td colspan="2">Bagi Terapis</td>
-                </tr>
-                @foreach ($rekomendasi_terapi as $item)
-                    <tr>
-                        <td width="5%"></td>
-                        <td width="3%"></td>
-                        <td width="3%"><span class="bullet-point-second">•</span></td>
-                        <td style="text-align: justify;">
-                            {{ $item }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <!-- E. HASIL PEMERIKSAAN -->
+    <div class="section-title">E. Hasil Pemeriksaan</div>
+    <div class="content-box">
+        @foreach ($hasil_pemeriksaan as $item)
+            <div class="bullet-item">{{ $item }}</div>
+        @endforeach
+        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e5e7eb;">
+            <strong>Diagnosa:</strong><br>
+            <span style="font-style: italic; color: #b91c1c; font-weight: bold;">{{ $assessment->diagnosa }}</span>
+            @if($assessment->diagnosa_banding)
+                <br><small style="color: #6b7280;">Diagnosa Banding: {{ $assessment->diagnosa_banding }}</small>
+            @endif
+        </div>
     </div>
 
-    <!-- Tanda Tangan -->
-    <div class="row mt-5">
-        <table class="table table-borderless">
-            <tr>
-                <td width="60%"></td> <!-- Empty space on the left -->
-                <td width="40%">
-                    <div style="float: right; text-align: center; width: 100%;">
-                        <p style="margin-bottom: 5px;">Unaaha,
-                            {{ \Carbon\Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y') }}</p>
-                        <p style="margin-bottom: 5px;">Psikolog,</p> <br>
-                        <img src="data:image/png;base64,{{ $barcode }}" alt="Barcode"
-                            style="margin-bottom: 10px">
-                        <p style="font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #000;">Astri Yunita,
-                            S.Psi.,M.Psi.,Psikolog
-                        </p>
-                        <p style="margin-bottom: 5px;">STR. XP00001068698759</p>
-                        <p style="margin-bottom: 0;">SIPP. 20130221-2023-03-0807</p>
-                    </div>
-                </td>
-            </tr>
-        </table>
+    <!-- F. SARAN & REKOMENDASI -->
+    <div class="section-title">F. Saran & Rekomendasi</div>
+    <div class="content-box">
+        <div class="sub-section-title">Bagi Orang Tua / Pengasuh:</div>
+        @foreach ($rekomendasi_orangtua as $item)
+            <div class="bullet-item">{{ $item }}</div>
+        @endforeach
+
+        <div class="sub-section-title" style="margin-top: 15px;">Bagi Terapis / Sekolah:</div>
+        @foreach ($rekomendasi_terapi as $item)
+            <div class="bullet-item">{{ $item }}</div>
+        @endforeach
     </div>
 
+    <p style="margin-top: 15px; font-size: 9pt; font-style: italic; color: #6b7280;">
+        Demikian laporan hasil pemeriksaan psikologis ini dibuat untuk dapat dipergunakan sebagaimana mestinya. Segala informasi dalam laporan ini bersifat rahasia.
+    </p>
+
+    <!-- SIGNATURE -->
+    <div class="clearfix">
+        <div class="sig-block">
+            <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
+            <p style="font-weight:bold; margin: 2px 0;">Psikolog,</p>
+            <div style="margin: 10px 0;">
+                <img src="data:image/png;base64,{{ $barcode }}" width="80" height="80">
+            </div>
+            <p class="sig-name">{{ $assessment->psikolog->nama ?? 'Astri Yunita, S.Psi.,M.Psi.,Psikolog' }}</p>
+            @if($assessment->psikolog)
+                <div class="sig-meta">
+                    STR. {{ $assessment->psikolog->str ?? '-' }}<br>
+                    SIPP. {{ $assessment->psikolog->sipp ?? '-' }}
+                </div>
+            @else
+                <div class="sig-meta">
+                    STR. XP00001068698759<br>
+                    SIPP. 20130221-2023-03-0807
+                </div>
+            @endif
+        </div>
+    </div>
 
 </body>
-
 
 </html>

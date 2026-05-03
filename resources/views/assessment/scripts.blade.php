@@ -9,32 +9,8 @@
             lucide.createIcons();
         }
 
-        // Tab Navigation Logic for Edit Form
-        $('.nav-link[data-toggle="tab"]').on('click', function(e) {
-            e.preventDefault();
-            const target = $(this).attr('href');
-            
-            $('.nav-link').removeClass('active');
-            $(this).addClass('active');
-            
-            $('.tab-pane').removeClass('active');
-            $(target).addClass('active');
-            
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        });
-
-        $(document).on('click', '.next-tab', function() {
-            const next = $(this).data('next');
-            $(`.nav-link[href="#${next}"]`).trigger('click');
-        });
-
-        $(document).on('click', '.prev-tab', function() {
-            const prev = $(this).data('prev');
-            $(`.nav-link[href="#${prev}"]`).trigger('click');
-        });
-
         // Fetch Riwayat Wawancara (Anamnesa) from Observasi Module
-        $('#nama_anak').on('change', function() {
+        $('#select-anak').on('change', function() {
             let anakId = $(this).val();
             let container = $('#wawancara-container');
             
@@ -60,7 +36,7 @@
                         throw new Error(data.message);
                     }
                     if (data.length === 0) {
-                        container.html('<div class="text-amber-500 flex items-center gap-2 text-xs"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Belum ada riwayat wawancara klinis.</div>');
+                        container.html('<div class="text-amber-500 flex items-center justify-center h-full text-center text-xs px-4"><i data-lucide="alert-triangle" class="w-4 h-4 mr-1"></i> Belum ada riwayat wawancara klinis untuk anak ini.</div>');
                         if (typeof lucide !== 'undefined') lucide.createIcons();
                         return;
                     }
@@ -86,21 +62,27 @@
                     container.html(html);
                 })
                 .catch(error => {
-                    container.html(`<div class="text-red-500 text-xs"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Gagal: ${error.message}</div>`);
+                    container.html(`<div class="text-red-500 text-xs p-4"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Gagal: ${error.message}</div>`);
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     console.error('AJAX Error:', error);
                 });
         });
 
-        if ($('#nama_anak').val()) {
-            $('#nama_anak').trigger('change');
+        if ($('#select-anak').val()) {
+            $('#select-anak').trigger('change');
         }
 
-        // Initialize Select2
+        // Initialize Select2 by specific IDs to prevent duplication
         if (typeof $ !== 'undefined') {
-            $('.select2').select2({
-                theme: 'bootstrap4'
+            $('#select-anak, #select-psikolog').select2({
+                theme: 'bootstrap4',
+                width: '100%'
             });
+        }
+        
+        // Ensure Lucide icons are rendered properly
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
         }
 
         // Modal handling or other scripts can go here
@@ -143,7 +125,7 @@
                     <input type="text" class="form-control input-perilaku w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
                         name="perilaku[]" placeholder="Masukkan perilaku khas tambahan">
                     <button class="btn-remove absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
-                        <i data-lucide="x" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 `;
                 container.appendChild(newField);
@@ -165,6 +147,10 @@
                     updateCombinedField();
                 }
             });
+
+            // Initialize on load
+            updateCombinedField();
+            updateRemoveButtons();
         }
     });
 </script>
@@ -201,12 +187,13 @@
                     <input type="text" class="form-control input-sumber-asesmen w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-100 focus:border-amber-500 pr-12"
                         name="sumber_asesmen[]" placeholder="Tambahan sumber asesmen...">
                     <button class="btn-remove-sumber absolute right-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
-                        <i data-lucide="x" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 `;
                 container.appendChild(newField);
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 updateRemoveButtons();
+                updateCombinedField();
             });
 
             container.addEventListener('click', function(e) {
@@ -223,6 +210,10 @@
                     updateCombinedField();
                 }
             });
+
+            // Initialize on load
+            updateCombinedField();
+            updateRemoveButtons();
         }
     });
 </script>
@@ -260,7 +251,7 @@
                         name="hasil_pemeriksaan[]" rows="2"
                         placeholder="Tambahan analisis hasil pemeriksaan..."></textarea>
                     <button class="btn-remove-hasil absolute right-2 top-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
-                        <i data-lucide="x" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>
                 `;
                 container.appendChild(newField);
@@ -282,6 +273,10 @@
                     updateCombinedField();
                 }
             });
+
+            // Initialize on load
+            updateCombinedField();
+            updateRemoveButtons();
         }
     });
 </script>
@@ -320,7 +315,7 @@
                             name="${containerId.replace('-container', '')}[]" rows="2"
                             placeholder="Tambahan rekomendasi..."></textarea>
                         <button class="btn-remove-rekomendasi absolute right-2 top-2 w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" type="button">
-                            <i data-lucide="x" class="w-4 h-4"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                         </button>
                     `;
                     container.appendChild(newField);
@@ -343,6 +338,10 @@
                         updateCombinedField();
                     }
                 });
+
+                // Initialize on load
+                updateCombinedField();
+                updateRemoveButtons();
             }
         }
 

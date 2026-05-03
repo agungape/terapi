@@ -7,7 +7,7 @@
     <!-- Top Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <a href="{{ route('home') }}" class="hover:text-red-500 transition-colors">Home</a>
+            <a href="{{ route('home') }}" class="hover:text-primary-500 transition-colors">Home</a>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
             <span class="text-slate-600">Laporan Analisis</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
@@ -26,7 +26,7 @@
     <div class="card-premium p-8 bg-white border-none shadow-xl shadow-slate-200/50">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex items-center gap-4">
-                <div class="p-3 bg-red-50 text-red-500 rounded-2xl">
+                <div class="p-3 bg-primary-50 text-primary-500 rounded-2xl">
                     <i data-lucide="filter" class="w-6 h-6"></i>
                 </div>
                 <div>
@@ -39,18 +39,18 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Mulai</label>
                     <input type="date" name="tanggal_mulai" 
-                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all"
+                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-primary-50 transition-all"
                            value="{{ request('tanggal_mulai', now()->startOfMonth()->format('Y-m-d')) }}"
                            max="{{ now()->format('Y-m-d') }}">
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Selesai</label>
                     <input type="date" name="tanggal_selesai" 
-                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-red-50 transition-all"
+                           class="bg-slate-50 border-slate-100 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-primary-50 transition-all"
                            value="{{ request('tanggal_selesai', now()->endOfMonth()->format('Y-m-d')) }}"
                            max="{{ now()->format('Y-m-d') }}">
                 </div>
-                <button type="submit" class="bg-slate-900 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-slate-200">
+                <button type="submit" class="bg-slate-900 hover:bg-primary-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg shadow-slate-200">
                     <i data-lucide="search" class="w-4 h-4"></i> Apply Filter
                 </button>
             </form>
@@ -96,7 +96,7 @@
                     {{ $terapisTerbaik->nama ?? '-' }}
                 </h3>
                 <div class="flex items-center gap-2 mt-2">
-                    <span class="px-2 py-0.5 bg-red-500 text-white rounded text-[9px] font-black uppercase tracking-widest">
+                    <span class="px-2 py-0.5 bg-primary-500 text-white rounded text-[9px] font-black uppercase tracking-widest">
                         {{ $terapisTerbaik->total_kunjungan ?? 0 }} Kunjungan
                     </span>
                 </div>
@@ -190,7 +190,7 @@
                         <td class="px-6 py-5">
                             @php 
                                 $percent = $maxKunjungan > 0 ? ($terapis->total_kunjungan / $maxKunjungan) * 100 : 0;
-                                $colorClass = $percent > 70 ? 'bg-emerald-500' : ($percent > 40 ? 'bg-amber-500' : 'bg-red-500');
+                                $colorClass = $percent > 70 ? 'bg-emerald-500' : ($percent > 40 ? 'bg-amber-500' : 'bg-primary-500');
                             @endphp
                             <div class="space-y-1.5 min-w-[120px]">
                                 <div class="flex items-center justify-between text-[9px] font-black uppercase tracking-widest italic">
@@ -205,7 +205,7 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center justify-center">
                                 <a href="{{ route('terapis.show', $terapis->id) }}" 
-                                   class="p-2 bg-slate-900 text-white rounded-xl hover:bg-red-500 transition-all shadow-lg shadow-slate-200" title="Detail Performa">
+                                   class="p-2 bg-slate-900 text-white rounded-xl hover:bg-primary-500 transition-all shadow-lg shadow-slate-200" title="Detail Performa">
                                     <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
@@ -245,8 +245,8 @@
                 datasets: [{
                     label: 'Total Sesi Kunjungan',
                     data: totalKunjungan,
-                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                    borderColor: 'rgb(239, 68, 68)',
+                    backgroundColor: window.primaryColor,
+                    borderColor: window.primaryColor,
                     borderWidth: 0,
                     borderRadius: 8,
                     maxBarThickness: 40
@@ -280,7 +280,7 @@
                 datasets: [{
                     data: totalKunjungan,
                     backgroundColor: [
-                        '#0f172a', '#ef4444', '#10b981', '#f59e0b', '#3b82f6', 
+                        '#0f172a', window.primaryColor, '#10b981', '#f59e0b', '#3b82f6', 
                         '#6366f1', '#a855f7', '#ec4899', '#14b8a6', '#f97316'
                     ],
                     borderWidth: 4,

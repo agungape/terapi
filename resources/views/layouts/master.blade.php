@@ -1,11 +1,19 @@
+@php
+    $profile = \App\Models\Profile::first();
+    $primaryColor = $profile->warna_primer ?? '#ef4444';
+    
+    // Convert hex to rgb for opacity support
+    list($r, $g, $b) = sscanf($primaryColor, "#%02x%02x%02x");
+    $primaryRgb = "$r, $g, $b";
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMC Terapi - @yield('title', 'Manajemen Terapi')</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo-1734059476.png') }}">
+    <title>{{ $profile->nama_apk ?? 'SMC Terapi' }} - @yield('title', 'Manajemen Terapi')</title>
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/' . ($profile->logo ?? '')) }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Fonts & Icons -->
@@ -25,19 +33,149 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
     @yield('style')
     
     <style>
+        :root {
+            --primary-color: {{ $primaryColor }};
+            --primary-color-rgb: {{ $primaryRgb }};
+            --primary-color-light: rgba({{ $primaryRgb }}, 0.15);
+            --primary-50: rgba({{ $primaryRgb }}, 0.08);
+            --primary-100: rgba({{ $primaryRgb }}, 0.2);
+            --primary-200: rgba({{ $primaryRgb }}, 0.3);
+            --primary-500: {{ $primaryColor }};
+            --primary-600: {{ $primaryColor }};
+        }
+
         [x-cloak] { display: none !important; }
         
+        /* Custom Primary Utilities - Ensuring ALL Primary variants are defined */
+        .bg-primary-50 { background-color: var(--primary-50) !important; }
+        .bg-primary-100 { background-color: var(--primary-100) !important; }
+        .bg-primary-200 { background-color: var(--primary-200) !important; }
+        .bg-primary-300 { background-color: var(--primary-300) !important; }
+        .bg-primary-400 { background-color: var(--primary-400) !important; }
+        .bg-primary-500, .bg-primary-600, .bg-primary-700, .bg-primary-800, .bg-primary-900 { background-color: var(--primary-color) !important; }
+        
+        .hover\:bg-primary-50:hover { background-color: var(--primary-50) !important; }
+        .hover\:bg-primary-100:hover { background-color: var(--primary-100) !important; }
+        .hover\:bg-primary-500:hover, .hover\:bg-primary-600:hover, .hover\:bg-primary-700:hover { background-color: var(--primary-color) !important; filter: brightness(0.9); }
+        
+        .text-primary-50 { color: var(--primary-50) !important; }
+        .text-primary-100 { color: var(--primary-100) !important; }
+        .text-primary-200 { color: var(--primary-200) !important; }
+        .text-primary-300 { color: var(--primary-300) !important; }
+        .text-primary-400 { color: var(--primary-400) !important; }
+        .text-primary-500, .text-primary-600, .text-primary-700, .text-primary-800, .text-primary-900 { color: var(--primary-color) !important; }
+        
+        .border-primary-50 { border-color: var(--primary-50) !important; }
+        .border-primary-100 { border-color: var(--primary-100) !important; }
+        .border-primary-500, .border-primary-600 { border-color: var(--primary-color) !important; }
+        
+        .focus\:ring-primary-50:focus { --tw-ring-color: var(--primary-100) !important; }
+        .focus\:ring-primary-500:focus { --tw-ring-color: var(--primary-color) !important; }
+        .shadow-primary-100 { --tw-shadow-color: var(--primary-100) !important; }
+        .shadow-primary-500 { --tw-shadow-color: var(--primary-color) !important; }
+
+        /* Powerful Global Overrides - Redirecting ALL RED variants to PRIMARY */
+        /* Text Colors */
+        .text-red-50:not(.btn-danger):not(.btn-hapus), 
+        .text-red-100:not(.btn-danger):not(.btn-hapus), 
+        .text-red-200:not(.btn-danger):not(.btn-hapus), 
+        .text-red-300:not(.btn-danger):not(.btn-hapus), 
+        .text-red-400:not(.btn-danger):not(.btn-hapus) { color: var(--primary-100) !important; }
+        .text-red-500:not(.btn-danger):not(.btn-hapus), 
+        .text-red-600:not(.btn-danger):not(.btn-hapus), 
+        .text-red-700:not(.btn-danger):not(.btn-hapus), 
+        .text-red-800:not(.btn-danger):not(.btn-hapus), 
+        .text-red-900:not(.btn-danger):not(.btn-hapus), 
+        .text-danger:not(.btn-danger):not(.btn-hapus) { color: var(--primary-color) !important; }
+        
+        /* Background Colors */
+        .bg-red-50:not(.btn-danger):not(.btn-hapus) { background-color: var(--primary-50) !important; }
+        .bg-red-100:not(.btn-danger):not(.btn-hapus) { background-color: var(--primary-100) !important; }
+        .bg-red-200:not(.btn-danger):not(.btn-hapus) { background-color: var(--primary-200) !important; }
+        .bg-red-500:not(.btn-danger):not(.btn-hapus), 
+        .bg-red-600:not(.btn-danger):not(.btn-hapus), 
+        .bg-red-700:not(.btn-danger):not(.btn-hapus), 
+        .bg-red-800:not(.btn-danger):not(.btn-hapus), 
+        .bg-red-900:not(.btn-danger):not(.btn-hapus) { background-color: var(--primary-color) !important; }
+        
+        /* Gradients */
+        .from-red-400:not(.btn-danger):not(.btn-hapus) { --tw-gradient-from: var(--primary-color) !important; --tw-gradient-to: var(--primary-color) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+        .from-red-500:not(.btn-danger):not(.btn-hapus) { --tw-gradient-from: var(--primary-color) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+        .from-red-600:not(.btn-danger):not(.btn-hapus) { --tw-gradient-from: var(--primary-color) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+        .to-red-600:not(.btn-danger):not(.btn-hapus) { --tw-gradient-to: var(--primary-color) !important; }
+        .to-red-700:not(.btn-danger):not(.btn-hapus) { --tw-gradient-to: var(--primary-color) !important; }
+        
+        /* Border Colors */
+        .border-red-50:not(.btn-danger):not(.btn-hapus), 
+        .border-red-100:not(.btn-danger):not(.btn-hapus), 
+        .border-red-200:not(.btn-danger):not(.btn-hapus) { border-color: var(--primary-100) !important; }
+        .border-red-500:not(.btn-danger):not(.btn-hapus), 
+        .border-red-600:not(.btn-danger):not(.btn-hapus) { border-color: var(--primary-color) !important; }
+        
+        /* Ring & Focus */
+        .focus\:ring-red-50:focus, .focus\:ring-red-100:focus, .focus\:ring-red-200:focus, .focus\:ring-red-500:focus, .focus\:ring-primary-50:focus { 
+            --tw-ring-color: var(--primary-100) !important; 
+        }
+        
+        /* Shadows */
+        .shadow-red-50:not(.btn-danger):not(.btn-hapus), 
+        .shadow-red-100:not(.btn-danger):not(.btn-hapus), 
+        .shadow-red-200:not(.btn-danger):not(.btn-hapus), 
+        .shadow-red-500:not(.btn-danger):not(.btn-hapus), 
+        .shadow-primary-100 { 
+            --tw-shadow-color: var(--primary-100) !important; 
+            --tw-shadow: var(--tw-shadow-colored) !important;
+        }
+
+        /* Hover States */
+        .hover\:bg-red-600:not(.btn-danger):not(.btn-hapus):hover, 
+        .hover\:bg-red-500:not(.btn-danger):not(.btn-hapus):hover { background-color: var(--primary-color) !important; filter: brightness(0.9); }
+        .hover\:text-red-600:not(.btn-danger):not(.btn-hapus):hover, 
+        .hover\:text-red-500:not(.btn-danger):not(.btn-hapus):hover { color: var(--primary-color) !important; filter: brightness(0.9); }
+        .hover\:border-red-500:not(.btn-danger):not(.btn-hapus):hover { border-color: var(--primary-color) !important; }
+
+        /* Decorations & Accents */
+        .decoration-red-200, .decoration-red-500 { text-decoration-color: var(--primary-color) !important; }
+        .accent-red-500 { accent-color: var(--primary-color) !important; }
+
+        /* Sidebar Active State Overrides */
+        .sidebar-link.active {
+            background-color: var(--primary-50);
+            color: var(--primary-color);
+        }
+
+        /* Global Premium Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-100); border-radius: 10px; border: 2px solid #f1f5f9; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); opacity: 0.8; }
+
         #sidebar {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                         width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-active-indicator {
-            @apply ml-auto w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(220,38,38,0.5)];
+            background-color: var(--primary-color);
+            @apply ml-auto w-1.5 h-1.5 rounded-full;
+            box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
         }
 
         /* Float animation */
@@ -47,10 +185,48 @@
             100% { transform: translateY(0px); }
         }
         .animate-float { animation: float 3s ease-in-out infinite; }
+
+        /* Card Premium Utility */
+        .card-premium {
+            @apply bg-white border border-slate-200/60 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300;
+        }
+        .card-premium:hover {
+            @apply shadow-[0_8px_40px_rgb(0,0,0,0.05)] border-slate-300/50;
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            @apply bg-white/70 backdrop-blur-md border border-white/20;
+        }
     </style>
+
+    <script>
+        window.primaryColor = "{{ $primaryColor }}";
+        window.primaryColorRgb = "{{ $primaryRgb }}";
+
+        // Global SweetAlert Config
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                window.SwalCustom = Swal.mixin({
+                    confirmButtonColor: window.primaryColor,
+                    cancelButtonColor: '#94a3b8',
+                });
+            }
+        });
+    </script>
 </head>
 
-<body class="flex h-screen overflow-hidden text-slate-800 bg-[#f8f7f7]" x-data="{ sidebarOpen: true, mobileSidebar: false }">
+<body class="flex bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] text-slate-900 antialiased h-screen overflow-hidden" 
+      x-data="{ 
+        sidebarOpen: window.innerWidth > 1024, 
+        mobileSidebar: false,
+        isMobile: window.innerWidth < 1024
+      }"
+      x-init="window.addEventListener('resize', () => { 
+        isMobile = window.innerWidth < 1024;
+        if (!isMobile) mobileSidebar = false;
+        if (isMobile) sidebarOpen = true;
+      })">
 
     <!-- Mobile Overlay -->
     <div x-show="mobileSidebar" 
@@ -66,27 +242,28 @@
 
     <!-- Sidebar -->
     <aside id="sidebar"
-           class="fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200/80 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col transition-all duration-300 md:relative"
+           class="fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200/80 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col transition-all duration-300"
            :class="{ 
-               'w-60': sidebarOpen, 
-               'w-20': !sidebarOpen,
-               'translate-x-0': mobileSidebar,
-               '-translate-x-full': !mobileSidebar && window.innerWidth < 768,
-               'md:translate-x-0': true
+               'w-64': sidebarOpen && !isMobile, 
+               'w-20': !sidebarOpen && !isMobile,
+               'w-64 translate-x-0': mobileSidebar && isMobile,
+               '-translate-x-full': !mobileSidebar && isMobile,
+               'relative': !isMobile,
+               'fixed': isMobile
            }">
 
         <!-- Sidebar Header -->
         <div class="p-6 flex items-center justify-between border-b border-slate-100 h-[72px] overflow-hidden">
             <div class="flex items-center gap-3 shrink-0">
                 <div class="p-1 rounded-xl bg-white border border-slate-100 shadow-sm w-10 h-10 flex items-center justify-center shrink-0">
-                    <img src="{{ asset('assets/images/logo-1734059476.png') }}" alt="Logo" class="w-full h-full object-contain overflow-hidden">
+                    <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'logo.jpg')) }}" alt="Logo" class="w-full h-full object-contain overflow-hidden">
                 </div>
                 <div class="transition-all duration-300 whitespace-nowrap" x-show="sidebarOpen">
-                    <h1 class="font-extrabold text-sm text-slate-800 tracking-tight leading-tight uppercase italic">SMC TERAPI</h1>
-                    <p class="text-slate-400 text-[9px] font-black tracking-widest uppercase">Clinical System</p>
+                    <h1 class="font-extrabold text-sm text-slate-800 tracking-tight leading-tight uppercase italic">{{ $profile->nama_apk ?? 'SMC TERAPI' }}</h1>
+                    <p class="text-slate-400 text-[9px] font-black tracking-widest uppercase">{{ $profile->nama ?? 'Clinical System' }}</p>
                 </div>
             </div>
-            <button @click="mobileSidebar = false" class="md:hidden text-slate-400 hover:text-red-500">
+            <button @click="mobileSidebar = false" class="md:hidden text-slate-400 hover:text-primary-500">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -94,7 +271,7 @@
         <!-- Navigation -->
         <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto scrollbar-hide">
             
-            <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3" x-show="sidebarOpen">Main Desktop</p>
+
             
             <!-- Dashboard -->
             <a href="{{ route('home') }}" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
@@ -103,10 +280,7 @@
                 @if(request()->routeIs('home')) <span class="sidebar-active-indicator" x-show="sidebarOpen"></span> @endif
             </a>
 
-            <!-- Data Master -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Master Repository</p>
-            </div>
+
 
             @can('view terapis')
             <a href="{{ route('terapis.index') }}" class="sidebar-link {{ request()->routeIs('terapis.*') ? 'active' : '' }}">
@@ -155,7 +329,7 @@
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-red-500 transition-all group {{ (request()->is('question*') || request()->is('age*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('question*') || request()->is('age*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="fingerprint" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Deteksi Dini</span>
@@ -163,26 +337,23 @@
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" x-show="sidebarOpen"></i>
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
-                    <a href="{{ route('question.umur') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.umur') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Master Umur</a>
-                    <a href="{{ route('question.pendengaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.pendengaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Pendengaran</a>
-                    <a href="{{ route('question.penglihatan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.penglihatan') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Penglihatan</a>
-                    <a href="{{ route('question.perilaku') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.perilaku') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Perilaku</a>
-                    <a href="{{ route('question.autis') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.autis') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Autis</a>
-                    <a href="{{ route('question.gpph') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.gpph') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">GPPH</a>
-                    <a href="{{ route('question.wawancara') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.wawancara') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Wawancara</a>
+                    <a href="{{ route('question.umur') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.umur') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Master Umur</a>
+                    <a href="{{ route('question.pendengaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.pendengaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pendengaran</a>
+                    <a href="{{ route('question.penglihatan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.penglihatan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Penglihatan</a>
+                    <a href="{{ route('question.perilaku') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.perilaku') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Perilaku</a>
+                    <a href="{{ route('question.autis') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.autis') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Autis</a>
+                    <a href="{{ route('question.gpph') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.gpph') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">GPPH</a>
+                    <a href="{{ route('question.wawancara') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.wawancara') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Wawancara</a>
                 </div>
             </div>
 
-            <!-- Operasional -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Clinical Workflow</p>
-            </div>
+
 
             <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-red-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="activity" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Layanan Terapi</span>
@@ -191,16 +362,16 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1 relative">
                     <div class="absolute left-6 top-0 w-px h-full bg-slate-100"></div>
-                    <a href="{{ route('kunjungan.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('kunjungan.index') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors flex items-center gap-2">
-                        <i data-lucide="plus-circle" class="w-3 h-3"></i> Pendaftaran Kunjungan
+                    <a href="{{ route('kunjungan.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('kunjungan.index') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors flex items-center gap-2">
+                        Pendaftaran Kunjungan
                     </a>
                     @can('view observasi')
-                    <a href="{{ route('observasi.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('observasi.*') ? 'text-red-500 shadow-none' : 'text-slate-400' }} hover:text-red-500 transition-colors">Observasi</a>
+                    <a href="{{ route('observasi.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('observasi.*') ? 'text-red-500 shadow-none' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Observasi</a>
                     @endcan
                     @can('view assessment')
-                    <a href="{{ route('assessment.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Assessment</a>
+                    <a href="{{ route('assessment.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Assessment</a>
                     @endcan
-                    <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('kunjungan.data') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Riwayat Terapi</a>
+                    <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.show')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
                 </div>
             </div>
 
@@ -211,14 +382,11 @@
             </a>
             @endcan
 
-            <!-- Keuangan -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">E-Finance & Shop</p>
-            </div>
+
 
             <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-red-500 transition-all group {{ request()->is('keuangan*') ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('keuangan*') ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="banknote" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Keuangan</span>
@@ -227,29 +395,27 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
                     @can('view rekapan kas')
-                    <a href="{{ route('keuangan.rekap') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.rekap') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Rekap Kas</a>
+                    <a href="{{ route('keuangan.rekap') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.rekap') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Rekap Kas</a>
                     @endcan
                     @can('view pemasukkan')
-                    <a href="{{ route('keuangan.pemasukkan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pemasukkan') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Pemasukkan</a>
+                    <a href="{{ route('keuangan.pemasukkan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pemasukkan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pemasukkan</a>
                     @endcan
                     @can('view pengeluaran')
-                    <a href="{{ route('keuangan.pengeluaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pengeluaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Pengeluaran</a>
+                    <a href="{{ route('keuangan.pengeluaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pengeluaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pengeluaran</a>
                     @endcan
                     @can('view kategori')
-                    <a href="{{ route('keuangan.kategori') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.kategori') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Kategori Kas</a>
+                    <a href="{{ route('keuangan.kategori') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.kategori') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Kategori Kas</a>
                     @endcan
+                    <a href="{{ route('keuangan.laporan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.laporan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Laporan Keuangan</a>
                 </div>
             </div>
 
-            <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
+            {{-- <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
                 <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0 {{ request()->routeIs('products.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Online Store</span>
-            </a>
+            </a> --}}
 
-            <!-- Analysis & Training -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Analysis & Insight</p>
-            </div>
+
 
             <a href="{{ route('pelatihan.index') }}" class="sidebar-link {{ request()->routeIs('pelatihan.index') ? 'active' : '' }}">
                 <i data-lucide="graduation-cap" class="w-4 h-4 shrink-0 {{ request()->routeIs('pelatihan.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
@@ -261,14 +427,11 @@
                 <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Analisis Kinerja</span>
             </a>
 
-            <!-- User Management -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">System & Access</p>
-            </div>
+
 
             <div x-data="{ open: {{ (request()->is('roles*') || request()->is('permissions*') || request()->is('users*') || request()->is('manajemen-menu*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-red-500 transition-all group {{ request()->is('roles*') ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('roles*') ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="shield-alert" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Manajemen Akses</span>
@@ -277,16 +440,16 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
                     @can('view role')
-                    <a href="{{ route('roles.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('roles.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Roles / Group</a>
+                    <a href="{{ route('roles.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('roles.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Roles / Group</a>
                     @endcan
                     @can('view permission')
-                    <a href="{{ route('permissions.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('permissions.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Permissions</a>
+                    <a href="{{ route('permissions.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('permissions.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Permissions</a>
                     @endcan
                     @can('view user')
-                    <a href="{{ route('users.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('users.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">User Pengguna</a>
+                    <a href="{{ route('users.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('users.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">User Pengguna</a>
                     @endcan
                      @can('view manajemen menu')
-                    <a href="{{ url('manajemen-menu') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->is('manajemen-menu*') ? 'text-red-500' : 'text-slate-400' }} hover:text-red-500 transition-colors">Manajemen Menu</a>
+                    <a href="{{ url('manajemen-menu') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->is('manajemen-menu*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Manajemen Menu</a>
                     @endcan
                 </div>
             </div>
@@ -300,25 +463,22 @@
             @endcan
 
             @can('view informasi')
-            <a href="/informasi" class="sidebar-link py-2 scale-90 opacity-70 hover:opacity-100 {{ request()->is('informasi*') ? 'active' : '' }}">
+            <a href="/informasi" class="sidebar-link {{ request()->is('informasi*') ? 'active' : '' }}">
                 <i data-lucide="info" class="w-4 h-4 shrink-0 {{ request()->is('informasi*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-[10px] font-black uppercase tracking-tight">Informasi</span>
+                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Informasi</span>
             </a>
             @endcan
 
-            <!-- Settings -->
-            <div class="pt-4" x-show="sidebarOpen">
-                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Pengaturan</p>
-            </div>
 
-            <a href="{{ route('profile.index') }}" class="sidebar-link py-2 scale-90 opacity-70 hover:opacity-100 {{ request()->routeIs('profile.index') ? 'active' : '' }}">
+
+            <a href="{{ route('profile.index') }}" class="sidebar-link {{ request()->routeIs('profile.index') ? 'active' : '' }}">
                 <i data-lucide="settings" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-[10px] font-black uppercase tracking-tight">Profil Yayasan</span>
+                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Profil Yayasan</span>
             </a>
 
-            <a href="{{ route('profile.user') }}" class="sidebar-link py-2 scale-90 opacity-70 hover:opacity-100 {{ request()->routeIs('profile.user') ? 'active' : '' }}">
+            <a href="{{ route('profile.user') }}" class="sidebar-link {{ request()->routeIs('profile.user') ? 'active' : '' }}">
                 <i data-lucide="user-circle" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.user') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-[10px] font-black uppercase tracking-tight">Keamanan Akun</span>
+                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Keamanan Akun</span>
             </a>
 
             <!-- Penutup Footer Sidebar -->
@@ -335,7 +495,7 @@
                     </div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl font-bold text-[11px] transition-all border border-slate-200 hover:border-red-100 shadow-sm">
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl font-bold text-[11px] transition-all border border-slate-200 hover:border-red-100 shadow-sm btn-logout">
                             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                             Logout
                         </button>
@@ -351,7 +511,7 @@
         <!-- Header -->
         <header class="h-[72px] bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-6 shrink-0 z-20">
             <div class="flex items-center gap-4">
-                <button @click="sidebarOpen = !sidebarOpen; mobileSidebar = !mobileSidebar" class="p-2.5 text-slate-500 hover:text-red-500 bg-white border border-slate-200 rounded-xl shadow-sm transition-all focus:ring-2 focus:ring-red-100">
+                <button @click="isMobile ? mobileSidebar = !mobileSidebar : sidebarOpen = !sidebarOpen" class="p-2.5 text-slate-500 hover:text-primary-500 bg-white border border-slate-200 rounded-xl shadow-sm transition-all focus:ring-2 focus:ring-primary-50">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
                 <div class="hidden sm:block">
@@ -362,7 +522,7 @@
 
             <div class="flex items-center gap-3">
                 <div class="hidden md:flex items-center gap-2 text-[11px] font-bold text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 text-red-500"></i>
+                    <i data-lucide="clock" class="text-primary-500 w-3.5 h-3.5"></i>
                     <span id="realtime-clock">00:00:00</span>
                 </div>
                 
@@ -373,7 +533,7 @@
                         <p class="text-xs font-extrabold text-slate-800 leading-none">{{ auth()->user()->name }}</p>
                         <p class="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tighter">Level: {{ auth()->user()->roles->first()->name ?? 'Admin' }}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-600 font-extrabold text-sm shadow-sm shrink-0">
+                    <div class="w-10 h-10 rounded-full bg-primary-50 border border-primary-100 flex items-center justify-center text-primary-600 font-extrabold text-sm shadow-sm shrink-0">
                         {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
                     </div>
                 </div>
@@ -386,7 +546,7 @@
 
             <!-- Footer -->
             <footer class="mt-auto py-8 text-center border-t border-slate-100 mt-12">
-                <p class="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">&copy; 2026 BRIGHT STAR - SMC TERAPI SYSTEM</p>
+                <p class="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">&copy; 2026 {{ $profile->nama_apk ?? 'BRIGHT STAR' }} - {{ $profile->nama ?? 'CLINICAL SYSTEM' }}</p>
             </footer>
         </div>
     </main>
@@ -436,6 +596,33 @@
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#f1f5f9',
                 confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-[2.5rem] border-none shadow-2xl',
+                    confirmButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4',
+                    cancelButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4 text-slate-500'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+        
+        // Logout Confirmation
+        $(document).on('click', '.btn-logout', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Konfirmasi Keluar',
+                text: "Apakah Anda yakin ingin mengakhiri sesi ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: window.primaryColor || '#ef4444',
+                cancelButtonColor: '#f1f5f9',
+                confirmButtonText: 'Ya, Keluar!',
                 cancelButtonText: 'Batal',
                 reverseButtons: true,
                 customClass: {

@@ -167,7 +167,7 @@
                         </div>
 
                         <div class="pt-8 border-t border-slate-50 flex justify-end gap-3">
-                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-4 px-10 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-red-100 transition-all flex items-center gap-3">
+                            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-4 px-10 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-primary-100 transition-all flex items-center gap-3">
                                 <i data-lucide="save" class="w-4 h-4"></i> Update Profil
                             </button>
                         </div>

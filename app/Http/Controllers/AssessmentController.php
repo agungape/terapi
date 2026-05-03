@@ -94,10 +94,10 @@ class AssessmentController extends Controller
             'kontak_mata'           => $validated['kontak_mata'] ?? null,
             'komunikasi'            => $validated['komunikasi'] ?? null,
             'interaksi_sosial'      => $validated['interaksi_sosial'] ?? null,
-            'status_bayar'          => 'Menunggu Pembayaran',
+            'status_bayar'          => 'belum_bayar',
         ]);
 
-        return redirect("/assessment")->with('success', "Data Assessment berhasil dibuat dan status diatur ke Menunggu Pembayaran");
+        return redirect("/assessment")->with('success', "Data Assessment berhasil dibuat");
     }
 
     public function edit(Assessment $assessment)
@@ -172,29 +172,49 @@ class AssessmentController extends Controller
         $dns2d = new DNS2D();
         $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 2, 2);
 
-        $html = view('assessment.pdf', [
+        $profile = \App\Models\Profile::first();
+        $primaryColor = $profile->warna_primer ?? '#ef4444';
+
+        // Use static previous logo
+        $logoPath = public_path('assets/website/images/logo.jpg');
+
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoBase64 = 'data:image/jpeg;base64,' . $logoData;
+        }
+
+        $logoPjiPath = public_path('assets/website/images/pji-removebg-preview.png');
+        $logoPjiBase64 = '';
+        if (file_exists($logoPjiPath)) {
+            $pjiData = base64_encode(file_get_contents($logoPjiPath));
+            $logoPjiBase64 = 'data:image/png;base64,' . $pjiData;
+        }
+
+        $pdfData = [
             'assessment' => $assessment,
             'observasi_awal' => $assessment->observasi_awal,
             'sumber_asesmen' => $assessment->sumber_asesmen,
             'hasil_pemeriksaan' => $assessment->hasil_pemeriksaan,
             'rekomendasi_orangtua' => $assessment->rekomendasi_orangtua,
             'rekomendasi_terapi' => $assessment->rekomendasi_terapi,
-            'barcode' => $barcode
-        ])->render();
+            'barcode' => $barcode,
+            'logo' => $logoBase64,
+            'logo_pji' => $logoPjiBase64,
+            'tanggal' => $assessment->tanggal_assessment
+        ];
 
-        $mpdf = new Mpdf([
-            'mode' => 'utf-8', 'format' => 'A4', 'default_font' => 'times'
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('assessment.pdf', $pdfData);
+        
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'sans-serif'
         ]);
-
-        $mpdf->SetHeader("RAHASIA||Halaman {PAGENO}");
-        $mpdf->SetFooter("||Layanan Terapi Anak Spesial");
-        $mpdf->WriteHTML($html);
 
         $filename = 'Hasil-Assessment-' . Str::slug($assessment->anak->nama) . '.pdf';
-        return response($mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-        ]);
+        return $pdf->stream($filename);
     }
 
     public function scanBarcode(Request $request)

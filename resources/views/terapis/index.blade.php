@@ -84,7 +84,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left min-w-[900px]">
                 <thead class="bg-slate-50 border-b border-slate-100">
                     <tr>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>

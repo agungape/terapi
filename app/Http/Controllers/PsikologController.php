@@ -24,6 +24,8 @@ class PsikologController extends Controller
     {
         $validateData = $request->validate([
             'nama' => 'required',
+            'str' => 'nullable',
+            'sipp' => 'nullable',
             'alamat' => 'nullable',
             'telepon' => 'nullable'
         ]);
@@ -42,6 +44,8 @@ class PsikologController extends Controller
 
         $validateData = $request->validate([
             'nama' => 'required',
+            'str' => 'nullable',
+            'sipp' => 'nullable',
             'alamat' => 'nullable',
             'telepon' => 'nullable'
         ]);

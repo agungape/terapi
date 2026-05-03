@@ -1,374 +1,256 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Keuangan</title>
+    <title>Laporan Keuangan - {{ $startDate }} s/d {{ $endDate }}</title>
     <style>
-        /* Bootstrap 5 CSS for mPDF */
-        :root {
-            --bs-blue: #0d6efd;
-            --bs-indigo: #6610f2;
-            --bs-purple: #6f42c1;
-            --bs-pink: #d63384;
-            --bs-red: #dc3545;
-            --bs-orange: #fd7e14;
-            --bs-yellow: #ffc107;
-            --bs-green: #198754;
-            --bs-teal: #20c997;
-            --bs-cyan: #0dcaf0;
-            --bs-white: #fff;
-            --bs-gray: #6c757d;
-            --bs-gray-dark: #343a40;
-            --bs-primary: #0d6efd;
-            --bs-secondary: #6c757d;
-            --bs-success: #198754;
-            --bs-info: #0dcaf0;
-            --bs-warning: #ffc107;
-            --bs-danger: #dc3545;
-            --bs-light: #f8f9fa;
-            --bs-dark: #212529;
-            --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
+        @page {
+            margin: 1.5cm 1.5cm 2.5cm 1.5cm;
         }
 
         body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 9pt;
+            color: #1f2937;
+            line-height: 1.4;
             margin: 0;
-            font-family: var(--bs-font-sans-serif);
-            font-size: 0.875rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #212529;
-            background-color: #fff;
-            -webkit-text-size-adjust: 100%;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            padding: 0;
         }
 
-        .container {
+        /* Fixed Footer (Consistent with Assessment) */
+        footer {
+            position: fixed;
+            bottom: -1.5cm;
+            left: 0px;
+            right: 0px;
+            height: 15px;
             width: 100%;
-            padding-right: var(--bs-gutter-x, 0.75rem);
-            padding-left: var(--bs-gutter-x, 0.75rem);
-            margin-right: auto;
-            margin-left: auto;
         }
 
-        .row {
-            --bs-gutter-x: 1.5rem;
-            --bs-gutter-y: 0;
-            display: flex;
-            flex-wrap: wrap;
-            margin-top: calc(-1 * var(--bs-gutter-y));
-            margin-right: calc(-0.5 * var(--bs-gutter-x));
-            margin-left: calc(-0.5 * var(--bs-gutter-x));
-        }
+        /* Kop Surat (Consistent with Assessment) */
+        .logo-img { width: 70px; height: auto; }
+        .logo-lg { width: 85px; height: auto; }
 
-        .row>* {
-            flex-shrink: 0;
+        .header-table {
             width: 100%;
-            max-width: 100%;
-            padding-right: calc(var(--bs-gutter-x) * 0.5);
-            padding-left: calc(var(--bs-gutter-x) * 0.5);
-            margin-top: var(--bs-gutter-y);
+            border-bottom: 2px solid #1a1a2e;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-collapse: collapse;
         }
 
-        .col {
-            flex: 1 0 0%;
+        .kop-title { font-size: 16pt; font-weight: 800; color: #1a1a2e; text-transform: uppercase; margin: 0; padding: 0; line-height: 1; }
+        .kop-tagline { font-size: 9.5pt; font-weight: 600; color: #0d7377; margin: 0; padding: 0; line-height: 1.2; }
+        .kop-address { font-size: 7.5pt; color: #4b5563; line-height: 1.3; margin-top: 3px; }
+
+        .doc-title {
+            text-align: center;
+            font-size: 13pt;
+            font-weight: bold;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
         }
 
-        .text-center {
-            text-align: center !important;
+        /* Summary Info Card */
+        .info-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
         }
 
-        .text-end {
-            text-align: right !important;
+        .info-title {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #0d7377;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-left: 3px solid #0d7377;
+            padding-left: 8px;
         }
 
-        .text-success {
-            color: var(--bs-success) !important;
-        }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 4px 0; font-size: 9pt; vertical-align: top; }
+        .label { color: #6b7280; width: 130px; }
+        .value { font-weight: 600; color: #111827; }
 
-        .text-danger {
-            color: var(--bs-danger) !important;
-        }
+        /* Stats Grid - Modern Dashboard Style */
+        .stats-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .stat-card { padding: 15px; border: 1px solid #e2e8f0; }
+        
+        .stat-card-income { border-left: 5px solid #059669; background-color: #f0fdf4; }
+        .stat-card-expense { border-left: 5px solid #dc2626; background-color: #fef2f2; }
+        .stat-card-balance { border-left: 5px solid #1a1a2e; background-color: #f8fafc; }
+        
+        .stat-label { font-size: 8pt; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
+        .stat-value { font-size: 9.5pt; font-weight: 900; color: #0f172a; }
+        
+        .text-success { color: #059669 !important; }
+        .text-danger { color: #dc2626 !important; }
 
-        .mt-3 {
-            margin-top: 1rem !important;
-        }
-
-        .mb-4 {
-            margin-bottom: 1.5rem !important;
-        }
-
-        .p-3 {
-            padding: 1rem !important;
-        }
-
+        /* Transaction Table */
+        .result-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .result-table th { background-color: #1a1a2e; color: white; text-align: left; padding: 8px 10px; font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; }
+        .result-table td { padding: 10px; border-bottom: 1px solid #f3f4f6; font-size: 8.5pt; vertical-align: top; }
+        .result-table tr:nth-child(even) { background-color: #f9fafb; }
+        
         .badge {
             display: inline-block;
-            padding: 0.35em 0.65em;
-            font-size: 0.75em;
-            font-weight: 700;
-            line-height: 1;
-            color: #fff;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.25rem;
-        }
-
-        .badge.bg-success {
-            background-color: var(--bs-success) !important;
-        }
-
-        .badge.bg-danger {
-            background-color: var(--bs-danger) !important;
-        }
-
-        .table {
-            --bs-table-bg: transparent;
-            --bs-table-accent-bg: transparent;
-            --bs-table-striped-color: #212529;
-            --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
-            --bs-table-active-color: #212529;
-            --bs-table-active-bg: rgba(0, 0, 0, 0.1);
-            --bs-table-hover-color: #212529;
-            --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
-            width: 100%;
-            margin-bottom: 1rem;
-            color: #212529;
-            vertical-align: top;
-            border-color: #dee2e6;
-        }
-
-        .table> :not(caption)>*>* {
-            padding: 0.5rem 0.5rem;
-            background-color: var(--bs-table-bg);
-            border-bottom-width: 1px;
-            box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
-        }
-
-        .table>thead {
-            vertical-align: bottom;
-        }
-
-        .table> :not(:first-child) {
-            border-top: 2px solid currentColor;
-        }
-
-        .table-bordered> :not(caption)>* {
-            border-width: 1px 0;
-        }
-
-        .table-bordered> :not(caption)>*>* {
-            border-width: 1px;
-        }
-
-        .table-striped>tbody>tr:nth-of-type(odd)>* {
-            --bs-table-accent-bg: var(--bs-table-striped-bg);
-            color: var(--bs-table-striped-color);
-        }
-
-        .table-hover>tbody>tr:hover>* {
-            --bs-table-accent-bg: var(--bs-table-hover-bg);
-            color: var(--bs-table-hover-color);
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.1;
-            z-index: -1;
-            font-size: 5rem;
-            color: #ccc;
+            padding: 2px 6px;
+            font-size: 7pt;
             font-weight: bold;
-            pointer-events: none;
+            border-radius: 4px;
+            text-transform: uppercase;
         }
+        .bg-success { background-color: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+        .bg-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+        .bg-slate { background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
 
-        .header {
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
+        .sig-block { text-align: center; width: 200px; float: right; margin-top: 30px; }
+        .sig-name { font-weight: bold; text-decoration: underline; font-size: 9.5pt; }
+        .sig-meta { font-size: 8pt; color: #4b5563; margin-top: 2px; }
 
-        .company-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--bs-dark);
-        }
-
-        .report-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin: 0.5rem 0;
-        }
-
-        .period-info {
-            font-size: 0.9rem;
-            color: var(--bs-gray);
-        }
-
-        .footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #dee2e6;
-            font-size: 0.75rem;
-            color: var(--bs-gray);
-        }
-
-        .summary-card {
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            background-color: #f8f9fa;
-        }
-
-        .summary-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--bs-gray-dark);
-        }
-
-        .summary-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        @page {
-            margin: 1cm;
-        }
-
-        @media print {
-            .watermark {
-                opacity: 0.05;
-            }
-
-            .summary-card {
-                page-break-inside: avoid;
-            }
-
-            .table {
-                page-break-inside: auto;
-            }
-
-            tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-        }
+        .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
 
 <body>
-    <!-- Watermark -->
-    {{-- <div class="watermark">
-        {{ config('app.name', 'Laravel') }}
-    </div> --}}
+    <footer>
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+            <tr>
+                <td width="85%" height="10" style="background-color: #0d7377;"></td>
+                <td width="15%" height="10" style="background-color: #f59e0b;"></td>
+            </tr>
+        </table>
+    </footer>
 
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="row">
-                <div class="col text-center">
-                    <div class="company-name">BRIGHT STAR OF CHILD</div>
-                    <div class="report-title">Laporan Keuangan</div>
-                    <div class="period-info">
-                        Periode: {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} -
-                        {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- KOP SURAT (Identical to Assessment) -->
+    <table class="header-table">
+        <tr>
+            <td width="80" align="left" valign="middle">
+                <img src="{{ $logoBase64 }}" class="logo-img">
+            </td>
+            <td align="center" valign="middle">
+                <h1 class="kop-title">Bright Star of Child</h1>
+                <p class="kop-tagline">Pusat Layanan Terapi Anak Spesial</p>
+                <p class="kop-address">
+                    Jl. Mokodompit, Kel. Inolobu, Kec. Wawotobi, Kab. Konawe, Prov. Sulawesi Tenggara 93462<br>
+                    Telp: 085123238404 | Web: brightchild.id | Email: brightstarofchild12@gmail.com
+                </p>
+            </td>
+            <td width="100" align="right" valign="middle">
+                <img src="{{ $logoPjiBase64 }}" class="logo-lg">
+            </td>
+        </tr>
+    </table>
 
-        <!-- Summary Cards -->
-        <div class="row mb-4">
-            <div class="col">
-                <div class="summary-card">
-                    <div class="summary-title">Total Pemasukan</div>
-                    <div class="summary-value text-success">Rp
-                        {{ number_format($financialReport->where('jenis', 'pemasukkan')->sum('jumlah'), 0, ',', '.') }}
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="summary-card">
-                    <div class="summary-title">Total Pengeluaran</div>
-                    <div class="summary-value text-danger">Rp
-                        {{ number_format($financialReport->where('jenis', 'pengeluaran')->sum('jumlah'), 0, ',', '.') }}
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="summary-card">
-                    <div class="summary-title">Saldo Akhir</div>
-                    <div class="summary-value">
-                        Rp {{ number_format(optional($financialReport->last())->current_balance ?? 0, 0, ',', '.') }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="doc-title">Laporan Rekapitulasi Keuangan</div>
 
-        <!-- Transaction Table -->
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Jenis</th>
-                        <th>Jumlah</th>
-                        <th>Keterangan</th>
-                        <th>Saldo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($financialReport as $report)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($report->tanggal)->translatedFormat('d M Y') }}</td>
-                            <td>
-                                {{ ucfirst($report->jenis) }}
-                            </td>
-                            <td class="{{ $report->jenis === 'pengeluaran' ? 'text-danger' : 'text-success' }}">
-                                Rp {{ number_format($report->jumlah, 0, ',', '.') }}
-                            </td>
-                            <td class="text-center">{{ $report->deskripsi }}</td>
-                            <td class="text-end">Rp {{ number_format($report->current_balance, 0, ',', '.') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">Tidak ada data transaksi</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <!-- IDENTITAS LAPORAN -->
+    <div class="info-card">
+        <div class="info-title">Parameter & Informasi Laporan</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">Periode Laporan</td>
+                <td width="10">:</td>
+                <td class="value">{{ \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y') }} s/d {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}</td>
+                <td class="label">Tanggal Cetak</td>
+                <td width="10">:</td>
+                <td class="value">{{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}</td>
+            </tr>
+            <tr>
+                <td class="label">Dicetak Oleh</td>
+                <td>:</td>
+                <td class="value">{{ Auth::user()->name ?? 'Administrator' }}</td>
+                <td class="label">Status Saldo</td>
+                <td>:</td>
+                <td class="value" style="color:#0d7377;">Terverifikasi Sistem</td>
+            </tr>
+        </table>
+    </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <div class="row">
-                <div class="col text-start">
-                    Dicetak oleh: {{ Auth::user()->name ?? 'Admin' }}
-                </div>
-                <div class="col text-end">
-                    Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i') }}
-                </div>
-            </div>
+    <!-- RINGKASAN SALDO -->
+    <table class="stats-table">
+        <tr>
+            <td width="33%" class="stat-card stat-card-income">
+                <span class="stat-label">Total Pemasukan</span>
+                <span class="stat-value text-success">Rp {{ number_format($financialReport->where('jenis', 'pemasukkan')->sum('jumlah'), 0, ',', '.') }}</span>
+            </td>
+            <td width="3%" style="border:none;"></td> {{-- Spacer --}}
+            <td width="31%" class="stat-card stat-card-expense">
+                <span class="stat-label">Total Pengeluaran</span>
+                <span class="stat-value text-danger">Rp {{ number_format($financialReport->where('jenis', 'pengeluaran')->sum('jumlah'), 0, ',', '.') }}</span>
+            </td>
+            <td width="3%" style="border:none;"></td> {{-- Spacer --}}
+            <td width="30%" class="stat-card stat-card-balance">
+                <span class="stat-label">Saldo Akhir</span>
+                <span class="stat-value">Rp {{ number_format(optional($financialReport->last())->current_balance ?? $openingBalance, 0, ',', '.') }}</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- TABEL TRANSAKSI -->
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th width="12%">Tanggal</th>
+                <th width="10%">Tipe</th>
+                <th width="18%">Jumlah</th>
+                <th>Keterangan / Deskripsi Transaksi</th>
+                <th width="18%" style="text-align: right;">Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{-- Opening Balance Row --}}
+            <tr style="background-color: #f1f5f9;">
+                <td style="font-weight: bold;">{{ \Carbon\Carbon::parse($startDate)->format('d/m/y') }}</td>
+                <td><span class="badge bg-slate">SALDO</span></td>
+                <td style="color: #64748b; font-style: italic;">Saldo Awal</td>
+                <td style="font-size: 7.5pt; color: #64748b;">Akumulasi saldo sebelum tanggal {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</td>
+                <td style="text-align: right; font-weight: bold;">Rp {{ number_format($openingBalance, 0, ',', '.') }}</td>
+            </tr>
+
+            @forelse ($financialReport as $report)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($report->tanggal)->format('d/m/y') }}</td>
+                    <td>
+                        <span class="badge {{ $report->jenis === 'pengeluaran' ? 'bg-danger' : 'bg-success' }}">
+                            {{ $report->jenis === 'pengeluaran' ? 'KELUAR' : 'MASUK' }}
+                        </span>
+                    </td>
+                    <td class="{{ $report->jenis === 'pengeluaran' ? 'text-danger' : 'text-success' }}" style="font-weight: bold;">
+                        {{ $report->jenis === 'pengeluaran' ? '-' : '+' }} Rp {{ number_format($report->jumlah, 0, ',', '.') }}
+                    </td>
+                    <td>{{ $report->deskripsi }}</td>
+                    <td style="text-align: right; font-weight: bold;">Rp {{ number_format($report->current_balance, 0, ',', '.') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8; font-style: italic;">
+                        Tidak ada transaksi keuangan yang tercatat pada periode ini.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px; font-size: 8.5pt; color: #4b5563; text-align: justify; line-height: 1.6;">
+        <strong>Catatan:</strong> Laporan ini dicetak secara otomatis melalui sistem manajemen Bright Star. Seluruh data transaksi yang tertera di atas bersifat final dan telah melalui validasi sistem kasir pusat. Jika terdapat ketidaksesuaian data, harap segera menghubungi bagian administrasi keuangan.
+    </div>
+
+    <!-- SIGNATURE SECTION -->
+    <div class="clearfix">
+        <div class="sig-block">
+            <p style="margin-bottom: 50px;">Unaaha, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p class="sig-name">{{ Auth::user()->name ?? 'Administrator Keuangan' }}</p>
+            <p class="sig-meta">Bagian Administrasi & Keuangan<br>Bright Star of Child</p>
         </div>
     </div>
-</body>
 
+</body>
 </html>

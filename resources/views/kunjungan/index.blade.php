@@ -274,22 +274,27 @@
                 type: 'GET',
                 data: { anak_id: anakId },
                 success: function(response) {
-                    if (response.paket_terapi) {
-                        let paketMatch = response.paket_terapi.filter(p => p.jenis_terapi === jenisTerapi);
-                        let activeKwitansi = paketMatch.find(p => p.sisa > 0);
-
-                        if (activeKwitansi) {
-                            let p = activeKwitansi;
+                    // Gunakan 'paket_terbeli' dari response KeuanganController
+                    if (response.paket_terbeli && response.paket_terbeli.length > 0) {
+                        // Cari paket yang sesuai dengan jenis terapi yang sedang dipilih dan masih ada sisa
+                        let p = response.paket_terbeli.find(item => {
+                            return item.sisa > 0 && item.jenis_terapi === jenisTerapi;
+                        });
+                        
+                        // Karena kita butuh filter berdasarkan jenis_terapi (terapi_perilaku / fisioterapi)
+                        // Kita asumsikan data dari paket_terbeli sudah mencakup info tersebut via relationship
+                        // Namun untuk lebih akurat, kita saring lagi di sini jika ada info jenis_terapi
+                        
+                        if (p) {
                             let sisa = p.sisa;
-                            
                             let borderClass = sisa <= 2 ? "border-red-200 bg-red-50/30" : "border-emerald-200 bg-emerald-50/30";
                             let textClass = sisa <= 2 ? "text-red-600" : "text-emerald-700";
                             
                             content.html(`
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Paket Ditemukan</h4>
-                                        <p class="text-xs font-black ${textClass}">${p.nama}</p>
+                                        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Paket Aktif Ditemukan</h4>
+                                        <p class="text-xs font-black ${textClass}">${p.nama.replace('[SUDAH DIBELI] ', '')}</p>
                                     </div>
                                     <div class="text-right">
                                         <h3 class="text-2xl font-black ${textClass} tracking-tighter">${sisa} <span class="text-[10px] font-bold uppercase ml-1">Sesi Sisa</span></h3>
@@ -300,19 +305,25 @@
                             container.removeClass('hidden').hide().fadeIn();
                             content.removeClass('border-red-200 bg-red-50/30 border-emerald-200 bg-emerald-50/30').addClass(borderClass);
                         } else {
-                            content.html(`
-                                <div class="text-center p-2">
-                                    <p class="text-xs font-black text-red-600 uppercase italic"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Tidak Ada Paket Aktif</p>
-                                    <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Silakan lakukan pembayaran paket terlebih dahulu</p>
-                                </div>
-                            `);
-                            container.removeClass('hidden').hide().fadeIn();
-                            content.removeClass('border-emerald-200 bg-emerald-50/30').addClass('border-red-100 bg-slate-50/50');
+                            showNoPacket(content, container);
                         }
-                        lucide.createIcons();
+                    } else {
+                        showNoPacket(content, container);
                     }
+                    lucide.createIcons();
                 }
             });
+        }
+
+        function showNoPacket(content, container) {
+            content.html(`
+                <div class="text-center p-2">
+                    <p class="text-xs font-black text-red-600 uppercase italic"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Tidak Ada Paket Aktif</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">Silakan lakukan pembayaran paket terlebih dahulu</p>
+                </div>
+            `);
+            container.removeClass('hidden').hide().fadeIn();
+            content.removeClass('border-emerald-200 bg-emerald-50/30 border-red-200 bg-red-50/30').addClass('border-red-100 bg-slate-50/50');
         }
 
         function resetTerapisForm() {

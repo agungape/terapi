@@ -26,7 +26,7 @@ class KeuanganController extends Controller
         $this->middleware('permission:view kategori', ['only' => ['kategori', 'kategori_store', 'kategori_destroy']]);
         $this->middleware('permission:create kategori', ['only' => ['kategori_store']]);
         $this->middleware('permission:delete kategori', ['only' => ['kategori_destroy']]);
-        $this->middleware('permission:view pemasukkan', ['only' => ['pemasukkan']]);
+        $this->middleware('permission:view pemasukkan', ['only' => ['pemasukkan', 'getLogPemakaian']]);
         $this->middleware('permission:create pemasukkan', ['only' => ['pemasukkan_store']]);
         $this->middleware('permission:delete pemasukkan', ['only' => ['pemasukkan_destroy']]);
         $this->middleware('permission:view pengeluaran', ['only' => ['pengeluaran']]);
@@ -122,7 +122,7 @@ class KeuanganController extends Controller
         $request->validate(['anak_id' => 'required|exists:anaks,id']);
         $anakId = $request->anak_id;
 
-        // Ambil semua pembayaran paket aktif (yang masih ada sisa sesi)
+        // 1. Ambil paket yang SUDAH DIBELI (untuk info sisa sesi)
         $pemasukkans = Pemasukkan::with('tarif')
             ->where('anak_id', $anakId)
             ->where('jenis_layanan', 'paket_terapi')
@@ -130,21 +130,31 @@ class KeuanganController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        $paketTerapi = $pemasukkans->map(function ($p) {
+        $paketTerbeli = $pemasukkans->map(function ($p) {
             return [
                 'id'                => $p->tarif_id,
                 'pemasukkan_id'     => $p->id,
-                'nama'              => $p->tarif->nama ?? 'Paket Tanpa Nama',
-                'tarif'             => $p->getRawOriginal('jumlah'),
+                'nama'              => '[SUDAH DIBELI] ' . ($p->tarif->nama ?? 'Paket'),
+                'tarif'             => 0, // Sudah bayar
                 'jumlah_pertemuan'  => $p->tarif->jumlah_pertemuan ?? 20,
-                'terpakai'          => $p->sudah_terpakai,
                 'sisa'              => $p->sisa_pertemuan,
-                'sudah_lunas'       => true, // Karena masuk ke tabel pemasukkan berarti sudah lunas/terbayar
                 'jenis_terapi'      => $p->tarif->jenis_terapi ?? '',
+                'type'              => 'terbeli'
             ];
         });
 
-        // Ambil assessment yang belum lunas untuk anak ini
+        // 2. Ambil SEMUA PAKET TERSEDIA (untuk pembelian baru)
+        $paketTersedia = Tarif::where('is_active', true)->get()->map(function($t) {
+            return [
+                'id'                => $t->id,
+                'nama'              => '[BELI BARU] ' . $t->nama,
+                'tarif'             => $t->getRawOriginal('tarif'),
+                'jumlah_pertemuan'  => $t->jumlah_pertemuan,
+                'type'              => 'baru'
+            ];
+        });
+
+        // 3. Ambil assessment yang belum lunas
         $assessments = Assessment::where('anak_id', $anakId)
             ->where('status_bayar', 'belum_bayar')
             ->get()
@@ -152,11 +162,13 @@ class KeuanganController extends Controller
                 'id'           => $a->id,
                 'label'        => 'Assessment - ' . ($a->tanggal_assessment?->format('d/m/Y') ?? 'Tanpa Tanggal'),
                 'tujuan'       => $a->tujuan_pemeriksaan,
+                'tarif'        => 0, // Manual input for assessment usually
             ]);
 
         return response()->json([
-            'paket_terapi' => $paketTerapi,
-            'assessments'  => $assessments,
+            'paket_terbeli'  => $paketTerbeli,
+            'paket_tersedia' => $paketTersedia,
+            'assessments'    => $assessments,
         ]);
     }
 
@@ -371,18 +383,25 @@ class KeuanganController extends Controller
             $endDate   = now()->endOfMonth()->toDateString();
         }
 
+        // Hitung Saldo Awal sebelum StartDate
+        $systemInitialBalance = SaldoKas::first()->saldo_awal ?? 0;
+        $incomeBefore = DB::table('pemasukkans')->where('tanggal', '<', $startDate)->sum('jumlah');
+        $expenseBefore = DB::table('pengeluarans')->where('tanggal', '<', $startDate)->sum('jumlah');
+        $openingBalance = $systemInitialBalance + $incomeBefore - $expenseBefore;
+
         $financialReport = DB::table('pemasukkans')
-            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', 'created_at')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->unionAll(
                 DB::table('pengeluarans')
-                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
             ->orderBy('tanggal')
+            ->orderBy('created_at')
             ->get();
 
-        $currentBalance = 0;
+        $currentBalance = $openingBalance;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
                 $currentBalance += $item->jumlah;
@@ -393,23 +412,30 @@ class KeuanganController extends Controller
             return $item;
         });
 
-        return view('keuangan.laporan', compact('financialReport', 'startDate', 'endDate'));
+        return view('keuangan.laporan', compact('financialReport', 'startDate', 'endDate', 'openingBalance'));
     }
 
     public function laporan_pdf(Request $request, $startDate, $endDate)
     {
+        // Hitung Saldo Awal sebelum StartDate
+        $systemInitialBalance = SaldoKas::first()->saldo_awal ?? 0;
+        $incomeBefore = DB::table('pemasukkans')->where('tanggal', '<', $startDate)->sum('jumlah');
+        $expenseBefore = DB::table('pengeluarans')->where('tanggal', '<', $startDate)->sum('jumlah');
+        $openingBalance = $systemInitialBalance + $incomeBefore - $expenseBefore;
+
         $financialReport = DB::table('pemasukkans')
-            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
+            ->select('tanggal', DB::raw('"pemasukkan" as jenis'), 'jumlah', 'deskripsi', 'created_at')
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->unionAll(
                 DB::table('pengeluarans')
-                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', DB::raw('NULL as saldo_awal'), 'created_at')
+                    ->select('tanggal', DB::raw('"pengeluaran" as jenis'), 'jumlah', 'deskripsi', 'created_at')
                     ->whereBetween('tanggal', [$startDate, $endDate])
             )
             ->orderBy('tanggal')
+            ->orderBy('created_at')
             ->get();
 
-        $currentBalance = 0;
+        $currentBalance = $openingBalance;
         $financialReport = $financialReport->map(function ($item) use (&$currentBalance) {
             if ($item->jenis === 'pemasukkan') {
                 $currentBalance += $item->jumlah;
@@ -420,19 +446,123 @@ class KeuanganController extends Controller
             return $item;
         });
 
-        $html = view('keuangan.laporan_pdf', compact('financialReport', 'startDate', 'endDate'))->render();
+        $profile = \App\Models\Profile::first();
+        $primaryColor = $profile->warna_primer ?? '#ef4444';
 
-        $mpdf = new Mpdf([
-            'mode'          => 'utf-8',
-            'format'        => 'A4',
-            'margin_top'    => 20,
-            'margin_right'  => 15,
-            'margin_bottom' => 20,
-            'margin_left'   => 15,
-            'default_font'  => 'sans-serif',
+        // Use static previous logo
+        $logoPath = public_path('assets/website/images/logo.jpg');
+        
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoBase64 = 'data:image/jpeg;base64,' . $logoData;
+        }
+
+        $logoPjiPath = public_path('assets/website/images/pji-removebg-preview.png'); 
+        $logoPjiBase64 = '';
+        if (file_exists($logoPjiPath)) {
+            $pjiData = base64_encode(file_get_contents($logoPjiPath));
+            $logoPjiBase64 = 'data:image/png;base64,' . $pjiData;
+        }
+
+        $pdfData = [
+            'financialReport' => $financialReport,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'openingBalance' => $openingBalance,
+            'logoBase64' => $logoBase64,
+            'logoPjiBase64' => $logoPjiBase64,
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('keuangan.laporan_pdf', $pdfData);
+        
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'sans-serif'
         ]);
 
-        $mpdf->WriteHTML($html);
-        return $mpdf->Output("laporan_keuangan_{$startDate}_{$endDate}.pdf", 'I');
+        $filename = 'Laporan-Keuangan-' . $startDate . '-sd-' . $endDate . '.pdf';
+        return $pdf->stream($filename);
+    }
+
+    /**
+     * GET /pemasukkan/log/{id}
+     * Ambil riwayat pemakaian sesi (kunjungan) untuk kwitansi tertentu.
+     */
+    public function getLogPemakaian($id)
+    {
+        try {
+            \Log::info("Fetching log for Pemasukkan ID: " . $id);
+            // Relationship di Pemasukkan.php didefinisikan sebagai Tarif (Capital T)
+            $pemasukkan = Pemasukkan::with(['Tarif', 'anak'])->findOrFail($id);
+            
+            // AUTO-SYNC: Cari kunjungan yang belum terhubung tapi seharusnya masuk ke kwitansi ini
+            if ($pemasukkan->jenis_layanan === 'paket_terapi' && $pemasukkan->anak_id) {
+                $query = Kunjungan::where('anak_id', $pemasukkan->anak_id)
+                    ->whereNull('pemasukkan_id')
+                    ->whereIn('status', ['hadir', 'izin_hangus']);
+                
+                if ($pemasukkan->tanggal) {
+                    $query->whereDate('created_at', '>=', $pemasukkan->tanggal);
+                }
+
+                if ($pemasukkan->tarif_id) {
+                    $query->where(function($q) use ($pemasukkan) {
+                        $q->where('tarif_id', $pemasukkan->tarif_id)
+                          ->orWhereNull('tarif_id'); // Handle case where visit was registered without tarif
+                    });
+                }
+
+                // Ambil data kunjungan yang akan diupdate
+                $toUpdate = $query->get();
+                
+                foreach($toUpdate as $k) {
+                    // Update pendaftaran agar link ke kwitansi ini
+                    $k->update([
+                        'pemasukkan_id' => $pemasukkan->id,
+                        'tarif_id' => $pemasukkan->tarif_id // Sinkronkan juga tarifnya
+                    ]);
+                }
+                
+                // Refresh data setelah update
+                $pemasukkan->load(['kunjungans' => function($q) {
+                    $q->orderBy('created_at', 'desc');
+                }, 'kunjungans.terapis', 'Tarif']);
+            } else {
+                $pemasukkan->load(['kunjungans' => function($q) {
+                    $q->orderBy('created_at', 'desc');
+                }, 'kunjungans.terapis', 'Tarif']);
+            }
+
+            return view('keuangan.log_pemakaian', compact('pemasukkan'));
+        } catch (\Exception $e) {
+            \Log::error("Error fetching log: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function kwitansi_pdf($id)
+    {
+        $pemasukkan = Pemasukkan::with(['Tarif', 'anak', 'kategori'])->findOrFail($id);
+        
+        $pdfData = [
+            'pemasukkan' => $pemasukkan,
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('keuangan.kwitansi_pdf', $pdfData);
+        
+        // Ukuran Thermal 80mm dalam points (1mm = 2.83465pt)
+        // 80mm = 226.77pt, 150mm = 425.2pt
+        $pdf->setPaper([0, 0, 226.77, 425.2], 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'monospace'
+        ]);
+
+        $filename = 'Kwitansi-' . $pemasukkan->id . '.pdf';
+        return $pdf->stream($filename);
     }
 }

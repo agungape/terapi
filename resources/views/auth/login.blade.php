@@ -1,11 +1,18 @@
+@php
+    $profile = \App\Models\Profile::first();
+    $primaryColor = $profile->warna_primer ?? '#ef4444';
+    list($r, $g, $b) = sscanf($primaryColor, "#%02x%02x%02x");
+    $primaryRgb = "$r, $g, $b";
+@endphp
+
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | Bright Star Of Child</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo-1734059476.png') }}">
+    <title>Login | {{ $profile->nama_apk ?? 'Bright Star Of Child' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('storage/logo/' . ($profile->logo ?? '')) }}">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +34,24 @@
     </script>
     
     <style>
+        :root {
+            --primary-color: {{ $primaryColor }};
+            --primary-color-rgb: {{ $primaryRgb }};
+        }
+
         [x-cloak] { display: none !important; }
+        
+        /* Dynamic Color Overrides */
+        .text-red-500 { color: var(--primary-color) !important; }
+        .text-red-600 { color: var(--primary-color) !important; filter: brightness(0.9); }
+        .bg-red-50 { background-color: rgba(var(--primary-color-rgb), 0.05) !important; }
+        .bg-red-500 { background-color: var(--primary-color) !important; }
+        .hover\:bg-red-500:hover { background-color: var(--primary-color) !important; filter: brightness(0.9); }
+        .hover\:text-red-600:hover { color: var(--primary-color) !important; filter: brightness(0.9); }
+        .focus\:ring-red-50:focus { --tw-ring-color: rgba(var(--primary-color-rgb), 0.1) !important; }
+        .shadow-red-100 { --tw-shadow-color: rgba(var(--primary-color-rgb), 0.1) !important; }
+        .border-red-100 { border-color: rgba(var(--primary-color-rgb), 0.1) !important; }
+
         .bg-pattern {
             background-color: #f8fafc;
             background-image: radial-gradient(#e2e8f0 0.5px, transparent 0.5px);
@@ -48,9 +72,9 @@
             <!-- Card Header -->
             <div class="p-10 pb-4 text-center">
                 <div class="w-20 h-20 bg-white rounded-3xl shadow-xl shadow-red-100 border border-slate-50 flex items-center justify-center mx-auto mb-6 transform hover:rotate-3 transition-transform">
-                    <img src="{{ asset('assets/images/bsc.png') }}" class="w-14 h-14 object-contain" alt="Logo">
+                    <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'bsc.png')) }}" class="w-14 h-14 object-contain" alt="Logo">
                 </div>
-                <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Bright Star <span class="text-red-500">Of Child</span></h2>
+                <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">{{ $profile->nama_apk ?? 'Bright Star' }}</h2>
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2">Clinical Management System</p>
             </div>
 

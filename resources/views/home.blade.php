@@ -13,14 +13,14 @@
     <!-- Ultra-Premium Header: Greeting & Pulse -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-600 rounded-full border border-red-100 mb-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 text-primary-600 rounded-full border border-primary-100 mb-2">
                 <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
                 </span>
                 <span class="text-[9px] font-black uppercase tracking-widest italic">Clinical System Live</span>
             </div>
-            <h1 class="text-3xl font-black text-slate-800 tracking-tight italic">{{ $greeting }}, <span class="text-red-500">{{ explode(' ', auth()->user()->name)[0] }}!</span></h1>
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight italic">{{ $greeting }}, <span class="text-primary-500">{{ explode(' ', auth()->user()->name)[0] }}!</span></h1>
             <p class="text-sm font-medium text-slate-500">Berikut adalah ringkasan performa dan aktivitas klinis hari ini.</p>
         </div>
         
@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="h-10 w-px bg-slate-200 mx-2 hidden lg:block"></div>
-            <button onclick="location.reload()" class="bg-white border border-slate-200 hover:border-red-500 hover:text-red-600 p-3 rounded-2xl transition-all shadow-sm group">
+            <button onclick="location.reload()" class="bg-white border border-slate-200 hover:border-primary-500 hover:text-primary-600 p-3 rounded-2xl transition-all shadow-sm group focus:ring-2 focus:ring-primary-50">
                 <i data-lucide="refresh-cw" class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"></i>
             </button>
         </div>
@@ -101,7 +101,7 @@
 
         <!-- Metric 4: Low Quota Alerts -->
         @if(count($lowQuotaPackages) > 0)
-        <div class="card-premium p-6 group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-red-500 to-red-600 text-white border-none shadow-xl shadow-red-100 relative overflow-hidden animate-pulse">
+        <div class="card-premium p-6 group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-primary-500 to-primary-600 text-white border-none shadow-xl shadow-primary-100 relative overflow-hidden animate-pulse">
             <i data-lucide="alert-circle" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 rotate-12"></i>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-6">
@@ -230,7 +230,7 @@
             <div class="card-premium overflow-hidden border-none shadow-2xl">
                 <div class="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50 backdrop-blur-md">
                     <h3 class="text-[11px] font-black text-slate-800 uppercase tracking-widest italic flex items-center gap-2">
-                        <i data-lucide="rss" class="w-4 text-red-500"></i> AKTIVITAS REAL-TIME
+                        <i data-lucide="rss" class="w-4 text-primary-500"></i> AKTIVITAS REAL-TIME
                     </h3>
                     <span class="text-[8px] font-black text-slate-400 bg-white px-2 py-1 rounded-lg border border-slate-100 tracking-widest uppercase animate-pulse">Live</span>
                 </div>
@@ -267,17 +267,17 @@
     <div id="quota-list" class="space-y-6">
         <div class="flex items-center justify-between">
             <h3 class="text-lg font-black text-slate-800 uppercase italic tracking-tight">Daftar Paket Menipis (≤ 2 Sesi)</h3>
-            <span class="px-4 py-1.5 bg-red-100 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-red-200">{{ count($lowQuotaPackages) }} Perlu Tindakan</span>
+            <span class="px-4 py-1.5 bg-primary-50 text-primary-600 text-[10px] font-black uppercase tracking-widest rounded-full border border-primary-100">{{ count($lowQuotaPackages) }} Perlu Tindakan</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($lowQuotaPackages as $pkg)
-            <div class="card-premium p-6 hover:shadow-2xl transition-all group border-l-4 border-l-red-500">
+            <div class="card-premium p-6 hover:shadow-2xl transition-all group border-l-4 border-l-primary-500">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h4 class="text-sm font-black text-slate-800 uppercase italic">{{ $pkg->anak?->nama ?? 'Data Terhapus' }}</h4>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ str_ireplace('_', ' ', $pkg->tarif->nama_tarif) }}</p>
                     </div>
-                    <div class="bg-red-50 text-red-600 px-3 py-1 rounded-lg text-[11px] font-black border border-red-100">
+                    <div class="bg-primary-50 text-primary-600 px-3 py-1 rounded-lg text-[11px] font-black border border-primary-100">
                         {{ $pkg->sisa_pertemuan }} Sesi
                     </div>
                 </div>
@@ -349,7 +349,8 @@
         blueGrad.addColorStop(0, '#3b82f6'); blueGrad.addColorStop(1, '#93c5fd');
 
         const redGrad = revCtx.createLinearGradient(0, 0, 0, 400);
-        redGrad.addColorStop(0, '#ef4444'); redGrad.addColorStop(1, '#fca5a5');
+        redGrad.addColorStop(0, window.primaryColor); 
+        redGrad.addColorStop(1, `rgba(${window.primaryColorRgb}, 0.2)`);
 
         new Chart(revCtx, {
             type: 'bar',

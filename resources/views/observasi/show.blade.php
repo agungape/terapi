@@ -161,7 +161,7 @@
 
             <!-- ATEC -->
             <button @click="openModal('atec')" class="card-premium p-6 bg-white hover:bg-slate-50 border-none transition-all group text-center space-y-3">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform" style="background-color: #fee2e2; color: #ef4444;">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform" style="background-color: var(--primary-color-light, #fee2e2); color: var(--primary-color);">
                     <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
                 </div>
                 <div class="space-y-1">
@@ -328,7 +328,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <input type="hidden" name="jenis_model" value="{{ $h['jenis_model'] }}">
-                                                <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors" title="Hapus">
+                                                <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors btn-hapus" title="Hapus">
                                                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                                 </button>
                                             </form>
@@ -397,7 +397,7 @@
                                             <form action="{{ route('observasi.anthropometri.destroy', $anthro->id) }}" method="POST" onsubmit="confirmDelete(event)" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors">
+                                                <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors btn-hapus">
                                                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                                 </button>
                                             </form>
@@ -1602,7 +1602,7 @@
                 text: 'Yakin ingin menghapus data ini? Data yang dihapus tidak dapat dikembalikan.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: window.primaryColor,
                 cancelButtonColor: '#94a3b8',
                 confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal',

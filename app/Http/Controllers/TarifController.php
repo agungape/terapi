@@ -52,7 +52,10 @@ class TarifController extends Controller
         $tarif = new Tarif();
         $tarif->nama = $validateData['nama'];
         $tarif->deskripsi = $validateData['deskripsi'];
-        $tarif->tarif = (int) str_replace('.', '', $validateData['tarif']);
+        
+        // Bersihkan tarif dari titik atau koma (hanya ambil angka)
+        $tarifValue = preg_replace('/[^0-9]/', '', $validateData['tarif']);
+        $tarif->tarif = (int) $tarifValue;
         $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'];
         $tarif->jenis_terapi = $validateData['jenis_terapi'];
         $tarif->is_active = $validateData['is_active'];
@@ -84,18 +87,22 @@ class TarifController extends Controller
             'nama'              => 'required',
             'deskripsi'         => 'nullable',
             'tarif'             => 'required',
-            'jumlah_pertemuan'  => 'nullable|integer|min:1',
-            'jenis_terapi'      => 'required|in:terapi_perilaku,fisioterapi',
+            'jumlah_pertemuan'  => 'required|integer|min:1',
+            'jenis_terapi'      => 'required',
             'is_active'         => 'nullable',
             'gambar'            => 'nullable|image|max:2048'
         ]);
 
         $tarif->nama = $validateData['nama'];
-        $tarif->deskripsi = $validateData['deskripsi'] ?? $tarif->deskripsi;
-        $tarif->tarif = (int) str_replace('.', '', $validateData['tarif']);
-        $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'] ?? $tarif->jumlah_pertemuan;
+        $tarif->deskripsi = $validateData['deskripsi'];
+        
+        // Bersihkan tarif dari titik atau koma (hanya ambil angka)
+        $tarifValue = preg_replace('/[^0-9]/', '', $validateData['tarif']);
+        $tarif->tarif = (int) $tarifValue;
+        
+        $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'];
         $tarif->jenis_terapi = $validateData['jenis_terapi'];
-        $tarif->is_active = $validateData['is_active'];
+        $tarif->is_active = $request->has('is_active');
 
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama

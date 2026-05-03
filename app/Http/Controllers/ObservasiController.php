@@ -734,8 +734,13 @@ class ObservasiController extends Controller
         $anthropometris = Anthropometri::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
         $kpsp = HasilPemeriksaan::where('anak_id', $anak->id)->where('jenis', 'KPSP')->whereDate('created_at', $tanggal)->first();
 
+        $profile = \App\Models\Profile::first();
+        $primaryColor = $profile->warna_primer ?? '#ef4444';
+
         // Encode logo ke Base64 agar pasti terbaca oleh DomPDF
+        // Use static previous logo
         $logoPath = public_path('assets/website/images/logo.jpg');
+        
         $logoBase64 = '';
         if (file_exists($logoPath)) {
             $logoData = base64_encode(file_get_contents($logoPath));
@@ -746,7 +751,7 @@ class ObservasiController extends Controller
         $logoPjiBase64 = '';
         if (file_exists($logoPjiPath)) {
             $pjiData = base64_encode(file_get_contents($logoPjiPath));
-            $logoPjiBase64 = 'data:image/jpeg;base64,' . $pjiData;
+            $logoPjiBase64 = 'data:image/png;base64,' . $pjiData;
         }
 
         // Siapkan data untuk view

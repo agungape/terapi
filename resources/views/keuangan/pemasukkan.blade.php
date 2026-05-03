@@ -82,15 +82,17 @@
     <!-- Transaction Table -->
     <div class="card-premium overflow-hidden">
         <div class="p-6 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between bg-white gap-4">
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                <i data-lucide="scroll-text" class="w-4 h-4 text-emerald-500"></i> RIWAYAT PEMASUKKAN KAS
-            </h3>
             <div class="flex items-center gap-3">
-                <span class="text-[10px] font-black text-slate-400 uppercase">Status Kas Akhir Terpantau</span>
+                <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-[0.2em]">RIWAYAT PEMASUKKAN KAS</h3>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest italic">Real-time Sync</span>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        {{-- Desktop View --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-slate-50 border-b border-slate-100">
                     <tr>
@@ -100,7 +102,7 @@
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Kategori</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Jumlah</th>
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Saldo Kas</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-32">Bukti / Aksi</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center w-32">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -113,7 +115,7 @@
                                 <span class="text-xs font-black text-slate-800 leading-tight uppercase tracking-tight">{{ $pemasukkan->deskripsi }}</span>
                                 @if($pemasukkan->jenis_layanan === 'paket_terapi')
                                     <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest italic mt-0.5 flex items-center gap-1">
-                                        <i data-lucide="package" class="w-2.5 h-2.5"></i> Pembayaran Paket Terapi
+                                        <i data-lucide="package" class="w-2.5 h-2.5"></i> {{ $pemasukkan->tarif->nama ?? 'Paket Terapi' }}
                                     </span>
                                 @endif
                             </div>
@@ -138,6 +140,11 @@
                                 </button>
                                 @endif
 
+                                <a href="{{ route('pemasukkan.kwitansi', $pemasukkan->id) }}" target="_blank"
+                                   class="p-2 bg-slate-50 text-slate-600 rounded-xl hover:bg-slate-900 hover:text-white transition-all border border-slate-100 shadow-sm" title="Cetak Kwitansi">
+                                    <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                </a>
+
                                 @if($pemasukkan->jenis_layanan === 'paket_terapi')
                                 <button @click="openModal('log-pemakaian'); $nextTick(() => { fetchLogData('{{ $pemasukkan->id }}') })"
                                         class="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm border border-emerald-100">
@@ -147,10 +154,9 @@
 
                                 @can('delete pemasukkan')
                                     @if ($pemasukkan->id == $dataTerakhir->id)
-                                    <form action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}" method="POST" class="inline">
+                                    <form action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah anda yakin ingin menghapus data ini?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus"
-                                                data-name="{{ $pemasukkan->deskripsi }}">
+                                        <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100">
                                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                         </button>
                                     </form>
@@ -170,6 +176,58 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Mobile View --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($pemasukkans as $pemasukkan)
+            <div class="p-5 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="space-y-1">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ $pemasukkan->tanggal_formatted }}</p>
+                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight leading-tight">{{ $pemasukkan->deskripsi }}</h4>
+                    </div>
+                    <span class="text-sm font-black text-emerald-600 italic">{{ $pemasukkan->jumlah_formatted }}</span>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <span class="px-2.5 py-1 bg-slate-50 text-slate-400 border border-slate-200 rounded-lg text-[8px] font-black uppercase tracking-widest">
+                        {{ $pemasukkan->kategori->nama }}
+                    </span>
+                    <div class="flex items-center gap-2">
+                        @if ($pemasukkan->gambar)
+                        <button @click="openModal('bukti-transfer'); $nextTick(() => { document.getElementById('img-preview').src = '{{ asset('storage/bukti-transfer/' . $pemasukkan->gambar) }}' })"
+                                class="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-600 rounded-lg border border-blue-100">
+                            <i data-lucide="image" class="w-3 h-3"></i>
+                        </button>
+                        @endif
+
+                        <a href="{{ route('pemasukkan.kwitansi', $pemasukkan->id) }}" target="_blank"
+                                class="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
+                            <i data-lucide="printer" class="w-3 h-3"></i>
+                        </a>
+
+                        @if($pemasukkan->jenis_layanan === 'paket_terapi')
+                        <button @click="openModal('log-pemakaian'); $nextTick(() => { fetchLogData('{{ $pemasukkan->id }}') })"
+                                class="w-8 h-8 flex items-center justify-center bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+                            <i data-lucide="clipboard-list" class="w-3 h-3"></i>
+                        </button>
+                        @endif
+                        
+                        @if($pemasukkan->id == $dataTerakhir->id)
+                        <form action="{{ route('pemasukkan.destroy', $pemasukkan->id) }}" method="POST" class="inline">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg border border-red-100">
+                                <i data-lucide="trash-2" class="w-3 h-3"></i>
+                            </button>
+                        </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="p-12 text-center text-slate-300 text-[10px] font-black uppercase tracking-widest italic">Tidak ada data.</div>
+            @endforelse
+        </div>
+
         <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">
             {{ $pemasukkans->fragment('judul')->links() }}
         </div>
@@ -185,7 +243,7 @@
         
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeModal()"></div>
 
-        <div class="bg-white rounded-[2.5rem] shadow-2xl w-full relative z-10 overflow-hidden border border-slate-100"
+        <div class="bg-white rounded-[2.5rem] shadow-2xl w-full relative z-10 border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden"
              :class="modalType === 'bukti-transfer' ? 'max-w-xl' : 'max-w-2xl'"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
@@ -193,9 +251,9 @@
             
             {{-- Modals for Forms --}}
             <template x-if="modalType === 'pembayaran-anak'">
-                <form action="{{ route('pemasukkan.store') }}" method="POST" enctype="multipart/form-data" id="tarifForm">
+                <form action="{{ route('pemasukkan.store') }}" method="POST" enctype="multipart/form-data" id="tarifForm" class="flex flex-col max-h-[90vh]">
                     @csrf
-                    <div class="bg-emerald-600 text-white p-7 flex items-center justify-between">
+                    <div class="bg-emerald-600 text-white p-7 flex items-center justify-between shrink-0">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
                                 <i data-lucide="user-plus" class="text-white"></i>
@@ -205,7 +263,7 @@
                         <button type="button" @click="closeModal()" class="text-emerald-100 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
                     </div>
 
-                    <div class="p-8 space-y-6">
+                    <div class="p-8 space-y-6 overflow-y-auto flex-1 scrollbar-thin">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Tanggal Bayar</label>
@@ -252,12 +310,13 @@
 
                         <div id="bukti-transfer1" class="hidden animate-in zoom-in-95 duration-300">
                              <div class="p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-center space-y-4">
-                                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto text-slate-400 shadow-sm"><i data-lucide="upload-cloud"></i></div>
-                                <div class="space-y-1">
-                                    <p class="text-[10px] font-black text-slate-700 uppercase tracking-widest">Unggah Bukti Transfer</p>
-                                    <p class="text-[8px] font-bold text-slate-400 uppercase">Format: JPG, PNG, PDF (Maks 2MB)</p>
-                                </div>
-                                <input type="file" id="unggah-bukti1" name="gambar" accept="image/*" class="text-[10px] font-bold text-slate-500 mx-auto">
+                                 <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto text-slate-400 shadow-sm"><i data-lucide="upload-cloud"></i></div>
+                                 <div class="space-y-1">
+                                     <p class="text-[10px] font-black text-slate-700 uppercase tracking-widest">Unggah Bukti Transfer</p>
+                                     <p class="text-[8px] font-bold text-slate-400 uppercase">Format: JPG, PNG, PDF (Maks 2MB)</p>
+                                 </div>
+                                 <input type="file" id="unggah-bukti1" name="gambar" accept="image/*" class="text-[10px] font-bold text-slate-500 mx-auto">
+                                 <img id="preview1" src="#" alt="Preview" class="hidden mt-4 max-h-48 mx-auto rounded-xl shadow-md border-4 border-white">
                             </div>
                         </div>
 
@@ -268,7 +327,7 @@
                         @if ($kategori) <input type="hidden" name="kategori_id" value="{{ $kategori->id }}"> @endif
                     </div>
 
-                    <div class="bg-slate-50 p-7 flex justify-end gap-3">
+                    <div class="bg-slate-50 p-7 flex justify-end gap-3 shrink-0">
                         <button type="button" @click="closeModal()" class="px-8 py-4 bg-white border border-slate-200 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all">Batal</button>
                         <button type="submit" @if(!$kategori) disabled title="Kategori Pembayaran Anak Belum Diatur" @endif 
                                 class="px-12 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-emerald-100 italic transition-all disabled:opacity-50">Simpan Transaksi</button>
@@ -277,9 +336,9 @@
             </template>
 
             <template x-if="modalType === 'pemasukkan-lain'">
-                <form action="{{ route('pemasukkan.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('pemasukkan.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col max-h-[90vh]">
                     @csrf
-                    <div class="bg-blue-600 text-white p-7 flex items-center justify-between">
+                    <div class="bg-blue-600 text-white p-7 flex items-center justify-between shrink-0">
                         <div class="flex items-center gap-4">
                             <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
                                 <i data-lucide="external-link" class="text-white"></i>
@@ -289,7 +348,7 @@
                         <button type="button" @click="closeModal()" class="text-blue-100 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
                     </div>
 
-                    <div class="p-8 space-y-6">
+                    <div class="p-8 space-y-6 overflow-y-auto flex-1 scrollbar-thin">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Tanggal</label>
@@ -328,13 +387,14 @@
                         </div>
 
                         <div id="bukti-transfer2" class="hidden animate-in slide-in-from-top-2">
-                             <div class="p-6 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-center">
-                                <input type="file" name="gambar" accept="image/*" class="text-[10px] font-bold">
+                             <div class="p-6 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-center space-y-4">
+                                <input type="file" id="unggah-bukti2" name="gambar" accept="image/*" class="text-[10px] font-bold">
+                                <img id="preview2" src="#" alt="Preview" class="hidden mt-4 max-h-48 mx-auto rounded-xl shadow-md border-4 border-white">
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 p-7 flex justify-end gap-3">
+                    <div class="bg-slate-50 p-7 flex justify-end gap-3 shrink-0">
                         <button type="button" @click="closeModal()" class="px-8 py-4 bg-white border border-slate-200 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all">Batal</button>
                         <button type="submit" class="px-12 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-100 italic transition-all">Simpan Data</button>
                     </div>
@@ -390,22 +450,67 @@
             let value = input.value.replace(/[^0-9]/g, '');
             input.value = value ? 'Rp ' + parseInt(value).toLocaleString('id-ID') : '';
         }
-
-        // Global function for Log Pemakaian
-        window.fetchLogData = function(id) {
-            const container = document.getElementById('log-container');
-            container.innerHTML = `<div class="p-20 text-center"><div class="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto"></div></div>`;
-            
-            fetch(`/pemasukkan/log/${id}`)
-                .then(res => res.text())
-                .then(html => {
-                    container.innerHTML = html;
-                    lucide.createIcons();
-                })
-                .catch(err => {
-                    container.innerHTML = `<div class="p-20 text-center text-red-500 font-bold uppercase text-[10px]">Gagal memuat data log.</div>`;
-                });
-        }
     });
+
+    // Global function for Log Pemakaian (Moved outside DOMContentLoaded for global access)
+    window.fetchLogData = function(id, retryCount = 0) {
+        const container = document.getElementById('log-container');
+        
+        // If container not found (modal not rendered yet), retry up to 5 times
+        if (!container) {
+            if (retryCount < 10) {
+                console.log(`Log container not found, retrying... (${retryCount + 1}/10)`);
+                setTimeout(() => fetchLogData(id, retryCount + 1), 100);
+            } else {
+                console.error('Critical Error: Log container could not be found after multiple retries.');
+            }
+            return;
+        }
+
+        container.innerHTML = `<div class="p-20 text-center">
+            <div class="animate-spin w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Menghubungkan ke Server...</p>
+        </div>`;
+        
+        // Generate URL using route helper
+        const baseUrl = "{{ route('pemasukkan.log', ':id') }}";
+        const url = baseUrl.replace(':id', id);
+        
+        console.log('Fetching log from:', url);
+        
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/html'
+            }
+        })
+        .then(res => {
+            console.log('Response status:', res.status);
+            if(!res.ok) {
+                if(res.status === 403) throw new Error('Akses Ditolak (Izin Diperlukan)');
+                if(res.status === 404) throw new Error('Data Log Tidak Ditemukan');
+                throw new Error(`Server Error (${res.status})`);
+            }
+            return res.text();
+        })
+        .then(html => {
+            if (!html.trim()) throw new Error('Server mengembalikan data kosong');
+            container.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            console.log('Log loaded successfully');
+        })
+        .catch(err => {
+            console.error('Fetch error:', err);
+            container.innerHTML = `<div class="p-20 text-center">
+                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-red-100 animate-bounce">
+                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                </div>
+                <h6 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-2">Gagal Memuat Riwayat</h6>
+                <p class="text-[10px] font-bold text-red-500 uppercase tracking-tighter mb-4">${err.message}</p>
+                <button onclick="fetchLogData('${id}')" class="px-6 py-2 bg-slate-800 text-white text-[9px] font-black uppercase rounded-lg hover:bg-slate-700 transition-all">Coba Lagi</button>
+            </div>`;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    }
 </script>
 @endsection

@@ -1,13 +1,20 @@
+@php
+    $profile = \App\Models\Profile::first();
+    $primaryColor = $profile->warna_primer ?? '#ef4444';
+    list($r, $g, $b) = sscanf($primaryColor, "#%02x%02x%02x");
+    $primaryRgb = "$r, $g, $b";
+@endphp
+
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bright Star Of Child | Pusat Layanan Terapi Terpadu</title>
+    <title>{{ $profile->nama_apk ?? 'Bright Star Of Child' }} | Pusat Layanan Terapi Terpadu</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('assets/website/images/logo-title-bar.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('storage/logo/' . ($profile->logo ?? '')) }}" type="image/png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +35,7 @@
                     },
                     colors: {
                         brand: {
-                            red: '#ef4444',
+                            red: '{{ $primaryColor }}',
                             slate: '#0f172a',
                         }
                     }
@@ -38,11 +45,44 @@
     </script>
     
     <style>
+        :root {
+            --primary-color: {{ $primaryColor }};
+            --primary-color-rgb: {{ $primaryRgb }};
+        }
+
         [x-cloak] { display: none !important; }
+        
         .nav-link-active {
-            color: #ef4444 !important;
+            color: var(--primary-color) !important;
             font-weight: 800;
         }
+
+        /* Comprehensive Color Overrides */
+        /* Text Overrides */
+        .text-red-500, .text-red-600, .text-brand-red { color: var(--primary-color) !important; }
+        .text-brand-red\/80 { color: rgba(var(--primary-color-rgb), 0.8) !important; }
+        
+        /* Background Overrides */
+        .bg-red-50, .bg-brand-red\/5, .bg-brand-red\/10 { background-color: rgba(var(--primary-color-rgb), 0.05) !important; }
+        .bg-red-500, .bg-red-600, .bg-brand-red { background-color: var(--primary-color) !important; }
+        
+        /* Border Overrides */
+        .border-red-100, .border-red-200, .border-brand-red\/10 { border-color: rgba(var(--primary-color-rgb), 0.1) !important; }
+        .border-brand-red, .border-red-500 { border-color: var(--primary-color) !important; }
+        
+        /* Shadow & Ring Overrides */
+        .shadow-red-100, .shadow-red-500, .shadow-brand-red\/20 { 
+            --tw-shadow-color: rgba(var(--primary-color-rgb), 0.2) !important; 
+            --tw-shadow: var(--tw-shadow-colored) !important;
+        }
+        
+        /* Hover Overrides */
+        .hover\:bg-brand-red:hover, .hover\:bg-brand-slate:hover { background-color: var(--primary-color) !important; filter: brightness(0.9); }
+        .hover\:text-brand-red:hover { color: var(--primary-color) !important; filter: brightness(0.9); }
+        .hover\:border-brand-red:hover { border-color: var(--primary-color) !important; }
+        
+        /* Decorative Overrides */
+        .decoration-red-200, .decoration-red-500 { text-decoration-color: var(--primary-color) !important; }
     </style>
     
     @yield('extra_css')
@@ -76,11 +116,10 @@
             <!-- Logo -->
             <a href="/" class="flex items-center gap-3 group">
                 <div class="w-12 h-12 bg-white rounded-2xl shadow-lg border border-slate-50 flex items-center justify-center overflow-hidden group-hover:rotate-3 transition-transform">
-                    <img src="{{ asset('assets/website/images/logo.jpg') }}" alt="BSC Logo" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'logo.jpg')) }}" alt="BSC Logo" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-sm font-black text-brand-slate uppercase italic tracking-tight leading-none">Bright Star</h1>
-                    <p class="text-[9px] font-black text-brand-red uppercase tracking-[0.2em] mt-0.5">Of Child</p>
+                    <h1 class="text-sm font-black text-brand-slate uppercase italic tracking-tight leading-none">{{ $profile->nama_apk ?? 'Bright Star' }}</h1>
                 </div>
             </a>
 
@@ -142,10 +181,10 @@
                 <div class="lg:col-span-5 space-y-8">
                     <a href="/" class="flex items-center gap-4">
                         <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center p-2 shadow-xl shadow-white/5">
-                            <img src="{{ asset('assets/website/images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain">
+                            <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'logo.jpg')) }}" alt="Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
-                            <h2 class="text-xl font-black uppercase italic tracking-tight">Bright Star <span class="text-brand-red">Of Child</span></h2>
+                            <h2 class="text-xl font-black uppercase italic tracking-tight">{{ $profile->nama_apk ?? 'Bright Star' }}</h2>
                             <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Integrated Therapy Center</p>
                         </div>
                     </a>

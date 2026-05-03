@@ -51,15 +51,18 @@
             this.modalMode = 'edit';
             this.modalTitle = 'Edit Paket Terapi';
             this.formAction = '{{ url('tarif') }}/' + item.id;
-            console.log('Target URL Update:', this.formAction);
             
             this.id = item.id;
             this.nama = item.nama;
             this.deskripsi = item.deskripsi;
-            this.tarif = this.formatNumber(item.tarif);
+            
+            // Konversi ke angka bulat dulu (buang .00 jika ada)
+            let rawTarif = Math.floor(parseFloat(item.tarif));
+            this.tarif = this.formatNumber(rawTarif);
+            
             this.jumlah_pertemuan = item.jumlah_pertemuan;
             this.jenis_terapi = item.jenis_terapi;
-            this.is_active = !!item.is_active;
+            this.is_active = item.is_active === 1 || item.is_active === true;
             this.existingImage = item.gambar ? `/storage/tarif/${item.gambar}` : null;
             this.imagePreview = null;
             
@@ -72,7 +75,7 @@
             this.deskripsi = '';
             this.tarif = '';
             this.jumlah_pertemuan = '10';
-            this.jenis_terapi = 'terapi_perilaku';
+            this.jenis_terapi = '';
             this.is_active = true;
             this.imagePreview = null;
             this.existingImage = null;
@@ -95,7 +98,10 @@
         },
 
         formatNumber(n) {
-            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            if (!n) return '';
+            // Pastikan hanya angka yang diproses
+            let num = n.toString().replace(/[^\d]/g, '');
+            return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
      }">
     

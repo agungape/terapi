@@ -132,7 +132,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::delete('/pengeluaran/{pengeluaran}', [KeuanganController::class, 'pengeluaran_destroy'])->name('pengeluaran.destroy');
     Route::get('/laporan-keuangan', [KeuanganController::class, 'laporan_keuangan'])->name('keuangan.laporan');
     Route::get('/keuangan/laporan/pdf/{startDate}/{endDate}', [KeuanganController::class, 'laporan_pdf'])->name('keuangan.laporan.pdf');
+    Route::get('/pemasukkan/kwitansi/{id}', [KeuanganController::class, 'kwitansi_pdf'])->name('pemasukkan.kwitansi');
     Route::get('/pemasukkan/layanan', [KeuanganController::class, 'getLayananByAnak'])->name('pemasukkan.layanan');
+    Route::get('/pemasukkan/log/{id}', [KeuanganController::class, 'getLogPemakaian'])->name('pemasukkan.log');
 
     Route::resource('/alat-ukur', AlatUkurController::class);
 

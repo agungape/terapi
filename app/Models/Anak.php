@@ -116,8 +116,13 @@ class Anak extends Model
 
         foreach ($pemasukkans as $p) {
             $tarif = $p->tarif;
-            // Pastikan tarif sesuai dengan jenis terapi yang dicari
-            if (!$tarif || $tarif->jenis_terapi !== $jenisTerapi) continue;
+            if (!$tarif) continue;
+
+            // Pastikan tarif sesuai dengan jenis terapi yang dicari (Flexible match)
+            $tarifJenis = strtolower(str_replace(' ', '_', $tarif->jenis_terapi));
+            $searchJenis = strtolower(str_replace(' ', '_', $jenisTerapi));
+            
+            if ($tarifJenis !== $searchJenis) continue;
 
             // Jika sisa pertemuan > 0, maka ini adalah kwitansi yang aktif digunakan
             if ($p->sisa_pertemuan > 0) {

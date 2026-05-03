@@ -69,7 +69,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2 opacity-20 group-hover:opacity-100 transition-opacity">
+                                    <div class="flex items-center justify-end gap-2 transition-opacity">
                                         @can('update permission')
                                         <button @click="openEdit({{ $permission->id }}, '{{ $permission->name }}')" 
                                                 class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">

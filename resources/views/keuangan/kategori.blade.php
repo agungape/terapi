@@ -84,7 +84,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-end transition-opacity">
                                 @can('delete kategori')
                                 <form action="{{ route('kategori.destroy', ['kategori' => $kategori->id]) }}" method="POST">
                                     @csrf @method('DELETE')

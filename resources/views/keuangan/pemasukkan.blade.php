@@ -154,9 +154,9 @@
 
                                 @can('delete pemasukkan')
                                     @if ($pemasukkan->id == $dataTerakhir->id)
-                                    <form action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                    <form action="{{ route('pemasukkan.destroy', ['pemasukkan' => $pemasukkan->id]) }}" method="POST" class="inline">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100">
+                                        <button type="button" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus" data-name="{{ $pemasukkan->deskripsi }}">
                                             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                         </button>
                                     </form>
@@ -215,7 +215,7 @@
                         @if($pemasukkan->id == $dataTerakhir->id)
                         <form action="{{ route('pemasukkan.destroy', $pemasukkan->id) }}" method="POST" class="inline">
                             @csrf @method('DELETE')
-                            <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg border border-red-100">
+                            <button type="button" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg border border-red-100 btn-hapus" data-name="{{ $pemasukkan->deskripsi }}">
                                 <i data-lucide="trash-2" class="w-3 h-3"></i>
                             </button>
                         </form>
@@ -450,6 +450,34 @@
             let value = input.value.replace(/[^0-9]/g, '');
             input.value = value ? 'Rp ' + parseInt(value).toLocaleString('id-ID') : '';
         }
+
+        // SweetAlert Delete
+        $(document).on('click', '.btn-hapus', function(e) {
+            e.preventDefault();
+            const form = $(this).closest('form');
+            const name = $(this).data('name');
+
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: `Apakah Anda yakin ingin menghapus data '${name}'? Saldo kas akan disesuaikan kembali.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#f1f5f9',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-[2.5rem] border-none shadow-2xl',
+                    confirmButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4',
+                    cancelButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4 text-slate-500'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
 
     // Global function for Log Pemakaian (Moved outside DOMContentLoaded for global access)

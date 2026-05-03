@@ -83,96 +83,185 @@
             </h3>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[900px]">
-                <thead class="bg-slate-50 border-b border-slate-100">
-                    <tr>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Spesialisasi / Role</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Usia</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse ($terapis as $t)
-                    <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-11 h-11 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden shadow-sm shrink-0">
-                                    <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/images/faces/face1.jpg') }}" 
-                                         alt="Avatar" class="w-full h-full object-cover">
+        {{-- Desktop Table --}}
+        <div class="hidden md:block">
+            <div class="overflow-x-auto scrollbar-hide">
+                <table class="w-full text-left min-w-[900px]">
+                    <thead class="bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Spesialisasi / Role</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Usia</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse ($terapis as $t)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-11 h-11 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden shadow-sm shrink-0">
+                                        <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/images/faces/face1.jpg') }}" 
+                                             alt="Avatar" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $t->nama }}</h4>
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-tighter">NIB: {{ $t->nib }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $t->nama }}</h4>
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-tighter">NIB: {{ $t->nib }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-2.5 py-1 bg-red-50 text-red-700 rounded-lg text-[10px] font-black uppercase tracking-tighter border border-red-100 shadow-sm">
-                                {{ $t->role }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="text-xs font-bold text-slate-500">{{ $t->usia }} Thn</span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @can('update terapis')
-                            <div class="flex justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer group">
-                                    <input type="checkbox" class="sr-only peer status-toggle" 
-                                           data-id="{{ $t->id }}" {{ $t->status === 'aktif' ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
-                                </label>
-                            </div>
-                            @else
-                            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border {{ $t->status === 'aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
-                                {{ $t->status }}
-                            </span>
-                            @endcan
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                @can('show terapis')
-                                <a href="{{ route('terapis.show', $t->id) }}" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Detail Profile">
-                                    <i data-lucide="contact-2" class="w-3.5 h-3.5"></i>
-                                </a>
-                                @endcan
-                                
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 bg-red-50 text-red-700 rounded-lg text-[10px] font-black uppercase tracking-tighter border border-red-100 shadow-sm">
+                                    {{ $t->role }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-xs font-bold text-slate-500">{{ $t->usia }} Thn</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 @can('update terapis')
-                                <button @click="openEditModal({
-                                    id: '{{ $t->id }}',
-                                    nib: '{{ $t->nib }}',
-                                    nama: '{{ $t->nama }}',
-                                    telepon: '{{ $t->telepon }}',
-                                    tanggal_lahir: '{{ $t->tanggal_lahir }}',
-                                    perguruan_tinggi: '{{ $t->perguruan_tinggi }}',
-                                    jurusan: '{{ $t->jurusan }}',
-                                    role: '{{ $t->role }}',
-                                    alamat: `{!! addslashes($t->alamat) !!}`,
-                                    status: '{{ $t->status }}'
-                                })" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100" title="Ubah Data">
-                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-                                </button>
+                                <div class="flex justify-center">
+                                    <label class="relative inline-flex items-center cursor-pointer group">
+                                        <input type="checkbox" class="sr-only peer status-toggle" 
+                                               data-id="{{ $t->id }}" {{ $t->status === 'aktif' ? 'checked' : '' }}>
+                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
+                                    </label>
+                                </div>
+                                @else
+                                <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border {{ $t->status === 'aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
+                                    {{ $t->status }}
+                                </span>
                                 @endcan
-
-                                @can('delete terapis')
-                                <form action="{{ route('terapis.destroy', $t->id) }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus" data-name="{{ $t->nama }}" data-table="terapis" title="Hapus Permanen">
-                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center gap-2">
+                                    @can('show terapis')
+                                    <a href="{{ route('terapis.show', $t->id) }}" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Detail Profile">
+                                        <i data-lucide="contact-2" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                    @endcan
+                                    
+                                    @can('update terapis')
+                                    <button @click="openEditModal({
+                                        id: '{{ $t->id }}',
+                                        nib: '{{ $t->nib }}',
+                                        nama: '{!! addslashes($t->nama) !!}',
+                                        telepon: '{{ $t->telepon }}',
+                                        tanggal_lahir: '{{ $t->tanggal_lahir }}',
+                                        perguruan_tinggi: '{!! addslashes($t->perguruan_tinggi) !!}',
+                                        jurusan: '{!! addslashes($t->jurusan) !!}',
+                                        role: '{{ $t->role }}',
+                                        alamat: '{!! addslashes($t->alamat) !!}',
+                                        status: '{{ $t->status }}'
+                                    })" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-500 hover:text-white transition-all border border-amber-100 shadow-sm" title="Edit Data">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                     </button>
-                                </form>
-                                @endcan
+                                    @endcan
+    
+                                    @can('delete terapis')
+                                    <form action="{{ route('terapis.destroy', $t->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100 btn-hapus shadow-sm" data-name="{{ $t->nama }}" title="Hapus Data">
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-20 text-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <i data-lucide="user-x" class="w-12 h-12 text-slate-200"></i>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Belum ada data terapis</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($terapis as $t)
+            <div class="p-6 space-y-5 bg-white hover:bg-slate-50/50 transition-colors">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl border-2 border-slate-100 overflow-hidden shrink-0 shadow-sm">
+                            <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/images/faces/face1.jpg') }}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-800 uppercase italic tracking-tight leading-tight">{{ $t->nama }}</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">NIB: {{ $t->nib }}</p>
+                            <div class="mt-2">
+                                <span class="px-2 py-0.5 bg-red-50 text-red-600 rounded text-[9px] font-black uppercase tracking-tight border border-red-100 italic">
+                                    {{ str_ireplace('_', ' ', $t->role) }}
+                                </span>
                             </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="5" class="px-6 py-20 text-center text-slate-300 italic font-bold">Belum ada tenaga terapis terdaftar</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                    @can('update terapis')
+                    <div class="pt-1">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer status-toggle" 
+                                   data-id="{{ $t->id }}" {{ $t->status === 'aktif' ? 'checked' : '' }}>
+                            <div class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+                    @endcan
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                    <div class="flex items-center gap-2">
+                        @can('show terapis')
+                        <a href="{{ route('terapis.show', $t->id) }}" class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100 shadow-sm">
+                            <i data-lucide="contact-2" class="w-4 h-4"></i>
+                        </a>
+                        @endcan
+                        
+                        @can('update terapis')
+                        <button @click="openEditModal({
+                            id: '{{ $t->id }}',
+                            nib: '{{ $t->nib }}',
+                            nama: '{!! addslashes($t->nama) !!}',
+                            telepon: '{{ $t->telepon }}',
+                            tanggal_lahir: '{{ $t->tanggal_lahir }}',
+                            perguruan_tinggi: '{!! addslashes($t->perguruan_tinggi) !!}',
+                            jurusan: '{!! addslashes($t->jurusan) !!}',
+                            role: '{{ $t->role }}',
+                            alamat: '{!! addslashes($t->alamat) !!}',
+                            status: '{{ $t->status }}'
+                        })" class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center border border-amber-100 shadow-sm">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        </button>
+                        @endcan
+
+                        @can('delete terapis')
+                        <form action="{{ route('terapis.destroy', $t->id) }}" method="POST" class="inline">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center border border-red-100 btn-hapus" data-name="{{ $t->nama }}">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                        @endcan
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Usia</p>
+                        <p class="text-xs font-black text-slate-700 uppercase italic">{{ $t->usia }} Tahun</p>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="p-20 text-center space-y-3">
+                <i data-lucide="user-x" class="w-12 h-12 text-slate-100 mx-auto"></i>
+                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">Belum ada data terapis</p>
+            </div>
+            @endforelse
         </div>
         
         <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">

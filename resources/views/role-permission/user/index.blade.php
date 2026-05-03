@@ -142,7 +142,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-20 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-end gap-2">
                                 @can('update user')
                                 <button type="button" @click="openEdit({
                                     id: '{{ $user->id }}',

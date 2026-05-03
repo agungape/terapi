@@ -218,15 +218,24 @@
 
 <body class="flex bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] text-slate-900 antialiased h-screen overflow-hidden" 
       x-data="{ 
+        isMobile: window.innerWidth < 1024,
         sidebarOpen: window.innerWidth > 1024, 
         mobileSidebar: false,
-        isMobile: window.innerWidth < 1024
+        get isSidebarOpen() {
+            return this.isMobile ? this.mobileSidebar : this.sidebarOpen;
+        }
       }"
-      x-init="window.addEventListener('resize', () => { 
-        isMobile = window.innerWidth < 1024;
-        if (!isMobile) mobileSidebar = false;
+      x-init="
         if (isMobile) sidebarOpen = true;
-      })">
+        window.addEventListener('resize', () => { 
+            isMobile = window.innerWidth < 1024;
+            if (isMobile) {
+                sidebarOpen = true;
+            } else {
+                mobileSidebar = false;
+            }
+        })
+      ">
 
     <!-- Mobile Overlay -->
     <div x-show="mobileSidebar" 
@@ -258,7 +267,7 @@
                 <div class="p-1 rounded-xl bg-white border border-slate-100 shadow-sm w-10 h-10 flex items-center justify-center shrink-0">
                     <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'logo.jpg')) }}" alt="Logo" class="w-full h-full object-contain overflow-hidden">
                 </div>
-                <div class="transition-all duration-300 whitespace-nowrap" x-show="sidebarOpen">
+                <div class="transition-all duration-300 whitespace-nowrap" x-show="isMobile ? true : sidebarOpen">
                     <h1 class="font-extrabold text-sm text-slate-800 tracking-tight leading-tight uppercase italic">{{ $profile->nama_apk ?? 'SMC TERAPI' }}</h1>
                     <p class="text-slate-400 text-[9px] font-black tracking-widest uppercase">{{ $profile->nama ?? 'Clinical System' }}</p>
                 </div>
@@ -276,7 +285,7 @@
             <!-- Dashboard -->
             <a href="{{ route('home') }}" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
                 <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0 {{ request()->routeIs('home') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Dashboard Overview</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Dashboard Overview</span>
                 @if(request()->routeIs('home')) <span class="sidebar-active-indicator" x-show="sidebarOpen"></span> @endif
             </a>
 
@@ -285,42 +294,42 @@
             @can('view terapis')
             <a href="{{ route('terapis.index') }}" class="sidebar-link {{ request()->routeIs('terapis.*') ? 'active' : '' }}">
                 <i data-lucide="user-cog" class="w-4 h-4 shrink-0 {{ request()->routeIs('terapis.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Tenaga Terapis</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Tenaga Terapis</span>
             </a>
             @endcan
 
             @can('view psikolog')
             <a href="{{ route('psikolog.index') }}" class="sidebar-link {{ request()->routeIs('psikolog.*') ? 'active' : '' }}">
                 <i data-lucide="brain" class="w-4 h-4 shrink-0 {{ request()->routeIs('psikolog.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Tim Psikolog</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Tim Psikolog</span>
             </a>
             @endcan
 
             @can('view anak')
             <a href="{{ route('anak.index') }}" class="sidebar-link {{ request()->routeIs('anak.*') ? 'active' : '' }}">
                 <i data-lucide="users" class="w-4 h-4 shrink-0 {{ request()->routeIs('anak.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Database Anak</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Database Anak</span>
             </a>
             @endcan
 
             @can('view program')
             <a href="{{ route('program.index') }}" class="sidebar-link {{ request()->routeIs('program.*') ? 'active' : '' }}">
                 <i data-lucide="clipboard-list" class="w-4 h-4 shrink-0 {{ request()->routeIs('program.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Program Terapi</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Program Terapi</span>
             </a>
             @endcan
 
             @can('view tarif')
             <a href="{{ route('tarif.index') }}" class="sidebar-link {{ request()->routeIs('tarif.*') ? 'active' : '' }}">
                 <i data-lucide="tags" class="w-4 h-4 shrink-0 {{ request()->routeIs('tarif.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Paket & Tarif</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Paket & Tarif</span>
             </a>
             @endcan
 
             @can('view alat-ukur')
             <a href="{{ route('alat-ukur.index') }}" class="sidebar-link {{ request()->routeIs('alat-ukur.*') ? 'active' : '' }}">
                 <i data-lucide="ruler" class="w-4 h-4 shrink-0 {{ request()->routeIs('alat-ukur.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Alat Ukur Psikologi</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Alat Ukur Psikologi</span>
             </a>
             @endcan
 
@@ -378,7 +387,7 @@
             @can('view jadwal')
             <a href="{{ route('jadwal.index') }}" class="sidebar-link {{ request()->routeIs('jadwal.*') ? 'active' : '' }}">
                 <i data-lucide="calendar-days" class="w-4 h-4 shrink-0 {{ request()->routeIs('jadwal.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Jadwal Anak</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Jadwal Anak</span>
             </a>
             @endcan
 
@@ -412,19 +421,19 @@
 
             {{-- <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
                 <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0 {{ request()->routeIs('products.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Online Store</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Online Store</span>
             </a> --}}
 
 
 
             <a href="{{ route('pelatihan.index') }}" class="sidebar-link {{ request()->routeIs('pelatihan.index') ? 'active' : '' }}">
                 <i data-lucide="graduation-cap" class="w-4 h-4 shrink-0 {{ request()->routeIs('pelatihan.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Katalog Pelatihan</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Katalog Pelatihan</span>
             </a>
 
             <a href="{{ route('analisis.kinerja') }}" class="sidebar-link {{ request()->routeIs('analisis.kinerja') ? 'active' : '' }}">
                 <i data-lucide="bar-chart-big" class="w-4 h-4 shrink-0 {{ request()->routeIs('analisis.kinerja') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Analisis Kinerja</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Analisis Kinerja</span>
             </a>
 
 
@@ -458,14 +467,14 @@
             @can('view career')
             <a href="/career" class="sidebar-link {{ request()->is('career*') ? 'active' : '' }}">
                 <i data-lucide="briefcase" class="w-4 h-4 shrink-0 {{ request()->is('career*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Career Room</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Career Room</span>
             </a>
             @endcan
 
             @can('view informasi')
             <a href="/informasi" class="sidebar-link {{ request()->is('informasi*') ? 'active' : '' }}">
                 <i data-lucide="info" class="w-4 h-4 shrink-0 {{ request()->is('informasi*') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Informasi</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Informasi</span>
             </a>
             @endcan
 
@@ -473,17 +482,17 @@
 
             <a href="{{ route('profile.index') }}" class="sidebar-link {{ request()->routeIs('profile.index') ? 'active' : '' }}">
                 <i data-lucide="settings" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Profil Yayasan</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Profil Yayasan</span>
             </a>
 
             <a href="{{ route('profile.user') }}" class="sidebar-link {{ request()->routeIs('profile.user') ? 'active' : '' }}">
                 <i data-lucide="user-circle" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.user') ? 'text-red-500' : 'text-slate-400' }}"></i>
-                <span x-show="sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Keamanan Akun</span>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Keamanan Akun</span>
             </a>
 
             <!-- Penutup Footer Sidebar -->
             <div class="mt-auto p-4">
-                <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100" x-show="sidebarOpen">
+                <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100" x-show="isMobile ? true : sidebarOpen">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-red-600 font-bold shadow-sm">
                             {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}

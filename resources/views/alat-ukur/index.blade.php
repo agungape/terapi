@@ -58,7 +58,7 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-center gap-2 transition-opacity">
                                 <a href="{{ route('alat-ukur.edit', $alatUkur->id) }}" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </a>

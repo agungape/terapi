@@ -293,7 +293,7 @@
                                     <td class="px-6 py-4 text-xs font-bold text-slate-500 tracking-tight">{{ \Carbon\Carbon::parse($h['waktu'])->format('d M Y') }}</td>
                                     <td class="px-6 py-4 font-black text-xs text-slate-700 uppercase tracking-tighter italic">{{ $h['jenis'] }}</td>
                                     <td class="px-6 py-4 text-right">
-                                        <div class="flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div class="flex items-center justify-end gap-2 transition-opacity">
                                             @if (!in_array($h['jenis'], ['Wawancara', 'OBS. PERILAKU', 'OBS. SENSORIK']))
                                                 <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all border border-blue-100"
                                                         @click="openModal('result', { 

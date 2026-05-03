@@ -88,153 +88,155 @@
         </div>
 
         {{-- Desktop Table --}}
-        <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-slate-50/50">
-                    <tr>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi & NIB</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Anak / Terapi</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sesi</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Waktu Kunjungan</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">E-Book</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @foreach ($kunjungan as $kun)
-                    <tr class="hover:bg-slate-50/30 transition-colors group">
-                        {{-- Aksi & NIB --}}
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                @can('delete kunjungan')
-                                <form action="{{ route('kunjungan.destroy', ['kunjungan' => $kun->id]) }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100 btn-hapus shadow-sm" data-name="{{ $kun->anak->nama }}">
-                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                </form>
-                                @endcan
-                                
-                                @can('edit kunjungan')
-                                <div class="relative" x-data="{ open: false }">
-                                    <button @click="open = !open" class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-700 border-2 border-slate-100 rounded-2xl text-[10px] font-black uppercase transition-all hover:border-amber-200 hover:text-amber-600 shadow-sm">
-                                        {{ $kun->anak->nib }}
-                                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-180' : ''"></i>
-                                    </button>
-                                    <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-2"
-                                         class="absolute left-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 p-2" x-cloak>
-                                        @if ($kun->status === 'hadir')
-                                        <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' })"
-                                                class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl flex items-center gap-3 transition-colors">
-                                            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-                                                <i data-lucide="user-plus" class="w-4 h-4"></i>
-                                            </div>
-                                            Tambah Pendamping
+        <div class="hidden md:block">
+            <div class="overflow-x-auto scrollbar-hide">
+                <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <thead class="bg-slate-50/50">
+                        <tr>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi & NIB</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Anak / Terapi</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sesi</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Waktu Kunjungan</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">E-Book</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @foreach ($kunjungan as $kun)
+                        <tr class="hover:bg-slate-50/30 transition-colors group">
+                            {{-- Aksi & NIB --}}
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    @can('delete kunjungan')
+                                    <form action="{{ route('kunjungan.destroy', ['kunjungan' => $kun->id]) }}" method="POST" class="inline">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100 btn-hapus shadow-sm" data-name="{{ $kun->anak->nama }}">
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                         </button>
-                                        @endif
-                                        <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' })"
-                                                class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl flex items-center gap-3 transition-colors">
-                                            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-                                                <i data-lucide="edit-2" class="w-4 h-4"></i>
-                                            </div>
-                                            Edit Status
+                                    </form>
+                                    @endcan
+                                    
+                                    @can('edit kunjungan')
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button @click="open = !open" class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-700 border-2 border-slate-100 rounded-2xl text-[10px] font-black uppercase transition-all hover:border-amber-200 hover:text-amber-600 shadow-sm">
+                                            {{ $kun->anak->nib }}
+                                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-180' : ''"></i>
                                         </button>
-                                        <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id }}' })"
-                                                class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl flex items-center gap-3 transition-colors">
-                                            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
-                                                <i data-lucide="user-cog" class="w-4 h-4"></i>
-                                            </div>
-                                            Ganti Terapis Utama
-                                        </button>
+                                        <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                             class="absolute left-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 p-2" x-cloak>
+                                            @if ($kun->status === 'hadir')
+                                            <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
+                                                    class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl flex items-center gap-3 transition-colors">
+                                                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                                                </div>
+                                                Tambah Pendamping
+                                            </button>
+                                            @endif
+                                            <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' }); open = false"
+                                                    class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl flex items-center gap-3 transition-colors">
+                                                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                                </div>
+                                                Edit Status
+                                            </button>
+                                            <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
+                                                    class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl flex items-center gap-3 transition-colors">
+                                                <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                                                    <i data-lucide="user-cog" class="w-4 h-4"></i>
+                                                </div>
+                                                Ganti Terapis Utama
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @endcan
+                                </div>
+                            </td>
+    
+                            {{-- Anak --}}
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 shadow-inner">
+                                        <img src="{{ $kun->anak->foto ? asset('storage/anak/' . $kun->anak->foto) : asset('assets/images/faces/face1.jpg') }}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $kun->anak->nama }}</h4>
+                                        <span class="text-[10px] font-bold text-red-500 uppercase italic">{{ $kun->jenis_terapi == 'terapi_perilaku' ? 'Terapi Perilaku' : 'Fisioterapi' }}</span>
                                     </div>
                                 </div>
-                                @endcan
-                            </div>
-                        </td>
-
-                        {{-- Anak --}}
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0 shadow-inner">
-                                    <img src="{{ $kun->anak->foto ? asset('storage/anak/' . $kun->anak->foto) : asset('assets/images/faces/face1.jpg') }}" class="w-full h-full object-cover">
-                                </div>
+                            </td>
+    
+                            {{-- Terapis --}}
+                            <td class="px-8 py-5">
+                                @if ($kun->status == 'hadir')
                                 <div class="flex flex-col">
-                                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $kun->anak->nama }}</h4>
-                                    <span class="text-[10px] font-bold text-red-500 uppercase italic">{{ $kun->jenis_terapi == 'terapi_perilaku' ? 'Terapi Perilaku' : 'Fisioterapi' }}</span>
+                                    <p class="text-xs font-bold text-slate-700">{{ $kun->terapis->nama }}</p>
+                                    @if ($kun->terapis_id_pendamping)
+                                    <span class="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-1"><i data-lucide="plus" class="w-2.5 h-2.5"></i> {{ $kun->terapisPendamping->nama }}</span>
+                                    @endif
                                 </div>
-                            </div>
-                        </td>
-
-                        {{-- Terapis --}}
-                        <td class="px-8 py-5">
-                            @if ($kun->status == 'hadir')
-                            <div class="flex flex-col">
-                                <p class="text-xs font-bold text-slate-700">{{ $kun->terapis->nama }}</p>
-                                @if ($kun->terapis_id_pendamping)
-                                <span class="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-1"><i data-lucide="plus" class="w-2.5 h-2.5"></i> {{ $kun->terapisPendamping->nama }}</span>
+                                @else
+                                <span class="text-slate-300 italic text-xs font-medium">No Attendance</span>
                                 @endif
-                            </div>
-                            @else
-                            <span class="text-slate-300 italic text-xs font-medium">No Attendance</span>
-                            @endif
-                        </td>
-
-                        {{-- Pertemuan --}}
-                        <td class="px-8 py-5">
-                            @if ($kun->status == 'hadir' || $kun->status == 'izin_hangus')
-                            <div class="space-y-1">
-                                <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-xl text-[10px] font-black uppercase border border-slate-200">{{ $kun->nama_pertemuan }}</span>
-                                @if (in_array($kun->anak_id . '-' . $kun->sesi . '-' . $kun->jenis_terapi, $completedSessions))
-                                <div class="mt-1">
-                                    <span class="px-2 py-0.5 bg-emerald-500 text-white rounded text-[8px] font-black uppercase italic tracking-tighter">Completed</span>
+                            </td>
+    
+                            {{-- Pertemuan --}}
+                            <td class="px-8 py-5">
+                                @if ($kun->status == 'hadir' || $kun->status == 'izin_hangus')
+                                <div class="space-y-1">
+                                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-xl text-[10px] font-black uppercase border border-slate-200">{{ $kun->nama_pertemuan }}</span>
+                                    @if (in_array($kun->anak_id . '-' . $kun->sesi . '-' . $kun->jenis_terapi, $completedSessions))
+                                    <div class="mt-1">
+                                        <span class="px-2 py-0.5 bg-emerald-500 text-white rounded text-[8px] font-black uppercase italic tracking-tighter">Completed</span>
+                                    </div>
+                                    @endif
                                 </div>
+                                @else
+                                <span class="text-slate-300 italic text-xs font-medium">-</span>
                                 @endif
-                            </div>
-                            @else
-                            <span class="text-slate-300 italic text-xs font-medium">-</span>
-                            @endif
-                        </td>
-
-                        {{-- Waktu --}}
-                        <td class="px-8 py-5">
-                            <div class="flex flex-col">
-                                <span class="text-xs font-bold text-slate-700">{{ $kun->created_at->format('d M Y') }}</span>
-                                <span class="text-[10px] font-medium text-slate-400">{{ $kun->created_at->format('H:i') }} WIB</span>
-                            </div>
-                        </td>
-
-                        {{-- Status --}}
-                        <td class="px-8 py-5 text-center">
-                            @php
-                                $statusMap = [
-                                    'hadir' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
-                                    'izin' => 'bg-amber-50 text-amber-600 border-amber-200',
-                                    'sakit' => 'bg-blue-50 text-blue-600 border-blue-200',
-                                    'izin_hangus' => 'bg-red-50 text-red-600 border-red-200',
-                                ];
-                                $cls = $statusMap[$kun->status] ?? 'bg-slate-50 text-slate-400 border-slate-200';
-                            @endphp
-                            <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border-2 {{ $cls }} italic shadow-sm">
-                                {{ str_replace('_', ' ', $kun->status) }}
-                            </span>
-                        </td>
-
-                        {{-- E-Book --}}
-                        <td class="px-8 py-5 text-center">
-                            @can('show rekammedis')
-                            @if ($kun->status == 'hadir')
-                            <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
-                               class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-red-200 group/btn">
-                                <i data-lucide="book-open" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> E-Book
-                            </a>
-                            @endif
-                            @endcan
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                            </td>
+    
+                            {{-- Waktu --}}
+                            <td class="px-8 py-5">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-slate-700">{{ $kun->created_at->format('d M Y') }}</span>
+                                    <span class="text-[10px] font-medium text-slate-400">{{ $kun->created_at->format('H:i') }} WIB</span>
+                                </div>
+                            </td>
+    
+                            {{-- Status --}}
+                            <td class="px-8 py-5 text-center">
+                                @php
+                                    $statusMap = [
+                                        'hadir' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
+                                        'izin' => 'bg-amber-50 text-amber-600 border-amber-200',
+                                        'sakit' => 'bg-blue-50 text-blue-600 border-blue-200',
+                                        'izin_hangus' => 'bg-red-50 text-red-600 border-red-200',
+                                    ];
+                                    $cls = $statusMap[$kun->status] ?? 'bg-slate-50 text-slate-400 border-slate-200';
+                                @endphp
+                                <span class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border-2 {{ $cls }} italic shadow-sm">
+                                    {{ str_replace('_', ' ', $kun->status) }}
+                                </span>
+                            </td>
+    
+                            {{-- E-Book --}}
+                            <td class="px-8 py-5 text-center">
+                                @can('show rekammedis')
+                                @if ($kun->status == 'hadir')
+                                <a href="{{ route('kunjungan.show', ['kunjungan' => $kun->id]) }}"
+                                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-red-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-red-200 group/btn">
+                                    <i data-lucide="book-open" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i> E-Book
+                                </a>
+                                @endif
+                                @endcan
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {{-- Mobile Card List --}}
@@ -286,11 +288,39 @@
                             </button>
                         </form>
                         @endcan
+                        
                         @can('edit kunjungan')
-                        <button @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' })"
-                                class="w-9 h-9 bg-slate-900 text-white rounded-xl flex items-center justify-center">
-                            <i data-lucide="settings" class="w-4 h-4"></i>
-                        </button>
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="w-9 h-9 bg-slate-900 text-white rounded-xl flex items-center justify-center transition-all hover:bg-primary-500">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-2"
+                                 class="absolute left-0 bottom-full mb-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 p-2" x-cloak>
+                                @if ($kun->status === 'hadir')
+                                <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
+                                        class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl flex items-center gap-3 transition-colors">
+                                    <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    Tambah Pendamping
+                                </button>
+                                @endif
+                                <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' }); open = false"
+                                        class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl flex items-center gap-3 transition-colors">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    Edit Status
+                                </button>
+                                <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
+                                        class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl flex items-center gap-3 transition-colors">
+                                    <div class="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+                                        <i data-lucide="user-cog" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    Ganti Terapis Utama
+                                </button>
+                            </div>
+                        </div>
                         @endcan
                     </div>
                     @can('show rekammedis')

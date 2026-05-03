@@ -45,7 +45,7 @@
                         <i data-lucide="graduation-cap" class="w-6 h-6"></i>
                     </div>
                     @can('delete pelatihan')
-                    <form action="{{ route('pelatihan.destroy', ['pelatihan' => $p->id]) }}" method="POST" class="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <form action="{{ route('pelatihan.destroy', ['pelatihan' => $p->id]) }}" method="POST" class="transition-opacity">
                         @csrf @method('DELETE')
                         <button type="submit" class="p-2 text-slate-300 hover:text-red-500 transition-colors btn-hapus" data-name="{{ $p->nama }}">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>

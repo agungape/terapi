@@ -96,95 +96,189 @@
             </h3>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1000px]">
-                <thead class="bg-slate-50 border-b border-slate-100">
-                    <tr>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Biodata</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usia</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pencapaian / Progres</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse ($anaks as $anak)
-                    <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shadow-sm shrink-0">
-                                    <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" 
-                                         alt="Foto" class="w-full h-full object-cover">
+        {{-- Desktop Table --}}
+        <div class="hidden md:block">
+            <div class="overflow-x-auto scrollbar-hide">
+                <table class="w-full text-left min-w-[1000px]">
+                    <thead class="bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Biodata</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usia</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pencapaian / Progres</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse ($anaks as $anak)
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shadow-sm shrink-0">
+                                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" 
+                                             alt="Foto" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $anak->nama }}</h4>
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-tighter">NIB: {{ $anak->nib ?? '-' }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ $anak->nama }}</h4>
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5 tracking-tighter">NIB: {{ $anak->nib ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-xs font-bold text-slate-600">{{ $anak->usia }} Tahun</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($anak->active_packages->count() > 0)
-                            <button @click="openProgress('{{ addslashes($anak->nama) }}', {{ $anak->packages_data->toJson() }})" 
-                                    class="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-500 hover:text-white transition-all group">
-                                <span class="text-[10px] font-black uppercase tracking-tight">{{ $anak->active_packages->count() }} Paket Aktif</span>
-                                <i data-lucide="bar-chart-3" class="w-3 h-3 transition-transform group-hover:scale-110"></i>
-                            </button>
-                            @else
-                            <span class="text-[10px] font-bold text-slate-300 italic uppercase">Belum ada paket aktif</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 max-w-[200px]">
-                            <p class="text-[10px] font-bold text-slate-500 line-clamp-2 leading-relaxed tracking-tight">{{ $anak->alamat }}</p>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @can('update anak')
-                            <div class="flex justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer group">
-                                    <input type="checkbox" class="sr-only peer status-toggle" 
-                                           data-id="{{ $anak->id }}" {{ $anak->status === 'aktif' ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
-                                </label>
-                            </div>
-                            @else
-                            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border {{ $anak->status === 'aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
-                                {{ $anak->status }}
-                            </span>
-                            @endcan
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                @can('show anak')
-                                <a href="{{ route('anak.show', $anak->id) }}" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Profil">
-                                    <i data-lucide="user-circle" class="w-3.5 h-3.5"></i>
-                                </a>
-                                @endcan
-                                
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs font-bold text-slate-600">{{ $anak->usia }} Tahun</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($anak->active_packages->count() > 0)
+                                <button @click="openProgress('{{ addslashes($anak->nama) }}', {{ $anak->packages_data->toJson() }})" 
+                                        class="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-500 hover:text-white transition-all group">
+                                    <span class="text-[10px] font-black uppercase tracking-tight">{{ $anak->active_packages->count() }} Paket Aktif</span>
+                                    <i data-lucide="bar-chart-3" class="w-3 h-3 transition-transform group-hover:scale-110"></i>
+                                </button>
+                                @else
+                                <span class="text-[10px] font-bold text-slate-300 italic uppercase">Belum ada paket aktif</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 max-w-[200px]">
+                                <p class="text-[10px] font-bold text-slate-500 line-clamp-2 leading-relaxed tracking-tight">{{ $anak->alamat }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 @can('update anak')
-                                <a href="{{ route('anak.edit', $anak->id) }}" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100" title="Edit">
-                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
-                                </a>
+                                <div class="flex justify-center">
+                                    <label class="relative inline-flex items-center cursor-pointer group">
+                                        <input type="checkbox" class="sr-only peer status-toggle" 
+                                               data-id="{{ $anak->id }}" {{ $anak->status === 'aktif' ? 'checked' : '' }}>
+                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
+                                    </label>
+                                </div>
+                                @else
+                                <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border {{ $anak->status === 'aktif' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100' }}">
+                                    {{ $anak->status }}
+                                </span>
                                 @endcan
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center gap-2">
+                                    @can('show anak')
+                                    <a href="{{ route('anak.show', $anak->id) }}" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Profil Pasien">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                    @endcan
+                                    
+                                    @can('update anak')
+                                    <a href="{{ route('anak.edit', $anak->id) }}" class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-500 hover:text-white transition-all border border-amber-100 shadow-sm" title="Ubah Data">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                    @endcan
+    
+                                    @can('delete anak')
+                                    <form action="{{ route('anak.destroy', $anak->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all border border-red-100 btn-hapus shadow-sm" data-name="{{ $anak->nama }}" title="Hapus Data">
+                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-20 text-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <i data-lucide="user-x" class="w-12 h-12 text-slate-200"></i>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Belum ada data pasien</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                                @can('delete anak')
-                                <form action="{{ route('anak.destroy', $anak->id) }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus" data-name="{{ $anak->nama }}" data-table="anak" title="Hapus">
-                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                </form>
-                                @endcan
+        {{-- Mobile Card List --}}
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse ($anaks as $anak)
+            <div class="p-6 space-y-5 bg-white hover:bg-slate-50/50 transition-colors">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl border-2 border-slate-100 overflow-hidden shrink-0 shadow-sm">
+                            <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-slate-800 uppercase italic tracking-tight leading-tight">{{ $anak->nama }}</h4>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">NIB: {{ $anak->nib ?? '-' }}</p>
+                            <div class="mt-2">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px] font-black uppercase tracking-tight border border-slate-200 italic">
+                                    {{ $anak->usia }} Tahun
+                                </span>
                             </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="6" class="px-6 py-20 text-center text-slate-300 italic font-bold">Data anak belum terdaftar</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                    @can('update anak')
+                    <div class="pt-1">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer status-toggle" 
+                                   data-id="{{ $anak->id }}" {{ $anak->status === 'aktif' ? 'checked' : '' }}>
+                            <div class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+                    @endcan
+                </div>
+
+                @if($anak->active_packages->count() > 0)
+                <div class="p-4 bg-red-50 rounded-2xl border border-red-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-[9px] font-black text-red-400 uppercase tracking-widest">Progress Paket</p>
+                        <i data-lucide="bar-chart-3" class="w-3.5 h-3.5 text-red-400"></i>
+                    </div>
+                    <button @click="openProgress('{{ addslashes($anak->nama) }}', {{ $anak->packages_data->toJson() }})" 
+                            class="w-full text-left">
+                        <span class="text-[11px] font-black text-red-600 uppercase tracking-tight">{{ $anak->active_packages->count() }} Paket Sedang Berjalan</span>
+                        <div class="w-full h-1.5 bg-red-100 rounded-full mt-2 overflow-hidden">
+                            <div class="h-full bg-red-500 rounded-full w-2/3 animate-pulse"></div>
+                        </div>
+                    </button>
+                </div>
+                @endif
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                    <div class="flex items-center gap-2">
+                        @can('show anak')
+                        <a href="{{ route('anak.show', $anak->id) }}" class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100 shadow-sm">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </a>
+                        @endcan
+                        
+                        @can('update anak')
+                        <a href="{{ route('anak.edit', $anak->id) }}" class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center border border-amber-100 shadow-sm">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        </a>
+                        @endcan
+
+                        @can('delete anak')
+                        <form action="{{ route('anak.destroy', $anak->id) }}" method="POST" class="inline">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center border border-red-100 btn-hapus" data-name="{{ $anak->nama }}">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                        @endcan
+                    </div>
+                    <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/[^\d]/', '', $anak->telepon_ibu ?? $anak->telepon_ayah ?? '')) }}" target="_blank" 
+                       class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center border border-emerald-100 shadow-sm">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            @empty
+            <div class="p-20 text-center space-y-3">
+                <i data-lucide="user-x" class="w-12 h-12 text-slate-100 mx-auto"></i>
+                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">Belum ada data pasien</p>
+            </div>
+            @endforelse
         </div>
         
         <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">

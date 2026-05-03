@@ -103,7 +103,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="flex items-center justify-end gap-2 transition-opacity">
                                 @can('update psikolog')
                                 <button @click="openEditModal({ id: '{{ $p->id }}', nama: '{{ $p->nama }}', str: '{{ $p->str }}', sipp: '{{ $p->sipp }}', alamat: `{!! addslashes($p->alamat) !!}`, telepon: '{{ $p->telepon }}' })"
                                    class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100">

@@ -20,9 +20,16 @@ class RoleController extends Controller
         $this->middleware('permission:view manajemen menu', ['only' => ['manajemen_menu']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::orderBy('created_at', 'ASC')->paginate(10);
+        $query = Role::query();
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where('name', 'like', "%$search%");
+        }
+
+        $roles = $query->orderBy('created_at', 'ASC')->paginate(10)->withQueryString();
         return view('role-permission.role.index', [
             'roles' => $roles
         ]);

@@ -68,9 +68,9 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::resource('/permissions', PermissionController::class);
 
     Route::resource('/users', UserController::class);
-    Route::post('/users/anak', [UserController::class, 'store_anak'])->name('usersanak.store');
-    Route::post('/users/terapis', [UserController::class, 'store_terapis'])->name('usersterapis.store');
-    Route::post('/users/psikolog', [UserController::class, 'store_psikolog'])->name('userspsikolog.store');
+    Route::post('/users/anak', [UserController::class, 'store_anak'])->name('users.store-anak');
+    Route::post('/users/terapis', [UserController::class, 'store_terapis'])->name('users.store-terapis');
+    Route::post('/users/psikolog', [UserController::class, 'store_psikolog'])->name('users.store-psikolog');
     Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.update-status');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

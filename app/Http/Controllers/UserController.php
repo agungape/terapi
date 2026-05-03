@@ -23,14 +23,25 @@ class UserController extends Controller
         $this->middleware('permission:update status user', ['only' => ['updateStatus']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::whereDoesntHave('roles', function ($query) {
+        $query = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'super-admin');
-        })
-            ->with('roles')
+        });
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('username', 'like', "%$search%");
+            });
+        }
+
+        $users = $query->with('roles')
             ->orderByDesc('last_login')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         $terapis = Terapis::orderBy('nama')->get();
         $anaks = Anak::orderBy('nama')->get();

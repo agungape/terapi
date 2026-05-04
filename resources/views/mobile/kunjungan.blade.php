@@ -180,5 +180,3 @@
         </div>
     </main>
 @endsection
-n>
-@endsection

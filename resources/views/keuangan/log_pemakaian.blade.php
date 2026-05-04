@@ -10,8 +10,19 @@
         <div class="space-y-4">
             <div class="flex items-center justify-between px-2">
                 <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Daftar Kehadiran / Pemakaian</h6>
+                @php
+                    $tarif = $pemasukkan->Tarif ?? $pemasukkan->tarif;
+                    $totalSesi = 0;
+                    if ($tarif) {
+                        if ($tarif->jenis_terapi === 'gabungan') {
+                            $totalSesi = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                        } else {
+                            $totalSesi = $tarif->jumlah_pertemuan ?? 0;
+                        }
+                    }
+                @endphp
                 <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-tighter italic">
-                    {{ $pemasukkan->sudah_terpakai }} / {{ ($pemasukkan->Tarif->jumlah_pertemuan ?? $pemasukkan->tarif->jumlah_pertemuan) ?? 0 }} Sesi
+                    {{ $pemasukkan->sudah_terpakai }} / {{ $totalSesi }} Sesi
                 </span>
             </div>
 
@@ -24,7 +35,14 @@
                                 <span class="text-xs font-black leading-none">{{ $kunjungan->created_at->format('d') }}</span>
                             </div>
                             <div>
-                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $kunjungan->created_at->format('H:i') }} WIB</h4>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $kunjungan->created_at->format('H:i') }} WIB</h4>
+                                    {{-- Tampilkan Jenis Terapi agar jelas pada paket bundle --}}
+                                    <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded border 
+                                        {{ $kunjungan->jenis_terapi === 'terapi_perilaku' ? 'border-purple-200 text-purple-600 bg-purple-50' : 'border-blue-200 text-blue-600 bg-blue-50' }}">
+                                        {{ str_replace('_', ' ', $kunjungan->jenis_terapi) }}
+                                    </span>
+                                </div>
                                 <p class="text-[9px] font-bold text-slate-400 uppercase flex items-center gap-1 mt-0.5">
                                     <i data-lucide="user" class="w-2.5 h-2.5"></i> 
                                     @if($kunjungan->terapis)

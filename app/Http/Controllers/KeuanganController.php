@@ -131,26 +131,45 @@ class KeuanganController extends Controller
             ->get();
 
         $paketTerbeli = $pemasukkans->map(function ($p) {
-            return [
-                'id'                => $p->tarif_id,
-                'pemasukkan_id'     => $p->id,
-                'nama'              => '[SUDAH DIBELI] ' . ($p->tarif->nama ?? 'Paket'),
-                'tarif'             => 0, // Sudah bayar
-                'jumlah_pertemuan'  => $p->tarif->jumlah_pertemuan ?? 20,
-                'sisa'              => $p->sisa_pertemuan,
-                'jenis_terapi'      => $p->tarif->jenis_terapi ?? '',
-                'type'              => 'terbeli'
-            ];
-        });
+            $tarif = $p->tarif;
+            if (!$tarif) return null;
 
-        // 2. Ambil SEMUA PAKET TERSEDIA (untuk pembelian baru)
+            $result = [
+                'id'            => $p->tarif_id,
+                'pemasukkan_id' => $p->id,
+                'nama'          => '[SUDAH DIBELI] ' . ($tarif->nama ?? 'Paket'),
+                'tarif'         => 0,
+                'jenis_terapi'  => $tarif->jenis_terapi ?? '',
+                'type'          => 'terbeli',
+            ];
+
+            if ($tarif->jenis_terapi === 'gabungan') {
+                $result['jumlah_pertemuan']           = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                $result['jumlah_pertemuan_perilaku']  = $tarif->pertemuan_perilaku ?? 0;
+                $result['jumlah_pertemuan_fisioterapi'] = $tarif->pertemuan_fisioterapi ?? 0;
+                $result['sisa_perilaku']              = $p->getSisaPertemuanJenis('terapi_perilaku');
+                $result['sisa_fisioterapi']           = $p->getSisaPertemuanJenis('fisioterapi');
+                $result['sisa']                       = $result['sisa_perilaku'] + $result['sisa_fisioterapi'];
+            } else {
+                $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
+                $sisa = $p->sisa_pertemuan;
+                $result['sisa'] = is_int($sisa) ? $sisa : 0;
+            }
+
+            return $result;
+        })->filter()->values();
+
+        // 2. Ambil SEMUA PAKET TERSEDIA (untuk pembelian baru) — tidak termasuk assessment/observasi
+        // karena itu dibuka via cara lain (bukan kunjungan)
         $paketTersedia = Tarif::where('is_active', true)->get()->map(function($t) {
             return [
-                'id'                => $t->id,
-                'nama'              => '[BELI BARU] ' . $t->nama,
-                'tarif'             => $t->getRawOriginal('tarif'),
-                'jumlah_pertemuan'  => $t->jumlah_pertemuan,
-                'type'              => 'baru'
+                'id'                   => $t->id,
+                'nama'                 => '[BELI BARU] ' . $t->nama,
+                'tarif'                => $t->getRawOriginal('tarif'),
+                'jumlah_pertemuan'     => $t->jumlah_pertemuan,
+                'jenis_terapi'         => $t->jenis_terapi,
+                'has_sesi'             => $t->hasSesi(),
+                'type'                 => 'baru',
             ];
         });
 
@@ -159,10 +178,10 @@ class KeuanganController extends Controller
             ->where('status_bayar', 'belum_bayar')
             ->get()
             ->map(fn($a) => [
-                'id'           => $a->id,
-                'label'        => 'Assessment - ' . ($a->tanggal_assessment?->format('d/m/Y') ?? 'Tanpa Tanggal'),
-                'tujuan'       => $a->tujuan_pemeriksaan,
-                'tarif'        => 0, // Manual input for assessment usually
+                'id'     => $a->id,
+                'label'  => 'Assessment - ' . ($a->tanggal_assessment?->format('d/m/Y') ?? 'Tanpa Tanggal'),
+                'tujuan' => $a->tujuan_pemeriksaan,
+                'tarif'  => 0,
             ]);
 
         return response()->json([
@@ -171,6 +190,7 @@ class KeuanganController extends Controller
             'assessments'    => $assessments,
         ]);
     }
+
 
     // ======================================================
     // PEMASUKKAN
@@ -213,8 +233,8 @@ class KeuanganController extends Controller
             'gambar'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Bersihkan format ribuan dari jumlah
-        $jumlahBersih = (int) str_replace('.', '', $request->jumlah);
+        // Bersihkan format ribuan dan prefix 'Rp ' dari jumlah
+        $jumlahBersih = (int) preg_replace('/[^0-9]/', '', $request->jumlah);
 
         // Ambil saldo kas
         $saldo    = SaldoKas::latest()->first();
@@ -511,18 +531,24 @@ class KeuanganController extends Controller
                 if ($pemasukkan->tarif_id) {
                     $query->where(function($q) use ($pemasukkan) {
                         $q->where('tarif_id', $pemasukkan->tarif_id)
-                          ->orWhereNull('tarif_id'); // Handle case where visit was registered without tarif
+                          ->orWhereNull('tarif_id');
                     });
+
+                    // FIX: Filter jenis_terapi agar kunjungan jenis lain tidak ikut ter-sync
+                    // Contoh: kwitansi fisioterapi tidak boleh menarik kunjungan terapi_perilaku
+                    $tarifJenis = optional($pemasukkan->Tarif)->jenis_terapi;
+                    if ($tarifJenis && !in_array($tarifJenis, ['gabungan', 'semua'])) {
+                        $query->where('jenis_terapi', $tarifJenis);
+                    }
                 }
 
                 // Ambil data kunjungan yang akan diupdate
                 $toUpdate = $query->get();
                 
                 foreach($toUpdate as $k) {
-                    // Update pendaftaran agar link ke kwitansi ini
                     $k->update([
                         'pemasukkan_id' => $pemasukkan->id,
-                        'tarif_id' => $pemasukkan->tarif_id // Sinkronkan juga tarifnya
+                        'tarif_id'      => $pemasukkan->tarif_id,
                     ]);
                 }
                 

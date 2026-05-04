@@ -60,6 +60,7 @@
                     type: "GET",
                     data: { anak_id: anakId },
                     success: function(response) {
+                        window.currentPaketTerbeli = response.paket_terbeli || [];
                         layananSelect.empty().append('<option value="">-- Pilih Layanan --</option>');
                         
                         // Group 1: Assessment Belum Lunas
@@ -106,7 +107,8 @@
 
         // --- Ketika Layanan dipilih, update hidden inputs dan jumlah bayar (Delegated) ---
         $(document).on('change', '#layanan_select', function() {
-            var val = $(this).val();
+            var selectElement = $(this);
+            var val = selectElement.val();
             if (!val) {
                 resetPricing();
                 return;
@@ -117,7 +119,38 @@
             var id = parts[1];
             var tarif = parts[2];
             var sesi = parts[3];
-            
+
+            // Peringatan jika beli paket baru tapi masih ada paket yang aktif
+            if (jenis === 'paket_terapi' && window.currentPaketTerbeli && window.currentPaketTerbeli.length > 0) {
+                Swal.fire({
+                    title: 'Paket Masih Aktif!',
+                    html: `Anak ini terpantau masih memiliki sisa paket yang belum habis digunakan.<br><br>Apakah Anda yakin ingin melakukan <b>pembelian paket baru</b> dan menumpuk paket?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#f59e0b', // amber
+                    cancelButtonColor: '#f1f5f9',
+                    confirmButtonText: 'Ya, Lanjutkan Beli',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    customClass: {
+                        popup: 'rounded-[2.5rem] border-none shadow-2xl',
+                        confirmButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4',
+                        cancelButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4 text-slate-500'
+                    }
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        selectElement.val(''); // Reset pilihan
+                        resetPricing();
+                        return;
+                    }
+                    prosesPilihLayanan(jenis, id, tarif, sesi);
+                });
+            } else {
+                prosesPilihLayanan(jenis, id, tarif, sesi);
+            }
+        });
+
+        function prosesPilihLayanan(jenis, id, tarif, sesi) {
             // Update hidden
             $('#hidden_jenis_layanan').val(jenis === 'terbeli' ? 'paket_terapi' : jenis);
             if (jenis === 'assessment') {
@@ -143,7 +176,7 @@
             } else {
                 $('#jumlah').val('').prop('readonly', false);
             }
-        });
+        }
 
         function resetPricing() {
             $('#hidden_jenis_layanan, #hidden_assessment_id, #hidden_tarif_id').val('');

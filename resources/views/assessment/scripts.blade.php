@@ -20,11 +20,43 @@
                 return;
             }
 
-            container.html('<div class="text-center text-blue-500 flex flex-col items-center justify-center h-full"><i data-lucide="loader-2" class="w-6 h-6 mb-2 animate-spin"></i>Sedang menarik data riwayat klinis...</div>');
+            container.html('<div class="text-center text-blue-500 flex flex-col items-center justify-center h-full"><i data-lucide="loader-2" class="w-6 h-6 mb-2 animate-spin"></i>Memeriksa status pembayaran & riwayat...</div>');
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             const baseUrl = window.location.origin + window.location.pathname.split('/assessment')[0];
-            fetch(`${baseUrl}/history-wawancara/${anakId}`)
+            
+            // 1. Validasi Pembayaran Assessment
+            fetch(`${baseUrl}/pemasukkan/layanan?anak_id=${anakId}`)
+                .then(res => res.json())
+                .then(layanans => {
+                    let sudahBeli = false;
+                    if (layanans.paket_terbeli && layanans.paket_terbeli.length > 0) {
+                        sudahBeli = layanans.paket_terbeli.some(p => p.jenis_terapi === 'assessment');
+                    }
+                    
+                    if (!sudahBeli) {
+                        Swal.fire({
+                            title: 'Akses Ditolak!',
+                            html: `Anak ini terpantau <b>belum melakukan pembayaran</b> untuk paket Assessment.<br><br>Silakan lakukan pembayaran terlebih dahulu di menu Keuangan.`,
+                            icon: 'error',
+                            confirmButtonColor: '#ef4444',
+                            confirmButtonText: 'Tutup',
+                            customClass: {
+                                popup: 'rounded-[2.5rem] border-none shadow-2xl',
+                                confirmButton: 'rounded-xl font-bold uppercase text-[10px] tracking-widest px-8 py-4'
+                            }
+                        });
+                        
+                        // Reset pilihan anak
+                        $('#select-anak').val('').trigger('change.select2');
+                        container.html('<div class="text-center text-slate-400 flex flex-col items-center justify-center h-full"><i data-lucide="info" class="w-6 h-6 mb-2 text-slate-300"></i>Pilih nama anak terlebih dahulu.</div>');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        throw new Error('Belum Bayar Assessment'); // Stop eksekusi selanjutnya
+                    }
+
+                    // 2. Lanjut Fetch Riwayat Wawancara jika sudah bayar
+                    return fetch(`${baseUrl}/history-wawancara/${anakId}`);
+                })
                 .then(response => {
                     if (!response.ok) {
                         return response.text().then(text => { throw new Error(text) });
@@ -62,6 +94,8 @@
                     container.html(html);
                 })
                 .catch(error => {
+                    if (error.message === 'Belum Bayar Assessment') return; // Silent stop
+                    
                     container.html(`<div class="text-red-500 text-xs p-4"><i data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i> Gagal: ${error.message}</div>`);
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     console.error('AJAX Error:', error);

@@ -59,7 +59,7 @@
                 </div>
             </div>
             <h3 class="text-2xl font-black text-slate-800 tracking-tight italic">
-                {{ $saldoKas ? $saldoKas->saldo_awal : 'Rp 0' }}
+                Rp {{ $saldoKas ? number_format((int)$saldoKas->getRawOriginal('saldo_awal'), 0, ',', '.') : '0' }}
             </h3>
             <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-tighter italic">Total Dana Tersedia</p>
         </div>

@@ -198,6 +198,27 @@
 
         <!-- Sidebar Widgets: Demographics & Activity -->
         <div class="lg:col-span-4 space-y-8">
+
+            <!-- Widget Sistem Absensi -->
+            <div class="card-premium p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none shadow-xl shadow-blue-100 group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                <i data-lucide="fingerprint" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 rotate-12 group-hover:rotate-0 group-hover:scale-110 transition-all duration-700"></i>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-white/20 backdrop-blur-md rounded-xl shadow-sm">
+                            <i data-lucide="clock" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-sm font-black uppercase tracking-widest italic text-white">Portal HR & Absensi</h3>
+                    </div>
+                    <p class="text-[10px] font-bold text-blue-100 mb-6 leading-relaxed">
+                        Untuk mengecek absensi karyawan silahkan kunjungi link berikut.
+                    </p>
+                    <a href="https://brightstar.kodexa.site" target="_blank" class="w-full flex items-center justify-between px-5 py-3.5 bg-white text-blue-600 hover:bg-blue-50 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md group-hover:shadow-lg">
+                        <span>Buka Portal Absensi Karyawan (Terapis)</span>
+                        <i data-lucide="external-link" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                    </a>
+                </div>
+            </div>
+
             <div class="card-premium p-8">
                 <div class="flex items-center justify-between mb-8">
                     <h3 class="text-[11px] font-black text-slate-800 uppercase tracking-widest italic">Demografi Pasien</h3>

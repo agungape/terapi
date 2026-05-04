@@ -105,27 +105,35 @@ class Anak extends Model
      */
     public function kwitansiAktif(string $jenisTerapi)
     {
-        // Urutkan berdasarkan ID terkecil (tertua)
-        // Tambahkan filter: Kwitansi harus tertanggal hari ini atau sebelumnya
         $pemasukkans = $this->pemasukkans()
             ->where('jenis_layanan', 'paket_terapi')
             ->whereNotNull('tarif_id')
-            ->whereDate('tanggal', '<=', date('Y-m-d')) 
-            ->orderBy('id', 'asc') 
+            ->whereDate('tanggal', '<=', date('Y-m-d'))
+            ->orderBy('id', 'asc')
             ->get();
 
         foreach ($pemasukkans as $p) {
             $tarif = $p->tarif;
             if (!$tarif) continue;
 
-            // Pastikan tarif sesuai dengan jenis terapi yang dicari (Flexible match)
-            $tarifJenis = strtolower(str_replace(' ', '_', $tarif->jenis_terapi));
+            $tarifJenis  = strtolower(str_replace(' ', '_', $tarif->jenis_terapi ?? ''));
             $searchJenis = strtolower(str_replace(' ', '_', $jenisTerapi));
-            
+
+            // Paket gabungan / semua: cocok dengan semua jenis terapi
+            if (in_array($tarifJenis, ['gabungan', 'semua'])) {
+                // Cek sisa khusus per-jenis agar tidak salah hitung
+                $sisaJenis = $p->getSisaPertemuanJenis($searchJenis);
+                if ($sisaJenis > 0) {
+                    return $p;
+                }
+                continue;
+            }
+
+            // Paket single jenis: harus cocok persis
             if ($tarifJenis !== $searchJenis) continue;
 
-            // Jika sisa pertemuan > 0, maka ini adalah kwitansi yang aktif digunakan
-            if ($p->sisa_pertemuan > 0) {
+            $sisa = $p->sisa_pertemuan;
+            if (is_int($sisa) && $sisa > 0) {
                 return $p;
             }
         }
@@ -133,3 +141,4 @@ class Anak extends Model
         return null;
     }
 }
+

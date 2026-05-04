@@ -54,22 +54,40 @@ class AnakController extends Controller
                 ->with('tarif')
                 ->get()
                 ->filter(function($p) {
-                    return $p->sisa_pertemuan > 0;
+                    $sisa = $p->sisa_pertemuan;
+                    // Handle paket gabungan (sisa berupa array)
+                    if (is_array($sisa)) {
+                        return ($sisa['perilaku'] ?? 0) > 0 || ($sisa['fisioterapi'] ?? 0) > 0;
+                    }
+                    return is_int($sisa) && $sisa > 0;
                 });
-            
-            // Map data untuk modal Alpine.js agar lebih ringan
+
+            // Map data untuk modal Alpine.js
             $a->packages_data = $a->active_packages->map(function($p) {
-                // total diambil dari master tarif
-                $total = $p->tarif->jumlah_pertemuan ?? 0;
-                // sudah_terpakai adalah accessor di Pemasukkan.php yang menghitung Kunjungan
-                $used = $p->sudah_terpakai ?? 0;
-                $percent = $total > 0 ? min(100, round(($used / $total) * 100)) : 0;
-                
+                $tarif   = $p->tarif;
+                $used    = $p->sudah_terpakai ?? 0;
+                $isGabungan = $tarif && $tarif->jenis_terapi === 'gabungan';
+
+                if ($isGabungan) {
+                    $totalPerilaku   = $tarif->pertemuan_perilaku ?? 0;
+                    $totalFisio      = $tarif->pertemuan_fisioterapi ?? 0;
+                    $total           = $totalPerilaku + $totalFisio;
+                    $sisaArr         = $p->sisa_pertemuan;
+                    $sisaPerilaku    = $sisaArr['perilaku'] ?? 0;
+                    $sisaFisio       = $sisaArr['fisioterapi'] ?? 0;
+                    $sisa            = $sisaPerilaku + $sisaFisio;
+                } else {
+                    $total = $tarif->jumlah_pertemuan ?? 0;
+                    $sisa  = is_int($p->sisa_pertemuan) ? $p->sisa_pertemuan : 0;
+                }
+
+                $percent = $total > 0 ? min(100, round((($total - $sisa) / $total) * 100)) : 0;
+
                 return [
-                    'label' => $p->tarif->nama ?? 'Paket Terapi',
-                    'total' => $total,
-                    'used' => $used,
-                    'percent' => $percent
+                    'label'   => $tarif->nama ?? 'Paket Terapi',
+                    'total'   => $total,
+                    'used'    => $total - $sisa,
+                    'percent' => $percent,
                 ];
             });
         }

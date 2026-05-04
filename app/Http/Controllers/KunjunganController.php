@@ -69,8 +69,24 @@ class KunjunganController extends Controller
 
         // --- LOGIKA TRANSISI MULUS (SMOOTH TRANSITION) DENGAN LINK KWITANSI ---
         
-        // 1. Dapatkan kwitansi aktif (FIFO) jika ada
-        $kwitansiAktif = $anak->kwitansiAktif($request->jenis_terapi);
+        // 1. Dapatkan kwitansi aktif:
+        // Prioritaskan yang dipilih user melalui tombol "Gunakan Paket" di UI
+        $kwitansiAktif = null;
+        if ($request->filled('selected_pemasukkan_id')) {
+            $pilihanUser = \App\Models\Pemasukkan::where('id', $request->selected_pemasukkan_id)
+                ->where('anak_id', $request->anak_id)
+                ->first();
+                
+            // Pastikan paket yang dipilih benar-benar valid dan punya sisa untuk jenis_terapi ini
+            if ($pilihanUser && $pilihanUser->getSisaPertemuanJenis($request->jenis_terapi) > 0) {
+                $kwitansiAktif = $pilihanUser;
+            }
+        }
+
+        // Jika user tidak memilih / id tidak valid, fallback ke metode FIFO otomatis
+        if (!$kwitansiAktif) {
+            $kwitansiAktif = $anak->kwitansiAktif($request->jenis_terapi);
+        }
         
         // 2. Cari kunjungan terakhir untuk mengambil context
         $kunjungan_terakhir = Kunjungan::where('anak_id', $request->anak_id)
@@ -85,34 +101,57 @@ class KunjunganController extends Controller
         $finalPemasukkanId = null;
 
         if ($kunjungan_terakhir) {
-            // Tentukan batas pertemuan
+            // Tentukan batas pertemuan — untuk paket gabungan, ambil per-jenis
             $limitLama = 20;
             if ($kunjungan_terakhir->tarif_id) {
                 $tarifLama = Tarif::find($kunjungan_terakhir->tarif_id);
-                $limitLama = $tarifLama ? ($tarifLama->jumlah_pertemuan ?? 20) : 20;
+                if ($tarifLama) {
+                    $limitLama = $tarifLama->getPertemuanUntukJenis($request->jenis_terapi)
+                        ?: ($tarifLama->jumlah_pertemuan ?? 20);
+                }
             }
 
-            // Jika status terakhir adalah HADIR atau IZIN HANGUS, maka tingkatkan pertemuan
-            if ($kunjungan_terakhir->status == 'hadir' || $kunjungan_terakhir->status == 'izin_hangus') {
-                
+            // FIX ISU 1: Jika kwitansiAktif berbeda dari kunjungan_terakhir
+            // (misal: kunjungan lama tanpa tarif_id/pemasukkan_id, tapi sekarang sudah beli paket baru)
+            // maka MULAI dari pertemuan 1 dalam kwitansi baru, jangan lanjutkan dari kunjungan lama
+            $kwitansiTerakhirId = $kunjungan_terakhir->pemasukkan_id;
+            $kwitansiAktifId    = $kwitansiAktif ? $kwitansiAktif->id : null;
+            $kwitansiBerbeda    = ($kwitansiAktifId !== null) && ($kwitansiTerakhirId !== $kwitansiAktifId);
+
+            if ($kwitansiBerbeda) {
+                // Kunjungan baru menggunakan kwitansi BARU yang berbeda dari kunjungan terakhir
+                // Hitung berapa sesi yang sudah terpakai di kwitansi baru ini
+                $sudahTerpakaiDiKwitansiBaru = Kunjungan::where('pemasukkan_id', $kwitansiAktifId)
+                    ->where('anak_id', $request->anak_id)
+                    ->where('jenis_terapi', $request->jenis_terapi)
+                    ->whereIn('status', ['hadir', 'izin_hangus'])
+                    ->count();
+
+                $nextPertemuan     = $sudahTerpakaiDiKwitansiBaru + 1;
+                $nextSesi          = ($kunjungan_terakhir->sesi ?? 1) + 1;
+                $finalTarifId      = $kwitansiAktif->tarif_id;
+                $finalPemasukkanId = $kwitansiAktif->id;
+
+            } elseif ($kunjungan_terakhir->status == 'hadir' || $kunjungan_terakhir->status == 'izin_hangus') {
+
                 if ($kunjungan_terakhir->pertemuan < $limitLama) {
                     // LANJUTKAN SESI LAMA
-                    $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
-                    $nextSesi = $kunjungan_terakhir->sesi ?? 1;
-                    $finalTarifId = $kunjungan_terakhir->tarif_id;
-                    $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id; // Ikuti kwitansi yang sama
+                    $nextPertemuan     = $kunjungan_terakhir->pertemuan + 1;
+                    $nextSesi          = $kunjungan_terakhir->sesi ?? 1;
+                    $finalTarifId      = $kunjungan_terakhir->tarif_id;
+                    $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
                 } else {
                     // MULAI SESI (SEASON) BARU
-                    $nextPertemuan = 1;
-                    $nextSesi = ($kunjungan_terakhir->sesi ?? 1) + 1;
-                    $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+                    $nextPertemuan     = 1;
+                    $nextSesi          = ($kunjungan_terakhir->sesi ?? 1) + 1;
+                    $finalTarifId      = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
                     $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
                 }
             } else {
                 // IZIN/SAKIT: nomor tetap sama
-                $nextPertemuan = $kunjungan_terakhir->pertemuan;
-                $nextSesi = $kunjungan_terakhir->sesi ?? 1;
-                $finalTarifId = $kunjungan_terakhir->tarif_id;
+                $nextPertemuan     = $kunjungan_terakhir->pertemuan;
+                $nextSesi          = $kunjungan_terakhir->sesi ?? 1;
+                $finalTarifId      = $kunjungan_terakhir->tarif_id;
                 $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
             }
         } else {
@@ -127,11 +166,15 @@ class KunjunganController extends Controller
         $sesi = $nextSesi;
 
         // --- OTOMASI PENYELESAIAN SESI ---
-        $statusSesi = 'aktif';
+        $statusSesi   = 'aktif';
         $maxPertemuan = 20;
         if ($finalTarifId) {
             $tarifInfo = Tarif::find($finalTarifId);
-            $maxPertemuan = $tarifInfo ? ($tarifInfo->jumlah_pertemuan ?? 20) : 20;
+            if ($tarifInfo) {
+                // Untuk paket gabungan: ambil limit sesuai jenis terapi yang dipilih
+                $maxPertemuan = $tarifInfo->getPertemuanUntukJenis($request->jenis_terapi)
+                    ?: ($tarifInfo->jumlah_pertemuan ?? 20);
+            }
         }
 
         if (($request->status == 'hadir' || $request->status == 'izin_hangus') && $pertemuan >= $maxPertemuan) {

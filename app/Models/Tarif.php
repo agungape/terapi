@@ -17,6 +17,8 @@ class Tarif extends Model
         'tarif',
         'gambar',
         'jumlah_pertemuan',
+        'pertemuan_perilaku',
+        'pertemuan_fisioterapi',
         'jenis_terapi',
         'is_active',
     ];
@@ -37,8 +39,33 @@ class Tarif extends Model
     }
 
     /**
-     * Hitung sisa pertemuan anak dalam paket ini.
-     * Berdasarkan kunjungan dengan status hadir yang terhubung ke tarif ini.
+     * Apakah paket ini punya sesi/pertemuan.
+     * Assessment dan Observasi tidak punya sesi.
+     */
+    public function hasSesi(): bool
+    {
+        return !in_array($this->jenis_terapi, ['assessment', 'observasi']);
+    }
+
+    /**
+     * Ambil jumlah pertemuan untuk jenis terapi tertentu.
+     * Untuk paket gabungan: ambil per-jenis. Untuk single: ambil jumlah_pertemuan.
+     */
+    public function getPertemuanUntukJenis(string $jenisTerapi): int
+    {
+        if ($this->jenis_terapi === 'gabungan') {
+            return match ($jenisTerapi) {
+                'terapi_perilaku' => (int) ($this->pertemuan_perilaku ?? 0),
+                'fisioterapi'     => (int) ($this->pertemuan_fisioterapi ?? 0),
+                default           => 0,
+            };
+        }
+        return (int) ($this->jumlah_pertemuan ?? 20);
+    }
+
+    /**
+     * @deprecated Gunakan Pemasukkan::getSisaPertemuanJenis() untuk akurasi.
+     * Hitung sisa pertemuan anak dalam paket ini (single jenis saja).
      */
     public function sisaPertemuan(int $anakId): int
     {
@@ -48,7 +75,7 @@ class Tarif extends Model
 
         $terpakai = Kunjungan::where('anak_id', $anakId)
             ->where('tarif_id', $this->id)
-            ->where('status', 'hadir')
+            ->whereIn('status', ['hadir', 'izin_hangus'])
             ->whereNull('catatan')
             ->count();
 

@@ -112,7 +112,10 @@ class Pemasukkan extends Model
     }
 
     /**
-     * Hitung sisa pertemuan berdasarkan kwitansi ini (pemasukkan_id).
+     * Hitung sisa pertemuan berdasarkan kwitansi ini.
+     * - Untuk paket single: return integer
+     * - Untuk paket gabungan: return array ['perilaku' => int, 'fisioterapi' => int]
+     * - Untuk assessment/observasi: return null (tidak ada sesi)
      */
     public function getSisaPertemuanAttribute()
     {
@@ -120,10 +123,20 @@ class Pemasukkan extends Model
             return null;
         }
 
-        $max = $this->tarif->jumlah_pertemuan ?? 20;
-        
-        // Hitung kunjungan yang link ke kwitansi ini dan statusnya 'hadir' atau 'izin_hangus'
-        // Hanya hitung kunjungan yang terjadi pada atau setelah tanggal kwitansi (Grandfathering)
+        $tarif = $this->tarif;
+        if (!$tarif || !$tarif->hasSesi()) {
+            return null; // assessment/observasi tidak punya sesi
+        }
+
+        if ($tarif->jenis_terapi === 'gabungan') {
+            return [
+                'perilaku'    => $this->getSisaPertemuanJenis('terapi_perilaku'),
+                'fisioterapi' => $this->getSisaPertemuanJenis('fisioterapi'),
+            ];
+        }
+
+        // Paket single jenis
+        $max      = $tarif->jumlah_pertemuan ?? 20;
         $terpakai = $this->kunjungans()
             ->whereIn('status', ['hadir', 'izin_hangus'])
             ->whereDate('created_at', '>=', $this->getRawOriginal('tanggal'))
@@ -131,7 +144,28 @@ class Pemasukkan extends Model
 
         return max(0, $max - $terpakai);
     }
-    
+
+    /**
+     * Hitung sisa pertemuan untuk jenis terapi tertentu.
+     * Digunakan untuk paket gabungan agar per-jenis dihitung terpisah.
+     */
+    public function getSisaPertemuanJenis(string $jenisTerapi): int
+    {
+        $tarif = $this->tarif;
+        if (!$tarif) return 0;
+
+        $max = $tarif->getPertemuanUntukJenis($jenisTerapi);
+        if ($max <= 0) return 0;
+
+        $terpakai = $this->kunjungans()
+            ->where('jenis_terapi', $jenisTerapi)
+            ->whereIn('status', ['hadir', 'izin_hangus'])
+            ->whereDate('created_at', '>=', $this->getRawOriginal('tanggal'))
+            ->count();
+
+        return max(0, $max - $terpakai);
+    }
+
     public function getSudahTerpakaiAttribute()
     {
         return $this->kunjungans()

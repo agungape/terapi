@@ -150,11 +150,15 @@
                                 </select>
                             </div>
 
-                            <!-- Package Quick Info (Styled via JS update) -->
+                            {{-- Package Info Card (Ditampilkan setelah memilih jenis terapi) --}}
                             <div id="paket-info-container" class="hidden">
-                                <div id="paket-info-content" class="p-6 rounded-2xl border-2 border-dashed transition-all duration-300">
-                                    <!-- Dynamic Content -->
+                                <div id="paket-info-content" class="space-y-3 transition-all duration-300">
+                                    {{-- Dynamic Content diisi via JS --}}
                                 </div>
+                                {{-- Label paket yang terpilih --}}
+                                <p id="selected-paket-label" class="hidden mt-2 text-[9px] font-black text-emerald-600 uppercase tracking-widest"></p>
+                                {{-- Hidden inputs untuk mengirim info paket terpilih (opsional, referensi saja) --}}
+                                <input type="hidden" name="selected_pemasukkan_id" id="selected_pemasukkan_id">
                             </div>
                         </div>
 
@@ -267,53 +271,106 @@
 
         function loadPaketInfo(anakId, jenisTerapi) {
             const container = $('#paket-info-container');
-            const content = $('#paket-info-content');
+            const content   = $('#paket-info-content');
+
+            // Tampilkan loading
+            content.html('<div class="p-4 text-center"><span class="text-[9px] font-black text-slate-300 uppercase tracking-widest animate-pulse">Memeriksa Paket Aktif...</span></div>');
+            container.removeClass('hidden').hide().fadeIn(200);
 
             $.ajax({
                 url: '{{ route("pemasukkan.layanan") }}',
                 type: 'GET',
                 data: { anak_id: anakId },
                 success: function(response) {
-                    // Gunakan 'paket_terbeli' dari response KeuanganController
-                    if (response.paket_terbeli && response.paket_terbeli.length > 0) {
-                        // Cari paket yang sesuai dengan jenis terapi yang sedang dipilih dan masih ada sisa
-                        let p = response.paket_terbeli.find(item => {
-                            return item.sisa > 0 && item.jenis_terapi === jenisTerapi;
-                        });
-                        
-                        // Karena kita butuh filter berdasarkan jenis_terapi (terapi_perilaku / fisioterapi)
-                        // Kita asumsikan data dari paket_terbeli sudah mencakup info tersebut via relationship
-                        // Namun untuk lebih akurat, kita saring lagi di sini jika ada info jenis_terapi
-                        
-                        if (p) {
-                            let sisa = p.sisa;
-                            let borderClass = sisa <= 2 ? "border-red-200 bg-red-50/30" : "border-emerald-200 bg-emerald-50/30";
-                            let textClass = sisa <= 2 ? "text-red-600" : "text-emerald-700";
-                            
-                            content.html(`
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Paket Aktif Ditemukan</h4>
-                                        <p class="text-xs font-black ${textClass}">${p.nama.replace('[SUDAH DIBELI] ', '')}</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <h3 class="text-2xl font-black ${textClass} tracking-tighter">${sisa} <span class="text-[10px] font-bold uppercase ml-1">Sesi Sisa</span></h3>
-                                        ${sisa <= 2 ? '<p class="text-[8px] font-black text-red-500 uppercase mt-1 animate-pulse"><i data-lucide="alert-triangle" class="w-3 h-3 inline"></i> Hampir Habis!</p>' : ''}
-                                    </div>
-                                </div>
-                            `);
-                            container.removeClass('hidden').hide().fadeIn();
-                            content.removeClass('border-red-200 bg-red-50/30 border-emerald-200 bg-emerald-50/30').addClass(borderClass);
-                        } else {
-                            showNoPacket(content, container);
+                    const terbeli = response.paket_terbeli || [];
+
+                    // Filter paket yang relevan dengan jenis terapi yang dipilih
+                    let paketAktif = terbeli.filter(item => {
+                        if (item.jenis_terapi === 'gabungan') {
+                            let sisa = jenisTerapi === 'terapi_perilaku'
+                                ? (item.sisa_perilaku ?? 0)
+                                : (item.sisa_fisioterapi ?? 0);
+                            return sisa > 0;
                         }
+                        return item.jenis_terapi === jenisTerapi && item.sisa > 0;
+                    });
+
+                    if (paketAktif.length > 0) {
+                        let html = paketAktif.map(p => renderPaketCard(p, jenisTerapi)).join('');
+                        content.html(html);
+                        lucide.createIcons();
                     } else {
-                        showNoPacket(content, container);
+                        showNoPacket(content);
                     }
-                    lucide.createIcons();
+                },
+                error: function() {
+                    showNoPacket(content);
                 }
             });
         }
+
+        function renderPaketCard(p, jenisTerapi) {
+            let sisa, total;
+
+            if (p.jenis_terapi === 'gabungan') {
+                sisa  = jenisTerapi === 'terapi_perilaku'
+                    ? (p.sisa_perilaku ?? 0)
+                    : (p.sisa_fisioterapi ?? 0);
+                total = jenisTerapi === 'terapi_perilaku'
+                    ? (p.jumlah_pertemuan_perilaku ?? 0)
+                    : (p.jumlah_pertemuan_fisioterapi ?? 0);
+            } else {
+                sisa  = p.sisa ?? 0;
+                total = p.jumlah_pertemuan ?? 0;
+            }
+
+            const isLow    = sisa <= 3;
+            const used     = total - sisa;
+            const percent  = total > 0 ? Math.round((used / total) * 100) : 0;
+            const color    = isLow ? 'red' : 'emerald';
+            const namaBersih = (p.nama || '').replace('[SUDAH DIBELI] ', '');
+            const pemasukkanId = p.pemasukkan_id ?? '';
+
+            return `
+                <div class="p-4 rounded-2xl border-2 border-${color}-200 bg-${color}-50/30 transition-all"
+                     id="card-paket-${pemasukkanId}" data-pemasukkan-id="${pemasukkanId}">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Paket Aktif</p>
+                            <p class="text-xs font-black text-slate-800 leading-tight">${namaBersih}</p>
+                            ${p.jenis_terapi === 'gabungan' ? '<span class="text-[8px] font-black text-purple-500 uppercase">Paket Gabungan</span>' : ''}
+                        </div>
+                        <span class="text-xl font-black text-${color}-600 tracking-tight shrink-0 ml-3">
+                            ${sisa} <span class="text-[8px] font-bold">sesi sisa</span>
+                        </span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mb-2">
+                        <div class="h-1.5 rounded-full bg-${color}-500 transition-all duration-700" style="width:${percent}%"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-bold text-slate-400">${used} dari ${total} sesi terpakai</span>
+                        <button type="button"
+                                onclick="gunakanPaket('${pemasukkanId}', '${namaBersih}')"
+                                id="btn-gunakan-${pemasukkanId}"
+                                class="px-4 py-1.5 bg-${color}-500 hover:bg-${color}-600 text-white text-[9px] font-black uppercase tracking-widest rounded-lg transition-all">
+                            Gunakan Paket
+                        </button>
+                    </div>
+                    ${isLow ? '<p class="text-[8px] font-black text-red-500 uppercase mt-1.5 animate-pulse">⚡ Hampir Habis!</p>' : ''}
+                </div>
+            `;
+        }
+
+        window.gunakanPaket = function(pemasukkanId, namaPaket) {
+            // Reset semua card ke state normal
+            $('[data-pemasukkan-id]').removeClass('ring-2 ring-offset-2 ring-emerald-500');
+            // Highlight card yang dipilih
+            $(`[data-pemasukkan-id="${pemasukkanId}"]`).addClass('ring-2 ring-offset-2 ring-emerald-500');
+            // Simpan ke hidden input
+            $('#selected_pemasukkan_id').val(pemasukkanId);
+            // Tampilkan label konfirmasi
+            $('#selected-paket-label').text('✓ Paket dipilih: ' + namaPaket).removeClass('hidden');
+        };
 
         function showNoPacket(content, container) {
             content.html(`

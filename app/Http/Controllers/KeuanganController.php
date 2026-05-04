@@ -153,7 +153,7 @@ class KeuanganController extends Controller
             } else {
                 $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
                 $sisa = $p->sisa_pertemuan;
-                $result['sisa'] = is_int($sisa) ? $sisa : 0;
+                $result['sisa'] = is_numeric($sisa) ? (int)$sisa : 0;
             }
 
             return $result;

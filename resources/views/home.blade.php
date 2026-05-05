@@ -200,24 +200,26 @@
         <div class="lg:col-span-4 space-y-8">
 
             <!-- Widget Sistem Absensi -->
-            <div class="card-premium p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none shadow-xl shadow-blue-100 group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
-                <i data-lucide="fingerprint" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 rotate-12 group-hover:rotate-0 group-hover:scale-110 transition-all duration-700"></i>
+            @can('view portal absensi')
+            <div class="card-premium p-6 bg-slate-900 text-white border-none shadow-xl shadow-slate-200 group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                <i data-lucide="fingerprint" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 rotate-12 group-hover:rotate-0 group-hover:scale-110 transition-all duration-700"></i>
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="p-2 bg-white/20 backdrop-blur-md rounded-xl shadow-sm">
-                            <i data-lucide="clock" class="w-5 h-5"></i>
+                        <div class="p-2 bg-white/10 backdrop-blur-md rounded-xl shadow-sm">
+                            <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i>
                         </div>
                         <h3 class="text-sm font-black uppercase tracking-widest italic text-white">Portal HR & Absensi</h3>
                     </div>
-                    <p class="text-[10px] font-bold text-blue-100 mb-6 leading-relaxed">
+                    <p class="text-[10px] font-bold text-slate-400 mb-6 leading-relaxed">
                         Untuk mengecek absensi karyawan silahkan kunjungi link berikut.
                     </p>
-                    <a href="https://brightstar.kodexa.site" target="_blank" class="w-full flex items-center justify-between px-5 py-3.5 bg-white text-blue-600 hover:bg-blue-50 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md group-hover:shadow-lg">
+                    <a href="https://brightstar.kodexa.site" target="_blank" class="w-full flex items-center justify-between px-5 py-3.5 bg-blue-600 text-white hover:bg-blue-700 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md group-hover:shadow-lg border border-blue-500/50">
                         <span>Buka Portal Absensi Karyawan (Terapis)</span>
                         <i data-lucide="external-link" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
                     </a>
                 </div>
             </div>
+            @endcan
 
             <div class="card-premium p-8">
                 <div class="flex items-center justify-between mb-8">
@@ -257,22 +259,56 @@
                 </div>
                 <div class="p-0 scrollbar-hide max-h-[440px] overflow-y-auto">
                     @forelse($recentActivities as $activity)
-                    <a href="{{ $activity->type == 'visit' ? route('kunjungan.index') : route('keuangan.pemasukkan') }}" class="block p-6 border-b border-slate-50 hover:bg-slate-50/80 transition-all group">
-                        <div class="flex gap-4">
-                            <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 {{ $activity->type == 'visit' ? 'bg-blue-50 text-blue-500 shadow-lg shadow-blue-50/50' : 'bg-emerald-50 text-emerald-500 shadow-lg shadow-emerald-50/50' }}">
-                                <i data-lucide="{{ $activity->type == 'visit' ? 'user-check' : 'credit-card' }}" class="w-6 h-6"></i>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center justify-between mb-1">
-                                    <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak?->nama ?? 'Data Terhapus' }}</h4>
-                                    <span class="text-[8px] font-bold text-slate-400 uppercase italic">{{ $activity->created_at->diffForHumans() }}</span>
+                    @php 
+                        $hasVisitAccess = auth()->user()->can('view kunjungan');
+                        $hasFinAccess = auth()->user()->can('view pemasukkan');
+                    @endphp
+                    @if($activity->type == 'visit' && $hasVisitAccess)
+                        <a href="{{ route('kunjungan.index') }}" class="block p-6 border-b border-slate-50 hover:bg-slate-50/80 transition-all group">
+                            <div class="flex gap-4">
+                                <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 bg-blue-50 text-blue-500 shadow-lg shadow-blue-50/50">
+                                    <i data-lucide="user-check" class="w-6 h-6"></i>
                                 </div>
-                                <p class="text-[10px] font-bold text-slate-400 line-clamp-1 uppercase tracking-tight">
-                                    {{ $activity->type == 'visit' ? 'Sesi ' . str_ireplace('_', ' ', $activity->jenis_terapi) : 'Pembayaran ' . str_ireplace('_', ' ', $activity->jenis_layanan) }}
-                                </p>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak?->nama ?? 'Data Terhapus' }}</h4>
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase italic">{{ $activity->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="text-[10px] font-bold text-slate-400 line-clamp-1 uppercase tracking-tight">Sesi {{ str_ireplace('_', ' ', $activity->jenis_terapi) }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    @elseif($activity->type == 'financial' && $hasFinAccess)
+                        <a href="{{ route('keuangan.pemasukkan') }}" class="block p-6 border-b border-slate-50 hover:bg-slate-50/80 transition-all group">
+                            <div class="flex gap-4">
+                                <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 bg-emerald-50 text-emerald-500 shadow-lg shadow-emerald-50/50">
+                                    <i data-lucide="credit-card" class="w-6 h-6"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak?->nama ?? 'Data Terhapus' }}</h4>
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase italic">{{ $activity->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="text-[10px] font-bold text-slate-400 line-clamp-1 uppercase tracking-tight">Pembayaran {{ str_ireplace('_', ' ', $activity->jenis_layanan) }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    @else
+                        <div class="block p-6 border-b border-slate-50 opacity-60">
+                            <div class="flex gap-4">
+                                <div class="shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-50 text-slate-400">
+                                    <i data-lucide="lock" class="w-6 h-6"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h4 class="text-xs font-black text-slate-800 uppercase italic truncate">{{ $activity->anak?->nama ?? 'Data Terhapus' }}</h4>
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase italic">{{ $activity->created_at->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="text-[10px] font-bold text-slate-400 line-clamp-1 uppercase tracking-tight">Aktivitas Terbatas</p>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    @endif
                     @empty
                     <div class="p-20 text-center space-y-3">
                         <i data-lucide="inbox" class="w-12 h-12 text-slate-100 mx-auto"></i>
@@ -311,9 +347,11 @@
                     <a href="https://wa.me/{{ $formattedPhone }}?text={{ urlencode($waMsg) }}" target="_blank" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
                         <i class="fab fa-whatsapp"></i> WhatsApp
                     </a>
+                    @can('show anak')
                     <a href="{{ route('anak.show', $pkg->anak_id) }}" class="px-4 bg-slate-50 hover:bg-slate-100 text-slate-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">
                         Profil
                     </a>
+                    @endcan
                 </div>
             </div>
             @endforeach

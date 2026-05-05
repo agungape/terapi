@@ -58,6 +58,65 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 Auth::routes();
 
+Route::get('/generate-permissions', function () {
+    $permissions = [
+        // View permissions (Menu / Sidebar)
+        'view anak', 'view terapis', 'view psikolog', 'view alat ukur', 'view program anak', 'view tarif', 'view pelatihan', 
+        'view master umur', 'view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara',
+        'view role', 'view permission', 'view user', 'view manajemen menu',
+        'view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan',
+        'view observasi', 'view assessment', 'view rekammedis', 'view jadwal anak',
+        'view informasi', 'view profile', 'view profile user',
+        'view kategori produk', 'view layanan produk',
+        'view laporan kunjungan', 'view analisis kinerja',
+        'view career', 'view pembayaran', 'view kontrak', 'view pengaturan website',
+        'view kunjungan', 'view riwayat terapi', 'view portal absensi',
+
+        // CRUD permissions (Controllers)
+        'create anak', 'show anak', 'update anak', 'delete anak',
+        'create terapis', 'show terapis', 'update terapis', 'delete terapis', 'delete foto terapis',
+        'create psikolog', 'show psikolog', 'update psikolog', 'delete psikolog',
+        'create alat ukur', 'update alat ukur', 'delete alat ukur',
+        'create program anak', 'update program anak', 'delete program anak',
+        'create tarif', 'update tarif', 'delete tarif',
+        'create pelatihan', 'update pelatihan', 'delete pelatihan',
+        'create master umur', 'update master umur', 'delete master umur',
+        'create pendengaran', 'update pendengaran', 'delete pendengaran',
+        'create penglihatan', 'update penglihatan', 'delete penglihatan',
+        'create perilaku', 'update perilaku', 'delete perilaku',
+        'create autis', 'update autis', 'delete autis',
+        'create gpph', 'update gpph', 'delete gpph',
+        'create wawancara', 'update wawancara', 'delete wawancara',
+        'create role', 'update role', 'delete role',
+        'create permission', 'update permission', 'delete permission',
+        'create user', 'update user', 'delete user', 'update status user',
+        'create kategori', 'update kategori', 'delete kategori',
+        'create pemasukkan', 'update pemasukkan', 'delete pemasukkan',
+        'create pengeluaran', 'update pengeluaran', 'delete pengeluaran',
+        'create jadwal anak', 'update jadwal anak', 'delete jadwal anak',
+        'update informasi',
+        'show rekammedis',
+        'create profile', 'update profile',
+        'create observasi', 'update observasi', 'delete observasi',
+        'create assessment', 'update assessment', 'delete assessment',
+        'create kunjungan', 'update kunjungan', 'delete kunjungan',
+    ];
+
+    $count = 0;
+    foreach ($permissions as $p) {
+        if (!\Spatie\Permission\Models\Permission::where('name', $p)->exists()) {
+            \Spatie\Permission\Models\Permission::create(['name' => $p, 'guard_name' => 'web']);
+            $count++;
+        }
+    }
+
+    $superAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+    $superAdmin->givePermissionTo(\Spatie\Permission\Models\Permission::all());
+
+    return "Berhasil menambahkan {$count} permissions baru dan melakukan sinkronisasi ke role super-admin. Silakan atur permission untuk role lain melalui menu Manajemen User -> Roles.";
+});
+
+
 Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog']], function () {
 
     Route::resource('/roles', RoleController::class);

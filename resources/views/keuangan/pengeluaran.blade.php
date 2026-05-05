@@ -172,6 +172,7 @@
                         </button>
                         @endif
                         
+                        @can('delete pengeluaran')
                         @if($pengeluaran->id == $dataTerakhir->id)
                         <form action="{{ route('pengeluaran.destroy', $pengeluaran->id) }}" method="POST" class="inline">
                             @csrf @method('DELETE')
@@ -180,6 +181,7 @@
                             </button>
                         </form>
                         @endif
+                        @endcan
                     </div>
                 </div>
             </div>

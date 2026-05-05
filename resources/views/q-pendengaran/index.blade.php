@@ -38,7 +38,7 @@
             </div>
             <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Deteksi Pendengaran</h2>
         </div>
-        @can('create deteksi qpendengaran')
+        @can('create pendengaran')
         <button @click="openCreateModal()"
                 class="bg-red-500 hover:bg-red-600 text-white py-2.5 px-6 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-red-200">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah Data
@@ -75,14 +75,14 @@
                             <td class="px-6 py-4 text-sm font-bold text-slate-700 leading-relaxed">{{ $q->question_text }}</td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity">
-                                    @can('update qpendengaran')
+                                    @can('update pendengaran')
                                     <button type="button" @click="openEditModal({ id: '{{ $q->id }}', age_group_id: '{{ $group->id }}', question_text: `{{ addslashes($q->question_text) }}` })"
                                             class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100">
                                         <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                     </button>
                                     @endcan
                                     
-                                    @can('delete qpendengaran')
+                                    @can('delete pendengaran')
                                     <form action="{{ route('qpendengaran.destroy', ['id' => $q->id]) }}" method="POST" class="inline">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus"

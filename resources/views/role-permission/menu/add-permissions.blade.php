@@ -1,6 +1,20 @@
 @extends('layouts.master')
 @section('title', 'Konfigurasi Hak Akses')
 
+@section('style')
+<style>
+    .peer:checked ~ .peer-checked\:bg-emerald-500 {
+        background-color: #10b981 !important;
+    }
+    .bg-emerald-500 {
+        background-color: #10b981 !important;
+    }
+    .hover\:bg-emerald-600:hover {
+        background-color: #059669 !important;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="space-y-8 animate-in fade-in duration-500 pb-20">
     
@@ -78,13 +92,13 @@
                                 @foreach ($menu->permissions as $permission)
                                 <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 hover:border-emerald-200 hover:bg-emerald-50/20 transition-all group">
                                     <div class="space-y-0.5">
-                                        <p class="text-[10px] font-black text-slate-600 uppercase tracking-tighter group-hover:text-emerald-700 transition-colors">{{ $permission->name }}</p>
+                                         <p class="text-[10px] font-black text-slate-600 uppercase tracking-tighter group-hover:text-emerald-700 transition-colors">{{ $permission->name }}</p>
                                         <p class="text-[8px] font-bold text-slate-400 uppercase">Capability Node</p>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" name="permission[]" value="{{ $permission->name }}"
                                                class="sr-only peer" {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}>
-                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
+                                         <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
                                     </label>
                                 </div>
                                 @endforeach
@@ -103,14 +117,14 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach ($otherPermissions as $permission)
-                                <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 filter grayscale group hover:grayscale-0 transition-all">
+                                <div class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100/50 hover:border-emerald-200 hover:bg-emerald-50/20 transition-all group">
                                     <div class="space-y-0.5">
                                         <p class="text-[10px] font-black text-slate-600 uppercase tracking-tighter">{{ $permission->name }}</p>
                                     </div>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" name="permission[]" value="{{ $permission->name }}"
                                                class="sr-only peer" {{ in_array($permission->id, $rolePermissions) ? 'checked' : '' }}>
-                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
+                                         <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 shadow-sm"></div>
                                     </label>
                                 </div>
                                 @endforeach
@@ -121,11 +135,11 @@
                 </div>
 
                 <div class="mt-10 flex items-center justify-end">
-                    <button type="submit" class="group relative px-12 py-4 bg-red-500 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl shadow-red-200 hover:bg-red-600 transition-all flex items-center gap-3">
-                        <i data-lucide="save" class="w-4 h-4"></i>
-                        Simpan Konfigurasi Akses
-                        <div class="absolute -right-2 -top-2 w-5 h-5 bg-white text-red-500 rounded-full flex items-center justify-center text-[8px] border border-red-100 shadow-md transform group-hover:scale-110 transition-transform">!</div>
-                    </button>
+                     <button type="submit" class="group relative px-12 py-4 bg-emerald-500 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl shadow-emerald-200 hover:bg-emerald-600 transition-all flex items-center gap-3">
+                         <i data-lucide="save" class="w-4 h-4"></i>
+                         Simpan Konfigurasi Akses
+                         <div class="absolute -right-2 -top-2 w-5 h-5 bg-white text-emerald-500 rounded-full flex items-center justify-center text-[8px] border border-emerald-100 shadow-md transform group-hover:scale-110 transition-transform">!</div>
+                     </button>
                 </div>
             </form>
         </div>

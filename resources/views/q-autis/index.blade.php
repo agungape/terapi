@@ -35,7 +35,7 @@
             </div>
             <h2 class="text-2xl font-black text-slate-800 uppercase italic tracking-tight">Deteksi Autis</h2>
         </div>
-        @can('create deteksi qautis')
+        @can('create autis')
         <button @click="openCreateModal()"
                 class="bg-red-500 hover:bg-red-600 text-white py-2.5 px-6 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-lg shadow-red-200">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah Data
@@ -68,11 +68,13 @@
                         <td class="px-6 py-4 text-sm font-bold text-slate-700 leading-relaxed">{{ $q->question_text }}</td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity">
+                                @can('update autis')
                                 <button @click="openEditModal({ id: '{{ $q->id }}', no_urut: '{{ $q->no_urut }}', question_text: '{{ addslashes($q->question_text) }}' })"
                                         class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </button>
-                                @can('delete qautis')
+                                @endcan
+                                @can('delete autis')
                                 <form action="{{ route('qautis.destroy', ['id' => $q->id]) }}" method="POST" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm border border-red-100 btn-hapus"

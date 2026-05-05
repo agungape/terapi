@@ -175,9 +175,12 @@
             
             <!-- Quick Action Menu -->
             <div class="absolute top-4 right-4 z-10 flex gap-2">
+                @can('update tarif')
                 <button @click="openEdit({{ $t->toJson() }})" class="p-2.5 bg-white/90 backdrop-blur-sm text-amber-600 rounded-xl shadow-sm border border-slate-100 hover:bg-amber-600 hover:text-white transition-all duration-300">
                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                 </button>
+                @endcan
+                @can('delete tarif')
                 <form action="{{ route('tarif.destroy', $t->id) }}" method="POST" class="inline">
                     @csrf @method('DELETE')
                     <button type="submit" class="p-2.5 bg-white/90 backdrop-blur-sm text-red-600 rounded-xl shadow-sm border border-slate-100 hover:bg-red-600 hover:text-white transition-all duration-300 btn-hapus" 
@@ -185,6 +188,7 @@
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                     </button>
                 </form>
+                @endcan
             </div>
 
             <!-- Card Image Area -->

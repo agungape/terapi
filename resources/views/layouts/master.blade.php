@@ -312,7 +312,7 @@
             </a>
             @endcan
 
-            @can('view program')
+            @can('view program anak')
             <a href="{{ route('program.index') }}" class="sidebar-link {{ request()->routeIs('program.*') ? 'active' : '' }}">
                 <i data-lucide="clipboard-list" class="w-4 h-4 shrink-0 {{ request()->routeIs('program.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Program Terapi</span>
@@ -326,7 +326,7 @@
             </a>
             @endcan
 
-            @can('view alat-ukur')
+            @can('view alat ukur')
             <a href="{{ route('alat-ukur.index') }}" class="sidebar-link {{ request()->routeIs('alat-ukur.*') ? 'active' : '' }}">
                 <i data-lucide="ruler" class="w-4 h-4 shrink-0 {{ request()->routeIs('alat-ukur.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Alat Ukur Psikologi</span>
@@ -334,6 +334,7 @@
             @endcan
 
             <!-- Deteksi Dini Submenu -->
+            @canany(['view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara', 'view master umur'])
             <div x-data="{ open: {{ (request()->is('question*') || request()->is('age*') || request()->routeIs('question.*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
@@ -346,18 +347,34 @@
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" x-show="sidebarOpen"></i>
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
+                    @can('view master umur')
                     <a href="{{ route('question.umur') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.umur') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Master Umur</a>
+                    @endcan
+                    @can('view pendengaran')
                     <a href="{{ route('question.pendengaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.pendengaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pendengaran</a>
+                    @endcan
+                    @can('view penglihatan')
                     <a href="{{ route('question.penglihatan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.penglihatan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Penglihatan</a>
+                    @endcan
+                    @can('view perilaku')
                     <a href="{{ route('question.perilaku') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.perilaku') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Perilaku</a>
+                    @endcan
+                    @can('view autis')
                     <a href="{{ route('question.autis') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.autis') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Autis</a>
+                    @endcan
+                    @can('view gpph')
                     <a href="{{ route('question.gpph') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.gpph') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">GPPH</a>
+                    @endcan
+                    @can('view wawancara')
                     <a href="{{ route('question.wawancara') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.wawancara') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Wawancara</a>
+                    @endcan
                 </div>
             </div>
+            @endcanany
 
 
 
+            @canany(['view kunjungan', 'view observasi', 'view assessment', 'view riwayat terapi'])
             <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
@@ -371,20 +388,25 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1 relative">
                     <div class="absolute left-6 top-0 w-px h-full bg-slate-100"></div>
+                    @can('view kunjungan')
                     <a href="{{ route('kunjungan.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('kunjungan.index') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors flex items-center gap-2">
                         Pendaftaran Kunjungan
                     </a>
+                    @endcan
                     @can('view observasi')
                     <a href="{{ route('observasi.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('observasi.*') ? 'text-red-500 shadow-none' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Observasi</a>
                     @endcan
                     @can('view assessment')
                     <a href="{{ route('assessment.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Assessment</a>
                     @endcan
+                    @can('view riwayat terapi')
                     <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.show')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
+                    @endcan
                 </div>
             </div>
+            @endcanany
 
-            @can('view jadwal')
+            @can('view jadwal anak')
             <a href="{{ route('jadwal.index') }}" class="sidebar-link {{ request()->routeIs('jadwal.*') ? 'active' : '' }}">
                 <i data-lucide="calendar-days" class="w-4 h-4 shrink-0 {{ request()->routeIs('jadwal.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Jadwal Anak</span>
@@ -393,6 +415,7 @@
 
 
 
+            @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan'])
             <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
                         class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('keuangan*') ? 'bg-slate-50/80 text-red-500' : '' }}">
@@ -415,9 +438,12 @@
                     @can('view kategori')
                     <a href="{{ route('keuangan.kategori') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.kategori') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Kategori Kas</a>
                     @endcan
+                    @can('view laporan keuangan')
                     <a href="{{ route('keuangan.laporan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.laporan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Laporan Keuangan</a>
+                    @endcan
                 </div>
             </div>
+            @endcanany
 
             {{-- <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.index') ? 'active' : '' }}">
                 <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0 {{ request()->routeIs('products.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
@@ -426,18 +452,23 @@
 
 
 
+            @can('view pelatihan')
             <a href="{{ route('pelatihan.index') }}" class="sidebar-link {{ request()->routeIs('pelatihan.index') ? 'active' : '' }}">
                 <i data-lucide="graduation-cap" class="w-4 h-4 shrink-0 {{ request()->routeIs('pelatihan.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Katalog Pelatihan</span>
             </a>
+            @endcan
 
+            @can('view analisis kinerja')
             <a href="{{ route('analisis.kinerja') }}" class="sidebar-link {{ request()->routeIs('analisis.kinerja') ? 'active' : '' }}">
                 <i data-lucide="bar-chart-big" class="w-4 h-4 shrink-0 {{ request()->routeIs('analisis.kinerja') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Analisis Kinerja</span>
             </a>
+            @endcan
 
 
 
+            @canany(['view role', 'view permission', 'view user', 'view manajemen menu'])
             <div x-data="{ open: {{ (request()->is('roles*') || request()->is('permissions*') || request()->is('users*') || request()->is('manajemen-menu*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
                         class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('roles*') ? 'bg-slate-50/80 text-red-500' : '' }}">
@@ -462,6 +493,7 @@
                     @endcan
                 </div>
             </div>
+            @endcanany
 
             <!-- Others -->
             @can('view career')
@@ -480,10 +512,12 @@
 
 
 
+            @can('view profile')
             <a href="{{ route('profile.index') }}" class="sidebar-link {{ request()->routeIs('profile.index') ? 'active' : '' }}">
                 <i data-lucide="settings" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Profil Yayasan</span>
             </a>
+            @endcan
 
             <a href="{{ route('profile.user') }}" class="sidebar-link {{ request()->routeIs('profile.user') ? 'active' : '' }}">
                 <i data-lucide="user-circle" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.user') ? 'text-red-500' : 'text-slate-400' }}"></i>

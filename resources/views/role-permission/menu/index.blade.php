@@ -44,11 +44,11 @@
                                     <span class="text-sm font-black text-slate-700 uppercase tracking-tight">{{ $role->name }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ url('roles/' . $role->id . '/give-permissions') }}" 
-                                       class="inline-flex items-center gap-2 px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-100 italic">
-                                        <i data-lucide="key" class="w-3.5 h-3.5"></i>
-                                        Configure Permissions
-                                    </a>
+                                     <a href="{{ url('roles/' . $role->id . '/give-permissions') }}" 
+                                        class="inline-flex items-center gap-2 px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-100 italic">
+                                         <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                                         Configure Permissions
+                                     </a>
                                 </td>
                             </tr>
                             @endforeach

@@ -33,19 +33,14 @@
                 <li class="nav-item">
                     <a href="/home" class="nav-link @yield('menuDashboard')">
                         <i class="nav-icon fas fa-home"></i>
-                        <p>
-                            Dashboard
-                        </p>
+                        <p>Dashboard</p>
                     </a>
                 </li>
                 <li class="nav-item @yield('masterShow')">
-                    @canany(['view anak', 'view terapis', 'view program anak', 'view pelatihan'])
+                    @canany(['view anak', 'view terapis', 'view psikolog', 'view alat ukur', 'view program anak', 'view tarif', 'view pelatihan', 'view master umur', 'view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara'])
                         <a href="#" class="nav-link @yield('menuMaster')">
                             <i class="nav-icon fas fa-solid fa-bars"></i>
-                            <p>
-                                Master Data
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Master Data <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -76,14 +71,14 @@
                             </li>
                         @endcan
                         
-                        @if (Auth::user()->hasAnyRole(['admin', 'super-admin']))
+                        @can('view alat ukur')
                             <li class="nav-item">
                                 <a href="/alat-ukur" class="nav-link @yield('menuAlatUkur')">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Alat Ukur</p>
                                 </a>
                             </li>
-                        @endif
+                        @endcan
 
                         @can('view program anak')
                             <li class="nav-item">
@@ -112,59 +107,65 @@
                             </li>
                         @endcan
 
+                        @canany(['view master umur', 'view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara'])
                         <li class="nav-item @yield('deteksiShow')">
                             <a href="#" class="nav-link @yield('menuDeteksi')">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Deteksi Dini
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                                <p>Deteksi Dini <i class="right fas fa-angle-left"></i></p>
                             </a>
                             <ul class="nav nav-treeview">
+                                @can('view master umur')
                                 <li class="nav-item">
                                     <a href="{{ route('question.umur') }}" class="nav-link @yield('deteksiUmur')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Master Umur</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Master Umur</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view pendengaran')
                                 <li class="nav-item">
                                     <a href="{{ route('question.pendengaran') }}" class="nav-link @yield('deteksiPendengaran')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Pendengaran</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Pendengaran</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view penglihatan')
                                 <li class="nav-item">
                                     <a href="{{ route('question.penglihatan') }}" class="nav-link @yield('deteksiPenglihatan')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Penglihatan</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Penglihatan</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view perilaku')
                                 <li class="nav-item">
                                     <a href="{{ route('question.perilaku') }}" class="nav-link @yield('deteksiPerilaku')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Perilaku</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Perilaku</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view autis')
                                 <li class="nav-item">
                                     <a href="{{ route('question.autis') }}" class="nav-link @yield('deteksiAutis')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Autis</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Autis</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view gpph')
                                 <li class="nav-item">
                                     <a href="{{ route('question.gpph') }}" class="nav-link @yield('deteksiGpph')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>GPPH</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>GPPH</p>
                                     </a>
                                 </li>
+                                @endcan
+                                @can('view wawancara')
                                 <li class="nav-item">
                                     <a href="{{ route('question.wawancara') }}" class="nav-link @yield('deteksiWawancara')">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Wawancara</p>
+                                        <i class="far fa-dot-circle nav-icon"></i><p>Wawancara</p>
                                     </a>
                                 </li>
+                                @endcan
                             </ul>
                         </li>
+                        @endcanany
                     </ul>
                 </li>
 
@@ -172,10 +173,7 @@
                     @canany(['view role', 'view permission', 'view user', 'view manajemen menu'])
                         <a href="#" class="nav-link @yield('menuLogin')">
                             <i class="nav-icon fas fa-solid fa-users"></i>
-                            <p>
-                                Manajemen User
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Manajemen User <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -216,13 +214,10 @@
 
 
                 <li class="nav-item @yield('masterKeuangan')">
-                    @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
+                    @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan'])
                         <a href="#" class="nav-link @yield('menuKeuangan')">
                             <i class="nav-icon fas fa-money-bill"></i>
-                            <p>
-                                Keuangan
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Keuangan <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -270,20 +265,10 @@
                 </li>
 
                 <li class="nav-item @yield('masterLayananterapi')">
-                    @canany([
-                        'view observasi',
-                        'view assessment',
-                        'view pendaftaran',
-                        'view rekammedis',
-                        'view jadwal
-                        anak',
-                        ])
+                    @canany(['view observasi', 'view assessment', 'view pendaftaran', 'view rekammedis', 'view jadwal anak'])
                         <a href="#" class="nav-link @yield('menuLayananterapi')">
                             <i class="nav-icon fa fa-address-book"></i>
-                            <p>
-                                Layanan Terapi
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Layanan Terapi <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -297,18 +282,14 @@
                                 </a>
                             </li>
                         @endcan
-                        @if (Auth::user()->hasAnyRole(['psikolog', 'super-admin', 'admin', 'terapis']))
-                            @can('view assessment')
-                                <li class="nav-item">
-                                    <a href="/assessment" class="nav-link @yield('menuAssessment')">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Assessment
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
+                        @can('view assessment')
+                            <li class="nav-item">
+                                <a href="/assessment" class="nav-link @yield('menuAssessment')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Assessment</p>
+                                </a>
+                            </li>
+                        @endcan
                         @can('view pendaftaran')
                             <li class="nav-item">
                                 <a href="/kunjungan" class="nav-link @yield('menuKunjungan')">
@@ -346,10 +327,7 @@
                     @canany(['view informasi', 'view profile', 'view profile user'])
                         <a href="#" class="nav-link @yield('menuInformasiprofile')">
                             <i class="nav-icon fa fas fa-house-user"></i>
-                            <p>
-                                Informasi & Profile
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Informasi & Profile <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -373,18 +351,14 @@
                                 </a>
                             </li>
                         @endcan
-                        @if (Auth::user()->hasRole('terapis'))
-                            @can('view profile user')
-                                <li class="nav-item">
-                                    <a href="{{ route('profile.user') }}" class="nav-link @yield('menuProfileuser')">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>
-                                            Profile User
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
+                        @can('view profile user')
+                            <li class="nav-item">
+                                <a href="{{ route('profile.user') }}" class="nav-link @yield('menuProfileuser')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Profile User</p>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
 
@@ -392,33 +366,26 @@
                     @canany(['view kategori produk', 'view layanan produk'])
                         <a href="#" class="nav-link @yield('menuEcommerce')">
                             <i class="nav-icon fa fas fa-shopping-bag"></i>
-                            <p>
-                                Toko Online
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Toko Online <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
-                        {{-- @can('view kategori produk') --}}
+                        @can('view kategori produk')
                         <li class="nav-item">
                             <a href="/products-category" class="nav-link @yield('menuKategoriproduk')">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Kategori Produk
-                                </p>
+                                <p>Kategori Produk</p>
                             </a>
                         </li>
-                        {{-- @endcan
-                        @can('view Layananproduk') --}}
+                        @endcan
+                        @can('view layanan produk')
                         <li class="nav-item">
                             <a href="/products-services" class="nav-link @yield('menuLayananproduk')">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Layanan Produk
-                                </p>
+                                <p>Layanan Produk</p>
                             </a>
                         </li>
-                        {{-- @endcan --}}
+                        @endcan
                     </ul>
                 </li>
 
@@ -426,10 +393,7 @@
                     @canany(['view laporan kunjungan', 'view analisis kinerja'])
                         <a href="#" class="nav-link @yield('menuLaporanAnalsis')">
                             <i class="nav-icon fa fas fa-file-alt"></i>
-                            <p>
-                                Laporan & Analisis
-                                <i class="fas fa-angle-left right"></i>
-                            </p>
+                            <p>Laporan & Analisis <i class="fas fa-angle-left right"></i></p>
                         </a>
                     @endcanany
                     <ul class="nav nav-treeview">
@@ -464,9 +428,7 @@
                     <li class="nav-item">
                         <a href="/career" class="nav-link @yield('menuCareer')">
                             <i class="nav-icon fas fa-solid fa-paperclip"></i>
-                            <p>
-                                Career
-                            </p>
+                            <p>Career</p>
                         </a>
                     </li>
                 @endcan
@@ -474,9 +436,7 @@
                     <li class="nav-item">
                         <a href="/profile" class="nav-link @yield('menuBayar')">
                             <i class="nav-icon fa fa-solid fa-file-invoice-dollar"></i>
-                            <p>
-                                Pembayaran
-                            </p>
+                            <p>Pembayaran</p>
                         </a>
                     </li>
                 @endcan
@@ -484,25 +444,18 @@
                     <li class="nav-item">
                         <a href="/profile" class="nav-link @yield('menukontrak')">
                             <i class="nav-icon fa fa-solid fa-handshake"></i>
-                            <p>
-                                Kontrak Karyawan
-                            </p>
+                            <p>Kontrak Karyawan</p>
                         </a>
                     </li>
                 @endcan
-                @can('view Setting')
+                @can('view pengaturan website')
                     <li class="nav-item @yield('masterWebsite')">
-                        @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori'])
-                            <a href="#" class="nav-link @yield('menuKeuangan')">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>
-                                    Pengaturan Website
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                        @endcanany
+                        <a href="#" class="nav-link @yield('menuWebsite')">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>Pengaturan Website <i class="fas fa-angle-left right"></i></p>
+                        </a>
                         <ul class="nav nav-treeview">
-
+                            <!-- Placeholder untuk child menu pengaturan website -->
                         </ul>
                     </li>
                 @endcan

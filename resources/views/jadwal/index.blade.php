@@ -156,7 +156,7 @@
                                 </td>
                                 <td class="px-6 py-5">
                                     <div class="flex items-center justify-center gap-2">
-                                        @can('create jadwal anak')
+                                        @can('update jadwal anak')
                                         <a href="{{ route('jadwal.edit', ['jadwal' => $jadwal->id]) }}" class="p-2 bg-slate-50 text-slate-500 rounded-xl hover:bg-slate-900 hover:text-white transition-all border border-slate-100 shadow-sm" title="Edit Jadwal">
                                             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                         </a>

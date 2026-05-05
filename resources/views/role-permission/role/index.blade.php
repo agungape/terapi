@@ -77,7 +77,7 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     @can('update role')
-                                    <button @click="openEdit({{ $role->id }}, '{{ $role->name }}')" 
+                                    <button @click="openEdit({{ $role->id }}, '{{ addslashes($role->name) }}')" 
                                             class="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm border border-amber-100">
                                         <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                     </button>

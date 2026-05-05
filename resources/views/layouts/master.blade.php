@@ -375,7 +375,7 @@
 
 
             @canany(['view kunjungan', 'view observasi', 'view assessment', 'view riwayat terapi'])
-            <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'true' : 'false' }} }" 
+            <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 

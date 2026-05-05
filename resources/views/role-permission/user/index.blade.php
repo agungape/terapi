@@ -169,9 +169,9 @@
                                 @can('update user')
                                 <button type="button" @click="openEdit({
                                     id: '{{ $user->id }}',
-                                    name: '{{ $user->name }}',
-                                    username: '{{ $user->username }}',
-                                    email: '{{ $user->email }}',
+                                    name: '{{ addslashes($user->name) }}',
+                                    username: '{{ addslashes($user->username) }}',
+                                    email: '{{ addslashes($user->email) }}',
                                     roles: @json($user->getRoleNames())
                                 })" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>

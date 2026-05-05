@@ -281,8 +281,10 @@
             @endforelse
         </div>
         
-        <div class="p-6 bg-slate-50/50 border-t border-slate-100 flex justify-center">
-            {{ $anaks->fragment('judul')->links() }}
+        <div class="p-6 bg-slate-50/50 border-t border-slate-100">
+            <div class="overflow-x-auto max-w-full flex justify-center custom-scrollbar pb-2">
+                {{ $anaks->fragment('judul')->links() }}
+            </div>
         </div>
     </div>
     

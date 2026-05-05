@@ -142,7 +142,6 @@
             </div>
         </div>
     </div>
-</div>
 
     <!-- Alpine Modal -->
     <template x-if="modalOpen">

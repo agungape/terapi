@@ -379,7 +379,7 @@
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="activity" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Layanan Terapi</span>
@@ -400,7 +400,7 @@
                     <a href="{{ route('assessment.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Assessment</a>
                     @endcan
                     @can('view riwayat terapi')
-                    <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.show')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
+                    <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.detail')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
                     @endcan
                 </div>
             </div>
@@ -416,7 +416,7 @@
 
 
             @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan'])
-            <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*')) ? 'true' : 'false' }} }" class="space-y-1">
+            <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*') || request()->is('kategori*') || request()->is('pemasukkan*') || request()->is('pengeluaran*') || request()->is('laporan-keuangan*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
                         class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('keuangan*') ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">

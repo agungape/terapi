@@ -352,7 +352,7 @@
             <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
             <p style="font-weight:bold; margin: 2px 0;">Psikolog,</p>
             <div style="margin: 10px 0;">
-                <img src="data:image/png;base64,{{ $barcode }}" width="80" height="80">
+                <img src="data:image/png;base64,{{ $barcode }}" width="110" height="110">
             </div>
             <p class="sig-name">{{ $assessment->psikolog->nama ?? 'Astri Yunita, S.Psi.,M.Psi.,Psikolog' }}</p>
             @if($assessment->psikolog)

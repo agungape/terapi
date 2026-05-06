@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="20">
     <title>Hasil Verifikasi Observasi - {{ $data['nama'] }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,6 +14,8 @@
             --secondary: #64748b;
             --success: #10b981;
             --success-light: #ecfdf5;
+            --info: #0ea5e9;
+            --info-light: #f0f9ff;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
@@ -47,6 +50,7 @@
             overflow: hidden;
             border: 1px solid var(--border);
             animation: fadeIn 0.8s ease-out;
+            margin-bottom: 50px;
         }
 
         @keyframes fadeIn {
@@ -119,6 +123,15 @@
             padding: 40px;
         }
 
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -131,7 +144,18 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 25px;
+        }
+
+        .scan-time-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--info-light);
+            color: var(--info);
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 0.75rem;
         }
 
         .main-title {
@@ -187,6 +211,42 @@
             font-weight: 600;
             color: var(--text-main);
         }
+
+        /* Results List */
+        .results-section {
+            margin-top: 20px;
+        }
+
+        .results-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .result-row:last-child { border-bottom: none; }
+
+        .result-label { font-weight: 600; color: var(--secondary); font-size: 0.9rem; }
+        .result-value { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
 
         /* Signature Section */
         .footer-verification {
@@ -259,23 +319,24 @@
         </header>
 
         <main class="content-body">
-            <div class="status-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                Terverifikasi Sistem
+            <div class="header-meta">
+                <div class="status-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Terverifikasi Sistem
+                </div>
+                <div class="scan-time-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Waktu Scan: {{ $data['scan_time'] }}
+                </div>
             </div>
 
             <h1 class="main-title">Hasil Observasi Anak</h1>
-            <p class="subtitle">Dokumen ini merupakan ringkasan digital hasil verifikasi observasi perkembangan.</p>
+            <p class="subtitle">Dokumen digital hasil verifikasi observasi perkembangan.</p>
 
             <div class="data-grid">
                 <div class="data-item">
                     <span class="label">Identitas Anak</span>
                     <span class="value">{{ $data['nama'] }}</span>
-                </div>
-                
-                <div class="data-item">
-                    <span class="label">Domisili</span>
-                    <span class="value">{{ $data['alamat'] }}</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -288,6 +349,20 @@
                         <span class="value">{{ \Carbon\Carbon::parse($data['tanggal_observasi'])->translatedFormat('d M Y') }}</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="results-section">
+                <h3 class="results-title">Ringkasan Hasil Pemeriksaan</h3>
+                @forelse($data['hasil_pemeriksaan'] as $hasil)
+                    <div class="result-row">
+                        <span class="result-label">{{ $hasil->jenis }}</span>
+                        <span class="result-value">{{ $hasil->hasil }}</span>
+                    </div>
+                @empty
+                    <div class="result-row">
+                        <span class="result-label" style="font-style: italic;">Tidak ada data pemeriksaan spesifik pada tanggal ini.</span>
+                    </div>
+                @endforelse
             </div>
 
             <footer class="footer-verification">

@@ -232,11 +232,15 @@ class KunjunganController extends Controller
             ->toArray();
 
         // Statistik (Hadir, Izin, Izin Hangus ambil data HARI INI saja)
+        // Gunakan whereBetween untuk menghindari masalah timezone database
+        $startOfDay = now()->startOfDay();
+        $endOfDay = now()->endOfDay();
+
         $total = Kunjungan::whereNull('catatan')->count(); 
-        $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
-        $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
-        $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
-        $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
+        $hadir = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'hadir')->count();
+        $izin = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'izin')->count();
+        $sakit = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'sakit')->count();
+        $izin_hangus = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'izin_hangus')->count();
 
         return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
@@ -300,11 +304,14 @@ class KunjunganController extends Controller
             ->toArray();
 
         // Statistik (Hadir, Izin, Izin Hangus ambil data HARI INI saja)
+        $startOfDay = now()->startOfDay();
+        $endOfDay = now()->endOfDay();
+
         $total = (clone $query)->count();
-        $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
-        $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
-        $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
-        $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
+        $hadir = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'hadir')->count();
+        $izin = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'izin')->count();
+        $sakit = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'sakit')->count();
+        $izin_hangus = Kunjungan::whereBetween('created_at', [$startOfDay, $endOfDay])->where('status', 'izin_hangus')->count();
 
         return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }

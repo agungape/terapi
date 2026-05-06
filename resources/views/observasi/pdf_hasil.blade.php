@@ -404,7 +404,7 @@
             <p>Unaaha, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
             <p style="font-weight:bold; margin: 2px 0;">Terapis Penanggung Jawab,</p>
             <div style="margin: 8px 0;">
-                <img src="data:image/png;base64,{{ $barcode }}" width="70" height="70">
+                <img src="data:image/png;base64,{{ $barcode }}" width="100" height="100">
             </div>
             <p class="sig-name">Inne Pusvitasari, S.Psi.</p>
         </div>

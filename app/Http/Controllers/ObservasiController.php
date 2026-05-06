@@ -33,7 +33,8 @@ use Mpdf\Mpdf;
 use Illuminate\Support\Str;
 use Milon\Barcode\DNS2D;
 
-class ObservasiController extends Controller
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 {
     public function __construct()
     {
@@ -715,21 +716,20 @@ class ObservasiController extends Controller
             ->whereDate('created_at', $tanggal)
             ->sum('answer');
 
-        // Data yang akan diencode dalam barcode
-        $data = [
-            'nama' => $anak->nama,
-            'alamat' => $anak->alamat,
-            'tanggal_lahir' => $anak->tanggal_lahir,
-            // 'signature' => $->signature_image_path, // path ke gambar tanda tangan
-            'tanggal_observasi' => $request->tanggal
+        // Data yang akan diencode dalam barcode (Encrypted for security)
+        $payload = [
+            'anak_id' => $anak->id,
+            'tanggal_observasi' => $request->tanggal,
+            'timestamp' => now()->timestamp
         ];
 
-        $scanUrl = url('/barcode/scan?data=' . urlencode(json_encode($data)));
+        $encryptedData = Crypt::encryptString(json_encode($payload));
+        $scanUrl = route('barcode.scan', ['data' => $encryptedData]);
 
         $dns2d = new DNS2D();
 
-        // Generate QR Code dengan data JSON
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 2, 2);
+        // Generate QR Code dengan data JSON (Size 4 for better scanning)
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
 
         $anthropometris = Anthropometri::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
         $kpsp = HasilPemeriksaan::where('anak_id', $anak->id)->where('jenis', 'KPSP')->whereDate('created_at', $tanggal)->first();
@@ -802,14 +802,32 @@ class ObservasiController extends Controller
 
     public function scanBarcode(Request $request)
     {
-        // Ambil data dari URL (contoh: ?data={"child_name":"Budi",...})
-        $scannedData = $request->input('data');
+        try {
+            $encryptedData = $request->input('data');
+            $decryptedJson = Crypt::decryptString($encryptedData);
+            $payload = json_decode($decryptedJson, true);
 
-        // Decode data JSON
-        $data = json_decode(urldecode($scannedData), true);
+            $anak = Anak::findOrFail($payload['anak_id']);
+            $tanggal = $payload['tanggal_observasi'];
 
-        // Tampilkan view hasil scan
-        return view('observasi.barcode_hasil', compact('data'));
+            // Ambil hasil pemeriksaan untuk ditampilkan
+            $hasil = HasilPemeriksaan::where('anak_id', $anak->id)
+                ->whereDate('created_at', $tanggal)
+                ->get();
+
+            $data = [
+                'nama' => $anak->nama,
+                'alamat' => $anak->alamat,
+                'tanggal_lahir' => $anak->tanggal_lahir,
+                'tanggal_observasi' => $tanggal,
+                'hasil_pemeriksaan' => $hasil,
+                'scan_time' => now()->translatedFormat('H:i:s')
+            ];
+
+            return view('observasi.barcode_hasil', compact('data'));
+        } catch (\Exception $e) {
+            return response("Link verifikasi tidak valid atau telah kadaluarsa.", 403);
+        }
     }
 
     public function update_anthropometri(Request $request, $id)

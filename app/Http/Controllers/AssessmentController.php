@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Milon\Barcode\DNS2D;
 use RealRashid\SweetAlert\Facades\Alert;
 
+use Illuminate\Support\Facades\Crypt;
 class AssessmentController extends Controller
 {
     public function getWawancara($anak)
@@ -159,18 +160,15 @@ class AssessmentController extends Controller
 
     public function cetak(Assessment $assessment)
     {
-        $data = [
-            'nama' => $assessment->anak->nama,
-            'alamat' => $assessment->anak->alamat,
-            'tanggal_lahir' => $assessment->anak->tanggal_lahir,
-            'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
-            'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
-            'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y')
+        $payload = [
+            'assessment_id' => $assessment->id,
+            'timestamp' => now()->timestamp
         ];
 
-        $scanUrl = url('/barcode/assessment/scan?data=' . urlencode(json_encode($data)));
+        $encryptedData = Crypt::encryptString(json_encode($payload));
+        $scanUrl = route('barcode.assessment.scan', ['data' => $encryptedData]);
         $dns2d = new DNS2D();
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 2, 2);
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
 
         $profile = \App\Models\Profile::first();
         $primaryColor = $profile->warna_primer ?? '#ef4444';
@@ -219,8 +217,28 @@ class AssessmentController extends Controller
 
     public function scanBarcode(Request $request)
     {
-        $data = json_decode(urldecode($request->input('data')), true);
-        return view('assessment.barcode_hasil', compact('data'));
+        try {
+            $encryptedData = $request->input('data');
+            $decryptedJson = Crypt::decryptString($encryptedData);
+            $payload = json_decode($decryptedJson, true);
+
+            $assessment = Assessment::with('anak')->findOrFail($payload['assessment_id']);
+
+            $data = [
+                'nama' => $assessment->anak->nama,
+                'alamat' => $assessment->anak->alamat,
+                'tanggal_lahir' => $assessment->anak->tanggal_lahir,
+                'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
+                'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
+                'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y'),
+                'diagnosa' => $assessment->diagnosa,
+                'scan_time' => now()->translatedFormat('H:i:s')
+            ];
+
+            return view('assessment.barcode_hasil', compact('data'));
+        } catch (\Exception $e) {
+            return response("Link verifikasi tidak valid atau telah kadaluarsa.", 403);
+        }
     }
 
 

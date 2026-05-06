@@ -169,9 +169,9 @@
                                 @can('update user')
                                 <button type="button" @click="openEdit({
                                     id: '{{ $user->id }}',
-                                    name: '{{ addslashes($user->name) }}',
-                                    username: '{{ addslashes($user->username) }}',
-                                    email: '{{ addslashes($user->email) }}',
+                                    name: {{ json_encode($user->name) }},
+                                    username: {{ json_encode($user->username) }},
+                                    email: {{ json_encode($user->email ?? '') }},
                                     roles: @json($user->getRoleNames())
                                 })" class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
@@ -218,7 +218,6 @@
         <div class="p-6 bg-slate-50 border-t border-slate-100">
             <div class="overflow-x-auto max-w-full flex justify-center custom-scrollbar pb-2">
                 {{ $users->links() }}
-            </div>
         </div>
     </div>
 

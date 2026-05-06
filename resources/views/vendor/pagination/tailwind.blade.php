@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-5 bg-slate-50/50 border border-slate-100 rounded-2xl shadow-sm">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 p-5 bg-slate-50/50 border border-slate-100 rounded-2xl shadow-sm w-full max-w-full overflow-hidden">
         <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">
             {!! __('Showing') !!} 
             <span class="text-slate-800 italic">{{ $paginator->firstItem() }}</span> 
@@ -10,7 +10,7 @@
             {!! __('results') !!}
         </div>
 
-        <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center gap-1 w-full md:w-auto overflow-x-auto md:overflow-x-visible justify-center py-2 md:py-0">
+        <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center gap-1 w-full md:w-auto overflow-x-auto md:overflow-x-visible justify-start md:justify-center py-2 md:py-0">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <span class="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-300 rounded-xl cursor-not-allowed shrink-0">

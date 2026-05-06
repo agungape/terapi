@@ -342,7 +342,7 @@
             @endforeach
         </div>
 
-        <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-center">
+        <div class="p-4 md:p-8 bg-slate-50 border-t border-slate-100 flex justify-center overflow-hidden">
             {{ $kunjungan->fragment('judul')->links() }}
         </div>
     </div>

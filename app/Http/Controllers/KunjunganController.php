@@ -231,12 +231,13 @@ class KunjunganController extends Controller
             })
             ->toArray();
 
-        // dd($completedSessions);
-        $total = Kunjungan::whereNull('catatan')->where('status', 'hadir')->count();
+        // Statistik (Hadir, Izin, Izin Hangus ambil data HARI INI saja)
+        $total = Kunjungan::whereNull('catatan')->count(); 
         $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
         $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
         $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
         $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
+
         return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }
 
@@ -298,11 +299,11 @@ class KunjunganController extends Controller
             })
             ->toArray();
 
-        // Hitung statistik untuk card
-        $total = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
-        $hadir = $query->clone()->whereNull('catatan')->where('status', 'hadir')->count();
-        $izin = $query->clone()->whereNull('catatan')->where('status', 'izin')->count();
-        $sakit = $query->clone()->whereNull('catatan')->where('status', 'sakit')->count();
+        // Statistik (Hadir, Izin, Izin Hangus ambil data HARI INI saja)
+        $total = (clone $query)->count();
+        $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
+        $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
+        $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
         $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
 
         return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));

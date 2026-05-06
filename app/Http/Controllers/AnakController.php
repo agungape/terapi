@@ -39,8 +39,8 @@ class AnakController extends Controller
         $anaks = $query->withExists(['pemasukkans as has_package' => function($q) {
                 $q->where('jenis_layanan', 'paket_terapi');
             }])
-            ->orderBy('created_at', 'desc')
             ->orderBy('has_package', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(5)
             ->withQueryString();
 

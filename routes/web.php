@@ -53,6 +53,10 @@ Route::get('/therapists', [FrontendController::class, 'therapists']);
 Route::get('/barcode/scan', [ObservasiController::class, 'scanBarcode'])->name('barcode.scan');
 Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcode'])->name('barcode.assessment.scan');
 
+// Short Verification Routes
+Route::get('/v/o/{id}/{date}/{sig}', [ObservasiController::class, 'verifyBarcode'])->name('barcode.verify.observasi');
+Route::get('/v/a/{id}/{sig}', [AssessmentController::class, 'verifyBarcode'])->name('barcode.verify.assessment');
+
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 

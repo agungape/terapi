@@ -81,7 +81,7 @@
         <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
             <i data-lucide="grid" class="w-4 h-4 text-red-500"></i> Clinical Diagnostic Center
         </h4>
-        <div class="grid gap-3 lg:gap-4" style="grid-template-columns: repeat(5, minmax(0, 1fr));">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4">
             <!-- CHAT -->
             <button @click="openModal('autis')" class="card-premium p-6 bg-white hover:bg-indigo-50 border-none transition-all group text-center space-y-3">
                 <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mx-auto group-hover:scale-110 transition-transform">

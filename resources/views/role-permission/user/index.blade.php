@@ -33,28 +33,28 @@
         </div>
 
         <!-- Multi-Action Button Group -->
-        <div class="flex flex-wrap gap-2">
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full md:w-auto">
             @can('create user')
-            <button @click="showTambah = true" class="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-xl shadow-slate-200">
-                <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> Akun Admin
+            <button @click="showTambah = true" class="px-5 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-xl shadow-slate-200">
+                <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i> <span class="hidden xs:inline">Akun Admin</span><span class="xs:hidden">Admin</span>
             </button>
             @endcan
 
             @can('create user anak')
-            <button @click="showTambahAnak = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-red-500 text-slate-600 hover:text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
-                <i data-lucide="baby" class="w-4 h-4"></i> Akun Anak
+            <button @click="showTambahAnak = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-red-500 text-slate-600 hover:text-red-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
+                <i data-lucide="baby" class="w-4 h-4"></i> <span class="hidden xs:inline">Akun Anak</span><span class="xs:hidden">Anak</span>
             </button>
             @endcan
 
             @can('create user terapis')
-            <button @click="showTambahTerapis = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-blue-500 text-slate-600 hover:text-blue-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
-                <i data-lucide="heart" class="w-4 h-4"></i> Akun Terapis
+            <button @click="showTambahTerapis = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-blue-500 text-slate-600 hover:text-blue-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
+                <i data-lucide="heart" class="w-4 h-4"></i> <span class="hidden xs:inline">Akun Terapis</span><span class="xs:hidden">Terapis</span>
             </button>
             @endcan
 
             @can('create user psikolog')
-            <button @click="showTambahPsikolog = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-purple-500 text-slate-600 hover:text-purple-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
-                <i data-lucide="user-check" class="w-4 h-4"></i> Akun Psikolog
+            <button @click="showTambahPsikolog = true" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-purple-500 text-slate-600 hover:text-purple-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
+                <i data-lucide="user-check" class="w-4 h-4"></i> <span class="hidden xs:inline">Akun Psikolog</span><span class="xs:hidden">Psikolog</span>
             </button>
             @endcan
         </div>

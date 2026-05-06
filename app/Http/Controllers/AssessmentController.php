@@ -159,21 +159,12 @@ class AssessmentController extends Controller
 
     public function cetak(Assessment $assessment)
     {
-        $data = [
-            'nama' => $assessment->anak->nama,
-            'alamat' => $assessment->anak->alamat,
-            'tanggal_lahir' => $assessment->anak->tanggal_lahir,
-            'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
-            'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
-            'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y'),
-            'diagnosa' => $assessment->diagnosa,
-            'type' => 'assessment'
-        ];
+        // Generate Short Signature for security
+        $sig = substr(md5($assessment->id . config('app.key')), 0, 8);
+        $scanUrl = url("/v/a/{$assessment->id}/{$sig}");
 
-        $encryptedData = \Illuminate\Support\Facades\Crypt::encryptString(json_encode($data));
-        $scanUrl = url('/barcode/assessment/scan?payload=' . urlencode($encryptedData));
         $dns2d = new DNS2D();
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 8, 8);
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
 
         $profile = \App\Models\Profile::first();
         $primaryColor = $profile->warna_primer ?? '#ef4444';
@@ -220,19 +211,28 @@ class AssessmentController extends Controller
         return $pdf->stream($filename);
     }
 
-    public function scanBarcode(Request $request)
+    public function verifyBarcode(Request $request, $id, $sig)
     {
-        try {
-            $payload = $request->input('payload');
-            if (!$payload) return "Invalid Payload";
-
-            $decrypted = \Illuminate\Support\Facades\Crypt::decryptString($payload);
-            $data = json_decode($decrypted, true);
-
-            return view('assessment.barcode_hasil', compact('data'));
-        } catch (\Exception $e) {
-            return "Gagal membaca data assessment: Tautan mungkin sudah kadaluarsa atau tidak valid.";
+        // Verify Signature
+        $expectedSig = substr(md5($id . config('app.key')), 0, 8);
+        if ($sig !== $expectedSig) {
+            return abort(403, 'Tanda tangan digital tidak valid.');
         }
+
+        $assessment = Assessment::findOrFail($id);
+
+        $data = [
+            'nama' => $assessment->anak->nama,
+            'alamat' => $assessment->anak->alamat,
+            'tanggal_lahir' => $assessment->anak->tanggal_lahir,
+            'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
+            'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
+            'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y'),
+            'diagnosa' => $assessment->diagnosa,
+            'type' => 'assessment'
+        ];
+
+        return view('assessment.barcode_hasil', compact('data'));
     }
 
 

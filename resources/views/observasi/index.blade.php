@@ -72,7 +72,7 @@
                         </td>
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-4">
-                                <div class="relative">
+                                <div class="relative flex-shrink-0">
                                     <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/images/faces/face1.jpg') }}" 
                                          class="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-md">
                                     <div class="absolute -right-1 -bottom-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"></div>

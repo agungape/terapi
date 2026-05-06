@@ -724,23 +724,14 @@ class ObservasiController extends Controller
             ];
         }
 
-        $data = [
-            'nama' => $anak->nama,
-            'alamat' => $anak->alamat,
-            'tanggal_lahir' => $anak->tanggal_lahir,
-            'tanggal_observasi' => $request->tanggal,
-            'results' => $results_summary,
-            'type' => 'observasi'
-        ];
-
-        // Encrypt data for security
-        $encryptedData = \Illuminate\Support\Facades\Crypt::encryptString(json_encode($data));
-        $scanUrl = url('/barcode/scan?payload=' . urlencode($encryptedData));
+        // Generate Short Signature for security (to prevent ID enumeration)
+        $sig = substr(md5($anak->id . $tanggal . config('app.key')), 0, 8);
+        $scanUrl = url("/v/o/{$anak->id}/{$tanggal}/{$sig}");
 
         $dns2d = new DNS2D();
 
-        // Generate QR Code dengan size lebih besar (8x8 modules)
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 8, 8);
+        // QR Code scale 4 is usually plenty for short URLs and much easier to scan
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
 
         $anthropometris = Anthropometri::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
         $kpsp = HasilPemeriksaan::where('anak_id', $anak->id)->where('jenis', 'KPSP')->whereDate('created_at', $tanggal)->first();
@@ -811,19 +802,57 @@ class ObservasiController extends Controller
         return $pdf->stream($filename);
     }
 
-    public function scanBarcode(Request $request)
+    public function verifyBarcode(Request $request, $id, $date, $sig)
     {
-        try {
-            $payload = $request->input('payload');
-            if (!$payload) return "Invalid Payload";
-            
-            $decrypted = \Illuminate\Support\Facades\Crypt::decryptString($payload);
-            $data = json_decode($decrypted, true);
-
-            return view('observasi.barcode_hasil', compact('data'));
-        } catch (\Exception $e) {
-            return "Gagal membaca data: Tautan mungkin sudah kadaluarsa atau tidak valid.";
+        // Verify Signature
+        $expectedSig = substr(md5($id . $date . config('app.key')), 0, 8);
+        if ($sig !== $expectedSig) {
+            return abort(403, 'Tanda tangan digital tidak valid.');
         }
+
+        $anak = Anak::findOrFail($id);
+        $hasilRaw = HasilPemeriksaan::where('anak_id', $id)
+            ->whereDate('created_at', $date)
+            ->get()
+            ->groupBy('jenis');
+
+        $results_summary = [];
+        
+        // Pemetaan Jenis ke Nama yang diminta
+        $map = [
+            'Autisme' => 'CHAT',
+            'GPPH' => 'GPPH',
+            'Penyimpangan Perilaku' => 'KMME',
+            'Penyimpangan Pendengaran' => 'Pendengaran',
+            'Penyimpangan Penglihatan' => 'Penglihatan',
+            'KPSP' => 'KPSP',
+            'ATEC' => 'ATEC',
+            'ATEC Kuesioner' => 'ATEC',
+        ];
+
+        foreach ($map as $dbJenis => $displayJenis) {
+            if (isset($hasilRaw[$dbJenis])) {
+                foreach ($hasilRaw[$dbJenis] as $item) {
+                    if (!empty($item->hasil)) {
+                        $results_summary[] = [
+                            'jenis' => $displayJenis,
+                            'hasil' => $item->hasil
+                        ];
+                    }
+                }
+            }
+        }
+
+        $data = [
+            'nama' => $anak->nama,
+            'alamat' => $anak->alamat,
+            'tanggal_lahir' => $anak->tanggal_lahir,
+            'tanggal_observasi' => $date,
+            'results' => $results_summary,
+            'type' => 'observasi'
+        ];
+
+        return view('observasi.barcode_hasil', compact('data'));
     }
 
     public function update_anthropometri(Request $request, $id)

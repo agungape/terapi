@@ -455,7 +455,7 @@
         
         <!-- Backdrop with Blur -->
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>         <!-- Modal Content Container -->
-        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-h-[95vh] md:max-h-[90vh] overflow-y-auto relative z-10 border border-slate-100"
+        <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-h-[95vh] md:max-h-[90vh] flex flex-col relative z-10 border border-slate-100"
              :class="modalType === 'result' ? 'max-w-2xl' : 'max-w-4xl'"
              x-show="modalOpen"
              x-effect="if(modalOpen) { 
@@ -495,7 +495,7 @@
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
-            <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-50 p-4 md:p-6 flex items-center justify-between z-20">
+            <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-50 p-4 md:p-6 flex items-center justify-between z-20 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="p-2 bg-red-50 text-red-500 rounded-xl">
                         <i data-lucide="clipboard-list" class="w-5 h-5"></i>
@@ -507,7 +507,7 @@
                 </button>
             </div>
 
-            <div class="p-4 md:p-8">">
+            <div class="flex-1 overflow-y-auto p-4 md:p-8">
                 <!-- KMME Form -->
                 <template x-if="modalType === 'perilaku'">
                     <form action="{{ route('observasi.perilaku') }}" method="POST" class="space-y-6">
@@ -544,7 +544,9 @@
                             </div>
                             @endforeach
                         </div>
-                        <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil KMME</button>
+                        <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                            <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil KMME</button>
+                        </div>
                     </form>
                 </template>
 
@@ -647,8 +649,8 @@
                                         </div>
                                         @endforeach
                                     </div>
-                                    <div class="mt-6 flex justify-end">
-                                        <button type="button" @click="autisStep = 2; document.querySelector('.custom-scrollbar').scrollTop = 0;" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2 w-full md:w-auto justify-center">
+                                    <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                                        <button type="button" @click="autisStep = 2; document.querySelector('.flex-1.overflow-y-auto').scrollTop = 0;" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2 w-full md:w-auto justify-center">
                                             Lanjut ke Section B <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                         </button>
                                     </div>
@@ -687,7 +689,7 @@
                                 </div>
                             </div>
                             
-                            <div x-show="autisStep === 2" x-transition.opacity>
+                            <div x-show="autisStep === 2" x-transition.opacity class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                                 <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors flex items-center justify-center gap-2">
                                     <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Hasil Akhir CHAT
                                 </button>
@@ -753,7 +755,9 @@
                             </div>
                             @endforeach
                         </div>
-                        <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil GPPH</button>
+                         <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                            <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil GPPH</button>
+                        </div>
                     </form>
                 </template>
 
@@ -816,7 +820,9 @@
                             </div>
                             @endforeach
                         </div>
-                        <button type="submit" class="w-full bg-purple-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest">Simpan Laporan Pendengaran</button>
+                         <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                            <button type="submit" class="w-full bg-purple-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest">Simpan Laporan Pendengaran</button>
+                        </div>
                     </form>
                 </template>
 
@@ -940,7 +946,9 @@
                             </div>
                             @endforeach
                         </div>
-                        <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil KPSP</button>
+                         <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                            <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-black transition-colors">Simpan Hasil KPSP</button>
+                        </div>
                     </form>
                 </template>
 
@@ -1258,7 +1266,7 @@
                             <textarea name="catatan" x-model="catatan" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-bold text-xs outline-none focus:ring-4 focus:ring-blue-500/20 transition-all leading-relaxed"></textarea>
                         </div>
 
-                        <div class="flex justify-end p-2">
+                         <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                             <button type="submit" class="w-full md:w-max px-12 bg-slate-900 text-white py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
                                 <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Perubahan
                             </button>
@@ -1328,9 +1336,9 @@
                                             </div>
                                         </div>
                                         @endforeach
-                                        <div class="pt-4 flex flex-col md:flex-row gap-3 justify-end">
+                                         <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex flex-col md:flex-row gap-3 justify-end z-30 mt-6 shrink-0">
                                             @if($sec !== 'IV')
-                                                <button type="button" @click="atecStep = '{{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }}'; $el.closest('.custom-scrollbar').scrollTop = 0;" class="w-full md:w-auto bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2">
+                                                <button type="button" @click="atecStep = '{{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }}'; $el.closest('.flex-1.overflow-y-auto').scrollTop = 0;" class="w-full md:w-auto bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2">
                                                     Lanjut ke Bagian {{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                                 </button>
                                             @else
@@ -1364,7 +1372,9 @@
                                 </div>
                                 @endforeach
                             </div>
-                            <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black shadow-lg transform active:scale-95 transition-transform">Simpan Wawancara</button>
+                             <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
+                                <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black shadow-lg transform active:scale-95 transition-transform">Simpan Wawancara</button>
+                            </div>
                         </form>
                     </div>
                 </template>
@@ -1419,7 +1429,7 @@
                             <div class="rounded-[2rem] overflow-hidden border border-slate-200 bg-white summernote-wrapper">
                                 <textarea id="summernote-editor" name="deskripsi" class="summernote w-full min-h-[400px] p-6 outline-none text-slate-700"></textarea>
                             </div>
-                            <div class="flex justify-end p-2">
+                             <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                                 <button type="submit" class="w-full md:w-max px-12 bg-slate-900 text-white py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
                                     <i data-lucide="save" class="w-4 h-4"></i> Simpan Assessment Kualitatif
                                 </button>

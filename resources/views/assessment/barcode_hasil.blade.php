@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="20">
     <title>Hasil Verifikasi Assessment - {{ $data['nama'] }}</title>
+    <meta http-equiv="refresh" content="20">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,8 +16,6 @@
             --success-light: #ecfdf5;
             --warning: #f59e0b;
             --warning-light: #fffbeb;
-            --info: #0ea5e9;
-            --info-light: #f0f9ff;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
@@ -52,7 +50,6 @@
             overflow: hidden;
             border: 1px solid var(--border);
             animation: fadeIn 0.8s ease-out;
-            margin-bottom: 50px;
         }
 
         @keyframes fadeIn {
@@ -125,15 +122,6 @@
             padding: 40px;
         }
 
-        .header-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -144,6 +132,7 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-bottom: 25px;
         }
 
         .status-verified {
@@ -154,18 +143,6 @@
         .status-pending {
             background: var(--warning-light);
             color: var(--warning);
-        }
-
-        .scan-time-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: var(--info-light);
-            color: var(--info);
-            border-radius: 1rem;
-            font-weight: 700;
-            font-size: 0.75rem;
         }
 
         .main-title {
@@ -222,33 +199,6 @@
             color: var(--text-main);
         }
 
-        /* Diagnosis Section */
-        .diagnosis-card {
-            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-            padding: 25px;
-            border-radius: 1.5rem;
-            color: white;
-            margin-top: 20px;
-            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.3);
-        }
-
-        .diagnosis-label {
-            font-size: 0.65rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            opacity: 0.8;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .diagnosis-text {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-
         /* Signature Section */
         .footer-verification {
             margin-top: 40px;
@@ -302,6 +252,11 @@
             .content-body { padding: 25px; }
             .main-title { font-size: 1.4rem; }
         }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .report-card { box-shadow: none; border: none; }
+        }
     </style>
 </head>
 
@@ -321,31 +276,38 @@
         </header>
 
         <main class="content-body">
-            <div class="header-meta">
-                @if ($data['persetujuan_psikolog'] == 1)
-                    <div class="status-badge status-verified">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Assessment Disetujui
-                    </div>
-                @else
-                    <div class="status-badge status-pending">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        Belum Disetujui
-                    </div>
-                @endif
-                <div class="scan-time-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    Waktu Scan: {{ $data['scan_time'] }}
+            @if ($data['persetujuan_psikolog'] == 1)
+                <div class="status-badge status-verified">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Assessment Disetujui
+                </div>
+            @else
+                <div class="status-badge status-pending">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    Belum Disetujui
+                </div>
+            @endif
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <h1 class="main-title">Hasil Assessment Anak</h1>
+                    <p class="subtitle" style="margin-bottom: 0;">Verifikasi dokumen rekam medis hasil assessment.</p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Waktu Scan</span>
+                    <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">{{ now()->format('d/m/Y H:i:s') }}</p>
                 </div>
             </div>
-
-            <h1 class="main-title">Hasil Assessment Anak</h1>
-            <p class="subtitle">Verifikasi dokumen rekam medis hasil assessment oleh tim psikolog Bright Star.</p>
 
             <div class="data-grid">
                 <div class="data-item">
                     <span class="label">Identitas Anak</span>
                     <span class="value">{{ $data['nama'] }}</span>
+                </div>
+                
+                <div class="data-item">
+                    <span class="label">Domisili</span>
+                    <span class="value">{{ $data['alamat'] }}</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -358,11 +320,13 @@
                         <span class="value">{{ $data['tanggal_assessment'] }}</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="diagnosis-card">
-                <span class="diagnosis-label">Diagnosa Utama</span>
-                <p class="diagnosis-text">{{ $data['diagnosa'] ?? 'Tidak ada diagnosa spesifik yang dicatat.' }}</p>
+                @if(isset($data['diagnosa']))
+                <div class="data-item" style="border-left: 4px solid var(--primary); background: var(--primary-light);">
+                    <span class="label" style="color: var(--primary);">Diagnosa Utama</span>
+                    <span class="value" style="font-size: 1.1rem; color: var(--text-main);">{{ $data['diagnosa'] }}</span>
+                </div>
+                @endif
             </div>
 
             <footer class="footer-verification">

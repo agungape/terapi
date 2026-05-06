@@ -33,8 +33,7 @@ use Mpdf\Mpdf;
 use Illuminate\Support\Str;
 use Milon\Barcode\DNS2D;
 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
+class ObservasiController extends Controller
 {
     public function __construct()
     {
@@ -716,20 +715,32 @@ use Illuminate\Support\Facades\DB;
             ->whereDate('created_at', $tanggal)
             ->sum('answer');
 
-        // Data yang akan diencode dalam barcode (Encrypted for security)
-        $payload = [
-            'anak_id' => $anak->id,
+        // Data yang akan diencode dalam barcode
+        $results_summary = [];
+        foreach ($hasil as $jenis => $item) {
+            $results_summary[] = [
+                'jenis' => $jenis,
+                'hasil' => $item->first()->hasil
+            ];
+        }
+
+        $data = [
+            'nama' => $anak->nama,
+            'alamat' => $anak->alamat,
+            'tanggal_lahir' => $anak->tanggal_lahir,
             'tanggal_observasi' => $request->tanggal,
-            'timestamp' => now()->timestamp
+            'results' => $results_summary,
+            'type' => 'observasi'
         ];
 
-        $encryptedData = Crypt::encryptString(json_encode($payload));
-        $scanUrl = route('barcode.scan', ['data' => $encryptedData]);
+        // Encrypt data for security
+        $encryptedData = \Illuminate\Support\Facades\Crypt::encryptString(json_encode($data));
+        $scanUrl = url('/barcode/scan?payload=' . urlencode($encryptedData));
 
         $dns2d = new DNS2D();
 
-        // Generate QR Code dengan data JSON (Size 4 for better scanning)
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
+        // Generate QR Code dengan size lebih besar (8x8 modules)
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 8, 8);
 
         $anthropometris = Anthropometri::where('anak_id', $anak->id)->whereDate('created_at', $tanggal)->get();
         $kpsp = HasilPemeriksaan::where('anak_id', $anak->id)->where('jenis', 'KPSP')->whereDate('created_at', $tanggal)->first();
@@ -803,30 +814,15 @@ use Illuminate\Support\Facades\DB;
     public function scanBarcode(Request $request)
     {
         try {
-            $encryptedData = $request->input('data');
-            $decryptedJson = Crypt::decryptString($encryptedData);
-            $payload = json_decode($decryptedJson, true);
-
-            $anak = Anak::findOrFail($payload['anak_id']);
-            $tanggal = $payload['tanggal_observasi'];
-
-            // Ambil hasil pemeriksaan untuk ditampilkan
-            $hasil = HasilPemeriksaan::where('anak_id', $anak->id)
-                ->whereDate('created_at', $tanggal)
-                ->get();
-
-            $data = [
-                'nama' => $anak->nama,
-                'alamat' => $anak->alamat,
-                'tanggal_lahir' => $anak->tanggal_lahir,
-                'tanggal_observasi' => $tanggal,
-                'hasil_pemeriksaan' => $hasil,
-                'scan_time' => now()->translatedFormat('H:i:s')
-            ];
+            $payload = $request->input('payload');
+            if (!$payload) return "Invalid Payload";
+            
+            $decrypted = \Illuminate\Support\Facades\Crypt::decryptString($payload);
+            $data = json_decode($decrypted, true);
 
             return view('observasi.barcode_hasil', compact('data'));
         } catch (\Exception $e) {
-            return response("Link verifikasi tidak valid atau telah kadaluarsa.", 403);
+            return "Gagal membaca data: Tautan mungkin sudah kadaluarsa atau tidak valid.";
         }
     }
 

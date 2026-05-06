@@ -17,7 +17,6 @@ use Illuminate\Support\Str;
 use Milon\Barcode\DNS2D;
 use RealRashid\SweetAlert\Facades\Alert;
 
-use Illuminate\Support\Facades\Crypt;
 class AssessmentController extends Controller
 {
     public function getWawancara($anak)
@@ -160,15 +159,21 @@ class AssessmentController extends Controller
 
     public function cetak(Assessment $assessment)
     {
-        $payload = [
-            'assessment_id' => $assessment->id,
-            'timestamp' => now()->timestamp
+        $data = [
+            'nama' => $assessment->anak->nama,
+            'alamat' => $assessment->anak->alamat,
+            'tanggal_lahir' => $assessment->anak->tanggal_lahir,
+            'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
+            'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
+            'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y'),
+            'diagnosa' => $assessment->diagnosa,
+            'type' => 'assessment'
         ];
 
-        $encryptedData = Crypt::encryptString(json_encode($payload));
-        $scanUrl = route('barcode.assessment.scan', ['data' => $encryptedData]);
+        $encryptedData = \Illuminate\Support\Facades\Crypt::encryptString(json_encode($data));
+        $scanUrl = url('/barcode/assessment/scan?payload=' . urlencode($encryptedData));
         $dns2d = new DNS2D();
-        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 4, 4);
+        $barcode = $dns2d->getBarcodePNG($scanUrl, 'QRCODE', 8, 8);
 
         $profile = \App\Models\Profile::first();
         $primaryColor = $profile->warna_primer ?? '#ef4444';
@@ -218,26 +223,15 @@ class AssessmentController extends Controller
     public function scanBarcode(Request $request)
     {
         try {
-            $encryptedData = $request->input('data');
-            $decryptedJson = Crypt::decryptString($encryptedData);
-            $payload = json_decode($decryptedJson, true);
+            $payload = $request->input('payload');
+            if (!$payload) return "Invalid Payload";
 
-            $assessment = Assessment::with('anak')->findOrFail($payload['assessment_id']);
-
-            $data = [
-                'nama' => $assessment->anak->nama,
-                'alamat' => $assessment->anak->alamat,
-                'tanggal_lahir' => $assessment->anak->tanggal_lahir,
-                'persetujuan_psikolog' => $assessment->persetujuan_psikolog,
-                'alasan_tidak_setuju' => $assessment->alasan_tidak_setuju,
-                'tanggal_assessment' => Carbon::parse($assessment->tanggal_assessment)->translatedFormat('d F Y'),
-                'diagnosa' => $assessment->diagnosa,
-                'scan_time' => now()->translatedFormat('H:i:s')
-            ];
+            $decrypted = \Illuminate\Support\Facades\Crypt::decryptString($payload);
+            $data = json_decode($decrypted, true);
 
             return view('assessment.barcode_hasil', compact('data'));
         } catch (\Exception $e) {
-            return response("Link verifikasi tidak valid atau telah kadaluarsa.", 403);
+            return "Gagal membaca data assessment: Tautan mungkin sudah kadaluarsa atau tidak valid.";
         }
     }
 

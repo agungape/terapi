@@ -29,17 +29,23 @@
 
             {{-- Skala Radio --}}
             <div class="flex flex-wrap gap-3">
-                <label class="cursor-pointer">
-                    <input type="radio" name="status[0]" value="dp" required class="sr-only peer">
-                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-red-400 peer-checked:bg-red-50 peer-checked:text-red-600 transition-all">DP</div>
+                <label for="status_dp_0" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_dp_0" name="status[0]" value="dp" required class="sr-only peer">
+                    <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-red-500 peer-checked:bg-red-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                        <span class="text-xs font-black uppercase tracking-widest">DP</span>
+                    </div>
                 </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="status[0]" value="ds" class="sr-only peer">
-                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-emerald-400 peer-checked:bg-emerald-50 peer-checked:text-emerald-600 transition-all">DS</div>
+                <label for="status_ds_0" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_ds_0" name="status[0]" value="ds" class="sr-only peer">
+                    <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                        <span class="text-xs font-black uppercase tracking-widest">DS</span>
+                    </div>
                 </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="status[0]" value="tb" class="sr-only peer">
-                    <div class="px-5 py-2.5 bg-slate-50 border-2 border-transparent rounded-xl text-xs font-black uppercase tracking-tight text-slate-500 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-600 transition-all">TB</div>
+                <label for="status_tb_0" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_tb_0" name="status[0]" value="tb" class="sr-only peer">
+                    <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                        <span class="text-xs font-black uppercase tracking-widest">TB</span>
+                    </div>
                 </label>
             </div>
         </div>

@@ -47,6 +47,15 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Daterangepicker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
     @yield('style')
     
     <style>
@@ -198,6 +207,64 @@
         .glass {
             @apply bg-white/70 backdrop-blur-md border border-white/20;
         }
+
+        /* Select2 Custom Styling to match premium theme */
+        .select2-container--default .select2-selection--single {
+            background-color: #f8fafc !important;
+            border: 2px solid #f1f5f9 !important;
+            border-radius: 1.5rem !important;
+            height: 54px !important;
+            display: flex !important;
+            align-items: center !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            transition: all 0.3s ease !important;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: var(--primary-200) !important;
+            box-shadow: 0 0 0 4px var(--primary-50) !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #334155 !important;
+            padding: 0 !important;
+            font-size: 0.875rem !important;
+            font-weight: 700 !important;
+            line-height: 54px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 54px !important;
+            right: 1rem !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .select2-dropdown {
+            border: 2px solid #f1f5f9 !important;
+            border-radius: 1.25rem !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
+            overflow: hidden !important;
+            margin-top: 8px !important;
+            z-index: 9999 !important;
+        }
+        .select2-results__option {
+            padding: 12px 24px !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+        }
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+        }
+        .select2-search--dropdown {
+            padding: 12px !important;
+        }
+        .select2-search--dropdown .select2-search__field {
+            background-color: #f8fafc !important;
+            border: 2px solid #f1f5f9 !important;
+            border-radius: 0.75rem !important;
+            padding: 8px 12px !important;
+            outline: none !important;
+        }
     </style>
 
     <script>
@@ -216,7 +283,7 @@
     </script>
 </head>
 
-<body class="flex bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] text-slate-900 antialiased h-screen overflow-hidden" 
+<body class="flex bg-[#f8fafc] font-['Plus_Jakarta_Sans',sans-serif] text-slate-900 antialiased min-h-screen" 
       x-data="{ 
         isMobile: window.innerWidth < 1024,
         sidebarOpen: window.innerWidth > 1024, 
@@ -549,7 +616,7 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col min-w-0 min-h-screen">
         
         <!-- Header -->
         <header class="h-[72px] bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-6 shrink-0 z-20">

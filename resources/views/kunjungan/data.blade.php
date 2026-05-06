@@ -270,7 +270,13 @@
                 <div class="grid grid-cols-2 gap-4 py-4 border-y border-slate-50">
                     <div class="space-y-1">
                         <p class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">Sesi Pertemuan</p>
-                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-tight">{{ $kun->nama_pertemuan }}</span>
+                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-tight">
+                            @if ($kun->status == 'hadir' || $kun->status == 'izin_hangus')
+                                {{ $kun->nama_pertemuan }}
+                            @else
+                                -
+                            @endif
+                        </span>
                     </div>
                     <div class="space-y-1">
                         <p class="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">Terapis</p>

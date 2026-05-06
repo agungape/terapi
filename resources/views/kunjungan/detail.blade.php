@@ -2,7 +2,7 @@
 @section('title', 'E-Book Rekam Medis Anak')
 
 @section('content')
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="space-y-8">
 
     {{-- Breadcrumb & Actions --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -125,7 +125,7 @@
                 </div>
 
                 {{-- Tab: Riwayat Digital (The Book) --}}
-                <div x-show="tab === 'riwayat'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" class="bg-white">
+                <div x-show="tab === 'riwayat'" class="bg-white">
                     <div class="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
                         <div class="space-y-1">
                             <h4 class="text-sm font-black text-slate-800 uppercase italic tracking-tight">Timeline Perkembangan</h4>
@@ -176,8 +176,8 @@
                             </div>
 
                             {{-- Meeting Details (The Table-less Card) --}}
-                            <div class="px-8 pb-10">
-                                <div class="bg-slate-50/80 rounded-[2rem] border border-slate-100 p-6 md:p-8 space-y-6">
+                            <div class="px-8 pb-12">
+                                <div class="bg-slate-50/80 rounded-[2rem] border border-slate-100 p-6 md:p-10 space-y-8">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {{-- Column 1: Programs --}}
                                         <div class="space-y-4">
@@ -247,7 +247,7 @@
                 </div>
 
                 {{-- Tab: Input Baru --}}
-                <div x-show="tab === 'pemeriksaan'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-cloak class="p-8 md:p-12">
+                <div x-show="tab === 'pemeriksaan'" x-cloak class="p-8 md:p-12">
                     <div class="mb-10 text-center">
                         <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-500 rounded-full text-[9px] font-black uppercase tracking-[0.2em] mb-4">
                             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Form Input Data
@@ -276,12 +276,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         lucide.createIcons();
+        $('.select2').select2({ width: '100%' });
 
         let formIndex = 1;
         $('#add-button').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">
-                <div class="flex items-start justify-between gap-6">
+                <div class="flex items-end justify-between gap-6">
                     <div class="flex-1 space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Program Terapi #${formIndex + 1}</label>
                         <select class="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-sm font-bold focus:ring-4 focus:ring-red-50 focus:border-red-200 transition-all outline-none appearance-none select2" name="program_id[${formIndex}]">
@@ -290,24 +291,30 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="button" class="remove-button mt-7 w-12 h-12 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all border-2 border-red-100 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    <button type="button" class="remove-button w-10 h-10 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-red-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
                 <div class="space-y-3">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Skala Kemampuan</label>
                     <div class="flex flex-wrap gap-3">
-                        <label class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl cursor-pointer has-[:checked]:border-red-500 has-[:checked]:bg-red-500 has-[:checked]:text-white transition-all shadow-sm group">
-                            <input type="radio" name="status[${formIndex}]" value="dp" required class="sr-only">
-                            <span class="text-xs font-black uppercase tracking-widest">DP</span>
+                        <label for="status_dp_${formIndex}" class="flex-1 cursor-pointer group">
+                            <input type="radio" id="status_dp_${formIndex}" name="status[${formIndex}]" value="dp" required class="sr-only peer">
+                            <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-red-500 peer-checked:bg-red-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                                <span class="text-xs font-black uppercase tracking-widest">DP</span>
+                            </div>
                         </label>
-                        <label class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl cursor-pointer has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-500 has-[:checked]:text-white transition-all shadow-sm group">
-                            <input type="radio" name="status[${formIndex}]" value="ds" required class="sr-only">
-                            <span class="text-xs font-black uppercase tracking-widest">DS</span>
+                        <label for="status_ds_${formIndex}" class="flex-1 cursor-pointer group">
+                            <input type="radio" id="status_ds_${formIndex}" name="status[${formIndex}]" value="ds" class="sr-only peer">
+                            <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                                <span class="text-xs font-black uppercase tracking-widest">DS</span>
+                            </div>
                         </label>
-                        <label class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500 has-[:checked]:text-white transition-all shadow-sm group">
-                            <input type="radio" name="status[${formIndex}]" value="tb" required class="sr-only">
-                            <span class="text-xs font-black uppercase tracking-widest">TB</span>
+                        <label for="status_tb_${formIndex}" class="flex-1 cursor-pointer group">
+                            <input type="radio" id="status_tb_${formIndex}" name="status[${formIndex}]" value="tb" class="sr-only peer">
+                            <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
+                                <span class="text-xs font-black uppercase tracking-widest">TB</span>
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -322,7 +329,7 @@
         $('#add-button-fisioterapi').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">
-                <div class="flex items-start justify-between gap-6">
+                <div class="flex items-end justify-between gap-6">
                     <div class="flex-1 space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Program #${fisioIndex + 1}</label>
                         <select class="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-sm font-bold focus:ring-4 focus:ring-red-50 focus:border-red-200 transition-all outline-none appearance-none select2" name="program_id[${fisioIndex}]">
@@ -331,8 +338,8 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="button" class="remove-button mt-7 w-12 h-12 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all border-2 border-red-100 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    <button type="button" class="remove-button w-10 h-10 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-red-100 flex items-center justify-center shrink-0 shadow-sm">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
                 <div class="space-y-2">

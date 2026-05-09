@@ -13,6 +13,7 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KunjunganController;
 use App\Http\Controllers\MobileController;
+use App\Http\Controllers\MobileNewController;
 use App\Http\Controllers\ObservasiController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
@@ -260,7 +261,7 @@ Route::group(['middleware' => ['role:super-admin|admin|psikolog|anak|terapis']],
 });
 
 Route::group(['middleware' => ['role:anak']], function () {
-    Route::get('/app', [MobileController::class, 'app'])->name('app');
+    Route::get('/app', [MobileNewController::class, 'index'])->name('app');
     Route::get('/app/profile', [MobileController::class, 'profile'])->name('mobile.profile');
     Route::get('/app/profile/edit', [MobileController::class, 'profile_edit'])->name('mobile.editprofile');
     Route::patch('/app/profile/{anak}', [MobileController::class, 'profile_update'])->name('mobile.updateprofile');

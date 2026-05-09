@@ -67,8 +67,8 @@
                                         <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> Psikolog Pemeriksa <span class="text-red-500">*</span>
                                     </label>
                                     @if(auth()->user()->hasRole('psikolog'))
-                                        <input type="hidden" name="psikolog_id" value="{{ auth()->user()->id }}">
-                                        <input type="text" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 text-slate-500 cursor-not-allowed" value="{{ auth()->user()->nama }}" readonly>
+                                        <input type="hidden" name="psikolog_id" value="{{ $psikologLogin->id ?? '' }}">
+                                        <input type="text" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 text-slate-500 cursor-not-allowed" value="{{ $psikologLogin->nama ?? auth()->user()->name }}" readonly>
                                     @else
                                         <select class="custom-select2-init w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-red-100 focus:border-red-500 @error('psikolog_id') is-invalid @enderror" name="psikolog_id" id="select-psikolog" required>
                                             <option value="">-- Pilih Psikolog --</option>

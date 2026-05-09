@@ -8,96 +8,140 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            color: #333;
         }
 
         .container {
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
         }
 
         .header {
             text-align: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
+            color: #9333ea; /* purple-600 */
+            margin-bottom: 5px;
+        }
+
+        .sub-header {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #e5e7eb;
+            margin-bottom: 20px;
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .table,
-        .table th,
-        .table td {
-            border: 1px solid black;
+            margin-top: 20px;
         }
 
         .table th,
         .table td {
-            padding: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 12px;
             text-align: left;
         }
 
-        .total {
-            text-align: right;
-            font-size: 18px;
-            margin-top: 10px;
+        .table th {
+            background-color: #f9fafb;
+            font-weight: bold;
+            color: #4b5563;
         }
 
         .offer-details td {
             padding: 5px;
             vertical-align: top;
+            font-size: 14px;
         }
 
         .offer-details td:first-child {
             white-space: nowrap;
             font-weight: bold;
+            color: #4b5563;
+            width: 120px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            color: #9333ea;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">Invoice #BSC{{ $invoice->id }}{{ \Carbon\Carbon::parse($invoice->tanggal)->format('dmy') }}
-        </div>
+        <div class="header">INVOICE</div>
+        <div class="sub-header">#BSC{{ $invoice->id }}{{ \Carbon\Carbon::parse($invoice->tanggal)->format('dmy') }}</div>
+        
         <hr>
+        
         <table class="offer-details">
             <tr>
-                <td><strong>Dari</strong></td>
+                <td>Dari</td>
                 <td>: Layanan Terapi Anak Berkebutuhan Khusus</td>
             </tr>
             <tr>
-                <td><strong>Kepada</strong></td>
+                <td>Kepada</td>
                 <td>: Anak {{ $anak->nama }} - {{ $anak->alamat }}</td>
             </tr>
             <tr>
-                <td><strong>Tanggal Bayar</strong></td>
+                <td>Tanggal Bayar</td>
                 <td>: {{ $invoice->tanggal }}</td>
             </tr>
             <tr>
-                <td><strong>Status</strong></td>
-                <td>: <span class="badge badge-sm badge-success">Diterima</span></td>
+                <td>Status</td>
+                <td>: <span class="badge badge-success">Diterima</span></td>
             </tr>
         </table>
+        
         <table class="table">
             <thead>
                 <tr>
                     <th>Nama Paket Terapi</th>
-                    <th>Total Bayar</th>
+                    <th style="text-align: right;">Total Bayar</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    @if (!empty($p->tarif->nama))
+                    @if (!empty($invoice->tarif->nama))
                         <td>{{ $invoice->tarif->nama }}</td>
                     @else
                         <td>Terapi Perilaku</td>
                     @endif
-                    <td>{{ $invoice->jumlah }}</td>
+                    <td style="text-align: right;">Rp {{ number_format($invoice->jumlah, 0, ',', '.') }}</td>
                 </tr>
             </tbody>
         </table>
+        
+        <div class="total-section">
+            Total: Rp {{ number_format($invoice->jumlah, 0, ',', '.') }}
+        </div>
 
     </div>
 </body>

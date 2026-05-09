@@ -1,209 +1,139 @@
 @extends('mobile.master')
 @section('mobilePayment', 'active')
+
 @section('style')
-    <style>
-        .payment-container {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .payment-card {
-            width: 100%;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        h2 {
-            color: #d84315;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .desc {
-            font-size: 1rem;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .card-container {
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .card-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .card-label:last-child {
-            border-bottom: none;
-        }
-
-        .icon {
-            font-size: 1.8rem;
-            color: #ff9800;
-        }
-
-        .card-text label {
-            font-size: 0.9rem;
-            color: #666;
-            font-weight: bold;
-            text-align: center;
-        }
-
-
-        .card-text .small-text {
-            font-size: 0.8rem;
-            /* Ukuran lebih kecil */
-            font-weight: normal;
-            color: #333;
-            margin-top: 3px;
-            text-align: center;
-        }
-
-        .warning-card {
-            background-color: #ffebee;
-            padding: 15px;
-            border-left: 5px solid #d32f2f;
-            border-radius: 8px;
-            text-align: left;
-            margin-top: 20px;
-        }
-
-        .warning-card h3 {
-            color: #d32f2f;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .warning-card ul {
-            padding-left: 20px;
-        }
-
-        .warning-card li {
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-
-        .contact-info {
-            font-size: 1rem;
-            margin-top: 15px;
-            color: #333;
-        }
-    </style>
+<style>
+    @keyframes slide-up {
+        0% { transform: translateY(20px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+</style>
 @endsection
+
 @section('content')
-    <header class="header header-fixed">
-        <div class="header-content">
-            <div class="left-content">
-                <a href="javascript:void(0);" class="menu-toggler bg-white pe-2 rounded-xl">
-                    <div class="media">
-                        <div class="media-35 m-r10">
+<!-- Container for Desktop centering -->
+<div class="max-w-lg mx-auto bg-white min-h-screen shadow-xl sm:rounded-3xl overflow-hidden mb-20">
+    
+    <!-- Header -->
+    <div class="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <button @click="sidebarOpen = true" class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <span class="font-bold text-slate-800">Pembayaran</span>
+        <div class="w-10"></div> <!-- Spacer -->
+    </div>
 
-                            <img class="rounded-xl"
-                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/avatar.png') }}"
-                                alt="">
-                        </div>
-                        <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
+    <!-- Main Content -->
+    <div class="p-4 space-y-6">
+        <!-- Notification Card (Fun Style) -->
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-4 md:p-6 rounded-[25px] border-2 border-purple-200 animate-slide-up">
+            <h4 class="font-bold text-slate-800 mb-2 flex items-center text-sm">
+                <i data-lucide="megaphone" class="w-4 h-4 mr-2 text-purple-500 animate-pulse"></i>
+                Pemberitahuan Pembayaran
+            </h4>
+            <p class="text-xs text-slate-600 mb-4">Silakan lakukan pembayaran <strong>hanya</strong> ke rekening berikut:</p>
+
+            <div class="space-y-3">
+                <div class="bg-white p-3 rounded-xl border border-purple-100 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
                     </div>
-                </a>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Bank</span>
+                        <p class="text-sm font-bold text-slate-800">BRI</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-3 rounded-xl border border-purple-100 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600">
+                        <i data-lucide="credit-card" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Nomor Rekening</span>
+                        <p class="text-sm font-bold text-slate-800">493001052151535</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-3 rounded-xl border border-purple-100 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">Atas Nama</span>
+                        <p class="text-sm font-bold text-slate-800">INNE PUSVITASARI</p>
+                    </div>
+                </div>
             </div>
-            <div class="mid-content"></div>
         </div>
-    </header>
 
-    <main class="page-content space-top p-b80">
-        <div class="container p-0">
-            <div class="dz-card list list-style-3">
-                <div class="payment-card">
-                    <h2>📢 PEMBERITAHUAN PEMBAYARAN</h2>
-                    <p class="desc">Silakan lakukan pembayaran <strong>hanya</strong> ke rekening berikut:</p>
+        <!-- Warning Card -->
+        <div class="bg-red-50 border border-red-200 p-4 rounded-xl text-xs text-red-700">
+            <p class="font-bold mb-1 flex items-center">
+                <i data-lucide="alert-triangle" class="w-4 h-4 mr-1"></i>
+                Penting!
+            </p>
+            <ul class="list-disc list-inside space-y-1">
+                <li>Kami <strong>tidak bertanggung jawab</strong> atas pembayaran ke rekening selain yang tercantum di atas.</li>
+                <li>Mohon <strong>pastikan nama penerima sesuai</strong> sebelum melakukan transfer.</li>
+                <li>Simpan bukti pembayaran dan konfirmasikan kepada kami setelah transaksi selesai.</li>
+            </ul>
+        </div>
 
-                    <div class="card-container">
-                        <div class="card-label">
-                            <span class="icon">🏦</span>
-                            <div class="card-text">
-                                <label>Bank</label>
-                                <p class="small-text">BRI</p>
-                            </div>
-                        </div>
-                        <div class="card-label">
-                            <span class="icon">💳</span>
-                            <div class="card-text">
-                                <label>Nomor Rekening</label>
-                                <p class="small-text">493001052151535</p>
-                            </div>
-                        </div>
-                        <div class="card-label">
-                            <span class="icon">📝</span>
-                            <div class="card-text">
-                                <label>Atas Nama</label>
-                                <p class="small-text">INNE PUSVITASARI</p>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Contact Info -->
+        <div class="text-center text-sm text-slate-600">
+            <p>Jika ada pertanyaan, hubungi admin:</p>
+            <a href="https://wa.me/+6285123238404" target="_blank" class="inline-flex items-center gap-1 text-purple-600 font-bold hover:text-purple-700 transition-colors">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                085123238404
+            </a>
+        </div>
 
-                    <div class="warning-card">
-                        <h3>⚠️ Penting!</h3>
-                        <ul>
-                            <li>Kami <strong>tidak bertanggung jawab</strong> atas pembayaran ke rekening selain
-                                yang tercantum di atas.</li>
-                            <li>Mohon <strong>pastikan nama penerima sesuai</strong> sebelum melakukan transfer.
-                            </li>
-                            <li>Simpan bukti pembayaran dan konfirmasikan kepada kami setelah transaksi selesai.
-                            </li>
-                        </ul>
-                    </div>
-
-                    <p class="contact-info">📞 Jika ada pertanyaan, hubungi admin <strong><a
-                                href="https://wa.me/+6285123238404" target="_blank">085123238404</a></strong>.</p>
-                </div>
-            </div>
-            <div class="dz-product-detail">
-                <div class="detail-content">
-                    <h4 class="title">Riwayat</h4>
-                </div>
+        <!-- Payment History -->
+        <div>
+            <h4 class="font-bold text-slate-800 mb-3 flex items-center text-sm">
+                <i data-lucide="clock" class="w-4 h-4 mr-2 text-purple-500"></i>
+                Riwayat Pembayaran
+            </h4>
+            
+            <div class="space-y-3">
                 @forelse ($pembayaran as $p)
-                    <div class="dz-offer-coupon">
-                        <div class="offer">
-                            <a href="{{ route('invoice.download', $p->id) }}"><i
-                                    class="fi fi-rr-receipt icon-large"></i></a>
-                            <a href="{{ route('invoice.download', $p->id) }}" class="text-small">
-                                Download Invoice
-                            </a>
-                        </div>
-                        <div class="offer-content">
-                            @if (!empty($p->tarif->nama))
-                                <h6>{{ $p->tarif->nama }}</h6>
-                            @else
-                                <h6>Terapi Perilaku</h6>
-                            @endif
-
-                            <div class="offer-details">
-                                <p><span>Jumlah</span>: <span>
-                                        {{ $p->jumlah }}</span></p>
-                                <p><span>Tanggal</span> : <span> {{ $p->tanggal }}</span></p>
-                                <p><span>Status</span> : <span class="badge badge-sm badge-success"> Diterima</span></p>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 hover:border-purple-100 transition-colors flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 flex-shrink-0">
+                                <i data-lucide="receipt" class="w-6 h-6"></i>
                             </div>
+                            <div class="min-w-0">
+                                <h5 class="font-semibold text-slate-800 truncate">{{ $p->tarif->nama ?? 'Terapi Perilaku' }}</h5>
+                                <p class="text-xs text-slate-500">{{ $p->tanggal }}</p>
+                                <p class="text-sm font-bold text-purple-600">Rp {{ number_format($p->jumlah, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">Diterima</span>
+                            <a href="{{ route('invoice.download', $p->id) }}" class="text-xs text-purple-600 font-semibold hover:text-purple-700 transition-colors flex items-center gap-0.5">
+                                <i data-lucide="download" class="w-3 h-3"></i>
+                                Invoice
+                            </a>
                         </div>
                     </div>
                 @empty
-                    <p class="text-center">data belum ada</p>
+                    <div class="bg-slate-50 rounded-2xl p-6 text-center text-slate-500">
+                        <i data-lucide="receipt" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
+                        <p class="text-sm">Belum ada riwayat pembayaran</p>
+                    </div>
                 @endforelse
             </div>
         </div>
-    </main>
+    </div>
+</div>
+@endsection
 
-
+@section('scripts')
+<script>
+    document.addEventListener('alpine:initialized', () => {
+        lucide.createIcons();
+    });
+</script>
 @endsection

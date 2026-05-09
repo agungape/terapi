@@ -28,7 +28,7 @@ class MobileController extends Controller
     {
         // Set view untuk login mobile
         $request->session()->put('view', 'anak');
-        return view('mobile.login');
+        return view('mobile-new.login');
     }
 
     public function app()

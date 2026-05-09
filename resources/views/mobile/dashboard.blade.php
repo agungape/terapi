@@ -1,325 +1,234 @@
 @extends('mobile.master')
 @section('mobileDashboard', 'active')
-@section('content')
-    <header class="header header-fixed">
-        <div class="header-content">
-            <div class="left-content">
-                <a href="javascript:void(0);" class="menu-toggler bg-white pe-2 rounded-xl">
-                    <div class="media">
-                        <div class="media-35 m-r10">
 
-                            <img class="rounded-xl"
-                                src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/avatar.png') }}"
-                                alt="">
-                        </div>
-                        <h6 class="mb-0 font-13">Hello’ {{ $anak->nama }}</h6>
-                    </div>
-                </a>
-            </div>
-            <div class="mid-content"></div>
-        </div>
-    </header>
-    <main class="page-content space-top p-b40">
-        <div class="container">
-            <!-- profile anak -->
-            <div class="dz-banner">
-                <div class="swiper banner-swiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="inner-banner">
-                                <div class="left-content">
-                                    <h4 class="title font-w500 text-capitalize mb-3" data-swiper-parallax="-100">
-                                        {{ $anak->nama }}</h4>
-                                    <div class="meta-items">
-                                        <div class="dz-prize" data-swiper-parallax="-200">
-                                            <span class="d-block mb-1 font-12">Usia</span>
-                                            <span class="badge badge-sm badge-success">{{ $anak->usia }}
-                                                Tahun</span>
-                                        </div>
-
-                                    </div>
-                                    <div class="product-size" data-swiper-parallax="-300">
-                                        <span class="d-block mb-1 font-12">Alamat</span>
-                                        <span class="d-block mb-1 font-12">{{ $anak->alamat }}</span>
-                                    </div>
-
-                                </div>
-                                <div class="right-content">
-                                    <div class="dz-media">
-                                        <img src=" {{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/default.png') }}"
-                                            alt="">
-                                    </div>
-                                    {{-- <h2 class="dz-text" data-text="BRIGHT">BRIGHT</h2> --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- @if (in_array($sisaPertemuan, [4, 3, 2, 1]))
-                <div class="dz-category style-2">
-                    <div class="alert alert-info solid alert-dismissible fade show">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
-                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <strong>Info!</strong> Pertemuan Kelas Sisa {{ $sisaPertemuan }} Yah!!!.
-                    </div>
-                </div>
-            @elseif (in_array($sisaPertemuan, [0]))
-                <div class="dz-category style-2">
-                    <div class="alert alert-success solid alert-dismissible fade show">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
-                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
-                            <polyline points="9 11 12 14 22 4"></polyline>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                        </svg>
-                        <strong>Success!</strong> Pertemuan Kelas Telah Selesai.
-                        <hr>
-                        Hubungi <strong>Admin <a href="https://wa.me/+6285123238404"
-                                target="_blank">085123238404</a></strong> untuk melanjutkan sesi
-                    </div>
-                </div>
-            @endif --}}
-            {{-- @if ($informasi)
-                <div class="dz-category style-2">
-                    <div class="alert alert-info solid alert-dismissible fade show">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
-                            fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <strong>Informasi Pelayanan!</strong>
-                        <hr> {!! $informasi->informasi !!}
-                    </div>
-                </div>
-            @endif --}}
-            {{-- profile anak --}}
-
-            {{-- banner kelas dan riwayat terapi --}}
-            <div class="dz-category style-1">
-                <div class="title-bar align-items-start">
-                    <h5 class="title mb-0">Riwayat Terapi </h5>
-                </div>
-                <div class="swiper dz-featured-swiper mb-4">
-                    <div class="swiper-wrapper">
-                        @forelse ($kunjungan as $k)
-                            <div class="swiper-slide">
-                                <div class="dz-card list list-style-2">
-                                    <div class="dz-media media-75">
-                                        @if ($k->status == 'hadir')
-                                            <img
-                                                src=" {{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}">
-                                        @else
-                                            <img src="{{ asset('assets/mobile/pixio/images/terapis-default.png') }}"
-                                                alt="">
-                                        @endif
-                                    </div>
-                                    <div class="dz-content">
-                                        <h6 class="title"><a
-                                                href="{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}">{{ $k->created_at }}</a>
-                                        </h6>
-                                        <ul class="dz-meta">
-                                            <li class="dz-price">Pertemuan {{ $k->pertemuan }}</li>
-                                            <li class="dz-review">
-                                                @if ($k->status == 'hadir')
-                                                    <i class="feather icon-star-on"></i><span>({{ $k->status }})</span>
-                                                @else
-                                                    <span>({{ $k->status }})</span>
-                                                @endif
-                                            </li>
-                                        </ul>
-                                        @if ($k->status == 'hadir')
-                                            <div class="dz-quantity">Terapis : {{ $k->terapis->nama }} @if ($k->terapis_id_pendamping)
-                                                    - {{ $k->terapisPendamping->nama }}
-                                                @endif
-                                            </div>
-                                        @else
-                                            <div class="dz-quantity">Terapis : -
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <a href="{{ route('mobile.kunjungan') }}"> <span class="badge bg-success"> <svg
-                                        viewBox="0 0 24 24" width="20" height="20" stroke="currentColor"
-                                        stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                        class="me-2">
-                                        <polyline points="9 11 12 14 22 4"></polyline>
-                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                                    </svg>terapi telah selesai</span></a>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="title-bar align-items-start">
-                    <h5 class="title mb-0">Paket Terapi Anak</h5>
-                </div>
-                <div class="swiper dz-featured-swiper2">
-                    <div class="swiper-wrapper">
-                        @foreach ($tarif as $t)
-                            <div class="swiper-slide">
-                                <div class="dz-card style-5">
-                                    <div class="dz-media media-304">
-                                        <img src="  {{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/fisioterapi.png') }}"
-                                            alt="" style="object-fit: cover;">
-                                    </div>
-                                    <div class="dz-content">
-                                        <span style=" padding-bottom: 10px;">{{ $t->nama }}</span>
-                                        <button type="button" class="btn btn-info rounded-xl w-100" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalLong" data-id="{{ $t->id }}"
-                                            data-name="{{ $t->nama }}" data-description="{{ $t->deskripsi }}"
-                                            data-tarif="{{ $t->tarif }}"
-                                            data-image="{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/banner/offer/banner2.png') }}">
-                                            Selengkapnya
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </div>
-                </div>
-            </div>
-            {{-- banner kelas dan riwayat terapi --}}
-
-            {{-- terapis view --}}
-            <div class="dz-box style-2">
-                <div class="title-bar">
-                    <h5 class="title mb-0">Terapis</h5>
-                </div>
-                <div class="swiper dz-product-swiper">
-                    <div class="swiper-wrapper">
-                        @foreach ($terapis as $t)
-                            <div class="swiper-slide">
-                                <div class="dz-card style-2">
-                                    <div class="dz-media media-303">
-                                        <a href="#">
-                                            <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}"
-                                                alt="image" style="object-fit: cover;">
-                                        </a>
-                                    </div>
-                                    <div class="dz-content">
-                                        <h6 class="title"><a href="product-detail.html">{{ $t->nama }}</a></h6>
-                                        <ul class="dz-meta">
-                                            <li class="dz-status">{{ $t->role }}</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            {{-- terapis view --}}
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalLong">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Detail Paket Terapi</h5>
-                            <button class="btn-close" data-bs-dismiss="modal">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container p-0">
-                                <div class="dz-product-preview">
-                                    <div class="swiper product-detail-swiper">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide">
-                                                <div class="dz-media">
-                                                    <img src="" alt="" class="product-image">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="dz-product-detail">
-                                    <div class="detail-content">
-                                        <h4 class="title product-name text-center">
-                                        </h4>
-                                    </div>
-                                    <div class="item-wrapper">
-                                        <div class="dz-meta-items">
-                                            <div class="dz-price m-r60">
-                                                <h6 class="dz-name">Tarif:</h6>
-                                                <span class="product-tarif badge badge-sm badge-success"></span>
-                                            </div>
-                                            <div class="dz-price m-r60">
-                                                <h6 class="dz-name">Pertemuan:</h6>
-                                                <span class="badge badge-sm badge-warning">-</span>
-                                            </div>
-                                        </div>
-                                        <div class="description">
-                                            <h6 class="title font-w600">Deskripsi:</h6>
-                                            <p class="product-description" style="text-align: justify"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-danger light"
-                                data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-
+@section('style')
+<style>
+    @keyframes slide-up {
+        0% { transform: translateY(20px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(-3deg); }
+        50% { transform: rotate(3deg); }
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    .animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+    .animate-wiggle { animation: wiggle 0.5s ease-in-out infinite; }
+    .animate-float { animation: float 2s ease-in-out infinite; }
+</style>
 @endsection
-@section('canvas')
-    <!-- PWA Offcanvas -->
-    <div class="offcanvas offcanvas-bottom pwa-offcanvas">
-        <div class="container">
-            <div class="offcanvas-body">
-                <img class="logo dark" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
-                <img class="logo light" src="{{ asset('assets') }}/mobile/pixio/images/app-logo/bsc.png" alt="">
-                <h5 class="title">Bright Star of Child</h5>
-                <p class="pwa-text">Instal aplikasi untuk pengalaman yang lebih baik</p>
-                <button type="button" class="btn btn-sm btn-primary rounded-xl pwa-btn me-2">
-                    Install Aplikasi
+
+@section('content')
+<div x-data="dashboardData()">
+    <!-- Container for Desktop centering -->
+    <div class="max-w-lg mx-auto bg-white min-h-screen shadow-xl sm:rounded-3xl overflow-hidden mb-20">
+        
+        <!-- Header -->
+        <div class="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button @click="sidebarOpen = true" class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-                <button type="button" class="btn btn-sm pwa-close rounded-xl btn-secondary">
-                    Nanti Saja
-                </button>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden">
+                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/avatar.png') }}" alt="avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 block">Halo,</span>
+                        <span class="text-sm font-semibold text-slate-800 block truncate max-w-[150px]">{{ $anak->nama }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Notification or other icons -->
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-4 space-y-6">
+            <!-- Fun Header -->
+            <div class="text-center mb-4 animate-slide-up">
+                <h2 class="text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent flex items-center justify-center gap-2">
+                    <i data-lucide="smile" class="w-6 h-6 text-yellow-500 animate-bounce"></i>
+                    <span>Dashboard Ceria!</span>
+                    <i data-lucide="star" class="w-6 h-6 text-yellow-500 animate-wiggle"></i>
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Selamat datang kembali!</p>
+            </div>
+
+            <!-- Profile Card (Fun Style) -->
+            <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-[25px] p-6 text-white shadow-lg shadow-purple-200 animate-slide-up">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-1">{{ $anak->nama }}</h2>
+                        <div class="flex items-center gap-2 text-purple-100 text-sm">
+                            <span>{{ $anak->usia }} Tahun</span>
+                            <span>•</span>
+                            <span class="truncate max-w-[150px]">{{ $anak->alamat }}</span>
+                        </div>
+                    </div>
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white/50 shadow-md flex-shrink-0">
+                        <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : asset('assets/mobile/pixio/images/foto-anak/default.png') }}" alt="avatar" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-2 gap-4 bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                    <div>
+                        <span class="text-xs text-purple-100 block">Status</span>
+                        <span class="text-sm font-semibold block">Aktif</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-purple-100 block">Program</span>
+                        <span class="text-sm font-semibold block">Terapi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat Terapi -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold text-slate-800">Riwayat Terapi</h3>
+                    <a href="{{ route('mobile.kunjungan') }}" class="text-sm text-purple-600 font-semibold">Lihat Semua</a>
+                </div>
+                
+                <div class="space-y-3">
+                    @forelse ($kunjungan as $k)
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 hover:border-purple-100 transition-colors flex items-center gap-4 cursor-pointer" @click="window.location.href = '{{ route('kunjunganmobile.detail', ['id' => $k->id]) }}'">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
+                                @if ($k->status == 'hadir')
+                                    <img src="{{ $k->terapis->foto ? asset('storage/terapis/' . $k->terapis->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}" class="w-full h-full object-cover">
+                                @else
+                                    <img src="{{ asset('assets/mobile/pixio/images/terapis-default.png') }}" class="w-full h-full object-cover">
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-semibold text-slate-800 truncate">{{ $k->created_at->translatedFormat('d M Y') }}</h4>
+                                <p class="text-xs text-slate-500 truncate">Pertemuan {{ $k->pertemuan }}</p>
+                            </div>
+                            <div>
+                                @if ($k->status == 'hadir')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Hadir</span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">{{ $k->status }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="bg-slate-50 rounded-2xl p-6 text-center text-slate-500">
+                            <i data-lucide="clipboard-x" class="w-10 h-10 mx-auto mb-2 text-slate-400"></i>
+                            <p>Belum ada riwayat terapi</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Paket Terapi -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold text-slate-800">Paket Terapi</h3>
+                </div>
+                
+                <div class="flex overflow-x-auto gap-4 pb-4 snap-x -mx-4 px-4">
+                    @foreach ($tarif as $t)
+                        <div class="flex-shrink-0 w-64 bg-white rounded-2xl border border-slate-100 overflow-hidden snap-start hover:border-purple-100 transition-colors">
+                            <div class="h-32 bg-slate-100 overflow-hidden">
+                                <img src="{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/fisioterapi.png') }}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-semibold text-slate-800 mb-1 truncate">{{ $t->nama }}</h4>
+                                <p class="text-sm text-purple-600 font-bold mb-3">Rp {{ number_format($t->tarif, 0, ',', '.') }}</p>
+                                <button @click="openModal({
+                                    name: '{{ $t->nama }}',
+                                    description: {!! json_encode($t->deskripsi) !!},
+                                    tarif: '{{ number_format($t->tarif, 0, ',', '.') }}',
+                                    image: '{{ $t->gambar ? asset('storage/tarif/' . $t->gambar) : asset('assets/mobile/pixio/images/fisioterapi.png') }}'
+                                })" class="w-full bg-purple-50 text-purple-600 hover:bg-purple-100 text-sm font-semibold py-2.5 rounded-xl transition-colors">Detail Paket</button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Terapis -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold text-slate-800">Terapis</h3>
+                </div>
+                
+                <div class="flex overflow-x-auto gap-4 pb-4 snap-x -mx-4 px-4">
+                    @foreach ($terapis as $t)
+                        <div class="flex-shrink-0 w-40 bg-white rounded-2xl border border-slate-100 p-4 text-center snap-start hover:border-purple-100 transition-colors">
+                            <div class="w-20 h-20 mx-auto rounded-full overflow-hidden mb-3 border-2 border-slate-50">
+                                <img src="{{ $t->foto ? asset('storage/terapis/' . $t->foto) : asset('assets/mobile/pixio/images/terapis-default.png') }}" class="w-full h-full object-cover">
+                            </div>
+                            <h4 class="font-semibold text-slate-800 truncate">{{ $t->nama }}</h4>
+                            <p class="text-xs text-slate-500 truncate">{{ $t->role }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Detail Modal -->
+        <div x-show="modalOpen" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Backdrop -->
+                <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 transition-opacity" aria-hidden="true" @click="modalOpen = false">
+                    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+                </div>
+
+                <!-- Modal Content -->
+                <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white rounded-t-3xl sm:rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full w-full">
+                    <div class="relative h-48 bg-slate-100">
+                        <img :src="selectedPackage.image" class="w-full h-full object-cover">
+                        <button @click="modalOpen = false" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-slate-600 hover:bg-white transition-colors">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-800 mb-1" x-text="selectedPackage.name"></h3>
+                        <p class="text-lg text-purple-600 font-bold mb-4" x-text="'Rp ' + selectedPackage.tarif"></p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-700 mb-1">Deskripsi</h4>
+                                <div class="text-sm text-slate-600 text-justify" x-html="selectedPackage.description.replace(/\n/g, '<br>')"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-4 flex flex-row-reverse">
+                        <button type="button" @click="modalOpen = false" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2.5 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:text-sm transition-colors">Tutup</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="offcanvas-backdrop pwa-backdrop"></div>
-    <!-- PWA Offcanvas End -->
+</div>
 @endsection
+
 @section('scripts')
-    <script>
-        $(document).ready(function() {
-            // Ketika tombol "Selengkapnya" diklik
-            $('.btn-info').on('click', function() {
-                // Ambil data dari atribut data-* pada tombol
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-                var description = $(this).data('description');
-                var tarif = $(this).data('tarif');
-                var image = $(this).data('image');
+<script>
+    function dashboardData() {
+        return {
+            modalOpen: false,
+            selectedPackage: {
+                name: '',
+                description: '',
+                tarif: '',
+                image: ''
+            },
+            openModal(pkg) {
+                this.selectedPackage = pkg;
+                this.modalOpen = true;
+            }
+        }
+    }
 
-                // Isi data ke dalam modal
-                $('.product-name').text(name);
-                $('.product-description').html(description.replace(/\n/g, '<br>'));
-                $('.product-tarif').text('Rp ' + tarif);
-                $('.product-image').attr('src', image);
-
-                // Tampilkan modal
-                $('#exampleModalLong').modal('show');
-            });
-        });
-    </script>
-
+    document.addEventListener('alpine:initialized', () => {
+        lucide.createIcons();
+    });
+</script>
 @endsection

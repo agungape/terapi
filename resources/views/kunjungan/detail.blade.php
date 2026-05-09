@@ -210,21 +210,89 @@
                                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-200 pb-2">Catatan & Evaluasi</p>
                                             <div class="space-y-4">
                                                 @if($is_perilaku)
-                                                <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                                        <i data-lucide="message-square" class="w-3 h-3"></i> Keterangan Terapis
-                                                    </p>
-                                                    <p class="text-xs font-bold text-slate-600 leading-relaxed">{{ $r->pemeriksaans->first()->keterangan ?? '-' }}</p>
+                                                <div class="space-y-3">
+                                                    <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                            <i data-lucide="message-square" class="w-3 h-3"></i> Evaluasi Sesi
+                                                        </p>
+                                                        <div class="text-xs font-bold text-slate-600 leading-relaxed space-y-1">
+                                                            @php
+                                                                $evaluasi = $r->pemeriksaans->first()->keterangan ?? '';
+                                                                $lines = explode("\n", $evaluasi);
+                                                            @endphp
+                                                            @forelse($lines as $line)
+                                                                @if(trim($line))
+                                                                    <div class="flex items-start gap-2">
+                                                                        <span class="text-red-500">•</span>
+                                                                        <span>{{ ltrim(trim($line), '• ') }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            @empty
+                                                                <p class="text-slate-300 italic">-</p>
+                                                            @endforelse
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                                        <p class="text-[8px] font-black text-red-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                                            <i data-lucide="heart" class="w-3 h-3"></i> Catatan untuk Orang Tua
+                                                        </p>
+                                                        <div class="text-xs font-bold text-slate-600 leading-relaxed space-y-1">
+                                                            @php
+                                                                $catatan = $r->pemeriksaans->first()->catatan_orang_tua ?? '';
+                                                                $lines = explode("\n", $catatan);
+                                                            @endphp
+                                                            @forelse($lines as $line)
+                                                                @if(trim($line))
+                                                                    <div class="flex items-start gap-2">
+                                                                        <span class="text-red-500">•</span>
+                                                                        <span>{{ ltrim(trim($line), '• ') }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            @empty
+                                                                <p class="text-slate-300 italic">-</p>
+                                                            @endforelse
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 @else
                                                 <div class="space-y-3">
                                                     <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
                                                         <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Evaluasi Sesi</p>
-                                                        <p class="text-xs font-bold text-slate-600 leading-relaxed">{{ $r->fisioterapis->first()->evaluasi ?? '-' }}</p>
+                                                        <div class="text-xs font-bold text-slate-600 leading-relaxed space-y-1">
+                                                            @php
+                                                                $evaluasi = $r->fisioterapis->first()->evaluasi ?? '';
+                                                                $lines = explode("\n", $evaluasi);
+                                                            @endphp
+                                                            @forelse($lines as $line)
+                                                                @if(trim($line))
+                                                                    <div class="flex items-start gap-2">
+                                                                        <span class="text-red-500">•</span>
+                                                                        <span>{{ ltrim(trim($line), '• ') }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            @empty
+                                                                <p class="text-slate-300 italic">-</p>
+                                                            @endforelse
+                                                        </div>
                                                     </div>
                                                     <div class="p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                                                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 text-red-500">Catatan Khusus</p>
-                                                        <p class="text-xs font-bold text-slate-600 leading-relaxed italic">{{ $r->fisioterapis->first()->catatan_khusus ?? '-' }}</p>
+                                                        <p class="text-[8px] font-black text-red-500 uppercase tracking-widest mb-2">Catatan untuk Orang Tua</p>
+                                                        <div class="text-xs font-bold text-slate-600 leading-relaxed space-y-1">
+                                                            @php
+                                                                $catatan = $r->fisioterapis->first()->catatan_khusus ?? '';
+                                                                $lines = explode("\n", $catatan);
+                                                            @endphp
+                                                            @forelse($lines as $line)
+                                                                @if(trim($line))
+                                                                    <div class="flex items-start gap-2">
+                                                                        <span class="text-red-500">•</span>
+                                                                        <span>{{ ltrim(trim($line), '• ') }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            @empty
+                                                                <p class="text-slate-300 italic">-</p>
+                                                            @endforelse
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 @endif

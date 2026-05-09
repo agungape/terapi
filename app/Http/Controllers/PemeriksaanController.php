@@ -36,6 +36,9 @@ class PemeriksaanController extends Controller
                 'program_id' => 'required|array',
                 'status' => 'required|array',
                 'keterangan' => 'nullable|string',
+                'pilihan_respons' => 'nullable|string',
+                'hasil_kegiatan' => 'nullable|string',
+                'catatan_orang_tua' => 'nullable|string',
 
                 'program_id.*' => 'required|exists:App\Models\Program,id',
                 'status.*' => 'required',
@@ -53,6 +56,9 @@ class PemeriksaanController extends Controller
                     'program_id' => $idProgram,
                     'status' => $status[$index],
                     'keterangan' => $keterangan,
+                    'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                    'hasil_kegiatan' => $request->input('hasil_kegiatan'),
+                    'catatan_orang_tua' => $request->input('catatan_orang_tua'),
                 ]);
             }
 

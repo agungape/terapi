@@ -15,7 +15,13 @@ class Fisioterapi extends Model
         'program_id',
         'aktivitas_terapi',
         'evaluasi',
-        'catatan_khusus'
+        'catatan_khusus',
+        'pilihan_respons',
+        'hasil_kegiatan'
+    ];
+
+    protected $casts = [
+        'pilihan_respons' => 'array'
     ];
 
     public function kunjungan(): BelongsTo

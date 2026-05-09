@@ -19,6 +19,8 @@ class FisioterapiController extends Controller
                 'aktivitas_terapi' => 'required|array',
                 'evaluasi' => 'required|string',
                 'catatan_khusus' => 'nullable|string',
+                'pilihan_respons' => 'nullable|string',
+                'hasil_kegiatan' => 'nullable|string',
 
                 'program_id.*' => 'required|exists:App\Models\Program,id',
                 'aktivitas_terapi.*' => 'required',
@@ -37,7 +39,9 @@ class FisioterapiController extends Controller
                     'program_id' => $idProgram,
                     'aktivitas_terapi' => $aktivitas_terapi[$index],
                     'evaluasi' => $evaluasi,
-                    'catatan_khusus' => $catatan_khusus
+                    'catatan_khusus' => $catatan_khusus,
+                    'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                    'hasil_kegiatan' => $request->input('hasil_kegiatan'),
                 ]);
             }
 

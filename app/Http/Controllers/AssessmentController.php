@@ -57,8 +57,8 @@ class AssessmentController extends Controller
         $anaks = Anak::where('status', 'aktif')->latest()->get();
 
         if ($roles->contains('psikolog')) {
-            $psikologs = Psikolog::where('nama', $user->name)->first();
-            return view('assessment.create', compact('anaks', 'psikologs', 'roles'));
+            $psikologLogin = Psikolog::where('nama', $user->name)->first();
+            return view('assessment.create', compact('anaks', 'psikologLogin', 'roles'));
         } else {
             $psikologs = Psikolog::latest()->get();
             return view('assessment.create', compact('anaks', 'psikologs', 'roles'));

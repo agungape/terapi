@@ -4,7 +4,7 @@
         class="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-[35px] border border-orange-100">
         <div class="flex items-center space-x-4 mb-6">
             <div class="relative">
-                <img src="https://ui-avatars.com/api/?name=Arkan+Putra&background=f97316&color=fff"
+                <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($anak->nama ?? 'Anak') . '&background=f97316&color=fff' }}"
                     class="w-16 h-16 rounded-2xl border-4 border-white shadow-lg">
                 <div
                     class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white">

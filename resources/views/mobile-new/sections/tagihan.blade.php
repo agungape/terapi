@@ -4,11 +4,11 @@
         <div class="flex justify-between items-center mb-4">
             <div>
                 <h4 class="font-bold text-gray-800">Total Tagihan</h4>
-                <p class="text-[11px] text-gray-500">Per Februari 2026</p>
+                <p class="text-[11px] text-gray-500">Bulan Ini</p>
             </div>
             <div class="text-right">
-                <p class="text-2xl font-black text-indigo-600">Rp 350.000</p>
-                <p class="text-[10px] text-gray-500">1 tagihan tertunda</p>
+                <p class="text-2xl font-black text-indigo-600" x-text="'Rp ' + number_format(invoices.filter(i => i.status === 'Pending').reduce((acc, i) => acc + parseInt(i.amount.replace(/[^0-9]/g, '')), 0), 0, ',', '.')"></p>
+                <p class="text-[10px] text-gray-500" x-text="tagihanCount + ' tagihan tertunda'"></p>
             </div>
         </div>
         <button @click="showToast('Bayar semua tagihan', 'success')"

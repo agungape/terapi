@@ -1,5 +1,5 @@
 <div :class="{
-    'primary-purple': page === 'home' || page === 'buku_penghubung' || page === 'progres' || page === 'profil',
+    'primary-purple': page === 'home' || page === 'progres' || page === 'profil',
     'primary-rose': page === 'assessment_psikolog',
     'primary-teal': page === 'observasi',
     'primary-blue': page === 'daftar_terapis' || page === 'paket_terapi' || page === 'jadwal_terapi' || page === 'tagihan' || page === 'galeri',
@@ -19,7 +19,7 @@
             <div class="flex items-center space-x-4">
                 <div class="relative group">
                     @php
-                        $photoUrl = 'https://ui-avatars.com/api/?name=' . urlencode($anak->nama ?? 'Arkan') . '&background=fff&color=6366f1';
+                        $photoUrl = 'https://ui-avatars.com/api/?name=' . urlencode($anak->nama ?? 'Anak') . '&background=fff&color=6366f1';
                         if (isset($anak->foto) && $anak->foto) {
                             $path = $anak->foto;
                             // Bersihkan awalan public/ atau storage/ jika ada di database
@@ -39,8 +39,8 @@
                     </div>
                 </div>
                 <div>
-                    <p class="text-xs font-medium opacity-90">Halo Bunda {{ $anak->nama ?? 'Arkan' }}!</p>
-                    <h1 class="text-xl font-bold">{{ $anak->nama ?? 'Arkan Putra' }}</h1>
+                    <p class="text-xs font-medium opacity-90">Halo Bunda {{ $anak->nama ?? 'Bunda' }}!</p>
+                    <h1 class="text-xl font-bold">{{ $anak->nama ?? 'Nama Anak' }}</h1>
                 </div>
             </div>
             <button @click="markNotificationRead" class="relative group ripple">
@@ -57,13 +57,13 @@
 
     <template x-if="page !== 'home' && page !== 'profil'">
         <div class="flex items-center space-x-4 relative z-10 animate-slide-up">
-            <button @click="nav('home')"
+            <button @click="page = 'home'; window.scrollTo({ top: 0, behavior: 'smooth' });"
                 class="bg-white/20 p-3 rounded-2xl hover:bg-white/30 active:scale-90 transition-all duration-300 ripple">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
             <div class="flex-1">
                 <h1 class="text-xl font-bold capitalize" x-text="page.replace(/_/g, ' ')"></h1>
-                <p class="text-[10px] opacity-80 font-bold uppercase tracking-widest">Update Terbaru Arkan</p>
+                <p class="text-[10px] opacity-80 font-bold uppercase tracking-widest">Update Terbaru {{ $anak->nama ?? 'Anak' }}</p>
             </div>
             <button
                 class="bg-white/20 p-3 rounded-2xl hover:bg-white/30 active:scale-90 transition-all duration-300">
@@ -83,10 +83,10 @@
                 </div>
                 
                 <div class="flex-1 flex flex-col justify-center mt-1">
-                    @if($activePackages->count() === 1)
+                    @if($activePackages && $activePackages->count() === 1)
                         @php $p = $activePackages->first(); @endphp
                         <div>
-                            <p class="text-2xl font-black">{{ $p->sudah_terpakai }} / {{ $p->tarif->jumlah_pertemuan ?? 20 }}</p>
+                            <p class="text-2xl font-black">{{ $p->sudah_terpakai ?? 0 }} / {{ $p->tarif->jumlah_pertemuan ?? 20 }}</p>
                             <p class="text-[9px] font-bold opacity-70 truncate">{{ $p->tarif->nama ?? 'Paket' }}</p>
                         </div>
                         @php
@@ -127,13 +127,13 @@
                 </div>
                 
                 <div class="flex-1 flex flex-col justify-center mt-1">
-                    @if($activePackages->count() === 1)
+                    @if($activePackages && $activePackages->count() === 1)
                         @php $p = $activePackages->first(); @endphp
                         <div>
                             @if(is_array($p->sisa_pertemuan))
-                                <p class="text-lg font-black">P: {{ $p->sisa_pertemuan['perilaku'] }} | F: {{ $p->sisa_pertemuan['fisioterapi'] }}</p>
+                                <p class="text-lg font-black">P: {{ $p->sisa_pertemuan['perilaku'] ?? 0 }} | F: {{ $p->sisa_pertemuan['fisioterapi'] ?? 0 }}</p>
                             @else
-                                <p class="text-2xl font-black">{{ $p->sisa_pertemuan }} <span class="text-xs font-normal">Sesi</span></p>
+                                <p class="text-2xl font-black">{{ $p->sisa_pertemuan ?? 0 }} <span class="text-xs font-normal">Sesi</span></p>
                             @endif
                             <p class="text-[9px] font-bold opacity-70 truncate">{{ $p->tarif->nama ?? 'Paket' }}</p>
                         </div>

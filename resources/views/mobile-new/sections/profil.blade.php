@@ -4,7 +4,7 @@
             class="w-32 h-32 bg-indigo-100 rounded-[40px] rotate-6 absolute inset-0 -z-10 animate-pulse-slow">
         </div>
         <div class="relative group">
-            <img src="https://ui-avatars.com/api/?name=Arkan+Putra&background=6366f1&color=fff&size=400"
+            <img src="{{ $anak->foto ? asset('storage/anak/' . $anak->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($anak->nama ?? 'Anak') . '&background=6366f1&color=fff&size=400' }}"
                 class="w-32 h-32 rounded-[40px] border-4 border-white shadow-xl mx-auto object-cover group-hover:scale-105 transition-transform duration-300">
             <button @click="showToast('Ubah foto profil', 'success')"
                 class="absolute bottom-2 right-2 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

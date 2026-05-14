@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="id" x-data="{
-    page: 'home',
+    page: new URLSearchParams(window.location.search).get('page') || 'home',
     filterTerapi: 'semua',
     searchDate: '',
+    searchTherapist: '',
     isLoading: false,
     notificationCount: 3,
     totalSesi: {{ $totalPertemuan }},
@@ -12,6 +13,87 @@
 
     // Data aktivitas terakhir
     activities: {{ json_encode($activities) }},
+
+    // Statistics
+    sesiMingguIni: {{ $sesiMingguIni }},
+    progress: '{{ $progress }}',
+    tagihanCount: {{ $tagihanCount }},
+    formattedActivePackages: {{ json_encode($formattedActivePackages ?? []) }},
+
+    // Attendance
+    attendanceStats: {{ json_encode($attendanceStats) }},
+    assessments: {{ json_encode($assessments ?? []) }},
+    selectedPackageId: {{ $attendanceStats['defaultPackageId'] ?? 'null' }},
+    selectedSession: null,
+    showSessionDetail: false,
+    selectedPackage: null,
+    showPackageDetail: false,
+    selectedAssessment: null,
+    showAssessmentDetail: false,
+    showPdfViewer: false,
+    pdfViewerUrl: null,
+    currentViewDate: new Date(),
+
+    prevMonth() {
+        this.currentViewDate = new Date(this.currentViewDate.getFullYear(), this.currentViewDate.getMonth() - 1, 1);
+    },
+
+    nextMonth() {
+        this.currentViewDate = new Date(this.currentViewDate.getFullYear(), this.currentViewDate.getMonth() + 1, 1);
+    },
+
+    getDaysInMonth() {
+        const year = this.currentViewDate.getFullYear();
+        const month = this.currentViewDate.getMonth();
+        const days = new Date(year, month + 1, 0).getDate();
+        return Array.from({ length: days }, (_, i) => i + 1);
+    },
+
+    getFirstDayOfMonth() {
+        const year = this.currentViewDate.getFullYear();
+        const month = this.currentViewDate.getMonth();
+        let firstDay = new Date(year, month, 1).getDay();
+        // Adjust to Monday as first day (Mon=0, Sun=6)
+        return firstDay === 0 ? 6 : firstDay - 1;
+    },
+
+    getStatusForDate(day) {
+        const year = this.currentViewDate.getFullYear();
+        const month = (this.currentViewDate.getMonth() + 1).toString().padStart(2, '0');
+        const dayStr = day.toString().padStart(2, '0');
+        const dateStr = `${year}-${month}-${dayStr}`;
+        
+        const pkg = this.getSelectedPackage();
+        if (!pkg || !pkg.history.length) return 'none';
+        
+        // Check for existing record
+        const record = pkg.history.find(h => h.isoDate === dateStr);
+        if (record) return record.rawStatus;
+        
+        // Sunday is always libur
+        const isSunday = new Date(year, this.currentViewDate.getMonth(), day).getDay() === 0;
+        if (isSunday) return 'libur';
+
+        // Check if date is between first and last session, and NOT in the future
+        const today = new Date().toISOString().split('T')[0];
+        const dates = pkg.history.map(h => h.isoDate).sort();
+        const minDate = dates[0];
+        const maxDate = dates[dates.length - 1];
+
+        // Only mark as libur if it's before or on the latest record, AND before or on today
+        if (dateStr > minDate && dateStr < maxDate && dateStr <= today) {
+            return 'libur';
+        }
+        
+        return 'none';
+    },
+
+    isToday(day) {
+        const today = new Date();
+        return day === today.getDate() && 
+               this.currentViewDate.getMonth() === today.getMonth() && 
+               this.currentViewDate.getFullYear() === today.getFullYear();
+    },
 
     // Data psikolog assessment (Keep mockup for now)
     assessmentResults: [
@@ -47,29 +129,8 @@
         }
     ],
 
-    // Data observasi (Keep mockup for now)
-    observations: [
-        {
-            id: 1,
-            date: '03 Feb 2026',
-            time: '10:30',
-            observer: 'Budi Santoso',
-            activity: 'Terapi Sensori Integrasi',
-            focus: 'Koordinasi Mata-Tangan',
-            result: 'Baik',
-            note: 'Arkan mampu menyusun puzzle 8 keping dengan sedikit bimbingan'
-        },
-        {
-            id: 2,
-            date: '02 Feb 2026',
-            time: '14:00',
-            observer: 'Siti Aminah',
-            activity: 'Terapi Wicara',
-            focus: 'Artikulasi',
-            result: 'Sangat Baik',
-            note: 'Pengucapan kata mama dan papa semakin jelas'
-        }
-    ],
+    // Data observasi dari database
+    observations: {{ json_encode($observations ?? []) }},
 
     // Data terapis
     therapists: {{ json_encode($therapists) }},
@@ -90,17 +151,8 @@
         }
     ],
 
-    // Data tagihan (Keep mockup for now)
-    invoices: [
-        {
-            id: 'INV-2026-001',
-            date: '01 Feb 2026',
-            description: 'Paket Premium - 24 Sesi',
-            amount: 'Rp 4.200.000',
-            status: 'Paid',
-            dueDate: '05 Feb 2026'
-        }
-    ],
+    // Data tagihan
+    invoices: {{ json_encode($invoices) }},
 
     // Data galeri foto (Keep mockup for now)
     galleryPhotos: [
@@ -108,7 +160,7 @@
             id: 1,
             date: '02 Feb 2026',
             activity: 'Terapi Wicara',
-            description: 'Arkan belajar fonetik dengan kartu bergambar',
+            description: 'Ananda belajar fonetik dengan kartu bergambar',
             likes: 12,
             comments: 3
         }
@@ -117,8 +169,8 @@
     // Data buku anak (Keep mockup for now)
     childBook: {
         personalInfo: {
-            fullName: '{{ $anak->nama ?? 'Arkan Putra Pratama' }}',
-            nickname: '{{ $anak->nama ?? 'Arkan' }}',
+            fullName: '{{ $anak->nama ?? 'Nama Anak' }}',
+            nickname: '{{ $anak->nama ?? 'Ananda' }}',
             age: '4 Tahun 2 Bulan',
             birthDate: '15 Desember 2021',
             bloodType: 'O+',
@@ -158,26 +210,25 @@
     // Data absensi
     attendanceData: {{ json_encode($attendanceData) }},
 
-    // Fungsi untuk navigasi internal
+    // Fungsi untuk navigasi internal (Hard Reload untuk selalu mendapatkan data terbaru)
     nav(target) {
-        this.isLoading = true;
-        this.page = target;
-
-        setTimeout(() => {
-            this.isLoading = false;
-            if (target === 'progres') {
-                this.$nextTick(() => {
-                    setTimeout(() => initChart(), 100);
-                });
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 300);
+        if (this.page === target) {
+            // Jika diklik di halaman yang sama, reload juga
+            window.location.reload();
+            return;
+        }
+        window.location.href = window.location.pathname + '?page=' + target;
     },
 
     // Filter sessions berdasarkan jenis terapi
     filteredSessions() {
         if (this.filterTerapi === 'semua') return this.sessions;
         return this.sessions.filter(session => session.type === this.filterTerapi);
+    },
+
+    openSessionDetail(session) {
+        this.selectedSession = session;
+        this.showSessionDetail = true;
     },
 
     // Mark notification as read
@@ -237,19 +288,21 @@
         this.showToast('Check out berhasil', 'success');
     },
 
+    getSelectedPackage() {
+        return this.attendanceStats.packages.find(p => p.id === this.selectedPackageId) || this.attendanceStats.packages[0];
+    },
+
     getAttendanceStats() {
-        const total = this.totalSesi || this.attendanceData.length;
-        const present = this.attendanceData.filter(a => a.status === 'Hadir').length;
-        const absent = this.attendanceData.filter(a => a.status === 'Sakit' || a.status === 'Izin').length;
-        const holiday = this.attendanceData.filter(a => a.status === 'Libur').length;
-        const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
+        const pkg = this.getSelectedPackage();
+        if (!pkg) return { total: 0, present: 0, absent: 0, sakit: 0, hangus: 0, percentage: 0 };
         
         return {
-            total: total,
-            present: present,
-            absent: absent,
-            holiday: holiday,
-            percentage: percentage
+            total: pkg.totalQuota,
+            present: pkg.hadir,
+            absent: pkg.izin,
+            sakit: pkg.sakit,
+            hangus: pkg.hangus,
+            percentage: pkg.totalQuota > 0 ? Math.round((pkg.hadir / pkg.totalQuota) * 100) : 0
         };
     },
 
@@ -257,8 +310,9 @@
     getStatusColor(status) {
         const colors = {
             'Hadir': 'bg-green-100 text-green-700 border-green-200',
-            'Sakit': 'bg-red-100 text-red-700 border-red-200',
-            'Izin': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+            'Sakit': 'bg-purple-100 text-purple-700 border-purple-200',
+            'Izin': 'bg-amber-100 text-amber-700 border-amber-200',
+            'Hangus': 'bg-red-100 text-red-700 border-red-200',
             'Libur': 'bg-blue-100 text-blue-700 border-blue-200'
         };
         return colors[status] || 'bg-gray-100 text-gray-700 border-gray-200';
@@ -285,7 +339,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ParentCare - Ruang Ceria Arkan</title>
+    <title>Bright Start - {{ $anak->nama ?? 'Dashboard' }}</title>
     
     @include('mobile-new.partials.styles')
 </head>
@@ -316,11 +370,6 @@
 
             <!-- Buku Anak Page -->
             <template x-if="page === 'buku_anak'" x-transition>
-                @include('mobile-new.sections.buku_anak')
-            </template>
-
-            <!-- Buku Penghubung Page -->
-            <template x-if="page === 'buku_penghubung'" x-transition>
                 @include('mobile-new.sections.buku_penghubung')
             </template>
 
@@ -370,10 +419,19 @@
             </template>
         </main>
 
+        <!-- Global PDF Viewer -->
+        @include('mobile-new.partials.pdf_viewer')
+
         <!-- Bottom Navigation -->
         @include('mobile-new.partials.navigation')
     </div>
 
     @include('mobile-new.partials.scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
 </body>
 </html>

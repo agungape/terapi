@@ -10,6 +10,7 @@
 
     // Data untuk buku penghubung
     sessions: {{ json_encode($sessions) }},
+    expandedGroups: [],
 
     // Data aktivitas terakhir
     activities: {{ json_encode($activities) }},
@@ -229,6 +230,34 @@
     openSessionDetail(session) {
         this.selectedSession = session;
         this.showSessionDetail = true;
+    },
+
+    openActivityDetail(kunjunganId) {
+        let foundSession = null;
+        for (let g of this.sessions) {
+            for (let item of g.items) {
+                if (item.id === kunjunganId) {
+                    foundSession = item;
+                    break;
+                }
+            }
+            if (foundSession) break;
+        }
+
+        if (foundSession) {
+            this.page = 'buku_anak';
+            this.selectedSession = foundSession;
+            this.showSessionDetail = true;
+            
+            // Expand group
+            const groupId = foundSession.sesi + '-' + foundSession.type;
+            if (!this.expandedGroups.includes(groupId)) {
+                this.expandedGroups.push(groupId);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            this.showToast('Detail aktivitas belum tersedia.', 'success');
+        }
     },
 
     // Mark notification as read

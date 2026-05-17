@@ -81,7 +81,7 @@
                         'border-blue-100 bg-blue-50/50': activity.color === 'blue'
                     }"
                     :style="`animation-delay: ${index * 0.1}s`"
-                    @click="showToast(`Membuka detail ${activity.title}`, 'success')">
+                    @click="openActivityDetail(activity.id)">
                     <div class="flex justify-between items-start">
                         <p class="font-bold text-indigo-900 text-sm flex items-center">
                             <i class="fa-solid fa-circle text-xs mr-2" :class="{

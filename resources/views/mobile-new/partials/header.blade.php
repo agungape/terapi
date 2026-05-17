@@ -56,10 +56,6 @@
                 <h1 class="text-xl font-bold capitalize" x-text="page.replace(/_/g, ' ')"></h1>
                 <p class="text-[10px] opacity-80 font-bold uppercase tracking-widest">Update Terbaru {{ $anak->nama ?? 'Anak' }}</p>
             </div>
-            <button
-                class="bg-white/20 p-3 rounded-2xl hover:bg-white/30 active:scale-90 transition-all duration-300">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-            </button>
         </div>
     </template>
 

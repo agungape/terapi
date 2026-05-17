@@ -1,5 +1,4 @@
 <div x-show="!isLoading" x-data="{ 
-    expandedGroups: [],
     toggleGroup(id) {
         if (this.expandedGroups.includes(id)) {
             this.expandedGroups = this.expandedGroups.filter(i => i !== id);

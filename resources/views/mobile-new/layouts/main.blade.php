@@ -491,28 +491,24 @@
 <body class="flex justify-center">
     <!-- Static Animated Splash Screen (Prevents FOUC & Logo Flash) -->
     <div id="pwa-splash-screen" 
-         class="fixed inset-0 bg-[#fffaf3] z-[9999999] flex flex-col items-center justify-center overflow-hidden transition-all duration-500 ease-in-out" 
+         class="fixed inset-0 bg-gradient-to-br from-[#6366f1] via-[#8b5cf6] to-[#a855f7] z-[9999999] flex flex-col items-center justify-center overflow-hidden transition-all duration-500 ease-in-out" 
          style="display: flex; opacity: 1;">
         
-        <!-- Animated Glowing Orb -->
-        <div class="relative flex items-center justify-center">
-            <!-- Pulse circles -->
-            <div class="absolute w-44 h-44 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-full animate-ping" style="animation-duration: 2s;"></div>
-            <div class="absolute w-36 h-36 bg-gradient-to-tr from-orange-400/20 to-indigo-400/20 rounded-full animate-pulse" style="animation-duration: 1.5s;"></div>
-            <div class="absolute w-28 h-28 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full animate-ping" style="animation-duration: 2.5s;"></div>
-            
-            <!-- Center glowing sphere containing main logo-white.png -->
-            <div class="relative w-32 h-32 bg-gradient-to-tr from-amber-400 via-orange-500 to-indigo-600 rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.3)] flex items-center justify-center p-6 transform rotate-6 animate-float">
-                <img src="/assets/website/images/logo-white.png" 
-                     alt="Bright Logo" 
-                     class="w-full h-full object-contain block">
-            </div>
+        <!-- Animated Background Pulse Elements -->
+        <div class="absolute w-64 h-64 bg-white/10 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+        <div class="absolute w-48 h-48 bg-white/5 rounded-full animate-pulse" style="animation-duration: 2s;"></div>
+        
+        <!-- Center Logo Image (No container box!) -->
+        <div class="relative w-44 h-44 flex items-center justify-center animate-float z-10">
+            <img src="/assets/website/images/logo-white.png" 
+                 alt="Bright Logo" 
+                 class="w-full h-full object-contain block">
         </div>
         
         <!-- Title typography -->
-        <div class="mt-8 text-center animate-slide-up" style="animation-delay: 0.3s;">
-            <h1 class="text-3xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-indigo-600 bg-clip-text text-transparent tracking-widest uppercase">Bright</h1>
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mt-2.5">Tumbuh Kembang & Terapi</p>
+        <div class="mt-6 text-center animate-slide-up z-10" style="animation-delay: 0.3s;">
+            <h1 class="text-3xl font-black text-white tracking-widest uppercase">Bright</h1>
+            <p class="text-[10px] font-black text-white/70 uppercase tracking-[0.25em] mt-2.5">Tumbuh Kembang & Terapi</p>
         </div>
     </div>
 

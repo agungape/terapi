@@ -235,4 +235,24 @@
     .milestone-planned {
         background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
     }
+
+    /* Notch and Safe Area Support */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #f8faff;
+    }
+
+    .main-wrapper {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding-bottom: calc(8rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Dynamic safe padding top for headers to merge seamlessly with Notch/Poni */
+    .safe-top-padding {
+        padding-top: calc(2.5rem + env(safe-area-inset-top, 20px)) !important;
+    }
 </style>

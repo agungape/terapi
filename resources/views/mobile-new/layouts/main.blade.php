@@ -388,7 +388,7 @@
             e.preventDefault();
             this.deferredPrompt = e;
             
-            const isDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+            const isDismissed = sessionStorage.getItem('pwa_prompt_dismissed') === 'true';
             if (!this.isPwaInstalled && !isDismissed && this.page === 'home') {
                 setTimeout(() => {
                     this.showPwaModal = true;
@@ -407,7 +407,7 @@
         this.isIos = /iphone|ipad|ipod/.test(userAgent);
         
         if (this.isIos && !isStandalone) {
-            const isDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+            const isDismissed = sessionStorage.getItem('pwa_prompt_dismissed') === 'true';
             if (!isDismissed && this.page === 'home') {
                 setTimeout(() => {
                     this.showPwaModal = true;
@@ -435,7 +435,7 @@
 
     dismissPwaModal() {
         this.showPwaModal = false;
-        localStorage.setItem('pwa_prompt_dismissed', 'true');
+        sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     }
 }" x-init="() => {
     initPwa();
@@ -447,13 +447,13 @@
 }">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Bright Start - {{ $anak->nama ?? 'Dashboard' }}</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Bright">
     <link rel="apple-touch-icon" href="/assets/mobile/pixio/images/app-logo/bsc150x150.png">
 
@@ -461,7 +461,43 @@
 </head>
 
 <body class="flex justify-center">
-    <div class="w-full max-w-md min-h-screen bg-white shadow-2xl relative pb-32 overflow-x-hidden">
+    <!-- Abstract Animated Splash Screen -->
+    <div x-data="{ 
+             visible: !sessionStorage.getItem('splash_shown')
+         }"
+         x-init="if (visible) {
+             sessionStorage.setItem('splash_shown', 'true');
+             setTimeout(() => {
+                 visible = false;
+             }, 1800);
+         }"
+         x-show="visible"
+         x-transition:leave="transition ease-in duration-500 transform"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-110 pointer-events-none"
+         class="fixed inset-0 bg-[#fffaf3] z-[999999] flex flex-col items-center justify-center overflow-hidden" x-cloak>
+        
+        <!-- Animated Glowing Orb -->
+        <div class="relative flex items-center justify-center">
+            <!-- Pulse circles -->
+            <div class="absolute w-44 h-44 bg-gradient-to-tr from-amber-400/20 to-orange-400/20 rounded-full animate-ping" style="animation-duration: 2s;"></div>
+            <div class="absolute w-36 h-36 bg-gradient-to-tr from-orange-400/20 to-indigo-400/20 rounded-full animate-pulse" style="animation-duration: 1.5s;"></div>
+            <div class="absolute w-28 h-28 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full animate-ping" style="animation-duration: 2.5s;"></div>
+            
+            <!-- Center glowing abstract sphere -->
+            <div class="relative w-20 h-20 bg-gradient-to-tr from-amber-400 via-orange-500 to-indigo-600 rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.3)] flex items-center justify-center transform rotate-12 animate-float">
+                <i class="fa-solid fa-sparkles text-white text-2xl animate-pulse"></i>
+            </div>
+        </div>
+        
+        <!-- Title typography fade in -->
+        <div class="mt-8 text-center animate-slide-up" style="animation-delay: 0.3s;">
+            <h1 class="text-3xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-indigo-600 bg-clip-text text-transparent tracking-widest uppercase">Bright</h1>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mt-2.5">Tumbuh Kembang & Terapi</p>
+        </div>
+    </div>
+
+    <div class="w-full max-w-md bg-white shadow-2xl relative overflow-x-hidden main-wrapper">
         <!-- Loading Overlay -->
         <div x-show="isLoading" x-transition.opacity
             class="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center">

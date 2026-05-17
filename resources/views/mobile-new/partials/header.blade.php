@@ -5,7 +5,7 @@
     'primary-blue': page === 'daftar_terapis' || page === 'paket_terapi' || page === 'jadwal_terapi' || page === 'tagihan' || page === 'galeri',
     'primary-green': page === 'absensi',
     'primary-orange': page === 'buku_anak'
-}" class="p-8 pb-20 rounded-b-[50px] text-white relative transition-all duration-500">
+}" class="px-8 pb-20 safe-top-padding rounded-b-[50px] text-white relative transition-all duration-500">
 
     <!-- Animated background elements -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden rounded-b-[50px]">

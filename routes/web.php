@@ -275,4 +275,5 @@ Route::group(['middleware' => ['role:anak']], function () {
     Route::get('/invoice/{id}/download', [MobileController::class, 'download_invoice'])->name('invoice.download');
     Route::get('/app/laporan-psikolog/{id}', [MobileNewController::class, 'cetakAssessment'])->name('mobile.assessment.cetak');
     Route::get('/app/laporan-observasi/{tanggal}', [MobileNewController::class, 'cetakObservasi'])->name('mobile.observasi.cetak');
+    Route::get('/app/kwitansi/{id}', [MobileNewController::class, 'cetakKwitansi'])->name('mobile.kwitansi.cetak');
 });

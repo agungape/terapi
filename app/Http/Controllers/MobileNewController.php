@@ -23,6 +23,8 @@ class MobileNewController extends Controller
             return redirect()->route('login')->with('error', 'Data anak tidak ditemukan.');
         }
 
+        $profile = \App\Models\Profile::first();
+
         // Fetch actual data from database
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
             ->with(['terapis', 'pemeriksaans', 'fisioterapis'])
@@ -230,8 +232,10 @@ class MobileNewController extends Controller
             $progress = '0%';
         }
 
+        $anakIds = \App\Models\Anak::where('nama', $anak->nama)->pluck('id');
+
         // Tagihan / Invoices (RESTORED)
-        $pendingAssessments = \App\Models\Assessment::where('anak_id', $anak->id)
+        $pendingAssessments = \App\Models\Assessment::whereIn('anak_id', $anakIds)
             ->where('status_bayar', '!=', 'lunas')
             ->get();
         
@@ -240,25 +244,38 @@ class MobileNewController extends Controller
         $invoices = $pendingAssessments->map(function($a) {
             return [
                 'id' => 'INV-ASMT-' . $a->id,
+                'db_id' => $a->id,
                 'date' => $a->tanggal_assessment ? $a->tanggal_assessment->format('d M Y') : '-',
                 'dueDate' => $a->created_at->addDays(7)->format('d M Y'),
                 'description' => 'Biaya Assessment Psikologi',
                 'amount' => 'Rp 350.000',
-                'status' => 'Pending'
+                'status' => 'Pending',
+                'metode_bayar' => '-',
+                'file_url' => null
             ];
         });
 
-        $paidInvoices = \App\Models\Pemasukkan::where('anak_id', $anak->id)
+        $paidInvoices = \App\Models\Pemasukkan::whereIn('anak_id', $anakIds)
+            ->orWhere(function($query) use ($anak) {
+                $query->whereNull('anak_id')
+                      ->where('deskripsi', 'LIKE', '%' . $anak->nama . '%');
+            })
+            ->with('Tarif')
             ->orderBy('tanggal', 'desc')
             ->get()
             ->map(function($p) {
+                $packageName = $p->Tarif ? $p->Tarif->nama : null;
+                $desc = $packageName ? 'Paket: ' . $packageName : ($p->deskripsi ?? 'Pembayaran Paket Terapi');
                 return [
                     'id' => 'INV-PAY-' . $p->id,
+                    'db_id' => $p->id,
                     'date' => $p->tanggal ? $p->tanggal->format('d M Y') : '-',
                     'dueDate' => $p->tanggal ? $p->tanggal->format('d M Y') : '-',
-                    'description' => $p->deskripsi ?? 'Pembayaran Paket Terapi',
+                    'description' => $desc,
                     'amount' => 'Rp ' . number_format($p->jumlah, 0, ',', '.'),
-                    'status' => 'Paid'
+                    'status' => 'Paid',
+                    'metode_bayar' => $p->metode_bayar ? ucfirst($p->metode_bayar) : '-',
+                    'file_url' => route('mobile.kwitansi.cetak', ['id' => $p->id])
                 ];
             });
         
@@ -440,7 +457,8 @@ class MobileNewController extends Controller
             'invoices',
             'attendanceStats',
             'assessments',
-            'observations'
+            'observations',
+            'profile'
         ))->with('totalPertemuan', $totalPertemuanSum);
     }
 
@@ -647,6 +665,54 @@ class MobileNewController extends Controller
         ]);
 
         $filename = 'Laporan-Observasi-' . \Illuminate\Support\Str::slug($anak->nama) . '-' . $tanggal . '.pdf';
+        
+        if (request()->has('download')) {
+            return $pdf->download($filename);
+        }
+        
+        return $pdf->stream($filename);
+    }
+
+    public function cetakKwitansi($id)
+    {
+        $pemasukkan = \App\Models\Pemasukkan::with(['Tarif', 'anak', 'kategori'])->findOrFail($id);
+
+        // Pastikan hanya anak yang bersangkutan yang bisa akses (Mendukung nama anak yang sama)
+        $user = auth()->user();
+        $anak = $user->getAnakData();
+        if (!$anak) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $anakIds = \App\Models\Anak::where('nama', $anak->nama)->pluck('id')->toArray();
+        $isAuthorized = false;
+        
+        if (in_array($pemasukkan->anak_id, $anakIds)) {
+            $isAuthorized = true;
+        } elseif (!$pemasukkan->anak_id && $pemasukkan->deskripsi && stripos($pemasukkan->deskripsi, $anak->nama) !== false) {
+            $isAuthorized = true;
+        }
+
+        if (!$isAuthorized) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $pdfData = [
+            'pemasukkan' => $pemasukkan,
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('keuangan.kwitansi_pdf', $pdfData);
+        
+        // Ukuran Thermal 80mm dalam points (1mm = 2.83465pt)
+        // 80mm = 226.77pt, 150mm = 425.2pt
+        $pdf->setPaper([0, 0, 226.77, 425.2], 'portrait');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled'      => true,
+            'defaultFont'          => 'monospace'
+        ]);
+
+        $filename = 'Kwitansi-' . $pemasukkan->id . '.pdf';
         
         if (request()->has('download')) {
             return $pdf->download($filename);

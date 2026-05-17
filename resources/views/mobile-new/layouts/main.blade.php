@@ -417,6 +417,11 @@
             <template x-if="page === 'profil'" x-transition>
                 @include('mobile-new.sections.profil')
             </template>
+
+            <!-- Pengaturan Page -->
+            <template x-if="page === 'pengaturan'" x-transition>
+                @include('mobile-new.sections.pengaturan')
+            </template>
         </main>
 
         <!-- Global PDF Viewer -->

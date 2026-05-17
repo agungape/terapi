@@ -46,7 +46,7 @@
             <i
                 class="fa-solid fa-angle-right text-gray-300 group-hover:translate-x-1 transition-transform"></i>
         </button>
-        <button @click="showToast('Membuka pengaturan', 'success')"
+        <button @click="nav('pengaturan')"
             class="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-[0.98] transition-all hover-lift ripple">
             <span class="flex items-center text-sm font-bold text-gray-700">
                 <i class="fa-solid fa-gear mr-4 text-gray-500"></i> Pengaturan Aplikasi

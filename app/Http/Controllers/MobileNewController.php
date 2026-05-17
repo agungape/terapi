@@ -241,14 +241,18 @@ class MobileNewController extends Controller
         
         $tagihanCount = $pendingAssessments->count();
 
-        $invoices = $pendingAssessments->map(function($a) {
+        // Ambil tarif assessment psikolog dinamis dari database (jika ada, jika tidak fallback ke Rp 350.000)
+        $assessmentTarif = \App\Models\Tarif::where('jenis_terapi', 'assessment')->where('is_active', true)->first();
+        $assessmentPrice = $assessmentTarif ? (int) $assessmentTarif->tarif : 350000;
+
+        $invoices = $pendingAssessments->map(function($a) use ($assessmentPrice) {
             return [
                 'id' => 'INV-ASMT-' . $a->id,
                 'db_id' => $a->id,
                 'date' => $a->tanggal_assessment ? $a->tanggal_assessment->format('d M Y') : '-',
                 'dueDate' => $a->created_at->addDays(7)->format('d M Y'),
                 'description' => 'Biaya Assessment Psikologi',
-                'amount' => 'Rp 350.000',
+                'amount' => 'Rp ' . number_format($assessmentPrice, 0, ',', '.'),
                 'status' => 'Pending',
                 'metode_bayar' => '-',
                 'file_url' => null

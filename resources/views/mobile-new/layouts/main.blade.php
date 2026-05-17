@@ -458,6 +458,8 @@
         if (meta) {
             meta.setAttribute('content', color);
         }
+        document.documentElement.style.backgroundColor = color;
+        document.body.style.backgroundColor = color;
     }
 }" x-init="() => {
     initPwa();
@@ -481,6 +483,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Bright">
     <link rel="apple-touch-icon" href="/assets/mobile/pixio/images/app-logo/bsc150x150.png">
+    <link rel="preload" as="image" href="/assets/website/images/logo-white.png">
 
     @include('mobile-new.partials.styles')
 </head>
@@ -498,11 +501,11 @@
             <div class="absolute w-36 h-36 bg-gradient-to-tr from-orange-400/20 to-indigo-400/20 rounded-full animate-pulse" style="animation-duration: 1.5s;"></div>
             <div class="absolute w-28 h-28 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full animate-ping" style="animation-duration: 2.5s;"></div>
             
-            <!-- Center glowing sphere containing main logo -->
-            <div class="relative w-28 h-28 bg-white rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.15)] flex items-center justify-center p-4 transform rotate-6 animate-float">
-                <img src="/assets/mobile/pixio/images/app-logo/logo.png" 
+            <!-- Center glowing sphere containing main logo-white.png -->
+            <div class="relative w-32 h-32 bg-gradient-to-tr from-amber-400 via-orange-500 to-indigo-600 rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.3)] flex items-center justify-center p-6 transform rotate-6 animate-float">
+                <img src="/assets/website/images/logo-white.png" 
                      alt="Bright Logo" 
-                     class="w-full h-full object-contain">
+                     class="w-full h-full object-contain block">
             </div>
         </div>
         

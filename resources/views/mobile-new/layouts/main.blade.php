@@ -33,6 +33,11 @@
     showAssessmentDetail: false,
     showPdfViewer: false,
     pdfViewerUrl: null,
+    showPwaModal: false,
+    deferredPrompt: null,
+    isIos: false,
+    isPwaInstalled: false,
+    showIosInstructions: false,
     currentViewDate: new Date(),
 
     prevMonth() {
@@ -260,6 +265,14 @@
         }
     },
 
+    allNotesSame() {
+        if (!this.selectedSession || !this.selectedSession.programs || this.selectedSession.programs.length === 0) return false;
+        const firstNote = this.selectedSession.programs[0].note;
+        if (!firstNote) return false;
+        if (this.selectedSession.programs.length === 1) return true;
+        return this.selectedSession.programs.every(p => p.note === firstNote);
+    },
+
     // Mark notification as read
     markNotificationRead() {
         this.notificationCount = 0;
@@ -357,8 +370,75 @@
             'sleepy': 'fa-face-sleepy'
         };
         return icons[mood] || 'fa-face-meh';
+    },
+
+    initPwa() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (isStandalone) {
+            this.isPwaInstalled = true;
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(() => {
+                console.log('PWA Service Worker Registered!');
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredPrompt = e;
+            
+            const isDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+            if (!this.isPwaInstalled && !isDismissed && this.page === 'home') {
+                setTimeout(() => {
+                    this.showPwaModal = true;
+                }, 2000);
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            this.isPwaInstalled = true;
+            this.showPwaModal = false;
+            this.showToast('Bright berhasil terpasang!', 'success');
+            this.deferredPrompt = null;
+        });
+
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        this.isIos = /iphone|ipad|ipod/.test(userAgent);
+        
+        if (this.isIos && !isStandalone) {
+            const isDismissed = localStorage.getItem('pwa_prompt_dismissed') === 'true';
+            if (!isDismissed && this.page === 'home') {
+                setTimeout(() => {
+                    this.showPwaModal = true;
+                }, 2500);
+            }
+        }
+    },
+
+    installPwa() {
+        if (this.deferredPrompt) {
+            this.deferredPrompt.prompt();
+            this.deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    this.isPwaInstalled = true;
+                }
+                this.deferredPrompt = null;
+                this.showPwaModal = false;
+            });
+        } else if (this.isIos) {
+            this.showIosInstructions = true;
+        } else {
+            this.showToast('Silakan pasang melalui menu browser Anda.', 'success');
+        }
+    },
+
+    dismissPwaModal() {
+        this.showPwaModal = false;
+        localStorage.setItem('pwa_prompt_dismissed', 'true');
     }
 }" x-init="() => {
+    initPwa();
     setTimeout(() => {
         document.querySelectorAll('[x-cloak]').forEach(el => {
             el.style.display = 'block';
@@ -370,6 +450,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bright Start - {{ $anak->nama ?? 'Dashboard' }}</title>
     
+    <!-- PWA Settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Bright">
+    <link rel="apple-touch-icon" href="/assets/mobile/pixio/images/app-logo/bsc150x150.png">
+
     @include('mobile-new.partials.styles')
 </head>
 
@@ -447,6 +534,9 @@
                 @include('mobile-new.sections.profil')
             </template>
         </main>
+
+        <!-- PWA Installation Modal -->
+        @include('mobile-new.partials.pwa_modal')
 
         <!-- Global PDF Viewer -->
         @include('mobile-new.partials.pdf_viewer')

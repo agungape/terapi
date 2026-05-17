@@ -104,6 +104,10 @@ class MobileNewController extends Controller
                             }
                         }
 
+                        $firstPem = $k->pemeriksaans->first();
+                        $firstFis = $k->fisioterapis->first();
+                        $hasilKegiatan = ($firstPem->hasil_kegiatan ?? null) ?: ($firstFis->hasil_kegiatan ?? null);
+
                         return [
                             'id' => $k->id,
                             'type' => $k->jenis_terapi,
@@ -119,7 +123,8 @@ class MobileNewController extends Controller
                             'sesi' => $k->sesi,
                             'programs' => $programs,
                             'extra' => $extraInfo,
-                            'catatan_umum' => $k->catatan
+                            'catatan_umum' => $k->catatan,
+                            'hasil_kegiatan' => $hasilKegiatan
                         ];
                     })->values()
                 ];

@@ -31,13 +31,6 @@
         }
         return this.sessions[index].type !== prevValidType;
     },
-    allNotesSame() {
-        if (!this.selectedSession || !this.selectedSession.programs || this.selectedSession.programs.length === 0) return false;
-        const firstNote = this.selectedSession.programs[0].note;
-        if (!firstNote) return false;
-        if (this.selectedSession.programs.length === 1) return true;
-        return this.selectedSession.programs.every(p => p.note === firstNote);
-    },
     // Fungsi pembantu untuk cek apakah ada data sama sekali untuk filter aktif
     hasAnyData(filter) {
         return this.sessions.some(g => this.groupHasItems(g, filter));
@@ -207,6 +200,34 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Hasil Kegiatan Card -->
+                <template x-if="selectedSession?.hasil_kegiatan">
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-[32px] p-5 border border-orange-100 shadow-sm flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center border border-orange-100 flex-shrink-0 shadow-sm">
+                                <i class="fa-solid text-2xl text-yellow-500" :class="{
+                                    'fa-face-smile-beam': selectedSession.hasil_kegiatan === 'baik',
+                                    'fa-face-meh': selectedSession.hasil_kegiatan === 'cukup',
+                                    'fa-face-frown': selectedSession.hasil_kegiatan === 'kurang'
+                                }"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Hasil Kegiatan</p>
+                                <h5 class="text-sm font-black text-slate-800 leading-none capitalize" 
+                                    x-text="selectedSession.hasil_kegiatan === 'baik' ? 'Sangat Baik' : (selectedSession.hasil_kegiatan === 'cukup' ? 'Cukup Baik' : 'Kurang Optimal')"></h5>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-black px-3 py-1.5 rounded-xl uppercase text-white shadow-sm"
+                            :class="{
+                                'bg-green-500': selectedSession.hasil_kegiatan === 'baik',
+                                'bg-yellow-500': selectedSession.hasil_kegiatan === 'cukup',
+                                'bg-red-500': selectedSession.hasil_kegiatan === 'kurang'
+                            }"
+                            x-text="selectedSession.hasil_kegiatan">
+                        </span>
+                    </div>
+                </template>
 
                 <!-- Pesan untuk Orang Tua -->
                 <div x-show="selectedSession?.extra?.catatan_ortu" class="bg-indigo-600 rounded-[35px] p-6 text-white shadow-xl shadow-indigo-100 relative overflow-hidden">

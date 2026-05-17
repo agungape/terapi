@@ -458,8 +458,10 @@
         if (meta) {
             meta.setAttribute('content', color);
         }
-        document.documentElement.style.backgroundColor = color;
-        document.body.style.backgroundColor = color;
+        // Color the top safe area dynamically using meta theme-color.
+        // Keep the bottom safe area blending perfectly with the light neutral app content:
+        document.documentElement.style.backgroundColor = '#f8faff';
+        document.body.style.backgroundColor = '#f8faff';
     }
 }" x-init="() => {
     initPwa();

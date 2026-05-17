@@ -46,13 +46,12 @@
             <i
                 class="fa-solid fa-angle-right text-gray-300 group-hover:translate-x-1 transition-transform"></i>
         </button>
-        <button @click="nav('pengaturan')"
-            class="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-[0.98] transition-all hover-lift ripple">
-            <span class="flex items-center text-sm font-bold text-gray-700">
-                <i class="fa-solid fa-gear mr-4 text-gray-500"></i> Pengaturan Aplikasi
+        <button @click="showToast('Fitur pengaturan dinonaktifkan sementara', 'info')"
+            class="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100 shadow-sm opacity-60 cursor-not-allowed transition-all">
+            <span class="flex items-center text-sm font-bold text-gray-400">
+                <i class="fa-solid fa-gear mr-4 text-gray-400"></i> Pengaturan Aplikasi
             </span>
-            <i
-                class="fa-solid fa-angle-right text-gray-300 group-hover:translate-x-1 transition-transform"></i>
+            <span class="text-[9px] font-bold bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">Disabled</span>
         </button>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
             @csrf

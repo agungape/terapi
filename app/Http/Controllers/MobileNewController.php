@@ -269,7 +269,12 @@ class MobileNewController extends Controller
             ->get()
             ->map(function($p) {
                 $packageName = $p->Tarif ? $p->Tarif->nama : null;
-                $desc = $packageName ? 'Paket: ' . $packageName : ($p->deskripsi ?? 'Pembayaran Paket Terapi');
+                $isAssessment = ($p->Tarif && $p->Tarif->jenis_terapi === 'assessment') || ($p->jenis_layanan === 'assessment');
+                
+                $desc = $isAssessment 
+                    ? ($packageName ? 'Assessment: ' . $packageName : 'Biaya Assessment Psikologi')
+                    : ($packageName ? 'Paket: ' . $packageName : ($p->deskripsi ?? 'Pembayaran Paket Terapi'));
+
                 return [
                     'id' => 'INV-PAY-' . $p->id,
                     'db_id' => $p->id,

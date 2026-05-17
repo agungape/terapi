@@ -46,13 +46,14 @@
             <i
                 class="fa-solid fa-angle-right text-gray-300 group-hover:translate-x-1 transition-transform"></i>
         </button>
-        <button @click="showToast('Membuka pengaturan', 'success')"
-            class="w-full flex items-center justify-between p-5 bg-white rounded-3xl border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-[0.98] transition-all hover-lift ripple">
-            <span class="flex items-center text-sm font-bold text-gray-700">
-                <i class="fa-solid fa-gear mr-4 text-gray-500"></i> Pengaturan Aplikasi
+        <button disabled
+            class="w-full flex items-center justify-between p-5 bg-gray-50 rounded-3xl border border-gray-100 shadow-none cursor-not-allowed opacity-60">
+            <span class="flex items-center text-sm font-bold text-gray-400">
+                <i class="fa-solid fa-gear mr-4 text-gray-400"></i> Pengaturan Aplikasi
             </span>
-            <i
-                class="fa-solid fa-angle-right text-gray-300 group-hover:translate-x-1 transition-transform"></i>
+            <span class="text-[9px] font-bold bg-gray-200 text-gray-500 px-2.5 py-0.5 rounded-full">
+                Disabled
+            </span>
         </button>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
             @csrf

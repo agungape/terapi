@@ -250,7 +250,7 @@ class MobileNewController extends Controller
                 $isAssessment = ($p->Tarif && $p->Tarif->jenis_terapi === 'assessment') || ($p->jenis_layanan === 'assessment');
                 
                 $desc = $isAssessment 
-                    ? ($packageName ? 'Assessment: ' . $packageName : 'Biaya Assessment Psikologi')
+                    ? ($packageName ? $packageName : 'Biaya Assessment Psikologi')
                     : ($packageName ? 'Paket: ' . $packageName : ($p->deskripsi ?? 'Pembayaran Paket Terapi'));
 
                 return [

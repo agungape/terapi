@@ -436,9 +436,33 @@
     dismissPwaModal() {
         this.showPwaModal = false;
         sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+    },
+
+    updateThemeColor() {
+        const themeColors = {
+            'home': '#6366f1',
+            'progres': '#6366f1',
+            'profil': '#6366f1',
+            'assessment_psikolog': '#f43f5e',
+            'observasi': '#0d9488',
+            'daftar_terapis': '#3b82f6',
+            'paket_terapi': '#3b82f6',
+            'jadwal_terapi': '#3b82f6',
+            'tagihan': '#3b82f6',
+            'galeri': '#3b82f6',
+            'absensi': '#10b981',
+            'buku_anak': '#f97316'
+        };
+        const color = themeColors[this.page] || '#6366f1';
+        const meta = document.getElementById('pwa-theme-color');
+        if (meta) {
+            meta.setAttribute('content', color);
+        }
     }
 }" x-init="() => {
     initPwa();
+    updateThemeColor();
+    $watch('page', () => updateThemeColor());
     setTimeout(() => {
         document.querySelectorAll('[x-cloak]').forEach(el => {
             el.style.display = 'block';
@@ -452,6 +476,7 @@
     
     <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" id="pwa-theme-color" content="#6366f1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Bright">
@@ -461,21 +486,10 @@
 </head>
 
 <body class="flex justify-center">
-    <!-- Abstract Animated Splash Screen -->
-    <div x-data="{ 
-             visible: !sessionStorage.getItem('splash_shown')
-         }"
-         x-init="if (visible) {
-             sessionStorage.setItem('splash_shown', 'true');
-             setTimeout(() => {
-                 visible = false;
-             }, 1800);
-         }"
-         x-show="visible"
-         x-transition:leave="transition ease-in duration-500 transform"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-110 pointer-events-none"
-         class="fixed inset-0 bg-[#fffaf3] z-[999999] flex flex-col items-center justify-center overflow-hidden" x-cloak>
+    <!-- Static Animated Splash Screen (Prevents FOUC & Logo Flash) -->
+    <div id="pwa-splash-screen" 
+         class="fixed inset-0 bg-[#fffaf3] z-[9999999] flex flex-col items-center justify-center overflow-hidden transition-all duration-500 ease-in-out" 
+         style="display: flex; opacity: 1;">
         
         <!-- Animated Glowing Orb -->
         <div class="relative flex items-center justify-center">
@@ -484,18 +498,43 @@
             <div class="absolute w-36 h-36 bg-gradient-to-tr from-orange-400/20 to-indigo-400/20 rounded-full animate-pulse" style="animation-duration: 1.5s;"></div>
             <div class="absolute w-28 h-28 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 rounded-full animate-ping" style="animation-duration: 2.5s;"></div>
             
-            <!-- Center glowing abstract sphere -->
-            <div class="relative w-20 h-20 bg-gradient-to-tr from-amber-400 via-orange-500 to-indigo-600 rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.3)] flex items-center justify-center transform rotate-12 animate-float">
-                <i class="fa-solid fa-sparkles text-white text-2xl animate-pulse"></i>
+            <!-- Center glowing sphere containing main logo -->
+            <div class="relative w-28 h-28 bg-white rounded-[35px] shadow-[0_15px_30px_rgba(249,115,22,0.15)] flex items-center justify-center p-4 transform rotate-6 animate-float">
+                <img src="/assets/mobile/pixio/images/app-logo/logo.png" 
+                     alt="Bright Logo" 
+                     class="w-full h-full object-contain">
             </div>
         </div>
         
-        <!-- Title typography fade in -->
+        <!-- Title typography -->
         <div class="mt-8 text-center animate-slide-up" style="animation-delay: 0.3s;">
             <h1 class="text-3xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-indigo-600 bg-clip-text text-transparent tracking-widest uppercase">Bright</h1>
             <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] mt-2.5">Tumbuh Kembang & Terapi</p>
         </div>
     </div>
+
+    <script>
+        // Immediately check if splash was already shown in this tab session (runs before first paint)
+        (function() {
+            const splash = document.getElementById('pwa-splash-screen');
+            if (sessionStorage.getItem('splash_shown')) {
+                splash.style.display = 'none';
+                splash.style.opacity = '0';
+            } else {
+                sessionStorage.setItem('splash_shown', 'true');
+                window.addEventListener('DOMContentLoaded', () => {
+                    setTimeout(() => {
+                        splash.style.opacity = '0';
+                        splash.style.transform = 'scale(1.05)';
+                        setTimeout(() => {
+                            splash.style.display = 'none';
+                            splash.remove();
+                        }, 500); // Wait for transition
+                    }, 1800);
+                });
+            }
+        })();
+    </script>
 
     <div class="w-full max-w-md bg-white shadow-2xl relative overflow-x-hidden main-wrapper">
         <!-- Loading Overlay -->

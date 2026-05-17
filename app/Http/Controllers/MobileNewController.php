@@ -234,32 +234,10 @@ class MobileNewController extends Controller
 
         $anakIds = \App\Models\Anak::where('nama', $anak->nama)->pluck('id');
 
-        // Tagihan / Invoices (RESTORED)
-        $pendingAssessments = \App\Models\Assessment::whereIn('anak_id', $anakIds)
-            ->where('status_bayar', '!=', 'lunas')
-            ->get();
-        
-        $tagihanCount = $pendingAssessments->count();
+        // Tagihan / Invoices (Strictly from Pemasukkan table)
+        $tagihanCount = 0;
 
-        // Ambil tarif assessment psikolog dinamis dari database (jika ada, jika tidak fallback ke Rp 350.000)
-        $assessmentTarif = \App\Models\Tarif::where('jenis_terapi', 'assessment')->where('is_active', true)->first();
-        $assessmentPrice = $assessmentTarif ? (int) $assessmentTarif->tarif : 350000;
-
-        $invoices = $pendingAssessments->map(function($a) use ($assessmentPrice) {
-            return [
-                'id' => 'INV-ASMT-' . $a->id,
-                'db_id' => $a->id,
-                'date' => $a->tanggal_assessment ? $a->tanggal_assessment->format('d M Y') : '-',
-                'dueDate' => $a->created_at->addDays(7)->format('d M Y'),
-                'description' => 'Biaya Assessment Psikologi',
-                'amount' => 'Rp ' . number_format($assessmentPrice, 0, ',', '.'),
-                'status' => 'Pending',
-                'metode_bayar' => '-',
-                'file_url' => null
-            ];
-        });
-
-        $paidInvoices = \App\Models\Pemasukkan::whereIn('anak_id', $anakIds)
+        $invoices = \App\Models\Pemasukkan::whereIn('anak_id', $anakIds)
             ->orWhere(function($query) use ($anak) {
                 $query->whereNull('anak_id')
                       ->where('deskripsi', 'LIKE', '%' . $anak->nama . '%');
@@ -287,8 +265,6 @@ class MobileNewController extends Controller
                     'file_url' => route('mobile.kwitansi.cetak', ['id' => $p->id])
                 ];
             });
-        
-        $invoices = $invoices->concat($paidInvoices);
 
         // Map active packages for UI
         $formattedActivePackages = $activePackages->map(function($p) {

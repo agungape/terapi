@@ -307,13 +307,13 @@
                                                             is_atec: {{ $h['is_atec'] ? 'true' : 'false' }},
                                                             image_url: '{{ $h['image_url'] }}'
                                                         })">
-                                                    <i data-lucide="eye" class="w-3.5 h-3.5 inline md:mr-1"></i> <span class="hidden md:inline">Result</span>
+                                                    <i data-lucide="eye" class="w-3.5 h-3.5 inline md:mr-1"></i> <span class="hidden md:inline">Hasil</span>
                                                 </button>
                                             @endif
                                             @if (!in_array($h['jenis'], ['Penyimpangan Penglihatan', 'ATEC', 'OBS. PERILAKU', 'OBS. SENSORIK']))
                                                 <a href="{{ route('observasi.detail', ['hasil' => $h['id']]) }}"
                                                    class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100">
-                                                    <i data-lucide="list" class="w-3.5 h-3.5 inline md:mr-1"></i> <span class="hidden md:inline">Responses</span>
+                                                    <i data-lucide="list" class="w-3.5 h-3.5 inline md:mr-1"></i> <span class="hidden md:inline">Jawaban</span>
                                                 </a>
                                             @endif
                                             
@@ -437,7 +437,7 @@
                                 <input type="date" name="tanggal" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-xs outline-none focus:ring-4 focus:ring-red-500/20 transition-all">
                             </div>
                             <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2">
-                                <i data-lucide="download-cloud" class="w-4 h-4"></i> Generate PDF Audit
+                                <i data-lucide="download-cloud" class="w-4 h-4"></i> Unduh PDF Audit
                             </button>
                         </form>
                     </div>
@@ -448,7 +448,7 @@
 
     <!-- Centered Alpine Modals -->
     <div x-show="modalOpen" x-cloak 
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+         class="fixed inset-0 z-[100] overflow-y-auto flex items-center justify-center p-4 sm:p-6"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100">
@@ -500,14 +500,29 @@
                     <div class="p-2 bg-red-50 text-red-500 rounded-xl">
                         <i data-lucide="clipboard-list" class="w-5 h-5"></i>
                     </div>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-800" x-text="modalType.toUpperCase()"></h3>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-800" x-text="{
+                        'perilaku': 'Kuesioner Masalah Mental Emosional (KMME)',
+                        'autis': 'Deteksi Dini Autisme (M-CHAT-R)',
+                        'gpph': 'Deteksi Dini GPPH (Conners)',
+                        'pendengaran': 'Tes Daya Dengar (TDD)',
+                        'penglihatan': 'Tes Daya Lihat (TDL)',
+                        'kpsp': 'Kuesioner Pra Skrining Perkembangan (KPSP)',
+                        'anthropometri': 'Skrining Antropometri',
+                        'edit_anthropometri': 'Edit Skrining Antropometri',
+                        'atec': 'Kuesioner ATEC Digital',
+                        'wawancara': 'Wawancara & Anamnesis',
+                        'hpperilaku': 'Checklist Observasi Perilaku',
+                        'hpsensorik': 'Checklist Observasi Sensorik',
+                        'edit_qualitative': 'Edit Catatan Kualitatif',
+                        'result': 'Hasil Pemeriksaan Klinis'
+                    }[modalType] || modalType.toUpperCase()"></h3>
                 </div>
                 <button @click="closeModal()" class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 rounded-full hover:bg-slate-100 hover:text-red-500 transition-all">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div class="flex-1 min-h-0 overflow-y-auto p-4 md:p-8">
                 <!-- KMME Form -->
                 <template x-if="modalType === 'perilaku'">
                     <form action="{{ route('observasi.perilaku') }}" method="POST" class="space-y-6">
@@ -524,7 +539,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-3 max-h-[55vh] md:max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="space-y-3 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                             @foreach ($qperilaku as $index => $q)
                             <div class="p-4 md:p-5 bg-slate-50 border border-slate-100 rounded-2xl">
                                 <div class="flex gap-3 md:gap-4">
@@ -622,7 +637,7 @@
                                 </p>
                             </div>
 
-                            <div class="space-y-6 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar">
+                            <div class="space-y-6 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                                 
                                 <!-- Section A -->
                                 <div x-show="autisStep === 1" x-transition.opacity.duration.300ms>
@@ -650,14 +665,14 @@
                                         @endforeach
                                     </div>
                                     <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
-                                        <button type="button" @click="autisStep = 2; document.querySelector('.flex-1.overflow-y-auto').scrollTop = 0;" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2 w-full md:w-auto justify-center">
+                                        <button type="button" @click="autisStep = 2; document.querySelector('.custom-scrollbar').scrollTop = 0;" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center gap-2 w-full md:w-auto justify-center">
                                             Lanjut ke Section B <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                         </button>
                                     </div>
                                 </div>
 
                                 <!-- Section B -->
-                                <div x-show="autisStep === 2" x-transition.opacity.duration.300ms style="display: none;">
+                                <div x-show="autisStep === 2" x-transition.opacity.duration.300ms>
                                     <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 bg-slate-100 py-2 px-4 rounded-lg inline-block">Section B: Observasi Langsung oleh Terapis</h4>
                                     <div class="space-y-3">
                                         @foreach ($qautis->where('section', 'B') as $q)
@@ -727,7 +742,7 @@
                                 border-color: #a855f7 !important;
                             }
                         </style>
-                        <div class="space-y-4 max-h-[55vh] md:max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                             @foreach ($qgpph as $index => $q)
                             <div class="p-4 md:p-5 bg-slate-50 border border-slate-100 rounded-2xl">
                                 <div class="flex gap-3 md:gap-4">
@@ -783,7 +798,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-4">
+                        <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                             @foreach ($ageGroups as $group)
                             <div class="border border-slate-100 rounded-3xl overflow-hidden" x-data="{ open: false }">
                                 <button type="button" @click="open = !open" class="w-full px-8 py-4 bg-slate-50 flex items-center justify-between">
@@ -850,7 +865,7 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                             <label class="relative block cursor-pointer group">
                                 <input type="radio" name="hasil" value="normal" class="hidden peer" required>
                                 <div class="p-6 md:p-8 bg-slate-50 border-2 border-slate-100 rounded-[2rem] transition-all duration-300 peer-checked:bg-white peer-checked:border-emerald-500 peer-checked:shadow-xl group-hover:bg-white">
@@ -903,7 +918,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-4" x-data="{ selectedGroup: null }">
+                        <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4" x-data="{ selectedGroup: null }">
                             @foreach ($kpspKelompokUsias as $group)
                             <div class="border border-slate-100 rounded-3xl overflow-hidden" x-data="{ open: false }" x-effect="open = (selectedGroup === {{ $group->id }})">
                                 <button type="button" @click="selectedGroup = (selectedGroup === {{ $group->id }} ? null : {{ $group->id }})" class="w-full px-8 py-4 bg-slate-50 flex items-center justify-between transition-colors hover:bg-slate-100">
@@ -1024,7 +1039,8 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-6 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Berat Badan (BB) - kg</label>
                                 <input type="number" step="0.01" name="berat_badan" x-model="bb" @input="calculate()" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-bold text-xs outline-none focus:ring-4 focus:ring-cyan-500/20 transition-all">
@@ -1044,7 +1060,7 @@
                         </div>
 
                         <!-- Visual Skala IMT -->
-                        <div x-show="bmi > 0" class="mt-4 p-6 bg-white border border-slate-200 rounded-2xl transition-all shadow-sm" style="display: none;">
+                        <div x-show="bmi > 0" class="mt-4 p-6 bg-white border border-slate-200 rounded-2xl transition-all shadow-sm">
                             <div class="flex items-center justify-between mb-4">
                                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estimasi Skala IMT (Mock)</span>
                                 <span class="text-2xl font-black tracking-tighter" :class="{
@@ -1107,7 +1123,9 @@
                             <textarea name="catatan" x-model="catatan" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-bold text-xs outline-none focus:ring-4 focus:ring-cyan-500/20 transition-all leading-relaxed"></textarea>
                         </div>
 
-                        <div class="flex justify-end p-2">
+                        </div>
+
+                        <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                             <button type="submit" class="w-full md:w-max px-12 bg-slate-900 text-white py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
                                 <i data-lucide="save" class="w-4 h-4"></i> Simpan Pengukuran Anthropometri
                             </button>
@@ -1183,7 +1201,8 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <div class="space-y-6 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Berat Badan (BB) - kg</label>
                                 <input type="number" step="0.01" name="berat_badan" x-model="bb" @input="calculate()" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 md:px-6 py-3 md:py-4 text-slate-700 font-bold text-xs outline-none focus:ring-4 focus:ring-blue-500/20 transition-all">
@@ -1203,7 +1222,7 @@
                         </div>
 
                         <!-- Visual Skala IMT -->
-                        <div x-show="bmi > 0" class="mt-4 p-4 md:p-6 bg-white border border-slate-200 rounded-2xl transition-all shadow-sm" style="display: none;">
+                        <div x-show="bmi > 0" class="mt-4 p-4 md:p-6 bg-white border border-slate-200 rounded-2xl transition-all shadow-sm">
                             <div class="flex items-center justify-between mb-4">
                                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estimasi Skala IMT (Mock)</span>
                                 <span class="text-2xl font-black tracking-tighter" :class="{
@@ -1266,6 +1285,8 @@
                             <textarea name="catatan" x-model="catatan" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-bold text-xs outline-none focus:ring-4 focus:ring-blue-500/20 transition-all leading-relaxed"></textarea>
                         </div>
 
+                        </div>
+
                          <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                             <button type="submit" class="w-full md:w-max px-12 bg-slate-900 text-white py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
                                 <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Perubahan
@@ -1296,7 +1317,7 @@
                                 <input type="hidden" name="anak_id" value="{{ $anak->id }}">
                                 
                                 @foreach(['I' => 'Bagian I: Wicara / Bahasa / Komunikasi', 'II' => 'Bagian II: Kesadaran Sosial', 'III' => 'Bagian III: Kesadaran Sensorik / Kognitif', 'IV' => 'Bagian IV: Kesehatan / Fisik / Perilaku'] as $sec => $secTitle)
-                                    <div x-show="atecStep === '{{ $sec }}'" class="space-y-4 max-h-[45vh] md:max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar pb-4" style="display: none;">
+                                    <div x-show="atecStep === '{{ $sec }}'" class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest sticky top-0 bg-white py-2 z-10">{{ $secTitle }}</h4>
                                         @foreach($qatec->where('section', $sec) as $q)
                                         <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 space-y-3 hover:border-slate-200 transition-colors">
@@ -1338,7 +1359,7 @@
                                         @endforeach
                                          <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex flex-col md:flex-row gap-3 justify-end z-30 mt-6 shrink-0">
                                             @if($sec !== 'IV')
-                                                <button type="button" @click="atecStep = '{{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }}'; $el.closest('.flex-1.overflow-y-auto').scrollTop = 0;" class="w-full md:w-auto bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2">
+                                                <button type="button" @click="atecStep = '{{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }}'; $el.closest('.custom-scrollbar').scrollTop = 0;" class="w-full md:w-auto bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg flex items-center justify-center gap-2">
                                                     Lanjut ke Bagian {{ $sec == 'I' ? 'II' : ($sec == 'II' ? 'III' : 'IV') }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                                 </button>
                                             @else
@@ -1356,7 +1377,7 @@
 
                 <!-- Wawancara -->
                 <template x-if="modalType === 'wawancara'">
-                    <div class="p-4 md:p-8 bg-slate-50 rounded-[2rem] md:rounded-[2.5rem] space-y-6">
+                    <div class="p-4 md:p-6 bg-slate-50/50 border border-slate-100 rounded-3xl space-y-4">
                         <div class="flex items-center gap-4">
                             <div class="p-3 bg-slate-900 rounded-2xl text-white"><i data-lucide="mic-2" class="w-6 h-6"></i></div>
                             <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest italic">Wawancara & Anamnesis</h3>
@@ -1364,7 +1385,7 @@
                         <form action="{{ route('observasi.wawancara') }}" method="POST" class="space-y-4">
                             @csrf
                             <input type="hidden" name="anak_id" value="{{ $anak->id }}">
-                            <div class="space-y-4 max-h-[45vh] md:max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                            <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                                 @foreach ($qwawancara as $index => $q)
                                 <div class="space-y-2">
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $q->question_text }}</label>
@@ -1389,8 +1410,7 @@
                 </style>
                 <div x-data="qualitativeData()" 
                      @sync-qualitative.window="handleSync($event.detail)"
-                     x-show="['hpperilaku', 'hpsensorik', 'edit_qualitative'].includes(modalType)" 
-                     style="display: none;">
+                     x-show="['hpperilaku', 'hpsensorik', 'edit_qualitative'].includes(modalType)">
                     <div class="mt-4">
                         <form :action="modalType === 'edit_qualitative' ? (modalData.jenis === 'HpPerilaku' ? `/observasi/hpperilaku/${modalData.id}` : `/observasi/hpsensorik/${modalData.id}`) : (modalType === 'hpperilaku' ? '{{ route('observasi.hpperilaku') }}' : '{{ route('observasi.hpsensorik') }}')" method="POST" class="flex flex-col space-y-6">
                             @csrf
@@ -1400,7 +1420,8 @@
                             <input type="hidden" name="anak_id" value="{{ $anak->id }}">
                             
                             <!-- Checklist Observasi -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-3 custom-scrollbar mb-4">
+                            <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <template x-for="(items, key) in ((modalType === 'hpperilaku' || (modalType === 'edit_qualitative' && modalData.jenis === 'HpPerilaku')) ? perilaku : sensorik)" :key="key">
                                     <div class="p-4 md:p-5 bg-white border border-slate-200 shadow-sm rounded-[1.5rem] md:rounded-3xl h-max">
                                         <h4 class="text-[10px] md:text-[11px] font-black text-slate-800 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -1428,6 +1449,7 @@
 
                             <div class="rounded-[2rem] overflow-hidden border border-slate-200 bg-white summernote-wrapper">
                                 <textarea id="summernote-editor" name="deskripsi" class="summernote w-full min-h-[400px] p-6 outline-none text-slate-700"></textarea>
+                                </div>
                             </div>
                              <div class="sticky bottom-0 bg-white/95 backdrop-blur-sm -mx-4 md:-mx-8 px-4 md:px-8 py-4 border-t border-slate-50 flex justify-end z-30 mt-6 shrink-0">
                                 <button type="submit" class="w-full md:w-max px-12 bg-slate-900 text-white py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:bg-black transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
@@ -1444,7 +1466,7 @@
                         <div class="bg-slate-900 text-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] -mt-4 mx-1 md:mx-2">
                              <div class="flex items-center justify-between gap-4">
                                 <div class="space-y-1">
-                                    <h5 class="text-xs md:text-sm font-black uppercase tracking-widest text-emerald-400 italic">Clinical Examination Result</h5>
+                                    <h5 class="text-xs md:text-sm font-black uppercase tracking-widest text-emerald-400 italic">Hasil Pemeriksaan Klinis</h5>
                                     <p class="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest" x-text="modalData.jenis + ' • ' + modalData.created_at"></p>
                                 </div>
                                 <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -1453,7 +1475,7 @@
                              </div>
                         </div>
 
-                        <div class="p-2 md:p-4">
+                        <div class="p-2 md:p-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
                             <template x-if="modalData.is_atec">
                                 <div class="card-premium p-1 md:p-2 bg-slate-50 border border-slate-100 rounded-3xl overflow-hidden">
                                     <img :src="modalData.image_url" class="w-full rounded-2xl shadow-sm">

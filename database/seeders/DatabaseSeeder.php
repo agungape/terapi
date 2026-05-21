@@ -39,5 +39,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GpphSeeder::class);
         $this->call(QuestionWawancaraSeeder::class);
         $this->call(KpspSeeder::class);
+        $this->call(QuestionAtecSeeder::class);
     }
 }

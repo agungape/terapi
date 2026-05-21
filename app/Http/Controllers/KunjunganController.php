@@ -218,7 +218,8 @@ class KunjunganController extends Controller
     public function riwayatAnak()
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        $kunjungan = Kunjungan::whereNotNull('pertemuan')->whereNull('catatan')
+        $kunjungan = Kunjungan::with(['anak', 'terapis', 'terapisPendamping'])
+            ->whereNotNull('pertemuan')->whereNull('catatan')
             ->latest()
             ->paginate(10);
 
@@ -275,7 +276,7 @@ class KunjunganController extends Controller
     public function search_kunjungan(Request $request)
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        $query = Kunjungan::with(['anak', 'terapis', 'tarif'])
+        $query = Kunjungan::with(['anak', 'terapis', 'terapisPendamping', 'tarif'])
             ->whereNotNull('pertemuan')
             ->whereNull('catatan')
             ->orderBy('created_at', 'desc');
@@ -293,10 +294,16 @@ class KunjunganController extends Controller
         $endDate = null;
         if ($request->filled('date_range')) {
             $dates = explode(' - ', $request->date_range);
-            $startDate = Carbon::parse($dates[0])->startOfDay();
-            $endDate = Carbon::parse($dates[1])->endOfDay();
-
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = Carbon::parse($dates[0])->startOfDay();
+                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                } catch (\Exception $e) {
+                    $startDate = null;
+                    $endDate = null;
+                }
+            }
         }
 
         $kunjungan = $query->paginate(10)->withQueryString();

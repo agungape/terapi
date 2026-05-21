@@ -76,30 +76,50 @@
             </div>
             
             {{-- Date Range & Name Filter --}}
-            <form action="{{ route('kunjungan.pencarian') }}" method="GET" class="flex flex-wrap items-center gap-3">
-                {{-- Search by Name --}}
-                <div class="relative flex-1 md:flex-none">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                    <input type="text" name="nama" value="{{ request('nama') }}"
-                           placeholder="Cari nama anak..."
-                           class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
-                </div>
+            <div class="flex flex-col gap-3 lg:items-end w-full lg:w-auto">
+                <form action="{{ route('kunjungan.pencarian') }}" method="GET" class="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:justify-end">
+                    {{-- Search by Name --}}
+                    <div class="relative flex-1 md:flex-none">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        <input type="text" name="nama" value="{{ request('nama') }}"
+                               placeholder="Cari nama anak..."
+                               class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
+                    </div>
 
-                {{-- Date Range Filter --}}
-                <div class="relative flex-1 md:flex-none">
-                    <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                    <input type="text" id="reservation" name="date_range" value="{{ request('date_range') }}"
-                           placeholder="Pilih rentang tanggal..."
-                           class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
+                    {{-- Date Range Filter --}}
+                    <div class="relative flex-1 md:flex-none">
+                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        <input type="text" id="reservation" name="date_range" value="{{ request('date_range') }}"
+                               placeholder="Pilih rentang tanggal..."
+                               class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
+                    </div>
+                    
+                    <button type="submit" class="px-6 py-3 bg-slate-900 hover:bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-slate-200 flex items-center gap-2">
+                        <i data-lucide="filter" class="w-3.5 h-3.5"></i> Filter
+                    </button>
+                    @if(request('date_range') || request('nama'))
+                    <a href="{{ route('kunjungan.data') }}" class="px-5 py-3 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Reset</a>
+                    @endif
+                </form>
+
+                @if(request('nama') || request('date_range'))
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto lg:justify-end">
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest mr-1">Filter Aktif:</span>
+                    @if(request('nama'))
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-[9px] font-black uppercase tracking-wider border border-red-100 shadow-sm animate-in fade-in duration-300">
+                        <i data-lucide="user" class="w-3 h-3 text-red-500"></i>
+                        Nama: "{{ request('nama') }}"
+                    </span>
+                    @endif
+                    @if(request('date_range'))
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-black uppercase tracking-wider border border-blue-100 shadow-sm animate-in fade-in duration-300">
+                        <i data-lucide="calendar" class="w-3 h-3 text-blue-500"></i>
+                        Tanggal: "{{ request('date_range') }}"
+                    </span>
+                    @endif
                 </div>
-                
-                <button type="submit" class="px-6 py-3 bg-slate-900 hover:bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-slate-200 flex items-center gap-2">
-                    <i data-lucide="filter" class="w-3.5 h-3.5"></i> Filter
-                </button>
-                @if(request('date_range') || request('nama'))
-                <a href="{{ route('kunjungan.data') }}" class="px-5 py-3 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Reset</a>
                 @endif
-            </form>
+            </div>
         </div>
 
         {{-- Desktop Table --}}
@@ -118,7 +138,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
-                        @foreach ($kunjungan as $kun)
+                        @forelse ($kunjungan as $kun)
                         <tr class="hover:bg-slate-50/30 transition-colors group">
                             {{-- Aksi & NIB --}}
                             <td class="px-8 py-5">
@@ -248,15 +268,28 @@
                                 @endcan
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-8 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-[1.25rem] flex items-center justify-center border-2 border-slate-100 shadow-sm animate-bounce duration-1000">
+                                        <i data-lucide="search-x" class="w-8 h-8"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h5 class="text-xs font-black text-slate-800 uppercase tracking-widest text-center">Tidak Ada Data Ditemukan</h5>
+                                        <p class="text-[10px] text-slate-400 font-bold max-w-xs mx-auto text-center">Kami tidak dapat menemukan kunjungan yang cocok dengan pencarian atau rentang tanggal Anda.</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
 
-        {{-- Mobile Card List --}}
         <div class="md:hidden divide-y divide-slate-100">
-            @foreach ($kunjungan as $kun)
+            @forelse ($kunjungan as $kun)
             <div class="p-6 space-y-4 bg-white hover:bg-slate-50/50 transition-colors">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex items-center gap-3">
@@ -354,7 +387,19 @@
                     @endcan
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="p-12 text-center bg-white">
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-[1.25rem] flex items-center justify-center border-2 border-slate-100 shadow-sm animate-bounce duration-1000">
+                        <i data-lucide="search-x" class="w-8 h-8"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h5 class="text-xs font-black text-slate-800 uppercase tracking-widest text-center">Tidak Ada Data</h5>
+                        <p class="text-[10px] text-slate-400 font-bold max-w-xs mx-auto text-center">Kami tidak dapat menemukan kunjungan yang cocok.</p>
+                    </div>
+                </div>
+            </div>
+            @endforelse
         </div>
 
         <div class="p-4 md:p-8 bg-slate-50 border-t border-slate-100 flex justify-center overflow-hidden">

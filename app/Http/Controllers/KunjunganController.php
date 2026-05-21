@@ -280,8 +280,18 @@ class KunjunganController extends Controller
             ->whereNull('catatan')
             ->orderBy('created_at', 'desc');
 
+        // Filter berdasarkan nama jika ada
+        if ($request->filled('nama')) {
+            $nama = $request->nama;
+            $query->whereHas('anak', function($q) use ($nama) {
+                $q->where('nama', 'like', '%' . $nama . '%');
+            });
+        }
+
         // Filter berdasarkan range tanggal jika ada
-        if ($request->date_range) {
+        $startDate = null;
+        $endDate = null;
+        if ($request->filled('date_range')) {
             $dates = explode(' - ', $request->date_range);
             $startDate = Carbon::parse($dates[0])->startOfDay();
             $endDate = Carbon::parse($dates[1])->endOfDay();
@@ -289,7 +299,7 @@ class KunjunganController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);
         }
 
-        $kunjungan = $query->paginate(10);
+        $kunjungan = $query->paginate(10)->withQueryString();
 
         $completedSessions = Kunjungan::where('status_sesi', 'selesai')
             ->select('anak_id', 'sesi', 'jenis_terapi')
@@ -299,12 +309,36 @@ class KunjunganController extends Controller
             })
             ->toArray();
 
-        // Statistik (Hadir, Izin, Izin Hangus ambil data HARI INI saja)
-        $total = (clone $query)->count();
-        $hadir = Kunjungan::whereDate('created_at', today())->whereNull('catatan')->where('status', 'hadir')->count();
-        $izin = Kunjungan::whereDate('created_at', today())->where('status', 'izin')->count();
-        $sakit = Kunjungan::whereDate('created_at', today())->where('status', 'sakit')->count();
-        $izin_hangus = Kunjungan::whereDate('created_at', today())->where('status', 'izin_hangus')->count();
+        // Statistik (Hadir, Izin, Sakit, Izin Hangus)
+        $statsQuery = Kunjungan::whereNull('catatan');
+
+        // Jika ada filter nama, terapkan ke statistik juga
+        if ($request->filled('nama')) {
+            $nama = $request->nama;
+            $statsQuery->whereHas('anak', function($q) use ($nama) {
+                $q->where('nama', 'like', '%' . $nama . '%');
+            });
+        }
+
+        // Jika ada filter tanggal, hitung statistik dalam rentang tanggal tersebut
+        if ($startDate && $endDate) {
+            $statsQuery->whereBetween('created_at', [$startDate, $endDate]);
+            
+            $total = (clone $statsQuery)->count();
+            $hadir = (clone $statsQuery)->where('status', 'hadir')->count();
+            $izin = (clone $statsQuery)->where('status', 'izin')->count();
+            $sakit = (clone $statsQuery)->where('status', 'sakit')->count();
+            $izin_hangus = (clone $statsQuery)->where('status', 'izin_hangus')->count();
+        } else {
+            // Jika tidak ada filter tanggal, statistik dihitung hari ini saja (kecuali total riwayat)
+            $total = (clone $statsQuery)->count();
+            
+            $statsQueryToday = (clone $statsQuery)->whereDate('created_at', today());
+            $hadir = (clone $statsQueryToday)->where('status', 'hadir')->count();
+            $izin = (clone $statsQueryToday)->where('status', 'izin')->count();
+            $sakit = (clone $statsQueryToday)->where('status', 'sakit')->count();
+            $izin_hangus = (clone $statsQueryToday)->where('status', 'izin_hangus')->count();
+        }
 
         return view('kunjungan.data', compact('terapis', 'kunjungan', 'hadir', 'izin', 'sakit', 'izin_hangus', 'total', 'completedSessions'));
     }

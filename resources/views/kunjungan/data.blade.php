@@ -36,11 +36,16 @@
     {{-- Stats Cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         @php
+            $isFiltered = request('date_range') || request('nama');
+            $hadirLabel = $isFiltered ? 'Hadir (Filter)' : 'Hadir Hari Ini';
+            $izinLabel = $isFiltered ? 'Izin (Filter)' : 'Izin Hari Ini';
+            $izinHangusLabel = $isFiltered ? 'Izin Hangus (Filter)' : 'Izin Hangus Hari Ini';
+
             $stats = [
                 ['Total Kunjungan', $total, 'users', 'blue'],
-                ['Hadir Hari Ini', $hadir, 'check-circle-2', 'emerald'],
-                ['Izin', $izin, 'alert-circle', 'amber'],
-                ['Izin Hangus', $izin_hangus, 'x-circle', 'red']
+                [$hadirLabel, $hadir, 'check-circle-2', 'emerald'],
+                [$izinLabel, $izin, 'alert-circle', 'amber'],
+                [$izinHangusLabel, $izin_hangus, 'x-circle', 'red']
             ];
         @endphp
         @foreach($stats as $stat)
@@ -70,18 +75,28 @@
                 </div>
             </div>
             
-            {{-- Date Range Filter --}}
+            {{-- Date Range & Name Filter --}}
             <form action="{{ route('kunjungan.pencarian') }}" method="GET" class="flex flex-wrap items-center gap-3">
+                {{-- Search by Name --}}
+                <div class="relative flex-1 md:flex-none">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    <input type="text" name="nama" value="{{ request('nama') }}"
+                           placeholder="Cari nama anak..."
+                           class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
+                </div>
+
+                {{-- Date Range Filter --}}
                 <div class="relative flex-1 md:flex-none">
                     <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     <input type="text" id="reservation" name="date_range" value="{{ request('date_range') }}"
                            placeholder="Pilih rentang tanggal..."
                            class="pl-11 pr-5 py-3 bg-slate-50 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none w-full md:w-64 border-2 focus:border-red-200">
                 </div>
+                
                 <button type="submit" class="px-6 py-3 bg-slate-900 hover:bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-slate-200 flex items-center gap-2">
                     <i data-lucide="filter" class="w-3.5 h-3.5"></i> Filter
                 </button>
-                @if(request('date_range'))
+                @if(request('date_range') || request('nama'))
                 <a href="{{ route('kunjungan.data') }}" class="px-5 py-3 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Reset</a>
                 @endif
             </form>

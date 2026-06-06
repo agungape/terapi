@@ -196,7 +196,7 @@ class KeuanganController extends Controller
     // PEMASUKKAN
     // ======================================================
 
-    public function pemasukkan()
+    public function pemasukkan(Request $request)
     {
         $saldoKas     = SaldoKas::first();
         $anaks        = Anak::where('status', 'aktif')->get();
@@ -205,7 +205,23 @@ class KeuanganController extends Controller
             ['jenis' => 'Pemasukkan']
         );
         $kategoris    = Kategori::where('nama', '!=', 'Pembayaran Anak')->where('jenis', '!=', 'Pengeluaran')->get();
-        $pemasukkans  = Pemasukkan::with(['anak', 'tarif', 'kategori'])->orderBy('tanggal', 'DESC')->paginate(10);
+        
+        $query = Pemasukkan::with(['anak', 'tarif', 'kategori'])->orderBy('tanggal', 'DESC');
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('deskripsi', 'like', "%{$search}%")
+                  ->orWhereHas('anak', function($q) use ($search) {
+                      $q->where('nama', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('tarif', function($q) use ($search) {
+                      $q->where('nama', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $pemasukkans  = $query->paginate(10)->withQueryString();
         $tarif        = Tarif::where('is_active', true)->latest()->get();
         $dataTerakhir = Pemasukkan::latest('updated_at')->first();
         $totalPemasukan = Pemasukkan::getTotalPemasukan();

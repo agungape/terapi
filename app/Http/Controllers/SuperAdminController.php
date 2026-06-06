@@ -35,7 +35,7 @@ class SuperAdminController extends Controller
         $totalAnak    = Anak::count();
         $anakAktif    = Anak::where('status', 'aktif')->count();
         $anakNonAktif = Anak::where('status', '!=', 'aktif')->count();
-        $totalTerapis = Terapis::count();
+        $totalTerapis = Terapis::where('status', 'aktif')->count();
         $totalUser    = User::count();
 
         // Anak baru bulan ini
@@ -234,6 +234,7 @@ class SuperAdminController extends Controller
                 ->whereMonth('kunjungans.created_at', $now->month)
                 ->where('kunjungans.status', 'hadir');
         })
+        ->where('terapis.status', 'aktif')
         ->groupBy('terapis.id', 'terapis.nama', 'terapis.role')
         ->orderByDesc('total_kunjungan')
         ->get();

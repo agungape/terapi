@@ -356,6 +356,16 @@
                 @if(request()->routeIs('home')) <span class="sidebar-active-indicator" x-show="sidebarOpen"></span> @endif
             </a>
 
+            @role('super-admin')
+            <a href="{{ route('superadmin.dashboard') }}" class="sidebar-link {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}" style="{{ request()->routeIs('superadmin.dashboard') ? 'background: linear-gradient(135deg, #1e293b, #0f172a); color: white;' : '' }}">
+                <i data-lucide="shield-check" class="w-4 h-4 shrink-0 {{ request()->routeIs('superadmin.dashboard') ? 'text-white' : 'text-slate-400' }}"></i>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Monitoring Center</span>
+                @if(request()->routeIs('superadmin.dashboard'))
+                <span class="ml-auto text-[9px] font-black px-2 py-0.5 rounded-full bg-white/20 text-white uppercase tracking-wider" x-show="sidebarOpen">SA</span>
+                @endif
+            </a>
+            @endrole
+
 
 
             @can('view terapis')

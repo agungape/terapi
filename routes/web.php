@@ -26,6 +26,7 @@ use App\Http\Controllers\PsikologController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ShopeeAffiliateController;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\UserController;
@@ -276,4 +277,11 @@ Route::group(['middleware' => ['role:anak']], function () {
     Route::get('/app/laporan-psikolog/{id}', [MobileNewController::class, 'cetakAssessment'])->name('mobile.assessment.cetak');
     Route::get('/app/laporan-observasi/{tanggal}', [MobileNewController::class, 'cetakObservasi'])->name('mobile.observasi.cetak');
     Route::get('/app/kwitansi/{id}', [MobileNewController::class, 'cetakKwitansi'])->name('mobile.kwitansi.cetak');
+});
+
+// =====================================================================
+// SUPER ADMIN — Monitoring Dashboard
+// =====================================================================
+Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
+    Route::get('/super-admin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
 });

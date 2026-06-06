@@ -139,7 +139,6 @@ class Pemasukkan extends Model
         $max      = $tarif->jumlah_pertemuan ?? 20;
         $terpakai = $this->kunjungans()
             ->whereIn('status', ['hadir', 'izin_hangus'])
-            ->whereDate('created_at', '>=', $this->getRawOriginal('tanggal'))
             ->count();
 
         return max(0, $max - $terpakai);
@@ -160,7 +159,6 @@ class Pemasukkan extends Model
         $terpakai = $this->kunjungans()
             ->where('jenis_terapi', $jenisTerapi)
             ->whereIn('status', ['hadir', 'izin_hangus'])
-            ->whereDate('created_at', '>=', $this->getRawOriginal('tanggal'))
             ->count();
 
         return max(0, $max - $terpakai);

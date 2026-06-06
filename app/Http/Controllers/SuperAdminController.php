@@ -252,7 +252,9 @@ class SuperAdminController extends Controller
         $allPaket = Pemasukkan::with(['anak', 'tarif'])
             ->where('jenis_layanan', 'paket_terapi')
             ->whereNotNull('tarif_id')->whereNotNull('anak_id')
-            ->whereHas('anak')
+            ->whereHas('anak', function($q) {
+                $q->where('status', 'aktif');
+            })
             ->latest()->get();
 
         $paketPerAnak = $allPaket

@@ -584,24 +584,40 @@
             @foreach($paketKritis->sortBy(fn($p)=>is_array($p->sisa_pertemuan)?min($p->sisa_pertemuan):$p->sisa_pertemuan) as $p)
             @php
                 $tarif=$p->tarif; $sisa=$p->sisa_pertemuan;
-                $total=is_array($sisa)?(($tarif->pertemuan_perilaku??0)+($tarif->pertemuan_fisioterapi??0)):($tarif->jumlah_pertemuan??20);
-                $terp=is_array($sisa)?'—':max(0,$total-(is_numeric($sisa)?$sisa:0));
-                $sisaD=is_array($sisa)?'P:'.($sisa['perilaku']??0).' F:'.($sisa['fisioterapi']??0):($sisa??'-');
-                $sisaN=is_array($sisa)?min($sisa):(int)($sisa??0);
-                $pct=(!is_array($sisa)&&$total>0)?min(100,round((is_numeric($sisa)?$sisa:0)/$total*100)):0;
+                if(is_array($sisa)) {
+                    $totP = $tarif->pertemuan_perilaku??0;
+                    $totF = $tarif->pertemuan_fisioterapi??0;
+                    $sisaP = $sisa['perilaku']??0;
+                    $sisaF = $sisa['fisioterapi']??0;
+                    $terpP = max(0, $totP - $sisaP);
+                    $terpF = max(0, $totF - $sisaF);
+                    $totalD = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $totP<br>F: $totF</div>";
+                    $terpD  = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $terpP<br>F: $terpF</div>";
+                    $sisaD  = "<div class='flex flex-col gap-1 items-start'><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Perilaku: $sisaP</span><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Fisio: $sisaF</span></div>";
+                    $sisaN  = min($sisaP, $sisaF);
+                    $total  = $totP + $totF;
+                    $pct    = $total > 0 ? min(100, round(($sisaP+$sisaF)/$total*100)) : 0;
+                } else {
+                    $total  = $tarif->jumlah_pertemuan??20;
+                    $sisaVal= is_numeric($sisa)?$sisa:0;
+                    $terpD  = max(0, $total - $sisaVal);
+                    $totalD = $total;
+                    $sisaD  = $sisa ?? '-';
+                    $sisaN  = (int)($sisa??0);
+                    $pct    = $total > 0 ? min(100, round($sisaVal/$total*100)) : 0;
+                }
+                $pc=$pct>40?'prog-green':($pct>15?'prog-amber':'prog-red');
             @endphp
             <tr>
                 <td><div class="flex items-center gap-2"><div class="av bg-red-50 border border-red-200 text-red-700">{{ strtoupper(substr($p->anak->nama??'A',0,1)) }}</div><div><p class="text-xs font-bold text-slate-800">{{ $p->anak->nama??'-' }}</p><p class="text-[9px] text-slate-400">Bayar: {{ $p->tanggal_formatted??'-' }}</p></div></div></td>
                 <td class="text-xs font-bold">{{ $tarif->nama??'-' }}</td>
                 <td class="text-xs">{{ str_replace('_',' ',ucwords($tarif->jenis_terapi??'-')) }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ is_array($sisa)?'-':$total }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ $terp }}</td>
-                <td><span class="text-lg font-black text-red-600">{{ $sisaD }}</span></td>
+                <td class="font-mono font-black text-center text-xs">{!! $totalD !!}</td>
+                <td class="font-mono font-black text-center text-xs">{!! $terpD !!}</td>
+                <td>@if(is_array($sisa)) {!! $sisaD !!} @else <span class="text-lg font-black text-red-600">{{ $sisaD }}</span> @endif</td>
                 <td style="min-width:100px">
-                    @if(!is_array($sisa)&&$total>0)
-                    <div class="prog-track"><div class="prog-fill prog-red" style="width:{{ $pct }}%"></div></div>
+                    <div class="prog-track"><div class="prog-fill {{ $pc }}" style="width:{{ $pct }}%"></div></div>
                     <p class="text-[9px] text-slate-400 mt-0.5 font-bold">{{ $pct }}%</p>
-                    @endif
                 </td>
                 <td>
                     <a href="{{ route('kunjungan.data') }}?nama={{ urlencode($p->anak->nama??'') }}" class="text-[9px] font-black text-red-600 hover:text-red-700">Lihat →</a>
@@ -635,11 +651,28 @@
             @foreach($paketMenipis->sortBy(fn($p)=>is_array($p->sisa_pertemuan)?min($p->sisa_pertemuan):$p->sisa_pertemuan) as $p)
             @php
                 $tarif=$p->tarif; $sisa=$p->sisa_pertemuan;
-                $total=is_array($sisa)?(($tarif->pertemuan_perilaku??0)+($tarif->pertemuan_fisioterapi??0)):($tarif->jumlah_pertemuan??20);
-                $terp=is_array($sisa)?'—':max(0,$total-(is_numeric($sisa)?$sisa:0));
-                $sisaD=is_array($sisa)?'P:'.($sisa['perilaku']??0).' F:'.($sisa['fisioterapi']??0):($sisa??'-');
-                $sisaN=is_array($sisa)?min($sisa):(int)($sisa??0);
-                $pct=(!is_array($sisa)&&$total>0)?min(100,round((is_numeric($sisa)?$sisa:0)/$total*100)):0;
+                if(is_array($sisa)) {
+                    $totP = $tarif->pertemuan_perilaku??0;
+                    $totF = $tarif->pertemuan_fisioterapi??0;
+                    $sisaP = $sisa['perilaku']??0;
+                    $sisaF = $sisa['fisioterapi']??0;
+                    $terpP = max(0, $totP - $sisaP);
+                    $terpF = max(0, $totF - $sisaF);
+                    $totalD = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $totP<br>F: $totF</div>";
+                    $terpD  = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $terpP<br>F: $terpF</div>";
+                    $sisaD  = "<div class='flex flex-col gap-1 items-start'><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Perilaku: $sisaP</span><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Fisio: $sisaF</span></div>";
+                    $sisaN  = min($sisaP, $sisaF);
+                    $total  = $totP + $totF;
+                    $pct    = $total > 0 ? min(100, round(($sisaP+$sisaF)/$total*100)) : 0;
+                } else {
+                    $total  = $tarif->jumlah_pertemuan??20;
+                    $sisaVal= is_numeric($sisa)?$sisa:0;
+                    $terpD  = max(0, $total - $sisaVal);
+                    $totalD = $total;
+                    $sisaD  = $sisa ?? '-';
+                    $sisaN  = (int)($sisa??0);
+                    $pct    = $total > 0 ? min(100, round($sisaVal/$total*100)) : 0;
+                }
                 $pc=$pct>40?'prog-green':($pct>15?'prog-amber':'prog-red');
                 $tc=$sisaN<=2?'text-red-600':($sisaN<=5?'text-amber-600':'text-emerald-600');
             @endphp
@@ -647,14 +680,12 @@
                 <td><div class="flex items-center gap-2"><div class="av bg-amber-50 border border-amber-200 text-amber-700">{{ strtoupper(substr($p->anak->nama??'A',0,1)) }}</div><div><p class="text-xs font-bold text-slate-800">{{ $p->anak->nama??'-' }}</p><p class="text-[9px] text-slate-400">{{ $p->tanggal_formatted??'-' }}</p></div></div></td>
                 <td class="text-xs font-bold">{{ $tarif->nama??'-' }}</td>
                 <td class="text-xs">{{ str_replace('_',' ',ucwords($tarif->jenis_terapi??'-')) }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ is_array($sisa)?'Gbg':$total }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ $terp }}</td>
-                <td><span class="font-black text-base {{ $tc }}">{{ $sisaD }}</span></td>
+                <td class="font-mono font-black text-center text-xs">{!! $totalD !!}</td>
+                <td class="font-mono font-black text-center text-xs">{!! $terpD !!}</td>
+                <td>@if(is_array($sisa)) {!! $sisaD !!} @else <span class="font-black text-base {{ $tc }}">{{ $sisaD }}</span> @endif</td>
                 <td style="min-width:110px">
-                    @if(!is_array($sisa)&&$total>0)
                     <div class="prog-track"><div class="prog-fill {{ $pc }}" style="width:{{ $pct }}%"></div></div>
                     <p class="text-[9px] text-slate-400 mt-0.5 font-bold">{{ $pct }}% tersisa</p>
-                    @endif
                 </td>
             </tr>
             @endforeach
@@ -678,11 +709,28 @@
             @foreach($paketAktifSemua as $p)
             @php
                 $tarif=$p->tarif; $sisa=$p->sisa_pertemuan;
-                $total=is_array($sisa)?(($tarif->pertemuan_perilaku??0)+($tarif->pertemuan_fisioterapi??0)):($tarif->jumlah_pertemuan??20);
-                $terp=is_array($sisa)?'—':max(0,$total-(is_numeric($sisa)?$sisa:0));
-                $sisaD=is_array($sisa)?'P:'.($sisa['perilaku']??0).' F:'.($sisa['fisioterapi']??0):($sisa??'-');
-                $sisaN=is_array($sisa)?min($sisa):(int)($sisa??0);
-                $pct=(!is_array($sisa)&&$total>0)?min(100,round((is_numeric($sisa)?$sisa:0)/$total*100)):0;
+                if(is_array($sisa)) {
+                    $totP = $tarif->pertemuan_perilaku??0;
+                    $totF = $tarif->pertemuan_fisioterapi??0;
+                    $sisaP = $sisa['perilaku']??0;
+                    $sisaF = $sisa['fisioterapi']??0;
+                    $terpP = max(0, $totP - $sisaP);
+                    $terpF = max(0, $totF - $sisaF);
+                    $totalD = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $totP<br>F: $totF</div>";
+                    $terpD  = "<div class='text-[9px] leading-tight text-slate-500 font-medium'>P: $terpP<br>F: $terpF</div>";
+                    $sisaD  = "<div class='flex flex-col gap-1 items-start'><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Perilaku: $sisaP</span><span class='badge badge-info px-1.5 py-0.5 text-[9px]'>Fisio: $sisaF</span></div>";
+                    $sisaN  = min($sisaP, $sisaF);
+                    $total  = $totP + $totF;
+                    $pct    = $total > 0 ? min(100, round(($sisaP+$sisaF)/$total*100)) : 0;
+                } else {
+                    $total  = $tarif->jumlah_pertemuan??20;
+                    $sisaVal= is_numeric($sisa)?$sisa:0;
+                    $terpD  = max(0, $total - $sisaVal);
+                    $totalD = $total;
+                    $sisaD  = $sisa ?? '-';
+                    $sisaN  = (int)($sisa??0);
+                    $pct    = $total > 0 ? min(100, round($sisaVal/$total*100)) : 0;
+                }
                 $pc=$pct>40?'prog-green':($pct>15?'prog-amber':'prog-red');
                 $tc=$sisaN<=2?'text-red-600':($sisaN<=5?'text-amber-600':'text-emerald-600');
             @endphp
@@ -690,13 +738,11 @@
                 <td><div class="flex items-center gap-2"><div class="av bg-blue-50 border border-blue-100 text-blue-700 text-[10px]">{{ strtoupper(substr($p->anak->nama??'A',0,1)) }}</div><span class="text-xs font-bold text-slate-800">{{ $p->anak->nama??'-' }}</span></div></td>
                 <td class="text-xs font-bold">{{ $tarif->nama??'-' }}</td>
                 <td class="text-xs">{{ str_replace('_',' ',ucwords($tarif->jenis_terapi??'-')) }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ is_array($sisa)?'—':$total }}</td>
-                <td class="font-mono font-black text-center text-xs">{{ $terp }}</td>
-                <td><span class="font-black {{ $tc }}">{{ $sisaD }}</span></td>
+                <td class="font-mono font-black text-center text-xs">{!! $totalD !!}</td>
+                <td class="font-mono font-black text-center text-xs">{!! $terpD !!}</td>
+                <td>@if(is_array($sisa)) {!! $sisaD !!} @else <span class="font-black {{ $tc }}">{{ $sisaD }}</span> @endif</td>
                 <td style="min-width:100px">
-                    @if(!is_array($sisa)&&$total>0)
                     <div class="prog-track"><div class="prog-fill {{ $pc }}" style="width:{{ $pct }}%"></div></div>
-                    @endif
                 </td>
             </tr>
             @endforeach
@@ -857,18 +903,7 @@ function switchKeuangan(mode){
     document.getElementById('tab-mingguan').classList.toggle('active',mode==='mingguan');
 }
 
-// ── Chart: Donut ──────────────────────────────────────────────────────────────
-new Chart(document.getElementById('chartDonut').getContext('2d'),{
-    type:'doughnut',
-    data:{
-        labels:DB.donut.map(d=>d.nama),
-        datasets:[{data:DB.donut.map(d=>d.total),backgroundColor:COLORS,borderWidth:0,hoverOffset:8}]
-    },
-    options:{
-        responsive:true,maintainAspectRatio:false,cutout:'72%',
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${saRp(c.parsed)}`}}}
-    }
-});
+// ── Chart: Donut (Removed) ────────────────────────────────────────────────────
 
 // ── Chart: Kunjungan 14 hari ──────────────────────────────────────────────────
 new Chart(document.getElementById('chartKunjungan').getContext('2d'),{

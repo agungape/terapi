@@ -15,7 +15,11 @@
                     $totalSesi = 0;
                     if ($tarif) {
                         if ($tarif->jenis_terapi === 'gabungan') {
-                            $totalSesi = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                            $totalSesi = $tarif->jumlah_pertemuan ?? max($tarif->pertemuan_perilaku ?? 0, $tarif->pertemuan_fisioterapi ?? 0);
+                            // Fallback if jumlah_pertemuan is 0
+                            if ($totalSesi == 0) {
+                                $totalSesi = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                            }
                         } else {
                             $totalSesi = $tarif->jumlah_pertemuan ?? 0;
                         }

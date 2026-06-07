@@ -27,7 +27,7 @@ class MobileNewController extends Controller
 
         // Fetch actual data from database
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
-            ->with(['terapis', 'pemeriksaans', 'fisioterapis', 'pemeriksaanGabungans'])
+            ->with(['terapis', 'pemeriksaans', 'fisioterapis', 'pemeriksaanGabungans', 'tarif'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -96,7 +96,7 @@ class MobileNewController extends Controller
                                 return [
                                     'name' => ($isPerilaku ? '[Perilaku] ' : '[Fisio] ') . ($g->program->deskripsi ?? 'Program'),
                                     'status' => $statusStr,
-                                    'note' => $isPerilaku ? $g->keterangan : $g->catatan_khusus,
+                                    'note' => $g->keterangan,
                                     'activity' => $g->aktivitas_terapi
                                 ];
                             });

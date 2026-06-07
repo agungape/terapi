@@ -324,8 +324,8 @@
                'w-20': !sidebarOpen && !isMobile,
                'w-64 translate-x-0': mobileSidebar && isMobile,
                '-translate-x-full': !mobileSidebar && isMobile,
-               'relative': !isMobile,
-               'fixed': isMobile
+               'sticky top-0 h-screen': !isMobile,
+               'fixed h-screen': isMobile
            }">
 
         <!-- Sidebar Header -->

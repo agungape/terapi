@@ -1,6 +1,15 @@
 @csrf
+@php
+    // Normalisasi data yang sudah ada (untuk Edit Mode)
+    $isEditFisio = isset($pemsFisio) ? $pemsFisio->count() > 0 : (isset($kunjungan->fisioterapis) && $kunjungan->fisioterapis->count() > 0);
+    $itemsFisio = $isEditFisio ? (isset($pemsFisio) ? $pemsFisio->values() : $kunjungan->fisioterapis->values()) : collect([null]);
+    $firstItemFisio = $isEditFisio ? $itemsFisio->first() : null;
+    $pilihanResponsFisio = $firstItemFisio && $firstItemFisio->pilihan_respons ? json_encode($firstItemFisio->pilihan_respons) : 'null';
+@endphp
 <div class="space-y-6" x-data="{
-    choices: {
+    generatedText: `{{ $firstItemFisio->evaluasi ?? '' }}`,
+    generatedOrangTua: `{{ $firstItemFisio->catatan_khusus ?? '' }}`,
+    choices: {{ $pilihanResponsFisio !== 'null' ? $pilihanResponsFisio : "{
         aktivitasKelas: '',
         responsTugas: '',
         fokusKontakMata: '',
@@ -9,7 +18,7 @@
         perilakuMood: '',
         latihanFisik: '',
         hasilKegiatan: 'baik'
-    },
+    }" }},
     data: {
         aktivitasKelas: {
             aktifBerlari: {
@@ -174,8 +183,6 @@
             }
         }
     },
-    generatedText: '',
-    generatedOrangTua: '',
     updateText() {
         let evalLines = [];
         let otLines = [];
@@ -223,28 +230,36 @@
 
     {{-- Program Items --}}
     <div id="form-fisioterapi" class="space-y-4">
-        <div class="container-form space-y-4">
+        @foreach($itemsFisio as $idx => $item)
+        <div class="container-form space-y-4 {{ $idx > 0 ? 'pt-8 border-t-2 border-dashed border-slate-100' : '' }}" data-index="{{ $idx }}">
             <div class="flex items-center gap-4">
                 <div class="flex-1">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Program Fisioterapi <span class="text-red-500">*</span></label>
-                    <select class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-4 focus:ring-blue-50 transition-all outline-none select2" name="program_id[0]">
+                    <select class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-4 focus:ring-blue-50 transition-all outline-none select2" name="program_id[{{ $idx }}]">
                         @foreach ($program_fisioterapi as $f)
-                            <option value="{{ $f->id }}">{{ $f->deskripsi }}</option>
+                            <option value="{{ $f->id }}" {{ $isEditFisio && $item->program_id == $f->id ? 'selected' : '' }}>{{ $f->deskripsi }}</option>
                         @endforeach
                     </select>
                 </div>
+                @if($idx === 0)
                 <button type="button" id="add-button-fisioterapi" class="shrink-0 mt-5 flex items-center gap-2 px-4 py-3 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">
                     <i data-lucide="plus" class="w-4 h-4"></i> Tambah
                 </button>
+                @else
+                <button type="button" class="remove-button shrink-0 mt-5 flex items-center gap-2 px-4 py-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                @endif
             </div>
             <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aktivitas Terapi</label>
-                <textarea name="aktivitas_terapi[0]" rows="3"
+                <textarea name="aktivitas_terapi[{{ $idx }}]" rows="3"
                           class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-blue-50 transition-all outline-none resize-none placeholder:text-slate-300"
-                          placeholder="Deskripsikan aktivitas terapi yang dilakukan..."></textarea>
+                          placeholder="Deskripsikan aktivitas terapi yang dilakukan...">{{ $isEditFisio ? $item->aktivitas_terapi : '' }}</textarea>
                 @error('aktivitas_terapi') <p class="text-[10px] font-black text-red-500">{{ $message }}</p> @enderror
             </div>
         </div>
+        @endforeach
     </div>
 
     {{-- Dropdowns untuk Auto-Fill --}}

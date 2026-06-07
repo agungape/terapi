@@ -268,31 +268,37 @@
                 </div>
 
                 <div x-show="tab === 'pemeriksaan'" x-cloak class="p-8 md:p-12">
+                    @php
+                        $isEditPerilaku = $pemsPerilaku->count() > 0;
+                        $isEditFisio = $pemsFisio->count() > 0;
+                    @endphp
                     <div class="mb-10 text-center">
                         <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-500 rounded-full text-[9px] font-black uppercase tracking-[0.2em] mb-4">
                             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Form Input Gabungan
                         </div>
-                        <h4 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">Catat Hasil Pertemuan Gabungan</h4>
+                        <h4 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">Catat / Edit Hasil Pertemuan Gabungan</h4>
                         <p class="text-xs font-bold text-slate-400 mt-2">Dapat disimpan sebagian (Perilaku atau Fisioterapi terlebih dahulu).</p>
                     </div>
 
                     <div x-data="{ formTab: 'perilaku' }">
                         <div class="flex gap-4 mb-8">
-                            <button @click="formTab = 'perilaku'" :class="formTab === 'perilaku' ? 'bg-red-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="flex-1 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">Form Terapi Perilaku</button>
-                            <button @click="formTab = 'fisioterapi'" :class="formTab === 'fisioterapi' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="flex-1 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">Form Fisioterapi</button>
+                            <button @click="formTab = 'perilaku'" :class="formTab === 'perilaku' ? 'bg-red-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="flex-1 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">Form Terapi Perilaku {{ $isEditPerilaku ? '(Edit)' : '' }}</button>
+                            <button @click="formTab = 'fisioterapi'" :class="formTab === 'fisioterapi' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'" class="flex-1 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">Form Fisioterapi {{ $isEditFisio ? '(Edit)' : '' }}</button>
                         </div>
 
                         <div x-show="formTab === 'perilaku'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
-                            <form action="{{ route('gabungan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                            <form action="{{ $isEditPerilaku ? route('gabungan.update', $kunjungan->id) : route('gabungan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                                @if($isEditPerilaku) @method('PUT') @endif
                                 <input type="hidden" name="jenis_form" value="perilaku">
-                                @include('kunjungan.form', ['tombol' => 'Simpan Evaluasi Perilaku'])
+                                @include('kunjungan.form', ['tombol' => $isEditPerilaku ? 'Update Evaluasi Perilaku' : 'Simpan Evaluasi Perilaku'])
                             </form>
                         </div>
 
                         <div x-show="formTab === 'fisioterapi'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
-                            <form action="{{ route('gabungan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                            <form action="{{ $isEditFisio ? route('gabungan.update', $kunjungan->id) : route('gabungan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                                @if($isEditFisio) @method('PUT') @endif
                                 <input type="hidden" name="jenis_form" value="fisioterapi">
-                                @include('kunjungan.form_fisioterapi', ['tombol' => 'Simpan Evaluasi Fisioterapi'])
+                                @include('kunjungan.form_fisioterapi', ['tombol' => $isEditFisio ? 'Update Evaluasi Fisioterapi' : 'Simpan Evaluasi Fisioterapi'])
                             </form>
                         </div>
                     </div>
@@ -309,7 +315,7 @@
         lucide.createIcons();
         $('.select2').select2({ width: '100%' });
 
-        let formIndex = 1;
+        let formIndex = $('#form-wrapper .container-form').length || 1;
         $('#add-button').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">
@@ -356,7 +362,7 @@
             lucide.createIcons();
         });
 
-        let fisioIndex = 1;
+        let fisioIndex = $('#form-fisioterapi .container-form').length || 1;
         $('#add-button-fisioterapi').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">

@@ -316,21 +316,26 @@
 
                 {{-- Tab: Input Baru --}}
                 <div x-show="tab === 'pemeriksaan'" x-cloak class="p-8 md:p-12">
+                    @php
+                        $isEdit = $is_perilaku ? ($kunjungan->pemeriksaans->count() > 0) : ($kunjungan->fisioterapis->count() > 0);
+                    @endphp
                     <div class="mb-10 text-center">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-500 rounded-full text-[9px] font-black uppercase tracking-[0.2em] mb-4">
-                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Form Input Data
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 {{ $isEdit ? 'bg-amber-50 text-amber-500' : 'bg-red-50 text-red-500' }} rounded-full text-[9px] font-black uppercase tracking-[0.2em] mb-4">
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> {{ $isEdit ? 'Edit Data E-Book' : 'Form Input Data' }}
                         </div>
-                        <h4 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">Catat Hasil Pertemuan Baru</h4>
+                        <h4 class="text-2xl font-black text-slate-800 uppercase italic tracking-tighter">{{ $isEdit ? 'Edit Hasil Pertemuan' : 'Catat Hasil Pertemuan Baru' }}</h4>
                         <p class="text-xs font-bold text-slate-400 mt-2">Pastikan seluruh data yang diinput sudah sesuai dengan observasi sesi.</p>
                     </div>
 
                     @if ($is_perilaku)
-                    <form action="{{ route('pemeriksaan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
-                        @include('kunjungan.form', ['tombol' => 'Simpan & Publikasi E-Book'])
+                    <form action="{{ $isEdit ? route('pemeriksaan.update', $kunjungan->id) : route('pemeriksaan.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                        @if($isEdit) @method('PUT') @endif
+                        @include('kunjungan.form', ['tombol' => $isEdit ? 'Update E-Book' : 'Simpan & Publikasi E-Book'])
                     </form>
                     @else
-                    <form action="{{ route('fisioterapi.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
-                        @include('kunjungan.form_fisioterapi', ['tombol' => 'Simpan & Publikasi E-Book'])
+                    <form action="{{ $isEdit ? route('fisioterapi.update', $kunjungan->id) : route('fisioterapi.store') }}" method="POST" class="space-y-8 max-w-2xl mx-auto">
+                        @if($isEdit) @method('PUT') @endif
+                        @include('kunjungan.form_fisioterapi', ['tombol' => $isEdit ? 'Update E-Book' : 'Simpan & Publikasi E-Book'])
                     </form>
                     @endif
                 </div>
@@ -346,7 +351,7 @@
         lucide.createIcons();
         $('.select2').select2({ width: '100%' });
 
-        let formIndex = 1;
+        let formIndex = $('#form-wrapper .container-form').length || 1;
         $('#add-button').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">
@@ -393,7 +398,7 @@
             lucide.createIcons();
         });
 
-        let fisioIndex = 1;
+        let fisioIndex = $('#form-fisioterapi .container-form').length || 1;
         $('#add-button-fisioterapi').click(function() {
             let newSection = $(`
             <div class="container-form space-y-6 pt-8 border-t-2 border-dashed border-slate-100 animate-in fade-in duration-300">

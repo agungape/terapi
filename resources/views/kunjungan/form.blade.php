@@ -1,8 +1,15 @@
 @csrf
+@php
+    // Normalisasi data yang sudah ada (untuk Edit Mode)
+    $isEditPerilaku = isset($pemsPerilaku) ? $pemsPerilaku->count() > 0 : (isset($kunjungan->pemeriksaans) && $kunjungan->pemeriksaans->count() > 0);
+    $itemsPerilaku = $isEditPerilaku ? (isset($pemsPerilaku) ? $pemsPerilaku->values() : $kunjungan->pemeriksaans->values()) : collect([null]);
+    $firstItemPerilaku = $isEditPerilaku ? $itemsPerilaku->first() : null;
+    $pilihanRespons = $firstItemPerilaku && $firstItemPerilaku->pilihan_respons ? json_encode($firstItemPerilaku->pilihan_respons) : 'null';
+@endphp
 <div class="space-y-6" x-data="{
-    generatedText: '',
-    generatedOrangTua: '',
-    choices: {
+    generatedText: `{{ $firstItemPerilaku->keterangan ?? '' }}`,
+    generatedOrangTua: `{{ $firstItemPerilaku->catatan_orang_tua ?? '' }}`,
+    choices: {{ $pilihanRespons !== 'null' ? $pilihanRespons : "{
         kondisiAnak: '',
         responInstruksi: '',
         responNama: '',
@@ -15,7 +22,7 @@
         regulasiDiri: '',
         kontakMata: '',
         hasilKegiatan: 'baik'
-    },
+    }" }},
     data: {
         kondisiAnak: {
             kooperatif: {
@@ -280,43 +287,51 @@
 
     {{-- Program Items --}}
     <div id="form-wrapper" class="space-y-4">
-        <div class="container-form space-y-4">
+        @foreach($itemsPerilaku as $idx => $item)
+        <div class="container-form space-y-4 {{ $idx > 0 ? 'pt-8 border-t-2 border-dashed border-slate-100' : '' }}" data-index="{{ $idx }}">
             <div class="flex items-center gap-4">
                 <div class="flex-1">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Program Terapi <span class="text-red-500">*</span></label>
-                    <select class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none select2" name="program_id[0]">
+                    <select class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none select2" name="program_id[{{ $idx }}]">
                         @foreach ($program as $p)
-                            <option value="{{ $p->id }}">{{ $p->deskripsi }}</option>
+                            <option value="{{ $p->id }}" {{ $isEditPerilaku && $item->program_id == $p->id ? 'selected' : '' }}>{{ $p->deskripsi }}</option>
                         @endforeach
                     </select>
                 </div>
+                @if($idx === 0)
                 <button type="button" id="add-button" class="shrink-0 mt-5 flex items-center gap-2 px-4 py-3 bg-slate-900 hover:bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg">
                     <i data-lucide="plus" class="w-4 h-4"></i> Tambah
                 </button>
+                @else
+                <button type="button" class="remove-button shrink-0 mt-5 flex items-center gap-2 px-4 py-3 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                @endif
             </div>
 
             {{-- Skala Radio --}}
             <div class="flex flex-wrap gap-3">
-                <label for="status_dp_0" class="flex-1 cursor-pointer group">
-                    <input type="radio" id="status_dp_0" name="status[0]" value="dp" required class="sr-only peer">
+                <label for="status_dp_{{ $idx }}" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_dp_{{ $idx }}" name="status[{{ $idx }}]" value="dp" {{ $isEditPerilaku && $item->status == 'dp' ? 'checked' : '' }} required class="sr-only peer">
                     <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-red-500 peer-checked:bg-red-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
                         <span class="text-xs font-black uppercase tracking-widest">DP</span>
                     </div>
                 </label>
-                <label for="status_ds_0" class="flex-1 cursor-pointer group">
-                    <input type="radio" id="status_ds_0" name="status[0]" value="ds" class="sr-only peer">
+                <label for="status_ds_{{ $idx }}" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_ds_{{ $idx }}" name="status[{{ $idx }}]" value="ds" {{ $isEditPerilaku && $item->status == 'ds' ? 'checked' : '' }} class="sr-only peer">
                     <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
                         <span class="text-xs font-black uppercase tracking-widest">DS</span>
                     </div>
                 </label>
-                <label for="status_tb_0" class="flex-1 cursor-pointer group">
-                    <input type="radio" id="status_tb_0" name="status[0]" value="tb" class="sr-only peer">
+                <label for="status_tb_{{ $idx }}" class="flex-1 cursor-pointer group">
+                    <input type="radio" id="status_tb_{{ $idx }}" name="status[{{ $idx }}]" value="tb" {{ $isEditPerilaku && $item->status == 'tb' ? 'checked' : '' }} class="sr-only peer">
                     <div class="flex items-center justify-center gap-2 px-6 py-3 bg-slate-50 border-2 border-transparent rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:text-white transition-all shadow-sm group-hover:bg-slate-100">
                         <span class="text-xs font-black uppercase tracking-widest">TB</span>
                     </div>
                 </label>
             </div>
         </div>
+        @endforeach
     </div>
 
     {{-- Dropdowns Pilihan Otomatis --}}

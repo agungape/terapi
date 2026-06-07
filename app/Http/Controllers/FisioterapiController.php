@@ -49,4 +49,42 @@ class FisioterapiController extends Controller
         } else
             return redirect()->back()->with('error', "data telah dibuat pada kunjungan ini!!! Hubungi admin untuk melakukan perubahan data");
     }
+
+    public function update(Request $request, \App\Models\Kunjungan $kunjungan)
+    {
+        $validateData = $request->validate([
+            'program_id' => 'required|array',
+            'aktivitas_terapi' => 'required|array',
+            'evaluasi' => 'required|string',
+            'catatan_khusus' => 'nullable|string',
+            'pilihan_respons' => 'nullable|string',
+            'hasil_kegiatan' => 'nullable|string',
+
+            'program_id.*' => 'required|exists:App\Models\Program,id',
+            'aktivitas_terapi.*' => 'required',
+        ]);
+
+        // Hapus pemeriksaan lama
+        $kunjungan->fisioterapis()->delete();
+
+        // Ambil data dari input
+        $programId = $request->input('program_id');
+        $aktivitas_terapi = $request->input('aktivitas_terapi');
+        $evaluasi = $request->input('evaluasi');
+        $catatan_khusus = $request->input('catatan_khusus');
+
+        foreach ($programId as $index => $idProgram) {
+            Fisioterapi::create([
+                'kunjungan_id' => $kunjungan->id,
+                'program_id' => $idProgram,
+                'aktivitas_terapi' => $aktivitas_terapi[$index],
+                'evaluasi' => $evaluasi,
+                'catatan_khusus' => $catatan_khusus,
+                'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                'hasil_kegiatan' => $request->input('hasil_kegiatan'),
+            ]);
+        }
+
+        return redirect()->back()->with('success', "E-Book Fisioterapi berhasil diperbarui");
+    }
 }

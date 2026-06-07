@@ -207,6 +207,8 @@ class SuperAdminController extends Controller
             ->whereDate('created_at', $today)
             ->where('status', 'hadir')
             ->whereDoesntHave('pemeriksaans')
+            ->whereDoesntHave('fisioterapis')
+            ->whereDoesntHave('pemeriksaanGabungans')
             ->get();
 
         // =========================================================

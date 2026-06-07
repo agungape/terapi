@@ -214,8 +214,11 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::get('/search-kunjungan', [KunjunganController::class, 'search_kunjungan'])->name('kunjungan.pencarian');
     Route::get('/data', [KunjunganController::class, 'riwayatAnak'])->name('kunjungan.data');
     Route::post('/pemeriksaan', [PemeriksaanController::class, 'store'])->name('pemeriksaan.store');
+    Route::put('/pemeriksaan/{kunjungan}', [PemeriksaanController::class, 'update'])->name('pemeriksaan.update');
     Route::post('/fisioterapi', [FisioterapiController::class, 'store'])->name('fisioterapi.store');
+    Route::put('/fisioterapi/{kunjungan}', [FisioterapiController::class, 'update'])->name('fisioterapi.update');
     Route::post('/gabungan/store', [App\Http\Controllers\PemeriksaanGabunganController::class, 'store'])->name('gabungan.store');
+    Route::put('/gabungan/{kunjungan}/update', [App\Http\Controllers\PemeriksaanGabunganController::class, 'update'])->name('gabungan.update');
     Route::put('/data/{kunjungan}/tambah-terapis', [KunjunganController::class, 'tambahTerapis'])->name('kunjungan.tambah-terapis');
     Route::put('/data/{kunjungan}/edit-status', [KunjunganController::class, 'updateStatus'])->name('kunjungan.update-status');
     Route::put('/data/{kunjungan}/edit-terapis', [KunjunganController::class, 'updateTerapis'])->name('kunjungan.update-terapis');

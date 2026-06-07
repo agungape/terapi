@@ -73,4 +73,65 @@ class PemeriksaanGabunganController extends Controller
 
         return redirect()->back()->with('success', "E-Book {$jenis_form} berhasil disimpan.");
     }
+
+    public function update(Request $request, \App\Models\Kunjungan $kunjungan)
+    {
+        $jenis_form = $request->input('jenis_form'); // 'perilaku' atau 'fisioterapi'
+
+        if ($jenis_form === 'perilaku') {
+            $request->validate([
+                'program_id' => 'required|array',
+                'status' => 'required|array',
+                'keterangan' => 'nullable|string',
+                'catatan_orang_tua' => 'nullable|string',
+            ]);
+
+            // Hapus yang lama untuk jenis perilaku
+            $kunjungan->pemeriksaanGabungans()->where('jenis_form', 'perilaku')->delete();
+
+            $programId = $request->input('program_id');
+            $status = $request->input('status');
+
+            foreach ($programId as $index => $idProgram) {
+                PemeriksaanGabungan::create([
+                    'kunjungan_id' => $kunjungan->id,
+                    'jenis_form' => 'perilaku',
+                    'program_id' => $idProgram,
+                    'status' => $status[$index] ?? null,
+                    'keterangan' => $request->input('keterangan'),
+                    'catatan_orang_tua' => $request->input('catatan_orang_tua'),
+                    'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                    'hasil_kegiatan' => $request->input('hasil_kegiatan'),
+                ]);
+            }
+        } elseif ($jenis_form === 'fisioterapi') {
+            $request->validate([
+                'program_id' => 'required|array',
+                'aktivitas_terapi' => 'required|array',
+                'evaluasi' => 'required|string',
+                'catatan_khusus' => 'nullable|string',
+            ]);
+
+            // Hapus yang lama untuk jenis fisioterapi
+            $kunjungan->pemeriksaanGabungans()->where('jenis_form', 'fisioterapi')->delete();
+
+            $programId = $request->input('program_id');
+            $aktivitas_terapi = $request->input('aktivitas_terapi');
+
+            foreach ($programId as $index => $idProgram) {
+                PemeriksaanGabungan::create([
+                    'kunjungan_id' => $kunjungan->id,
+                    'jenis_form' => 'fisioterapi',
+                    'program_id' => $idProgram,
+                    'aktivitas_terapi' => $aktivitas_terapi[$index] ?? null,
+                    'keterangan' => $request->input('evaluasi'),
+                    'catatan_orang_tua' => $request->input('catatan_khusus'),
+                    'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                    'hasil_kegiatan' => $request->input('hasil_kegiatan'),
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', "E-Book {$jenis_form} berhasil diperbarui.");
+    }
 }

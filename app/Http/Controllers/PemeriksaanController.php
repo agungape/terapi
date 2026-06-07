@@ -86,9 +86,41 @@ class PemeriksaanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pemeriksaan $pemeriksaan)
+    public function update(Request $request, \App\Models\Kunjungan $kunjungan)
     {
-        //
+        $validateData = $request->validate([
+            'program_id' => 'required|array',
+            'status' => 'required|array',
+            'keterangan' => 'nullable|string',
+            'pilihan_respons' => 'nullable|string',
+            'hasil_kegiatan' => 'nullable|string',
+            'catatan_orang_tua' => 'nullable|string',
+
+            'program_id.*' => 'required|exists:App\Models\Program,id',
+            'status.*' => 'required',
+        ]);
+
+        // Hapus pemeriksaan lama
+        $kunjungan->pemeriksaans()->delete();
+
+        // Ambil data dari input
+        $programId = $request->input('program_id');
+        $status = $request->input('status');
+        $keterangan = $request->input('keterangan');
+
+        foreach ($programId as $index => $idProgram) {
+            Pemeriksaan::create([
+                'kunjungan_id' => $kunjungan->id,
+                'program_id' => $idProgram,
+                'status' => $status[$index],
+                'keterangan' => $keterangan,
+                'pilihan_respons' => json_decode($request->input('pilihan_respons'), true),
+                'hasil_kegiatan' => $request->input('hasil_kegiatan'),
+                'catatan_orang_tua' => $request->input('catatan_orang_tua'),
+            ]);
+        }
+
+        return redirect()->back()->with('success', "E-Book Pemeriksaan berhasil diperbarui");
     }
 
     /**

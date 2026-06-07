@@ -129,13 +129,16 @@ class Pemasukkan extends Model
         }
 
         if ($tarif->jenis_terapi === 'gabungan') {
-            return [
-                'perilaku'    => $this->getSisaPertemuanJenis('terapi_perilaku'),
-                'fisioterapi' => $this->getSisaPertemuanJenis('fisioterapi'),
-            ];
+            // Backward compatibility untuk paket lama yang masih dipisah
+            if ($tarif->pertemuan_perilaku > 0 || $tarif->pertemuan_fisioterapi > 0) {
+                return [
+                    'perilaku'    => $this->getSisaPertemuanJenis('terapi_perilaku'),
+                    'fisioterapi' => $this->getSisaPertemuanJenis('fisioterapi'),
+                ];
+            }
         }
 
-        // Paket single jenis
+        // Paket single jenis ATAU Paket Gabungan Baru (yang jumlah_pertemuan nya gabung)
         $max      = $tarif->jumlah_pertemuan ?? 20;
         $terpakai = $this->kunjungans()
             ->whereIn('status', ['hadir', 'izin_hangus'])
@@ -152,6 +155,15 @@ class Pemasukkan extends Model
     {
         $tarif = $this->tarif;
         if (!$tarif) return 0;
+
+        // Cek jika ini Gabungan Baru (tidak dipisah)
+        if ($tarif->jenis_terapi === 'gabungan' && ($tarif->pertemuan_perilaku ?? 0) <= 0 && ($tarif->pertemuan_fisioterapi ?? 0) <= 0) {
+            $max = $tarif->jumlah_pertemuan ?? 20;
+            $terpakai = $this->kunjungans()
+                ->whereIn('status', ['hadir', 'izin_hangus'])
+                ->count();
+            return max(0, $max - $terpakai);
+        }
 
         $max = $tarif->getPertemuanUntukJenis($jenisTerapi);
         if ($max <= 0) return 0;

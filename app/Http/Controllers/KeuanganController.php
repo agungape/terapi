@@ -144,12 +144,20 @@ class KeuanganController extends Controller
             ];
 
             if ($tarif->jenis_terapi === 'gabungan') {
-                $result['jumlah_pertemuan']           = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
-                $result['jumlah_pertemuan_perilaku']  = $tarif->pertemuan_perilaku ?? 0;
-                $result['jumlah_pertemuan_fisioterapi'] = $tarif->pertemuan_fisioterapi ?? 0;
-                $result['sisa_perilaku']              = $p->getSisaPertemuanJenis('terapi_perilaku');
-                $result['sisa_fisioterapi']           = $p->getSisaPertemuanJenis('fisioterapi');
-                $result['sisa']                       = $result['sisa_perilaku'] + $result['sisa_fisioterapi'];
+                if (($tarif->pertemuan_perilaku > 0) || ($tarif->pertemuan_fisioterapi > 0)) {
+                    $result['jumlah_pertemuan']           = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                    $result['jumlah_pertemuan_perilaku']  = $tarif->pertemuan_perilaku ?? 0;
+                    $result['jumlah_pertemuan_fisioterapi'] = $tarif->pertemuan_fisioterapi ?? 0;
+                    $result['sisa_perilaku']              = $p->getSisaPertemuanJenis('terapi_perilaku');
+                    $result['sisa_fisioterapi']           = $p->getSisaPertemuanJenis('fisioterapi');
+                    $result['sisa']                       = $result['sisa_perilaku'] + $result['sisa_fisioterapi'];
+                    $result['is_gabungan_baru']           = false;
+                } else {
+                    $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
+                    $sisa = $p->sisa_pertemuan;
+                    $result['sisa'] = is_numeric($sisa) ? (int)$sisa : 0;
+                    $result['is_gabungan_baru'] = true;
+                }
             } else {
                 $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
                 $sisa = $p->sisa_pertemuan;

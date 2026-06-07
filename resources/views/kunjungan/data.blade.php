@@ -197,7 +197,7 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <h4 class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $kun->anak->nama }}</h4>
-                                        <span class="text-[10px] font-bold text-red-500 uppercase italic">{{ $kun->jenis_terapi == 'terapi_perilaku' ? 'Terapi Perilaku' : 'Fisioterapi' }}</span>
+                                        <span class="text-[10px] font-bold text-red-500 uppercase italic">{{ $kun->jenis_terapi == 'terapi_perilaku' ? 'Terapi Perilaku' : ($kun->jenis_terapi == 'gabungan' ? ($kun->tarif->nama ?? $kun->pemasukkan->tarif->nama ?? 'Gabungan') : 'Fisioterapi') }}</span>
                                     </div>
                                 </div>
                             </td>
@@ -206,9 +206,9 @@
                             <td class="px-8 py-5">
                                 @if ($kun->status == 'hadir')
                                 <div class="flex flex-col">
-                                    <p class="text-xs font-bold text-slate-700">{{ $kun->terapis->nama }}</p>
+                                    <p class="text-xs font-bold text-slate-700">{{ $kun->terapis->nama ?? '-' }}</p>
                                     @if ($kun->terapis_id_pendamping)
-                                    <span class="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-1"><i data-lucide="plus" class="w-2.5 h-2.5"></i> {{ $kun->terapisPendamping->nama }}</span>
+                                    <span class="text-[9px] font-black text-emerald-500 uppercase flex items-center gap-1"><i data-lucide="plus" class="w-2.5 h-2.5"></i> {{ $kun->terapisPendamping->nama ?? '-' }}</span>
                                     @endif
                                 </div>
                                 @else

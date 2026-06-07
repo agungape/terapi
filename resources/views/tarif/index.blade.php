@@ -231,11 +231,7 @@
                     <div class="flex items-center justify-between pt-4 border-t border-slate-50">
                         <div class="flex flex-col">
                             <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Quota Sesi</span>
-                            @if($t->jenis_terapi === 'gabungan')
-                                <span class="text-xs font-black text-slate-700 tracking-tight italic">
-                                    {{ $t->pertemuan_perilaku }}P + {{ $t->pertemuan_fisioterapi }}F Pertemuan
-                                </span>
-                            @elseif(in_array($t->jenis_terapi, ['assessment','observasi']))
+                            @if(in_array($t->jenis_terapi, ['assessment','observasi']))
                                 <span class="text-xs font-black text-slate-400 tracking-tight italic">Tanpa Sesi</span>
                             @else
                                 <span class="text-xs font-black text-slate-700 tracking-tight italic">{{ $t->jumlah_pertemuan }} Pertemuan</span>
@@ -367,8 +363,8 @@
                                   class="w-full bg-slate-50 border-none rounded-3xl px-6 py-4 text-xs font-bold focus:ring-4 focus:ring-red-50 transition-all outline-none resize-none min-h-[100px]"></textarea>
                     </div>
 
-                    {{-- Field Jumlah Pertemuan: hanya tampil untuk single jenis --}}
-                    <template x-if="!['gabungan','assessment','observasi'].includes(jenis_terapi)">
+                    {{-- Field Jumlah Pertemuan: tampil untuk paket reguler dan gabungan --}}
+                    <template x-if="!['assessment','observasi'].includes(jenis_terapi)">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nominal Investasi (Rp)</label>
@@ -391,47 +387,7 @@
                         </div>
                     </template>
 
-                    {{-- Field Gabungan: tampil jika jenis = gabungan --}}
-                    <template x-if="jenis_terapi === 'gabungan'">
-                        <div class="space-y-4">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nominal Investasi (Rp)</label>
-                                <div class="relative">
-                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">Rp</span>
-                                    <input type="text" name="tarif" x-model="tarif" @input="formatPrice" required
-                                           class="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-6 py-4 text-sm font-black text-red-600 focus:ring-4 focus:ring-red-50 transition-all outline-none">
-                                </div>
-                            </div>
-                            <div class="p-5 bg-purple-50/50 rounded-2xl border border-purple-100">
-                                <p class="text-[9px] font-black text-purple-500 uppercase tracking-widest mb-3">🔗 Kuota Sesi per Jenis</p>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="space-y-1">
-                                        <label class="text-[9px] font-black text-slate-400 uppercase">Sesi Terapi Perilaku</label>
-                                        <input type="text" inputmode="numeric"
-                                               name="pertemuan_perilaku"
-                                               x-model="pertemuan_perilaku"
-                                               @input="pertemuan_perilaku = $event.target.value.replace(/[^0-9]/g, '')"
-                                               onwheel="this.blur()"
-                                               placeholder="mis. 10"
-                                               class="w-full bg-white border border-purple-100 rounded-xl px-4 py-3 text-sm font-black text-purple-700 focus:ring-2 focus:ring-purple-200 outline-none">
-                                        @error('pertemuan_perilaku') <p class="text-[9px] font-bold text-red-500">{{ $message }}</p> @enderror
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-[9px] font-black text-slate-400 uppercase">Sesi Fisioterapi</label>
-                                        <input type="text" inputmode="numeric"
-                                               name="pertemuan_fisioterapi"
-                                               x-model="pertemuan_fisioterapi"
-                                               @input="pertemuan_fisioterapi = $event.target.value.replace(/[^0-9]/g, '')"
-                                               onwheel="this.blur()"
-                                               placeholder="mis. 10"
-                                               class="w-full bg-white border border-purple-100 rounded-xl px-4 py-3 text-sm font-black text-purple-700 focus:ring-2 focus:ring-purple-200 outline-none">
-                                        @error('pertemuan_fisioterapi') <p class="text-[9px] font-bold text-red-500">{{ $message }}</p> @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-
+                    {{-- Gabungan fields dihapus, menggunakan format standar --}}
                     {{-- Field Assessment/Observasi: hanya nominal --}}
                     <template x-if="['assessment','observasi'].includes(jenis_terapi)">
                         <div class="space-y-2">

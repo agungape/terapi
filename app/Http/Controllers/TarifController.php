@@ -49,13 +49,7 @@ class TarifController extends Controller
             'gambar'                => 'nullable|image|max:2048',
         ]);
 
-        // Validasi kondisional untuk paket gabungan
-        if ($request->jenis_terapi === 'gabungan') {
-            $request->validate([
-                'pertemuan_perilaku'    => 'required|integer|min:1',
-                'pertemuan_fisioterapi' => 'required|integer|min:1',
-            ]);
-        }
+        // Validasi kondisional dihapus karena gabungan sekarang menggunakan jumlah_pertemuan biasa
 
         $validateData['is_active'] = $request->has('is_active');
 
@@ -68,8 +62,8 @@ class TarifController extends Controller
         $tarif->pertemuan_perilaku   = $request->pertemuan_perilaku;
         $tarif->pertemuan_fisioterapi = $request->pertemuan_fisioterapi;
 
-        // jumlah_pertemuan hanya relevan untuk single jenis (bukan gabungan/assessment/observasi)
-        if (!in_array($request->jenis_terapi, ['gabungan', 'assessment', 'observasi'])) {
+        // jumlah_pertemuan hanya relevan untuk paket/sesi (bukan assessment/observasi)
+        if (!in_array($request->jenis_terapi, ['assessment', 'observasi'])) {
             $tarif->jumlah_pertemuan = $validateData['jumlah_pertemuan'];
         } else {
             $tarif->jumlah_pertemuan = null;
@@ -110,12 +104,7 @@ class TarifController extends Controller
             'gambar'                => 'nullable|image|max:2048',
         ]);
 
-        if ($request->jenis_terapi === 'gabungan') {
-            $request->validate([
-                'pertemuan_perilaku'    => 'required|integer|min:1',
-                'pertemuan_fisioterapi' => 'required|integer|min:1',
-            ]);
-        }
+        // Validasi kondisional dihapus
 
         $tarif->nama                  = $request->nama;
         $tarif->deskripsi             = $request->deskripsi;
@@ -125,7 +114,7 @@ class TarifController extends Controller
         $tarif->pertemuan_perilaku    = $request->pertemuan_perilaku;
         $tarif->pertemuan_fisioterapi = $request->pertemuan_fisioterapi;
 
-        if (!in_array($request->jenis_terapi, ['gabungan', 'assessment', 'observasi'])) {
+        if (!in_array($request->jenis_terapi, ['assessment', 'observasi'])) {
             $tarif->jumlah_pertemuan = $request->jumlah_pertemuan;
         } else {
             $tarif->jumlah_pertemuan = null;

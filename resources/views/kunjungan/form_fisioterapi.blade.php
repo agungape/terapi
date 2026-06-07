@@ -216,7 +216,7 @@
         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis Pelaksana</label>
         <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
             <i data-lucide="stethoscope" class="w-4 h-4 text-blue-500"></i>
-            <span class="text-sm font-black text-slate-700 uppercase">{{ $kunjungan->terapis->nama }}</span>
+            <span class="text-sm font-black text-slate-700 uppercase">{{ $kunjungan->jenis_terapi == 'gabungan' ? ($kunjungan->terapisPendamping->nama ?? $kunjungan->terapis->nama) : $kunjungan->terapis->nama }}</span>
         </div>
         <input type="hidden" name="kunjungan_id" value="{{ $kunjungan->id }}">
     </div>

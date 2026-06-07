@@ -54,11 +54,16 @@ class Tarif extends Model
     public function getPertemuanUntukJenis(string $jenisTerapi): int
     {
         if ($this->jenis_terapi === 'gabungan') {
-            return match ($jenisTerapi) {
-                'terapi_perilaku' => (int) ($this->pertemuan_perilaku ?? 0),
-                'fisioterapi'     => (int) ($this->pertemuan_fisioterapi ?? 0),
-                default           => 0,
-            };
+            // Jika ini adalah paket Gabungan Lama (dipisah)
+            if (($this->pertemuan_perilaku ?? 0) > 0 || ($this->pertemuan_fisioterapi ?? 0) > 0) {
+                return match ($jenisTerapi) {
+                    'terapi_perilaku' => (int) ($this->pertemuan_perilaku ?? 0),
+                    'fisioterapi'     => (int) ($this->pertemuan_fisioterapi ?? 0),
+                    default           => 0,
+                };
+            }
+            // Jika Gabungan Baru (disatukan), kembalikan jumlah_pertemuan global
+            return (int) ($this->jumlah_pertemuan ?? 20);
         }
         return (int) ($this->jumlah_pertemuan ?? 20);
     }

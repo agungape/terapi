@@ -78,6 +78,11 @@ class Kunjungan extends Model
         return $this->hasMany('App\Models\Fisioterapi');
     }
 
+    public function pemeriksaanGabungans(): HasMany
+    {
+        return $this->hasMany('App\Models\PemeriksaanGabungan');
+    }
+
     public function tarif(): BelongsTo
     {
         return $this->belongsTo(Tarif::class);

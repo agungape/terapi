@@ -147,6 +147,7 @@
                                     <option value="" selected disabled>-- Pilih Jenis Terapi --</option>
                                     <option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>
                                     <option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>
+                                    <option value="gabungan">Gabungan (Perilaku + Fisio)</option>
                                 </select>
                             </div>
 
@@ -164,11 +165,19 @@
 
                         <!-- Right Fieldset -->
                         <div class="space-y-6">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis Pelaksana</label>
-                                <select name="terapis_id" id="terapis_id" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold">
-                                    <option value="">Silakan pilih jenis layanan...</option>
-                                </select>
+                            <div id="terapis-container" class="space-y-4">
+                                <div class="space-y-2">
+                                    <label id="label-terapis-utama" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis Pelaksana</label>
+                                    <select name="terapis_id" id="terapis_id" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold">
+                                        <option value="">Silakan pilih jenis layanan...</option>
+                                    </select>
+                                </div>
+                                <div id="container-terapis-pendamping" class="space-y-2 hidden">
+                                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Terapis Fisioterapi (Pendamping)</label>
+                                    <select name="terapis_id_pendamping" id="terapis_id_pendamping" class="w-full bg-slate-50 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold">
+                                        <option value="">Silakan pilih jenis layanan...</option>
+                                    </select>
+                                </div>
                                 <div id="loading-terapis" class="hidden text-center py-2 animate-pulse">
                                     <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Sinkronisasi Data Terapis...</span>
                                 </div>
@@ -243,6 +252,9 @@
             $('#anak_id').val(anakId);
             $('#namaAnak').val(namaAnak);
 
+            // Sesuaikan dropdown jenis layanan dengan paket aktif
+            fetchAvailableJenisTerapi(anakId);
+
             const form = $('#registrationForm');
             form.removeClass('hidden').hide().slideDown('slow', function() {
                 $('html, body').animate({
@@ -252,6 +264,65 @@
 
             resetTerapisForm();
         });
+
+        function fetchAvailableJenisTerapi(anakId) {
+            const dropdown = $('#jenis_terapi');
+            dropdown.html('<option value="" selected disabled>Memuat pilihan layanan...</option>');
+
+            $.ajax({
+                url: '{{ route("pemasukkan.layanan") }}',
+                type: 'GET',
+                data: { anak_id: anakId },
+                success: function(response) {
+                    const terbeli = response.paket_terbeli || [];
+                    
+                    let aktif = terbeli.filter(item => {
+                        if (item.jenis_terapi === 'gabungan') {
+                            if (item.is_gabungan_baru) return item.sisa > 0;
+                            return (item.sisa_perilaku > 0 || item.sisa_fisioterapi > 0);
+                        }
+                        return item.sisa > 0;
+                    });
+
+                    let availableTypes = [];
+                    aktif.forEach(p => {
+                        if (!availableTypes.includes(p.jenis_terapi)) {
+                            availableTypes.push(p.jenis_terapi);
+                        }
+                    });
+
+                    let html = '<option value="" selected disabled>-- Pilih Jenis Terapi --</option>';
+                    
+                    // Jika tidak punya paket aktif, buka semua jenis layanan
+                    if (availableTypes.length === 0) {
+                        html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
+                        html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
+                        html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
+                    } else {
+                        // Tampilkan HANYA sesuai paket aktif yang dimiliki
+                        if (availableTypes.includes('terapi_perilaku')) {
+                            html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
+                        }
+                        if (availableTypes.includes('fisioterapi')) {
+                            html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
+                        }
+                        if (availableTypes.includes('gabungan')) {
+                            html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
+                        }
+                    }
+
+                    dropdown.html(html);
+                },
+                error: function() {
+                    // Fallback
+                    let html = '<option value="" selected disabled>-- Pilih Jenis Terapi --</option>';
+                    html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
+                    html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
+                    html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
+                    dropdown.html(html);
+                }
+            });
+        }
 
         $('#jenis_terapi').change(function() {
             const jenisTerapi = $(this).val();
@@ -287,10 +358,17 @@
                     // Filter paket yang relevan dengan jenis terapi yang dipilih
                     let paketAktif = terbeli.filter(item => {
                         if (item.jenis_terapi === 'gabungan') {
-                            let sisa = jenisTerapi === 'terapi_perilaku'
-                                ? (item.sisa_perilaku ?? 0)
-                                : (item.sisa_fisioterapi ?? 0);
-                            return sisa > 0;
+                            // Sesuai request: Paket gabungan HANYA muncul jika dropdown memilih gabungan
+                            if (jenisTerapi !== 'gabungan') {
+                                return false;
+                            }
+                            
+                            if (item.is_gabungan_baru) {
+                                return item.sisa > 0;
+                            } else {
+                                // Gabungan Lama
+                                return (item.sisa_perilaku > 0) || (item.sisa_fisioterapi > 0);
+                            }
                         }
                         return item.jenis_terapi === jenisTerapi && item.sisa > 0;
                     });
@@ -312,7 +390,8 @@
         function renderPaketCard(p, jenisTerapi) {
             let sisa, total;
 
-            if (p.jenis_terapi === 'gabungan') {
+            if (p.jenis_terapi === 'gabungan' && !p.is_gabungan_baru) {
+                // Untuk paket gabungan LAMA
                 sisa  = jenisTerapi === 'terapi_perilaku'
                     ? (p.sisa_perilaku ?? 0)
                     : (p.sisa_fisioterapi ?? 0);
@@ -385,36 +464,73 @@
 
         function resetTerapisForm() {
             $('#terapis_id').html('<option value="" selected disabled>Pilih Jenis Terapi Terlebih Dahulu</option>').prop('disabled', true);
+            $('#terapis_id_pendamping').html('<option value="" selected disabled>Pilih Jenis Terapi Terlebih Dahulu</option>').prop('disabled', true);
+            $('#container-terapis-pendamping').addClass('hidden');
             $('#paket-info-container').hide();
         }
 
         function loadTerapisByJenisTerapi() {
             const jenisTerapi = $('#jenis_terapi').val();
             const terapisSelect = $('#terapis_id');
+            const pendampingSelect = $('#terapis_id_pendamping');
             const loader = $('#loading-terapis');
 
             if (!jenisTerapi) return;
 
             loader.show();
             terapisSelect.prop('disabled', true);
+            pendampingSelect.prop('disabled', true);
 
-            $.ajax({
-                url: '/get-terapis-by-jenis',
-                type: 'GET',
-                data: { jenis_terapi: jenisTerapi },
-                success: function(response) {
-                    let options = '<option value="" selected disabled>-- Pilih Terapis Pelaksana --</option>';
-                    if (response.length > 0) {
-                        $.each(response, function(idx, t) {
-                            options += `<option value="${t.id}">${t.nama.toUpperCase()}</option>`;
-                        });
-                    } else {
-                        options = '<option value="" disabled>TIDAK ADA TERAPIS TERSEDIA</option>';
-                    }
-                    terapisSelect.html(options).prop('disabled', false);
-                },
-                complete: function() { loader.hide(); }
-            });
+            if (jenisTerapi === 'gabungan') {
+                $('#container-terapis-pendamping').removeClass('hidden');
+                $('#label-terapis-utama').text('Terapis Perilaku (Utama)');
+
+                $.ajax({
+                    url: '/get-terapis-by-jenis',
+                    type: 'GET',
+                    data: { jenis_terapi: 'gabungan' },
+                    success: function(response) {
+                        let optPerilaku = '<option value="" selected disabled>-- Pilih Terapis Perilaku --</option>';
+                        if(response.perilaku && response.perilaku.length > 0) {
+                            $.each(response.perilaku, function(idx, t) { optPerilaku += `<option value="${t.id}">${t.nama.toUpperCase()}</option>`; });
+                        } else {
+                            optPerilaku = '<option value="" disabled>TIDAK ADA TERAPIS PERILAKU AKTIF</option>';
+                        }
+                        terapisSelect.html(optPerilaku).prop('disabled', false);
+
+                        let optFisio = '<option value="" selected disabled>-- Pilih Terapis Fisioterapi --</option>';
+                        if(response.fisioterapi && response.fisioterapi.length > 0) {
+                            $.each(response.fisioterapi, function(idx, t) { optFisio += `<option value="${t.id}">${t.nama.toUpperCase()}</option>`; });
+                        } else {
+                            optFisio = '<option value="" disabled>TIDAK ADA TERAPIS FISIOTERAPI AKTIF</option>';
+                        }
+                        pendampingSelect.html(optFisio).prop('disabled', false).prop('required', true);
+                    },
+                    complete: function() { loader.hide(); }
+                });
+            } else {
+                $('#container-terapis-pendamping').addClass('hidden');
+                $('#label-terapis-utama').text('Terapis Pelaksana');
+                pendampingSelect.prop('required', false);
+
+                $.ajax({
+                    url: '/get-terapis-by-jenis',
+                    type: 'GET',
+                    data: { jenis_terapi: jenisTerapi },
+                    success: function(response) {
+                        let options = '<option value="" selected disabled>-- Pilih Terapis Pelaksana --</option>';
+                        if (response.length > 0) {
+                            $.each(response, function(idx, t) {
+                                options += `<option value="${t.id}">${t.nama.toUpperCase()}</option>`;
+                            });
+                        } else {
+                            options = '<option value="" disabled>TIDAK ADA TERAPIS TERSEDIA</option>';
+                        }
+                        terapisSelect.html(options).prop('disabled', false);
+                    },
+                    complete: function() { loader.hide(); }
+                });
+            }
         }
     });
 </script>

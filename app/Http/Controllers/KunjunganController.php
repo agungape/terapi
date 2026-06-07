@@ -32,6 +32,14 @@ class KunjunganController extends Controller
     {
         $jenisTerapi = $request->jenis_terapi;
 
+        if ($jenisTerapi === 'gabungan') {
+            $perilaku = Terapis::where('role', 'terapi_perilaku')->where('status', 'aktif')->get();
+            $fisioterapi = Terapis::where('role', 'fisioterapi')->where('status', 'aktif')->get();
+            return response()->json([
+                'perilaku' => $perilaku,
+                'fisioterapi' => $fisioterapi
+            ]);
+        }
 
         // Query untuk mendapatkan terapis berdasarkan jenis terapi
         $terapis = Terapis::where('role', $jenisTerapi)
@@ -46,10 +54,17 @@ class KunjunganController extends Controller
         $validateData = $request->validate([
             'anak_id' => 'required|exists:App\Models\Anak,id',
             'terapis_id' => 'required|exists:App\Models\Terapis,id',
+            'terapis_id_pendamping' => 'nullable|exists:App\Models\Terapis,id',
             'jenis_terapi' => 'required',
             'catatan' => '',
             'status' => 'required',
         ]);
+
+        if ($request->jenis_terapi === 'gabungan') {
+            $request->validate([
+                'terapis_id_pendamping' => 'required|exists:App\Models\Terapis,id',
+            ]);
+        }
 
         $anak = Anak::findOrFail($request->anak_id);
 
@@ -111,55 +126,67 @@ class KunjunganController extends Controller
                 }
             }
 
-            // FIX ISU 1: Jika kwitansiAktif berbeda dari kunjungan_terakhir
-            // (misal: kunjungan lama tanpa tarif_id/pemasukkan_id, tapi sekarang sudah beli paket baru)
-            // maka MULAI dari pertemuan 1 dalam kwitansi baru, jangan lanjutkan dari kunjungan lama
+            // --- HITUNG PERTEMUAN ---
             $kwitansiTerakhirId = $kunjungan_terakhir->pemasukkan_id;
             $kwitansiAktifId    = $kwitansiAktif ? $kwitansiAktif->id : null;
             $kwitansiBerbeda    = ($kwitansiAktifId !== null) && ($kwitansiTerakhirId !== $kwitansiAktifId);
 
             if ($kwitansiBerbeda) {
-                // Kunjungan baru menggunakan kwitansi BARU yang berbeda dari kunjungan terakhir
-                // Hitung berapa sesi yang sudah terpakai di kwitansi baru ini
-                $sudahTerpakaiDiKwitansiBaru = Kunjungan::where('pemasukkan_id', $kwitansiAktifId)
+                // Pindah kwitansi baru: hitung terpakai di kwitansi baru
+                $query = Kunjungan::where('pemasukkan_id', $kwitansiAktifId)
                     ->where('anak_id', $request->anak_id)
-                    ->where('jenis_terapi', $request->jenis_terapi)
-                    ->whereIn('status', ['hadir', 'izin_hangus'])
-                    ->count();
-
-                $nextPertemuan     = $sudahTerpakaiDiKwitansiBaru + 1;
-                $nextSesi          = ($kunjungan_terakhir->sesi ?? 1) + 1;
-                $finalTarifId      = $kwitansiAktif->tarif_id;
+                    ->whereIn('status', ['hadir', 'izin_hangus']);
+                
+                if ($request->jenis_terapi !== 'gabungan') {
+                    $query->where('jenis_terapi', $request->jenis_terapi);
+                }
+                
+                $maxPertemuan = $query->max('pertemuan') ?? 0;
+                $nextPertemuan = $maxPertemuan + 1;
+                $finalTarifId = $kwitansiAktif->tarif_id;
                 $finalPemasukkanId = $kwitansiAktif->id;
-
-            } elseif ($kunjungan_terakhir->status == 'hadir' || $kunjungan_terakhir->status == 'izin_hangus') {
-
+            } elseif (in_array($kunjungan_terakhir->status, ['hadir', 'izin_hangus'])) {
+                // Lanjutkan kwitansi lama (hadir)
                 if ($kunjungan_terakhir->pertemuan < $limitLama) {
-                    // LANJUTKAN SESI LAMA
-                    $nextPertemuan     = $kunjungan_terakhir->pertemuan + 1;
-                    $nextSesi          = $kunjungan_terakhir->sesi ?? 1;
-                    $finalTarifId      = $kunjungan_terakhir->tarif_id;
+                    $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
+                    $finalTarifId = $kunjungan_terakhir->tarif_id;
                     $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
                 } else {
-                    // MULAI SESI (SEASON) BARU
-                    $nextPertemuan     = 1;
-                    $nextSesi          = ($kunjungan_terakhir->sesi ?? 1) + 1;
-                    $finalTarifId      = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+                    // Season baru (sudah melewati limit lama)
+                    $nextPertemuan = 1;
+                    $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
                     $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
                 }
             } else {
-                // IZIN/SAKIT: nomor tetap sama
-                $nextPertemuan     = $kunjungan_terakhir->pertemuan;
-                $nextSesi          = $kunjungan_terakhir->sesi ?? 1;
-                $finalTarifId      = $kunjungan_terakhir->tarif_id;
+                // IZIN/SAKIT: nomor pertemuan tetap sama
+                $nextPertemuan = $kunjungan_terakhir->pertemuan;
+                $finalTarifId = $kunjungan_terakhir->tarif_id;
                 $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
             }
+
+        }
+
+        // --- HITUNG SESI (SEASON) ---
+        if ($nextPertemuan === 1) {
+            // Memulai season/paket baru
+            $querySesi = Kunjungan::where('anak_id', $request->anak_id);
+            if ($request->jenis_terapi === 'gabungan') {
+                $querySesi->whereIn('jenis_terapi', ['terapi_perilaku', 'fisioterapi', 'gabungan']);
+            } else {
+                $querySesi->where('jenis_terapi', $request->jenis_terapi);
+            }
+            $nextSesi = ($querySesi->max('sesi') ?? 0) + 1;
         } else {
-            // DATA BARU SAMA SEKALI
-            $nextPertemuan = 1;
-            $nextSesi = 1;
-            $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
-            $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
+            // Melanjutkan season/paket yang sama
+            if (isset($kwitansiAktif) && $kwitansiAktif) {
+                $nextSesi = Kunjungan::where('pemasukkan_id', $kwitansiAktif->id)
+                    ->where('anak_id', $request->anak_id)
+                    ->max('sesi') ?? 1;
+            } elseif (isset($kunjungan_terakhir) && $kunjungan_terakhir) {
+                $nextSesi = $kunjungan_terakhir->sesi ?? 1;
+            } else {
+                $nextSesi = 1;
+            }
         }
 
         $pertemuan = $nextPertemuan;
@@ -184,6 +211,7 @@ class KunjunganController extends Controller
         $data = [
             'anak_id' => $request->anak_id,
             'terapis_id' => $request->terapis_id,
+            'terapis_id_pendamping' => $request->terapis_id_pendamping,
             'tarif_id' => $finalTarifId,
             'pemasukkan_id' => $finalPemasukkanId,
             'jenis_terapi' => $request->jenis_terapi,
@@ -218,7 +246,7 @@ class KunjunganController extends Controller
     public function riwayatAnak()
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        $kunjungan = Kunjungan::with(['anak', 'terapis', 'terapisPendamping'])
+        $kunjungan = Kunjungan::with(['anak', 'terapis', 'terapisPendamping', 'tarif', 'pemasukkan.tarif'])
             ->whereNotNull('pertemuan')->whereNull('catatan')
             ->latest()
             ->paginate(10);
@@ -270,13 +298,19 @@ class KunjunganController extends Controller
             })
             ->exists();
 
+        if ($kunjungan->jenis_terapi === 'gabungan') {
+            // riwayat gabungan
+            $riwayat_gabungan = Kunjungan::with('pemeriksaanGabungans')->where('anak_id', $kunjungan->anak_id)->where('jenis_terapi', 'gabungan')->where('status', 'hadir')->whereNull('catatan')->latest()->get();
+            return view('pemeriksaan.gabungan', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'isCurrentSessionCompleted', 'riwayat_gabungan'));
+        }
+
         return view('kunjungan.detail', compact('kunjungan', 'program', 'riwayat', 'riwayat_fisioterapi', 'program_fisioterapi', 'isCurrentSessionCompleted'));
     }
 
     public function search_kunjungan(Request $request)
     {
         $terapis = Terapis::where('status', 'aktif')->get();
-        $query = Kunjungan::with(['anak', 'terapis', 'terapisPendamping', 'tarif'])
+        $query = Kunjungan::with(['anak', 'terapis', 'terapisPendamping', 'tarif', 'pemasukkan.tarif'])
             ->whereNotNull('pertemuan')
             ->whereNull('catatan')
             ->orderBy('created_at', 'desc');

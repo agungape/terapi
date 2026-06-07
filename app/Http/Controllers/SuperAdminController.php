@@ -203,13 +203,41 @@ class SuperAdminController extends Controller
         // =========================================================
         // 11. ANAK BELUM DIISI PEMERIKSAAN
         // =========================================================
-        $belumPemeriksaan = Kunjungan::with(['anak', 'terapis', 'tarif'])
+        $kunjunganHadirToday = Kunjungan::with(['anak', 'terapis', 'tarif', 'pemeriksaans', 'fisioterapis', 'pemeriksaanGabungans'])
             ->whereDate('created_at', $today)
             ->where('status', 'hadir')
-            ->whereDoesntHave('pemeriksaans')
-            ->whereDoesntHave('fisioterapis')
-            ->whereDoesntHave('pemeriksaanGabungans')
+            ->latest()
             ->get();
+
+        $belumPemeriksaan = collect();
+
+        foreach ($kunjunganHadirToday as $k) {
+            if ($k->jenis_terapi === 'terapi_perilaku') {
+                if ($k->pemeriksaans->isEmpty()) {
+                    $k->kekurangan_pemeriksaan = 'Terapi Perilaku';
+                    $belumPemeriksaan->push($k);
+                }
+            } elseif ($k->jenis_terapi === 'fisioterapi') {
+                if ($k->fisioterapis->isEmpty()) {
+                    $k->kekurangan_pemeriksaan = 'Fisioterapi';
+                    $belumPemeriksaan->push($k);
+                }
+            } elseif ($k->jenis_terapi === 'gabungan') {
+                $hasPerilaku = $k->pemeriksaanGabungans->where('jenis_form', 'perilaku')->isNotEmpty();
+                $hasFisio = $k->pemeriksaanGabungans->where('jenis_form', 'fisioterapi')->isNotEmpty();
+                
+                if (!$hasPerilaku && !$hasFisio) {
+                    $k->kekurangan_pemeriksaan = 'Perilaku & Fisioterapi';
+                    $belumPemeriksaan->push($k);
+                } elseif (!$hasPerilaku) {
+                    $k->kekurangan_pemeriksaan = 'Perilaku';
+                    $belumPemeriksaan->push($k);
+                } elseif (!$hasFisio) {
+                    $k->kekurangan_pemeriksaan = 'Fisioterapi';
+                    $belumPemeriksaan->push($k);
+                }
+            }
+        }
 
         // =========================================================
         // 12. ASSESSMENT BELUM BAYAR

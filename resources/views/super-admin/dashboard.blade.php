@@ -278,7 +278,12 @@
                     </div>
                 </td>
                 <td class="text-xs">{{ $k->terapis->nama??'-' }}</td>
-                <td class="text-xs">{{ str_replace('_',' ',ucwords($k->jenis_terapi??'-')) }}</td>
+                <td class="text-xs">
+                    {{ str_replace('_',' ',ucwords($k->jenis_terapi??'-')) }}
+                    @if(isset($k->kekurangan_pemeriksaan))
+                        <div class="mt-1"><span class="inline-block px-2 py-0.5 bg-rose-100 text-rose-600 rounded text-[9px] font-bold">Kurang: {{ $k->kekurangan_pemeriksaan }}</span></div>
+                    @endif
+                </td>
                 <td class="font-mono font-black text-center">#{{ $k->pertemuan }}</td>
                 <td class="text-[10px] text-slate-400 font-bold">{{ $k->created_at->format('H:i') }} WIB</td>
                 <td>

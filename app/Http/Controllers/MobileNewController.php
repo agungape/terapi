@@ -27,7 +27,7 @@ class MobileNewController extends Controller
 
         // Fetch actual data from database
         $kunjungan = Kunjungan::where('anak_id', $anak->id)
-            ->with(['terapis', 'pemeriksaans', 'fisioterapis'])
+            ->with(['terapis', 'pemeriksaans', 'fisioterapis', 'pemeriksaanGabungans'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -89,6 +89,19 @@ class MobileNewController extends Controller
                                 ];
                             });
                             $extraInfo['catatan_ortu'] = $k->pemeriksaans->first()->catatan_orang_tua ?? null;
+                        } elseif ($k->jenis_terapi === 'gabungan') {
+                            $programs = $k->pemeriksaanGabungans->map(function($g) {
+                                $isPerilaku = $g->jenis_form === 'perilaku';
+                                $statusStr = $isPerilaku ? $g->status : (is_array($g->pilihan_respons) ? implode(', ', $g->pilihan_respons) : '');
+                                return [
+                                    'name' => ($isPerilaku ? '[Perilaku] ' : '[Fisio] ') . ($g->program->deskripsi ?? 'Program'),
+                                    'status' => $statusStr,
+                                    'note' => $isPerilaku ? $g->keterangan : $g->catatan_khusus,
+                                    'activity' => $g->aktivitas_terapi
+                                ];
+                            });
+                            $firstGabungan = $k->pemeriksaanGabungans->first();
+                            $extraInfo['catatan_ortu'] = $firstGabungan->catatan_orang_tua ?? null;
                         } else {
                             $programs = $k->fisioterapis->map(function($f) {
                                 return [
@@ -106,7 +119,8 @@ class MobileNewController extends Controller
 
                         $firstPem = $k->pemeriksaans->first();
                         $firstFis = $k->fisioterapis->first();
-                        $hasilKegiatan = ($firstPem->hasil_kegiatan ?? null) ?: ($firstFis->hasil_kegiatan ?? null);
+                        $firstGab = $k->pemeriksaanGabungans->first();
+                        $hasilKegiatan = ($firstPem->hasil_kegiatan ?? null) ?: (($firstFis->hasil_kegiatan ?? null) ?: ($firstGab->hasil_kegiatan ?? null));
 
                         return [
                             'id' => $k->id,
@@ -139,19 +153,21 @@ class MobileNewController extends Controller
         // Pass grouped sessions to frontend
         $sessions = $groupedSessions;
 
-        // Map data for activities (Recent Activities) - Khusus 2 Terakhir (Hadir & Perilaku/Fisio)
+        // Map data for activities (Recent Activities) - Khusus 2 Terakhir
         $activities = $kunjungan->where('status', 'hadir')
-            ->whereIn('jenis_terapi', ['terapi_perilaku', 'fisioterapi'])
+            ->whereIn('jenis_terapi', ['terapi_perilaku', 'fisioterapi', 'gabungan'])
             ->take(2)
             ->map(function($k) {
                 $pemeriksaan = $k->pemeriksaans ? $k->pemeriksaans->first() : null;
                 $fisio = $k->fisioterapis ? $k->fisioterapis->first() : null;
+                $gabungan = $k->pemeriksaanGabungans ? $k->pemeriksaanGabungans->first() : null;
                 
-                $hasil = ($pemeriksaan->hasil_kegiatan ?? null) ?: ($fisio->hasil_kegiatan ?? null);
+                $hasil = ($pemeriksaan->hasil_kegiatan ?? null) ?: (($fisio->hasil_kegiatan ?? null) ?: ($gabungan->hasil_kegiatan ?? null));
 
                 $colorMap = [
                     'terapi_perilaku' => 'green',
                     'fisioterapi' => 'blue',
+                    'gabungan' => 'teal',
                 ];
                 $color = $colorMap[$k->jenis_terapi] ?? 'indigo';
 

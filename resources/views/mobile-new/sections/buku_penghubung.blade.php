@@ -55,6 +55,11 @@
                 class="px-8 py-3 rounded-2xl text-sm font-black transition-all whitespace-nowrap active:scale-95 flex-shrink-0">
                 Fisioterapi
             </button>
+            <button @click="filterTerapi = 'gabungan'"
+                :class="filterTerapi === 'gabungan' ? 'bg-orange-500 text-white shadow-orange-200 shadow-lg' : 'bg-white text-slate-400 border border-slate-100'"
+                class="px-8 py-3 rounded-2xl text-sm font-black transition-all whitespace-nowrap active:scale-95 flex-shrink-0">
+                Gabungan
+            </button>
         </div>
 
         <!-- Session Groups -->
@@ -93,7 +98,7 @@
                             <div class="flex items-center">
                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center mr-4 shadow-md"
                                     :class="isExpanded(group.sesi_id + '-' + group.type) ? 'bg-white/20 border border-white/30' : 'bg-orange-500 text-white'">
-                                    <i class="fas" :class="group.type === 'fisioterapi' ? 'fa-walking' : 'fa-brain'"></i>
+                                    <i class="fas" :class="group.type === 'fisioterapi' ? 'fa-walking' : (group.type === 'gabungan' ? 'fa-layer-group' : 'fa-brain')"></i>
                                 </div>
                                 <div>
                                     <h3 class="font-black text-sm" :class="isExpanded(group.sesi_id + '-' + group.type) ? 'text-white' : 'text-orange-600'" 
@@ -120,11 +125,13 @@
                                                 :class="{
                                                     'bg-orange-100 text-orange-600': session.type === 'terapi_perilaku',
                                                     'bg-blue-100 text-blue-600': session.type === 'fisioterapi',
+                                                    'bg-teal-100 text-teal-600': session.type === 'gabungan',
                                                     'bg-purple-100 text-purple-600': session.type === 'terapi_wicara'
                                                 }">
                                                 <i class="fas" :class="{
                                                     'fa-brain': session.type === 'terapi_perilaku',
                                                     'fa-walking': session.type === 'fisioterapi',
+                                                    'fa-layer-group': session.type === 'gabungan',
                                                     'fa-comment-dots': session.type === 'terapi_wicara'
                                                 }"></i>
                                             </div>

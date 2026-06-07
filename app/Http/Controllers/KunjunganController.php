@@ -164,8 +164,27 @@ class KunjunganController extends Controller
                 $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
             }
 
-        }
+        } else {
+            // DATA BARU SAMA SEKALI / SWITCH KE GABUNGAN PERTAMA KALI
+            if ($kwitansiAktif) {
+                // Hitung dari kwitansi
+                $query = Kunjungan::where('pemasukkan_id', $kwitansiAktif->id)
+                    ->where('anak_id', $request->anak_id)
+                    ->whereIn('status', ['hadir', 'izin_hangus']);
+                
+                if ($request->jenis_terapi !== 'gabungan') {
+                    $query->where('jenis_terapi', $request->jenis_terapi);
+                }
+                
+                $maxPertemuan = $query->max('pertemuan') ?? 0;
+                $nextPertemuan = $maxPertemuan + 1;
+            } else {
+                $nextPertemuan = 1;
+            }
 
+            $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+            $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
+        }
         // --- HITUNG SESI (SEASON) ---
         if ($nextPertemuan === 1) {
             // Memulai season/paket baru

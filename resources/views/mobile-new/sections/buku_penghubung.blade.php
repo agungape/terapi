@@ -11,7 +11,7 @@
     },
     groupHasItems(group, filter) {
         const matchFilter = (filter === 'semua' || group.type === filter);
-        const hasValidItems = group.items.some(item => item.programs && item.programs.length > 0);
+        const hasValidItems = group.items.length > 0;
         return matchFilter && hasValidItems;
     },
     showSectionHeader(index, filter) {
@@ -104,7 +104,7 @@
                                     <h3 class="font-black text-sm" :class="isExpanded(group.sesi_id + '-' + group.type) ? 'text-white' : 'text-orange-600'" 
                                         x-text="group.type_label + ' • Sesi ' + group.sesi_id"></h3>
                                     <p class="text-[10px] font-bold" :class="isExpanded(group.sesi_id + '-' + group.type) ? 'text-orange-100' : 'text-orange-400'" 
-                                       x-text="group.items.filter(i => i.programs.length > 0).length + ' Laporan Tersedia'"></p>
+                                       x-text="group.items.length + ' Laporan Tersedia'"></p>
                                 </div>
                             </div>
                             <div class="w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300"
@@ -116,8 +116,7 @@
                         <!-- Items List -->
                         <div x-show="isExpanded(group.sesi_id + '-' + group.type)" x-collapse class="px-4 pb-5 space-y-3 pt-3 bg-slate-50/30">
                             <template x-for="(session, sIndex) in group.items" :key="session.id">
-                                <div x-show="session.programs.length > 0"
-                                    class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:border-orange-200 transition-all duration-300 cursor-pointer group active:scale-[0.98]"
+                                <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:border-orange-200 transition-all duration-300 cursor-pointer group active:scale-[0.98]"
                                     @click="openSessionDetail(session)">
                                     <div class="flex justify-between items-start mb-3">
                                         <div class="flex items-center space-x-3">
@@ -271,7 +270,7 @@
                 </div>
 
                 <!-- Program List -->
-                <div>
+                <div x-show="(selectedSession?.programs || []).length > 0">
                     <div class="flex items-center justify-between mb-6 px-2">
                         <h5 class="font-black text-slate-800 flex items-center text-base tracking-tight">
                             <span class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mr-3 shadow-sm">

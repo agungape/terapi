@@ -67,6 +67,7 @@ class MobileNewController extends Controller
         // Map and Group sessions for Buku Anak (Hanya yang Hadir)
         // Dikelompokkan berdasarkan Sesi dan Jenis Terapi agar filter lebih akurat
         $groupedSessions = $kunjungan->where('status', 'hadir')
+            ->whereNotNull('pertemuan')
             ->groupBy(function($item) {
                 return $item->sesi . '-' . $item->jenis_terapi;
             })

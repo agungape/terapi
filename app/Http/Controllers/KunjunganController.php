@@ -472,11 +472,25 @@ class KunjunganController extends Controller
         // Re-check status_sesi (apakah sudah limit atau belum)
         $maxPertemuan = 20;
         if ($kunjungan->tarif_id) {
-            $tarif = Tarif::find($kunjungan->tarif_id);
-            $maxPertemuan = $tarif ? ($tarif->jumlah_pertemuan ?? 20) : 20;
+            $tarif = \App\Models\Tarif::find($kunjungan->tarif_id);
+            if ($tarif) {
+                $maxPertemuan = $tarif->getPertemuanUntukJenis($kunjungan->jenis_terapi) ?: ($tarif->jumlah_pertemuan ?? 20);
+            }
         }
 
-        if (in_array($kunjungan->status, $quotaStatuses) && $kunjungan->pertemuan >= $maxPertemuan) {
+        $terpakai = $kunjungan->pertemuan;
+        if ($kunjungan->pemasukkan_id) {
+            $terpakai = \App\Models\Kunjungan::where('pemasukkan_id', $kunjungan->pemasukkan_id)
+                ->whereIn('status', $quotaStatuses);
+                
+            // Jika paket gabungan lama, hitung per-jenis terapi
+            if (isset($tarif) && $tarif->jenis_terapi === 'gabungan' && (($tarif->pertemuan_perilaku ?? 0) > 0 || ($tarif->pertemuan_fisioterapi ?? 0) > 0)) {
+                $terpakai = $terpakai->where('jenis_terapi', $kunjungan->jenis_terapi);
+            }
+            $terpakai = $terpakai->count();
+        }
+
+        if (in_array($kunjungan->status, $quotaStatuses) && $terpakai >= $maxPertemuan) {
             $kunjungan->status_sesi = 'selesai';
         } else {
             $kunjungan->status_sesi = 'aktif';

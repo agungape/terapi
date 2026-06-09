@@ -293,23 +293,10 @@
 
                     let html = '<option value="" selected disabled>-- Pilih Jenis Terapi --</option>';
                     
-                    // Jika tidak punya paket aktif, buka semua jenis layanan
-                    if (availableTypes.length === 0) {
-                        html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
-                        html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
-                        html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
-                    } else {
-                        // Tampilkan HANYA sesuai paket aktif yang dimiliki
-                        if (availableTypes.includes('terapi_perilaku')) {
-                            html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
-                        }
-                        if (availableTypes.includes('fisioterapi')) {
-                            html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
-                        }
-                        if (availableTypes.includes('gabungan')) {
-                            html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
-                        }
-                    }
+                    // Selalu tampilkan semua jenis layanan sesuai permintaan
+                    html += '<option value="terapi_perilaku">Terapi Perilaku (Behavior)</option>';
+                    html += '<option value="fisioterapi">Fisioterapi & Sensor Integrasi</option>';
+                    html += '<option value="gabungan">Gabungan (Perilaku + Fisio)</option>';
 
                     dropdown.html(html);
                 },

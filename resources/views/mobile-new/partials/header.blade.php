@@ -71,29 +71,31 @@
                 
                 <div class="flex-1 flex flex-col justify-center mt-1">
                     @if($activePackages && $activePackages->count() === 1)
-                        @php $p = $activePackages->first(); @endphp
+                        @php 
+                            $p = $activePackages->first(); 
+                            $maxPertemuan = $p->kunjungans->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+                            $total = $p->tarif->jumlah_pertemuan ?? 20;
+                            $percentage = $total > 0 ? round(($maxPertemuan / $total) * 100) : 0;
+                        @endphp
                         <div>
-                            <p class="text-2xl font-black">{{ $p->sudah_terpakai ?? 0 }} / {{ $p->tarif->jumlah_pertemuan ?? 20 }}</p>
+                            <p class="text-2xl font-black">{{ $maxPertemuan }} / {{ $total }}</p>
                             <p class="text-[9px] font-bold opacity-70 truncate">{{ $p->tarif->nama ?? 'Paket' }}</p>
                         </div>
-                        @php
-                            $total = $p->tarif->jumlah_pertemuan ?? 20;
-                            $percentage = $total > 0 ? round(($p->sudah_terpakai / $total) * 100) : 0;
-                        @endphp
                         <div class="mt-1.5 w-full bg-white/30 rounded-full h-1.5">
                             <div class="bg-yellow-400 h-1.5 rounded-full" style="width: {{ $percentage }}%"></div>
                         </div>
                     @else
                         @forelse($activePackages as $p)
+                            @php
+                                $maxPertemuan = $p->kunjungans->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+                                $total = $p->tarif->jumlah_pertemuan ?? 20;
+                                $percentage = $total > 0 ? round(($maxPertemuan / $total) * 100) : 0;
+                            @endphp
                             <div class="mb-1.5 last:mb-0">
                                 <div class="flex justify-between items-center text-xs mb-0.5">
                                     <span class="font-bold opacity-70 truncate max-w-[65px]">{{ $p->tarif->nama ?? 'Paket' }}</span>
-                                    <span class="font-black">{{ $p->sudah_terpakai }}/{{ $p->tarif->jumlah_pertemuan ?? 20 }}</span>
+                                    <span class="font-black">{{ $maxPertemuan }}/{{ $total }}</span>
                                 </div>
-                                @php
-                                    $total = $p->tarif->jumlah_pertemuan ?? 20;
-                                    $percentage = $total > 0 ? round(($p->sudah_terpakai / $total) * 100) : 0;
-                                @endphp
                                 <div class="w-full bg-white/20 rounded-full h-0.5">
                                     <div class="bg-yellow-400 h-0.5 rounded-full" style="width: {{ $percentage }}%"></div>
                                 </div>

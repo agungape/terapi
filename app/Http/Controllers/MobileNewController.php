@@ -461,6 +461,9 @@ class MobileNewController extends Controller
             ];
         })->values();
 
+        // Override activePackages untuk header UI agar tetap menampilkan paket terakhir jika sudah habis
+        $activePackages = $displayPackages;
+
         return view('mobile-new.index', compact(
             'anak', 
             'sessions', 

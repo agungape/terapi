@@ -24,9 +24,11 @@
                             $totalSesi = $tarif->jumlah_pertemuan ?? 0;
                         }
                     }
+                    
+                    $maxPertemuan = $pemasukkan->kunjungans->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
                 @endphp
                 <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-tighter italic">
-                    {{ $pemasukkan->sudah_terpakai }} / {{ $totalSesi }} Sesi
+                    {{ $maxPertemuan }} / {{ $totalSesi }} Sesi
                 </span>
             </div>
 

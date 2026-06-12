@@ -197,6 +197,8 @@ class MobileNewController extends Controller
             $sakit = $pkgKunjungan->where('status', 'sakit')->count();
             $hangus = $pkgKunjungan->where('status', 'izin_hangus')->count();
             
+            $maxPertemuan = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+            
             return [
                 'id' => $pkg->id,
                 'name' => $pkg->tarif->nama ?? 'Paket Terapi',
@@ -204,7 +206,7 @@ class MobileNewController extends Controller
                 'izin' => $izin,
                 'sakit' => $sakit,
                 'hangus' => $hangus,
-                'totalUsed' => ($hadir + $hangus),
+                'totalUsed' => $maxPertemuan,
                 'totalQuota' => $pkg->tarif->jumlah_pertemuan ?? 0,
                 'history' => $pkgKunjungan->map(function($k) {
                     return [
@@ -247,7 +249,10 @@ class MobileNewController extends Controller
         if ($displayPackages->count() > 0) {
             foreach ($displayPackages as $pkg) {
                 $totalPertemuanSum += $pkg->tarif->jumlah_pertemuan ?? 0;
-                $sudahTerpakaiSum += $pkg->sudah_terpakai;
+                
+                $pkgKunjungan = $kunjungan->where('pemasukkan_id', $pkg->id);
+                $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+                $sudahTerpakaiSum += $used;
             }
         }
 
@@ -292,9 +297,13 @@ class MobileNewController extends Controller
             });
 
         // Map active packages for UI
-        $formattedActivePackages = $displayPackages->map(function($p) {
+        $formattedActivePackages = $displayPackages->map(function($p) use ($kunjungan) {
             $total = $p->tarif->jumlah_pertemuan ?? 0;
-            $used = $p->sudah_terpakai ?? 0;
+            
+            // Ambil max pertemuan untuk kalkulasi persentase pemakaian
+            $pkgKunjungan = $kunjungan->where('pemasukkan_id', $p->id);
+            $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+            
             $remaining = $p->sisa_pertemuan;
             
             $remainingLabel = '';

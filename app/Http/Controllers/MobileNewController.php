@@ -185,8 +185,11 @@ class MobileNewController extends Controller
                 ];
             });
 
+        // Packages to display in Dashboard (Active, or the latest exhausted one if no active)
+        $displayPackages = $activePackages->isNotEmpty() ? $activePackages : ($pemasukkans->isNotEmpty() ? collect([$pemasukkans->first()]) : collect([]));
+
         // Grouped Attendance Data by Package
-        $packageStats = $activePackages->map(function($pkg) use ($kunjungan) {
+        $packageStats = $displayPackages->map(function($pkg) use ($kunjungan) {
             $pkgKunjungan = $kunjungan->where('pemasukkan_id', $pkg->id);
             
             $hadir = $pkgKunjungan->where('status', 'hadir')->count();
@@ -241,8 +244,8 @@ class MobileNewController extends Controller
         $totalPertemuanSum = 0;
         $sudahTerpakaiSum = 0;
         
-        if ($activePackages->count() > 0) {
-            foreach ($activePackages as $pkg) {
+        if ($displayPackages->count() > 0) {
+            foreach ($displayPackages as $pkg) {
                 $totalPertemuanSum += $pkg->tarif->jumlah_pertemuan ?? 0;
                 $sudahTerpakaiSum += $pkg->sudah_terpakai;
             }
@@ -289,7 +292,7 @@ class MobileNewController extends Controller
             });
 
         // Map active packages for UI
-        $formattedActivePackages = $activePackages->map(function($p) {
+        $formattedActivePackages = $displayPackages->map(function($p) {
             $total = $p->tarif->jumlah_pertemuan ?? 0;
             $used = $p->sudah_terpakai ?? 0;
             $remaining = $p->sisa_pertemuan;

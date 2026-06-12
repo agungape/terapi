@@ -487,7 +487,7 @@ class KunjunganController extends Controller
             if (isset($tarif) && $tarif->jenis_terapi === 'gabungan' && (($tarif->pertemuan_perilaku ?? 0) > 0 || ($tarif->pertemuan_fisioterapi ?? 0) > 0)) {
                 $terpakai = $terpakai->where('jenis_terapi', $kunjungan->jenis_terapi);
             }
-            $terpakai = $terpakai->count();
+            $terpakai = $terpakai->max('pertemuan') ?? 0;
         }
 
         if (in_array($kunjungan->status, $quotaStatuses) && $terpakai >= $maxPertemuan) {

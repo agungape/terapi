@@ -11,7 +11,7 @@
                         <p class="text-[10px] text-gray-500" x-text="new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' })"></p>
                     </div>
                     <div class="text-right">
-                        <p class="text-xl font-black text-green-600" x-text="Math.round((pkg.hadir / pkg.totalQuota) * 100) + '%'"></p>
+                        <p class="text-xl font-black text-green-600" x-text="pkg.totalQuota > 0 ? Math.round((pkg.totalUsed / pkg.totalQuota) * 100) + '%' : '0%'"></p>
                         <p class="text-[9px] font-bold text-gray-400 uppercase">Pemakaian</p>
                     </div>
                 </div>

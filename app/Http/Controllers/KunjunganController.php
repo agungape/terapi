@@ -129,49 +129,39 @@ class KunjunganController extends Controller
             // --- HITUNG PERTEMUAN ---
             $kwitansiTerakhirId = $kunjungan_terakhir->pemasukkan_id;
             $kwitansiAktifId    = $kwitansiAktif ? $kwitansiAktif->id : null;
-            
-            // Hitung max pertemuan di kwitansi terakhir
-            $queryTerakhir = Kunjungan::where('pemasukkan_id', $kwitansiTerakhirId)
-                ->where('anak_id', $request->anak_id)
-                ->whereIn('status', ['hadir', 'izin_hangus']);
-            if ($request->jenis_terapi !== 'gabungan') {
-                $queryTerakhir->where('jenis_terapi', $request->jenis_terapi);
-            }
-            $maxTerakhir = $queryTerakhir->max('pertemuan') ?? 0;
+            $kwitansiBerbeda    = ($kwitansiAktifId !== null) && ($kwitansiTerakhirId !== $kwitansiAktifId);
 
-            if (in_array($request->status, ['sakit', 'izin'])) {
-                // SAKIT/IZIN: tidak menambah pertemuan, tempel di paket terakhir (atau paket aktif jika sebelumnya rusak/kosong)
-                $nextPertemuan = max(1, $maxTerakhir);
-                $finalTarifId = $kunjungan_terakhir->tarif_id ?? ($kwitansiAktif ? $kwitansiAktif->tarif_id : null);
-                $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id ?? ($kwitansiAktif ? $kwitansiAktif->id : null);
-            } else {
-                // HADIR/IZIN_HANGUS
-                $kwitansiBerbeda = ($kwitansiAktifId !== null) && ($kwitansiTerakhirId !== $kwitansiAktifId);
+            if ($kwitansiBerbeda) {
+                // Pindah kwitansi baru: hitung terpakai di kwitansi baru
+                $query = Kunjungan::where('pemasukkan_id', $kwitansiAktifId)
+                    ->where('anak_id', $request->anak_id)
+                    ->whereIn('status', ['hadir', 'izin_hangus']);
                 
-                if ($kwitansiBerbeda) {
-                    // Pindah kwitansi baru
-                    $queryBaru = Kunjungan::where('pemasukkan_id', $kwitansiAktifId)
-                        ->where('anak_id', $request->anak_id)
-                        ->whereIn('status', ['hadir', 'izin_hangus']);
-                    if ($request->jenis_terapi !== 'gabungan') {
-                        $queryBaru->where('jenis_terapi', $request->jenis_terapi);
-                    }
-                    $nextPertemuan = ($queryBaru->max('pertemuan') ?? 0) + 1;
-                    $finalTarifId = $kwitansiAktif->tarif_id;
-                    $finalPemasukkanId = $kwitansiAktif->id;
-                } else {
-                    // Masih di kwitansi yang sama (atau keduanya null)
-                    if ($maxTerakhir < $limitLama) {
-                        $nextPertemuan = $maxTerakhir + 1;
-                        $finalTarifId = $kunjungan_terakhir->tarif_id ?? ($kwitansiAktif ? $kwitansiAktif->tarif_id : null);
-                        $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id ?? ($kwitansiAktif ? $kwitansiAktif->id : null);
-                    } else {
-                        // Season baru (sudah melewati limit lama)
-                        $nextPertemuan = 1;
-                        $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
-                        $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
-                    }
+                if ($request->jenis_terapi !== 'gabungan') {
+                    $query->where('jenis_terapi', $request->jenis_terapi);
                 }
+                
+                $maxPertemuan = $query->max('pertemuan') ?? 0;
+                $nextPertemuan = $maxPertemuan + 1;
+                $finalTarifId = $kwitansiAktif->tarif_id;
+                $finalPemasukkanId = $kwitansiAktif->id;
+            } elseif (in_array($kunjungan_terakhir->status, ['hadir', 'izin_hangus'])) {
+                // Lanjutkan kwitansi lama (hadir)
+                if ($kunjungan_terakhir->pertemuan < $limitLama) {
+                    $nextPertemuan = $kunjungan_terakhir->pertemuan + 1;
+                    $finalTarifId = $kunjungan_terakhir->tarif_id;
+                    $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
+                } else {
+                    // Season baru (sudah melewati limit lama)
+                    $nextPertemuan = 1;
+                    $finalTarifId = $kwitansiAktif ? $kwitansiAktif->tarif_id : null;
+                    $finalPemasukkanId = $kwitansiAktif ? $kwitansiAktif->id : null;
+                }
+            } else {
+                // IZIN/SAKIT: nomor pertemuan tetap sama
+                $nextPertemuan = $kunjungan_terakhir->pertemuan;
+                $finalTarifId = $kunjungan_terakhir->tarif_id;
+                $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
             }
 
         } else {

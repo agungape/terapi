@@ -142,7 +142,7 @@ class Pemasukkan extends Model
         $max      = $tarif->jumlah_pertemuan ?? 20;
         $terpakai = $this->kunjungans()
             ->whereIn('status', ['hadir', 'izin_hangus'])
-            ->max('pertemuan') ?? 0;
+            ->count();
 
         return max(0, $max - $terpakai);
     }
@@ -161,7 +161,7 @@ class Pemasukkan extends Model
             $max = $tarif->jumlah_pertemuan ?? 20;
             $terpakai = $this->kunjungans()
                 ->whereIn('status', ['hadir', 'izin_hangus'])
-                ->max('pertemuan') ?? 0;
+                ->count();
             return max(0, $max - $terpakai);
         }
 
@@ -171,7 +171,7 @@ class Pemasukkan extends Model
         $terpakai = $this->kunjungans()
             ->where('jenis_terapi', $jenisTerapi)
             ->whereIn('status', ['hadir', 'izin_hangus'])
-            ->max('pertemuan') ?? 0;
+            ->count();
 
         return max(0, $max - $terpakai);
     }
@@ -180,6 +180,6 @@ class Pemasukkan extends Model
     {
         return $this->kunjungans()
             ->whereIn('status', ['hadir', 'izin_hangus'])
-            ->max('pertemuan') ?? 0;
+            ->count();
     }
 }

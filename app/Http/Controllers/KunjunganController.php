@@ -140,10 +140,10 @@ class KunjunganController extends Controller
             $maxTerakhir = $queryTerakhir->max('pertemuan') ?? 0;
 
             if (in_array($request->status, ['sakit', 'izin'])) {
-                // SAKIT/IZIN: tidak menambah pertemuan, tempel di paket terakhir
+                // SAKIT/IZIN: tidak menambah pertemuan, tempel di paket terakhir (atau paket aktif jika sebelumnya rusak/kosong)
                 $nextPertemuan = max(1, $maxTerakhir);
-                $finalTarifId = $kunjungan_terakhir->tarif_id;
-                $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
+                $finalTarifId = $kunjungan_terakhir->tarif_id ?? ($kwitansiAktif ? $kwitansiAktif->tarif_id : null);
+                $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id ?? ($kwitansiAktif ? $kwitansiAktif->id : null);
             } else {
                 // HADIR/IZIN_HANGUS
                 $kwitansiBerbeda = ($kwitansiAktifId !== null) && ($kwitansiTerakhirId !== $kwitansiAktifId);
@@ -163,8 +163,8 @@ class KunjunganController extends Controller
                     // Masih di kwitansi yang sama (atau keduanya null)
                     if ($maxTerakhir < $limitLama) {
                         $nextPertemuan = $maxTerakhir + 1;
-                        $finalTarifId = $kunjungan_terakhir->tarif_id;
-                        $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id;
+                        $finalTarifId = $kunjungan_terakhir->tarif_id ?? ($kwitansiAktif ? $kwitansiAktif->tarif_id : null);
+                        $finalPemasukkanId = $kunjungan_terakhir->pemasukkan_id ?? ($kwitansiAktif ? $kwitansiAktif->id : null);
                     } else {
                         // Season baru (sudah melewati limit lama)
                         $nextPertemuan = 1;

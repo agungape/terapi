@@ -542,49 +542,10 @@ class KeuanganController extends Controller
             // Relationship di Pemasukkan.php didefinisikan sebagai Tarif (Capital T)
             $pemasukkan = Pemasukkan::with(['Tarif', 'anak'])->findOrFail($id);
             
-            // AUTO-SYNC: Cari kunjungan yang belum terhubung tapi seharusnya masuk ke kwitansi ini
-            if ($pemasukkan->jenis_layanan === 'paket_terapi' && $pemasukkan->anak_id) {
-                $query = Kunjungan::where('anak_id', $pemasukkan->anak_id)
-                    ->whereNull('pemasukkan_id')
-                    ->whereIn('status', ['hadir', 'izin_hangus']);
-                
-                if ($pemasukkan->tanggal) {
-                    $query->whereDate('created_at', '>=', $pemasukkan->tanggal);
-                }
-
-                if ($pemasukkan->tarif_id) {
-                    $query->where(function($q) use ($pemasukkan) {
-                        $q->where('tarif_id', $pemasukkan->tarif_id)
-                          ->orWhereNull('tarif_id');
-                    });
-
-                    // FIX: Filter jenis_terapi agar kunjungan jenis lain tidak ikut ter-sync
-                    // Contoh: kwitansi fisioterapi tidak boleh menarik kunjungan terapi_perilaku
-                    $tarifJenis = optional($pemasukkan->Tarif)->jenis_terapi;
-                    if ($tarifJenis && !in_array($tarifJenis, ['gabungan', 'semua'])) {
-                        $query->where('jenis_terapi', $tarifJenis);
-                    }
-                }
-
-                // Ambil data kunjungan yang akan diupdate
-                $toUpdate = $query->get();
-                
-                foreach($toUpdate as $k) {
-                    $k->update([
-                        'pemasukkan_id' => $pemasukkan->id,
-                        'tarif_id'      => $pemasukkan->tarif_id,
-                    ]);
-                }
-                
-                // Refresh data setelah update
-                $pemasukkan->load(['kunjungans' => function($q) {
-                    $q->orderBy('created_at', 'desc');
-                }, 'kunjungans.terapis', 'Tarif']);
-            } else {
-                $pemasukkan->load(['kunjungans' => function($q) {
-                    $q->orderBy('created_at', 'desc');
-                }, 'kunjungans.terapis', 'Tarif']);
-            }
+            // Hanya memuat data (read-only), tidak ada perubahan otomatis ke database
+            $pemasukkan->load(['kunjungans' => function($q) {
+                $q->orderBy('created_at', 'desc');
+            }, 'kunjungans.terapis', 'Tarif']);
 
             return view('keuangan.log_pemakaian', compact('pemasukkan'));
         } catch (\Exception $e) {

@@ -124,7 +124,16 @@
                         </div>
                         
                         @php 
-                            $total = $pkg->tarif->jumlah_pertemuan ?? 0;
+                            $tarif = $pkg->tarif;
+                            $total = $tarif->jumlah_pertemuan ?? 0;
+                            
+                            // Support untuk paket gabungan tipe lama (yang di-split kuotanya)
+                            if ($tarif && $tarif->jenis_terapi === 'gabungan') {
+                                if (($tarif->pertemuan_perilaku > 0) || ($tarif->pertemuan_fisioterapi > 0)) {
+                                    $total = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                                }
+                            }
+                            
                             $used = $pkg->sudah_terpakai ?? 0;
                             $percent = $total > 0 ? ($used / $total) * 100 : 0;
                         @endphp

@@ -190,8 +190,15 @@ class MobileNewController extends Controller
         $exhaustedPackages = $pemasukkans->filter(function($p) use ($activePackages) {
             return !$activePackages->contains('id', $p->id);
         });
+
         if ($exhaustedPackages->isNotEmpty()) {
-            // Selalu tampilkan 1 paket terakhir yang habis agar orang tua tahu
+            // Urutkan paket yang habis berdasarkan KUNJUNGAN (SESI) terakhirnya
+            $exhaustedPackages = $exhaustedPackages->sortByDesc(function($p) use ($kunjungan) {
+                $lastVisit = $kunjungan->where('pemasukkan_id', $p->id)->sortByDesc('created_at')->first();
+                return $lastVisit ? $lastVisit->created_at->timestamp : 0;
+            });
+            
+            // Selalu tampilkan 1 paket yang paling baru saja habis dipakai
             $displayPackages->push($exhaustedPackages->first());
         }
         

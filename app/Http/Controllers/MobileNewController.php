@@ -188,6 +188,13 @@ class MobileNewController extends Controller
         // Packages to display in Dashboard (Active + 1 Latest Exhausted)
         $displayPackages = collect($activePackages);
         $exhaustedPackages = $pemasukkans->filter(function($p) use ($activePackages) {
+            $jenisHabis = $p->tarif->jenis_terapi ?? null;
+            
+            // Hanya proses jika jenis terapinya adalah perilaku, fisioterapi, atau gabungan
+            if (!in_array($jenisHabis, ['terapi_perilaku', 'fisioterapi', 'gabungan'])) {
+                return false;
+            }
+
             // Abaikan jika paket ini masih aktif
             if ($activePackages->contains('id', $p->id)) return false;
 

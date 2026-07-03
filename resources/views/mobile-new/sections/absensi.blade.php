@@ -2,8 +2,20 @@
     <!-- Statistik Paket -->
     <div class="pt-10 space-y-4">
         <template x-for="pkg in attendanceStats.packages" :key="pkg.id">
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-[30px] border border-green-100 shadow-sm relative overflow-hidden group mx-2">
-                <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-200/20 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+            <div>
+                <!-- Alert Card Jika Paket Habis -->
+                <div x-show="pkg.isExhausted" class="bg-red-50 border border-red-200 p-4 rounded-[20px] shadow-sm mb-4 mx-2 flex items-start space-x-3">
+                    <div class="bg-red-100 p-2 rounded-full text-red-500 mt-0.5">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-black text-red-700 text-sm">Paket Telah Habis!</h5>
+                        <p class="text-xs text-red-600 mt-0.5">Masa aktif atau kuota <strong x-text="pkg.name"></strong> Anda telah habis. Silakan lakukan perpanjangan paket ke admin.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-[30px] border border-green-100 shadow-sm relative overflow-hidden group mx-2" :class="pkg.isExhausted ? 'opacity-70 grayscale-[50%]' : ''">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-200/20 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
                 
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <div>

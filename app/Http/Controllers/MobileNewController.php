@@ -201,9 +201,22 @@ class MobileNewController extends Controller
                 return (int) $k->pertemuan;
             }) ?? 0;
             
+            $isExhausted = false;
+            $sisa = $pkg->sisa_pertemuan;
+            if (is_array($sisa)) {
+                if (($sisa['perilaku'] ?? 0) <= 0 && ($sisa['fisioterapi'] ?? 0) <= 0) {
+                    $isExhausted = true;
+                }
+            } else {
+                if ($sisa <= 0) {
+                    $isExhausted = true;
+                }
+            }
+
             return [
                 'id' => $pkg->id,
                 'name' => $pkg->tarif->nama ?? 'Paket Terapi',
+                'isExhausted' => $isExhausted,
                 'hadir' => $hadir,
                 'izin' => $izin,
                 'sakit' => $sakit,

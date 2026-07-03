@@ -188,7 +188,16 @@ class MobileNewController extends Controller
         // Packages to display in Dashboard (Active + 1 Latest Exhausted)
         $displayPackages = collect($activePackages);
         $exhaustedPackages = $pemasukkans->filter(function($p) use ($activePackages) {
-            return !$activePackages->contains('id', $p->id);
+            // Abaikan jika paket ini masih aktif
+            if ($activePackages->contains('id', $p->id)) return false;
+
+            // Jangan tampilkan peringatan habis jika anak SUDAH PUNYA paket aktif dengan jenis yang sama (sudah perpanjang)
+            $jenisHabis = $p->tarif->jenis_terapi ?? null;
+            $hasActiveSameType = $activePackages->contains(function($active) use ($jenisHabis) {
+                return ($active->tarif->jenis_terapi ?? null) === $jenisHabis;
+            });
+            
+            return !$hasActiveSameType;
         });
 
         if ($exhaustedPackages->isNotEmpty()) {

@@ -57,26 +57,15 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        $view = $request->session()->get('view', 'admin');
-
-        if ($view === 'anak') {
-            if (!$user->hasRole('anak')) {
-                Auth::logout();
-                return redirect()->route('mobile.login')
-                    ->with('error', 'Anda tidak memiliki akses ke tampilan Mobile.');
-            }
+        // Fitur Smart Login: arahkan pengguna ke tempat yang benar berdasarkan hak aksesnya (role)
+        // terlepas dari halaman login mana (mobile/web) yang mereka gunakan.
+        if ($user->hasRole('anak')) {
             return redirect()->route('app');
         }
 
-        if ($view === 'admin') {
-            if ($user->hasRole('anak')) {
-                Auth::logout();
-                return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke tampilan Website.');
-            }
-            return redirect(RouteServiceProvider::HOME);
-        }
-
-        return redirect(RouteServiceProvider::HOME);
+        // Return null agar Laravel secara otomatis mengarahkan admin/staff ke halaman 
+        // yang mereka tuju sebelumnya (intended URL) atau ke halaman Home default.
+        return null;
     }
 
     public function logout(Request $request)

@@ -1,4 +1,17 @@
 <div class="space-y-8" x-show="!isLoading">
+    <!-- Alert Card Jika Paket Habis -->
+    <template x-for="pkg in attendanceStats.packages" :key="pkg.id">
+        <div x-show="pkg.isExhausted" class="bg-red-50 border border-red-200 p-4 rounded-[20px] shadow-sm mb-2 mx-1 flex items-start space-x-3 animate-fade-in-up">
+            <div class="bg-red-100 p-2 rounded-full text-red-500 mt-0.5">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h5 class="font-black text-red-700 text-sm">Paket Telah Habis!</h5>
+                <p class="text-xs text-red-600 mt-0.5">Masa aktif atau kuota <strong x-text="pkg.name"></strong> Anda telah habis. Silakan lakukan perpanjangan paket ke admin.</p>
+            </div>
+        </div>
+    </template>
+
     <!-- Quick Actions Grid -->
     <div
         class="bg-white rounded-[35px] shadow-xl p-6 grid grid-cols-4 gap-4 border border-indigo-50 hover-lift">

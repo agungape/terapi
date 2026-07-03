@@ -207,7 +207,7 @@ class MobileNewController extends Controller
                 'sakit' => $sakit,
                 'hangus' => $hangus,
                 'totalUsed' => $maxPertemuan,
-                'totalQuota' => $pkg->tarif->jumlah_pertemuan ?? 0,
+                'totalQuota' => $pkg->tarif->jumlah_pertemuan ?? 20,
                 'history' => $pkgKunjungan->map(function($k) {
                     return [
                         'id' => $k->id,

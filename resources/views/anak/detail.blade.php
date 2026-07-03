@@ -125,12 +125,14 @@
                         
                         @php 
                             $tarif = $pkg->tarif;
-                            $total = $tarif->jumlah_pertemuan ?? 0;
+                            $total = $tarif->jumlah_pertemuan ?? 20;
                             
                             // Support untuk paket gabungan tipe lama (yang di-split kuotanya)
                             if ($tarif && $tarif->jenis_terapi === 'gabungan') {
                                 if (($tarif->pertemuan_perilaku > 0) || ($tarif->pertemuan_fisioterapi > 0)) {
                                     $total = ($tarif->pertemuan_perilaku ?? 0) + ($tarif->pertemuan_fisioterapi ?? 0);
+                                } else {
+                                    $total = $tarif->jumlah_pertemuan ?? 20;
                                 }
                             }
                             

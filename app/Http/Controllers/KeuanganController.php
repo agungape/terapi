@@ -153,13 +153,13 @@ class KeuanganController extends Controller
                     $result['sisa']                       = $result['sisa_perilaku'] + $result['sisa_fisioterapi'];
                     $result['is_gabungan_baru']           = false;
                 } else {
-                    $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
+                    $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 20;
                     $sisa = $p->sisa_pertemuan;
                     $result['sisa'] = is_numeric($sisa) ? (int)$sisa : 0;
                     $result['is_gabungan_baru'] = true;
                 }
             } else {
-                $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 0;
+                $result['jumlah_pertemuan'] = $tarif->jumlah_pertemuan ?? 20;
                 $sisa = $p->sisa_pertemuan;
                 $result['sisa'] = is_numeric($sisa) ? (int)$sisa : 0;
             }

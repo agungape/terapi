@@ -56,7 +56,7 @@ class MobileController extends Controller
                 ->get();
         } else {
             $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
-            $pertemuanSekarang = $kunjungan->max('pertemuan') ?? 1;
+            $pertemuanSekarang = $kunjungan->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         }
 
         if ($pertemuanAwal1) {
@@ -64,12 +64,12 @@ class MobileController extends Controller
                 ->where('id', '>=', $pertemuanAwal1->id)  // Ambil data setelah pertemuan 20 terakhir
                 ->orderBy('pertemuan', 'asc')
                 ->get();
-            $pertemuanSekarang = $sisa->max('pertemuan') ?? 1;
+            $pertemuanSekarang = $sisa->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         } else {
             $kunjungan = Kunjungan::where('anak_id', $anak->id)
                 ->orderBy('pertemuan', 'asc')
                 ->get();
-            $pertemuanSekarang = $kunjungan->max('pertemuan') ?? 1;
+            $pertemuanSekarang = $kunjungan->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         }
         $sisaPertemuan = max(0, $totalPertemuan - $pertemuanSekarang);
         $tarif = Tarif::latest()->get();

@@ -134,7 +134,7 @@ class AnakController extends Controller
 
         $anak = new Anak();
         // Generate NIB: cari NIB tertinggi, ambil angkanya, lalu +1
-        $lastAnak = Anak::orderBy('nib', 'desc')->first();
+        $lastAnak = Anak::orderBy('id', 'desc')->first();
         $lastNumber = $lastAnak ? (int) str_replace('BSC', '', $lastAnak->nib) : 0;
         $anak->nib = 'BSC' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         return view('anak.create', compact('anak', 'pendidikan', 'pendidikan_orangtua', 'agama'));

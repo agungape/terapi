@@ -185,8 +185,20 @@ class MobileNewController extends Controller
                 ];
             });
 
-        // Packages to display in Dashboard (Active, or the latest exhausted one if no active)
-        $displayPackages = $activePackages->isNotEmpty() ? $activePackages : ($pemasukkans->isNotEmpty() ? collect([$pemasukkans->first()]) : collect([]));
+        // Packages to display in Dashboard (Active + 1 Latest Exhausted)
+        $displayPackages = collect($activePackages);
+        $exhaustedPackages = $pemasukkans->filter(function($p) use ($activePackages) {
+            return !$activePackages->contains('id', $p->id);
+        });
+        if ($exhaustedPackages->isNotEmpty()) {
+            // Selalu tampilkan 1 paket terakhir yang habis agar orang tua tahu
+            $displayPackages->push($exhaustedPackages->first());
+        }
+        
+        // Urutkan kembali agar paket aktif berada di atas
+        $displayPackages = $displayPackages->sortByDesc(function($p) use ($activePackages) {
+            return $activePackages->contains('id', $p->id) ? 1 : 0;
+        })->values();
 
         // Grouped Attendance Data by Package
         $packageStats = $displayPackages->map(function($pkg) use ($kunjungan) {

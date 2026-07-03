@@ -176,7 +176,7 @@ class KunjunganController extends Controller
                     $query->where('jenis_terapi', $request->jenis_terapi);
                 }
                 
-                $maxPertemuan = $query->max('pertemuan') ?? 0;
+                $maxPertemuan = $query->max(\Illuminate\Support\Facades\DB::raw('CAST(pertemuan AS UNSIGNED)')) ?? 0;
                 $nextPertemuan = $maxPertemuan + 1;
             } else {
                 $nextPertemuan = 1;

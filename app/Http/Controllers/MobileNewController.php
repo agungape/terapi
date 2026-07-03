@@ -197,7 +197,7 @@ class MobileNewController extends Controller
             $sakit = $pkgKunjungan->where('status', 'sakit')->count();
             $hangus = $pkgKunjungan->where('status', 'izin_hangus')->count();
             
-            $maxPertemuan = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+            $maxPertemuan = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max(\Illuminate\Support\Facades\DB::raw('CAST(pertemuan AS UNSIGNED)')) ?? 0;
             
             return [
                 'id' => $pkg->id,

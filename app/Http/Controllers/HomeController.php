@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anak;
-use App\Models\Barang;
-use App\Models\Detail_transaksi;
-use App\Models\Province;
 use App\Models\Terapis;
-use App\Models\Upload;
 use App\Models\User;
 use App\Models\Kunjungan;
 use App\Models\Pemasukkan;
@@ -53,8 +49,9 @@ class HomeController extends Controller
             ->whereYear('created_at', $now->year)
             ->count();
         
-        $newPatientsLastMonth = Anak::whereMonth('created_at', $now->subMonth()->month)
-            ->whereYear('created_at', $now->year)
+        $lastMonth = $now->copy()->subMonth();
+        $newPatientsLastMonth = Anak::whereMonth('created_at', $lastMonth->month)
+            ->whereYear('created_at', $lastMonth->year)
             ->count();
             
         $growthPercentage = $newPatientsLastMonth > 0 
@@ -80,8 +77,12 @@ class HomeController extends Controller
             ->groupBy(fn($p) => $p->anak_id . '-' . $p->tarif_id)
             ->map(fn($group) => $group->first())
             ->filter(function($p) {
-                // Hanya ambil yang benar-benar sisa sedikit (0, 1, atau 2)
-                return $p->sisa_pertemuan !== null && $p->sisa_pertemuan <= 2;
+                $sisa = $p->sisa_pertemuan;
+                if ($sisa === null) return false;
+                if (is_array($sisa)) {
+                    return min($sisa) <= 2;
+                }
+                return $sisa <= 2;
             })
             ->values();
 

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
-use function Symfony\Component\String\b;
 
 class AnakController extends Controller
 {
@@ -212,7 +211,11 @@ class AnakController extends Controller
             ->whereNotNull('tarif_id')
             ->get()
             ->filter(function($p) {
-                return $p->sisa_pertemuan > 0;
+                $sisa = $p->sisa_pertemuan;
+                if (is_array($sisa)) {
+                    return ($sisa['perilaku'] ?? 0) > 0 || ($sisa['fisioterapi'] ?? 0) > 0;
+                }
+                return is_numeric($sisa) && $sisa > 0;
             });
 
         return view('anak.detail', compact('kunjungan', 'fisioterapi', 'anak', 'activePackages'));
@@ -334,8 +337,6 @@ class AnakController extends Controller
             // Notifikasi jika tidak ada foto
             return redirect()->back()->with('warning', "Anak {$anak->nama} tidak memiliki foto untuk dihapus");
         }
-
-        return redirect()->back();
     }
 
 

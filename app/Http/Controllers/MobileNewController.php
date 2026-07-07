@@ -301,7 +301,7 @@ class MobileNewController extends Controller
                 $totalPertemuanSum += $pkg->tarif->jumlah_pertemuan ?? 0;
                 
                 $pkgKunjungan = $kunjungan->where('pemasukkan_id', $pkg->id);
-                $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+                $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max(function($k) { return (int) $k->pertemuan; }) ?? 0;
                 $sudahTerpakaiSum += $used;
             }
         }
@@ -352,7 +352,7 @@ class MobileNewController extends Controller
             
             // Ambil max pertemuan untuk kalkulasi persentase pemakaian
             $pkgKunjungan = $kunjungan->where('pemasukkan_id', $p->id);
-            $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max('pertemuan') ?? 0;
+            $used = $pkgKunjungan->whereIn('status', ['hadir', 'izin_hangus'])->max(function($k) { return (int) $k->pertemuan; }) ?? 0;
             
             $remaining = $p->sisa_pertemuan;
             

@@ -18,7 +18,6 @@ use App\Http\Controllers\ObservasiController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PencarianController;
-use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
@@ -30,8 +29,6 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserTerapisController;
-use App\Http\Controllers\UserAnakController;
 use App\Models\Kunjungan;
 use App\Models\Observasi;
 use Database\Factories\ObservasiFactory;
@@ -67,7 +64,7 @@ Auth::routes();
 Route::get('/generate-permissions', function () {
     $permissions = [
         // View permissions (Menu / Sidebar)
-        'view anak', 'view terapis', 'view psikolog', 'view alat ukur', 'view program anak', 'view tarif', 'view pelatihan', 
+        'view anak', 'view terapis', 'view psikolog', 'view alat ukur', 'view program anak', 'view tarif', 'view pelatihan', 'view pendaftaran',
         'view master umur', 'view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara',
         'view role', 'view permission', 'view user', 'view manajemen menu',
         'view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan',

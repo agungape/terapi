@@ -52,22 +52,22 @@ class MobileController extends Controller
             // Ambil semua pertemuan yang dibuat setelah id pertemuan 20 terakhir
             $kunjungan = Kunjungan::where('anak_id', $anak->id)
                 ->where('id', '>', $pertemuanAwal2->id) // Ambil data setelah pertemuan 20 terakhir
-                ->orderBy('pertemuan', 'asc')
+                ->orderByRaw('CAST(pertemuan AS UNSIGNED) asc')
                 ->get();
         } else {
-            $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderBy('pertemuan')->get();
+            $kunjungan = Kunjungan::where('anak_id', $anak->id)->orderByRaw('CAST(pertemuan AS UNSIGNED) asc')->get();
             $pertemuanSekarang = $kunjungan->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         }
 
         if ($pertemuanAwal1) {
             $sisa = Kunjungan::where('anak_id', $anak->id)
                 ->where('id', '>=', $pertemuanAwal1->id)  // Ambil data setelah pertemuan 20 terakhir
-                ->orderBy('pertemuan', 'asc')
+                ->orderByRaw('CAST(pertemuan AS UNSIGNED) asc')
                 ->get();
             $pertemuanSekarang = $sisa->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         } else {
             $kunjungan = Kunjungan::where('anak_id', $anak->id)
-                ->orderBy('pertemuan', 'asc')
+                ->orderByRaw('CAST(pertemuan AS UNSIGNED) asc')
                 ->get();
             $pertemuanSekarang = $kunjungan->max(function($k) { return (int) $k->pertemuan; }) ?? 1;
         }

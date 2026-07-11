@@ -1714,8 +1714,7 @@
                         });
                     });
                 }
-                // Call generate after sync
-                this.generate(detail.mType, detail.mData);
+                // HAPUS this.generate() di sini agar text manual tidak tertimpa saat Edit dibuka.
             },
             init() {
                 // Initial generation logic moved to handleSync and checkbox events for better stability

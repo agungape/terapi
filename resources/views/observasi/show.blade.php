@@ -294,18 +294,19 @@
                                     <td class="px-6 py-4 font-black text-xs text-slate-700 uppercase tracking-tighter italic">{{ $h['jenis'] }}</td>
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2 transition-opacity">
-                                            @if (!in_array($h['jenis'], ['Wawancara', 'OBS. PERILAKU', 'OBS. SENSORIK']))
+                                            @if (!in_array($h['jenis'], ['Wawancara']))
                                                 <button class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all border border-blue-100"
                                                         @click="openModal('result', { 
                                                             id: '{{ $h['id'] }}', 
                                                             jenis: '{{ $h['jenis'] }}', 
-                                                            hasil: '{{ $h['original_hasil'] }}', 
+                                                            hasil: '{{ in_array($h['jenis'], ['OBS. PERILAKU', 'OBS. SENSORIK']) ? 'Kualitatif' : $h['original_hasil'] }}', 
                                                             interpretasi: '{{ $h['interpretasi'] }}',
                                                             kesimpulan: '{{ $h['kesimpulan'] }}',
                                                             total_skor: {{ $h['total_skor'] }},
                                                             created_at: '{{ \Carbon\Carbon::parse($h['waktu'])->translatedFormat('d F Y') }}',
                                                             is_atec: {{ $h['is_atec'] ? 'true' : 'false' }},
-                                                            image_url: '{{ $h['image_url'] }}'
+                                                            image_url: '{{ $h['image_url'] }}',
+                                                            deskripsi_b64: '{{ in_array($h['jenis'], ['OBS. PERILAKU', 'OBS. SENSORIK']) ? base64_encode($h['original_hasil']) : '' }}'
                                                         })">
                                                     <i data-lucide="eye" class="w-3.5 h-3.5 inline md:mr-1"></i> <span class="hidden md:inline">Hasil</span>
                                                 </button>
@@ -1498,13 +1499,29 @@
                                 <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
                                     <i data-lucide="shield-check" class="text-emerald-400"></i>
                                 </div>
-                             </div>
+                    <div class="relative w-full max-w-4xl bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl p-6 md:p-12 text-slate-800">
+                        <button @click="closeModal()" class="absolute top-6 right-6 md:top-8 md:right-8 p-3 bg-slate-100 text-slate-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                        
+                        <div class="mb-8 md:mb-10 text-center">
+                            <div class="inline-flex items-center justify-center p-3 md:p-4 bg-emerald-50 rounded-2xl md:rounded-3xl mb-4 text-emerald-500">
+                                <i data-lucide="clipboard-check" class="w-8 h-8 md:w-10 md:h-10"></i>
+                            </div>
+                            <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter" x-text="modalData.jenis"></h2>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Log Hasil Pemeriksaan</p>
+                        </div>
+                        
+                        <div class="bg-slate-50 rounded-2xl p-4 md:p-6 mb-8 text-center border border-slate-100">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Tanggal Pemeriksaan:</span>
+                            <span class="text-sm font-black text-slate-700 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100" x-text="modalData.created_at"></span>
                         </div>
 
-                        <div class="p-2 md:p-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
-                            <template x-if="modalData.is_atec">
-                                <div class="card-premium p-1 md:p-2 bg-slate-50 border border-slate-100 rounded-3xl overflow-hidden">
-                                    <img :src="modalData.image_url" class="w-full rounded-2xl shadow-sm">
+                        <div class="space-y-6 md:space-y-8">
+                            <template x-if="modalData.is_atec && modalData.image_url">
+                                <div class="text-center bg-white p-4 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+                                    <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Bukti Lembar Pemeriksaan</h6>
+                                    <img :src="modalData.image_url" class="max-w-full md:max-w-2xl mx-auto rounded-2xl md:rounded-[2rem] shadow-lg border border-slate-200">
                                 </div>
                             </template>
 
@@ -1519,12 +1536,16 @@
                                             <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Interpretasi Diagnostik</h6>
                                             <p class="text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-tight" 
                                                :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-500' : 'text-slate-800'"
-                                               x-text="modalData.hasil"></p>
+                                               x-text="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Observasi Kualitatif' : modalData.hasil"></p>
                                         </div>
-                                        <div class="p-5 md:p-8 bg-slate-50 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 max-w-lg mx-auto">
+                                        <div class="p-5 md:p-8 bg-slate-50 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 max-w-2xl mx-auto w-full">
                                             <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3" x-text="modalData.jenis === 'ATEC Kuesioner' ? 'Kesimpulan ATEC' : 'Rekomendasi Klinis'"></h6>
-                                            <p class="text-xs font-bold leading-relaxed" 
+                                            <div class="text-xs font-bold leading-relaxed" 
                                                :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-500' : 'text-emerald-600 uppercase tracking-tight'">
+                                                
+                                                <template x-if="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
+                                                    <div class="text-left text-xs text-slate-700 normal-case tracking-normal prose max-w-none prose-sm" x-html="decodeURIComponent(escape(window.atob(modalData.deskripsi_b64)))"></div>
+                                                </template>
                                                 
                                                 <template x-if="modalData.jenis === 'ATEC Kuesioner'">
                                                     <div class="space-y-4">
@@ -1533,7 +1554,7 @@
                                                     </div>
                                                 </template>
 
-                                                <template x-if="modalData.jenis !== 'ATEC Kuesioner'">
+                                                <template x-if="!['ATEC Kuesioner', 'OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
                                                     <span>
                                                         <template x-if="modalData.interpretasi">
                                                             <span x-text="modalData.interpretasi"></span>
@@ -1550,7 +1571,7 @@
                                                         </template>
                                                     </span>
                                                 </template>
-                                            </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

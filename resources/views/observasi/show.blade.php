@@ -496,34 +496,35 @@
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
-            <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-50 p-4 md:p-6 flex items-center justify-between z-20 shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-red-50 text-red-500 rounded-xl">
-                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+            <template x-if="modalType !== 'result'">
+                <div class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-50 p-4 md:p-6 flex items-center justify-between z-20 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-red-50 text-red-500 rounded-xl">
+                            <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-800" x-text="{
+                            'perilaku': 'Kuesioner Masalah Mental Emosional (KMME)',
+                            'autis': 'Deteksi Dini Autisme (M-CHAT-R)',
+                            'gpph': 'Deteksi Dini GPPH (Conners)',
+                            'pendengaran': 'Tes Daya Dengar (TDD)',
+                            'penglihatan': 'Tes Daya Lihat (TDL)',
+                            'kpsp': 'Kuesioner Pra Skrining Perkembangan (KPSP)',
+                            'anthropometri': 'Skrining Antropometri',
+                            'edit_anthropometri': 'Edit Skrining Antropometri',
+                            'atec': 'Kuesioner ATEC Digital',
+                            'wawancara': 'Wawancara & Anamnesis',
+                            'hpperilaku': 'Checklist Observasi Perilaku',
+                            'hpsensorik': 'Checklist Observasi Sensorik',
+                            'edit_qualitative': 'Edit Catatan Kualitatif'
+                        }[modalType] || modalType.toUpperCase()"></h3>
                     </div>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-800" x-text="{
-                        'perilaku': 'Kuesioner Masalah Mental Emosional (KMME)',
-                        'autis': 'Deteksi Dini Autisme (M-CHAT-R)',
-                        'gpph': 'Deteksi Dini GPPH (Conners)',
-                        'pendengaran': 'Tes Daya Dengar (TDD)',
-                        'penglihatan': 'Tes Daya Lihat (TDL)',
-                        'kpsp': 'Kuesioner Pra Skrining Perkembangan (KPSP)',
-                        'anthropometri': 'Skrining Antropometri',
-                        'edit_anthropometri': 'Edit Skrining Antropometri',
-                        'atec': 'Kuesioner ATEC Digital',
-                        'wawancara': 'Wawancara & Anamnesis',
-                        'hpperilaku': 'Checklist Observasi Perilaku',
-                        'hpsensorik': 'Checklist Observasi Sensorik',
-                        'edit_qualitative': 'Edit Catatan Kualitatif',
-                        'result': 'Hasil Pemeriksaan Klinis'
-                    }[modalType] || modalType.toUpperCase()"></h3>
+                    <button @click="closeModal()" class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 rounded-full hover:bg-slate-100 hover:text-red-500 transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
-                <button @click="closeModal()" class="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 rounded-full hover:bg-slate-100 hover:text-red-500 transition-all">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
+            </template>
 
-            <div class="flex-1 min-h-0 overflow-y-auto p-4 md:p-8">
+            <div class="flex-1 min-h-0 overflow-y-auto" :class="modalType === 'result' ? 'p-0' : 'p-4 md:p-8'">
                 <!-- KMME Form -->
                 <template x-if="modalType === 'perilaku'">
                     <form action="{{ route('observasi.perilaku') }}" method="POST" class="space-y-6">

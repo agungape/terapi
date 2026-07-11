@@ -1489,7 +1489,7 @@
 
                 <!-- Clinical Result Display (Refactored) -->
                 <template x-if="modalType === 'result'">
-                    <div class="h-full flex flex-col max-h-[95vh] text-slate-800">
+                    <div class="h-full flex flex-col max-h-[95vh] min-h-0 w-full overflow-hidden text-slate-800">
                         <!-- header -->
                         <div class="p-6 md:p-8 border-b border-slate-100/50 bg-white/50 backdrop-blur-md shrink-0 flex justify-between items-center z-10 sticky top-0">
                             <div class="flex items-center gap-4">
@@ -1507,7 +1507,7 @@
                         </div>
                         
                         <!-- content -->
-                        <div class="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                        <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-8 custom-scrollbar">
                             <div class="bg-slate-50 rounded-2xl p-4 md:p-6 mb-8 text-center border border-slate-100">
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Tanggal Pemeriksaan:</span>
                                 <span class="text-sm font-black text-slate-700 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100" x-text="modalData.created_at"></span>
@@ -1515,43 +1515,43 @@
 
                             <div class="space-y-6 md:space-y-8">
                                 <template x-if="modalData.is_atec && modalData.image_url">
-                                    <div class="text-center bg-white p-4 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+                                    <div class="text-center bg-white p-4 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm w-full">
                                         <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Bukti Lembar Pemeriksaan</h6>
-                                        <img :src="modalData.image_url" class="max-w-full md:max-w-2xl mx-auto rounded-2xl md:rounded-[2rem] shadow-lg border border-slate-200">
+                                        <img :src="modalData.image_url" class="max-w-full md:max-w-2xl mx-auto rounded-2xl md:rounded-[2rem] shadow-lg border border-slate-200 object-contain">
                                     </div>
                                 </template>
 
                                 <template x-if="!modalData.is_atec">
-                                    <div class="flex flex-col items-center text-center space-y-6 md:space-y-8 py-4 md:py-8">
-                                        <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-[2rem] flex items-center justify-center text-emerald-500 shadow-sm animate-bounce">
+                                    <div class="flex flex-col items-center text-center space-y-6 md:space-y-8 py-4 md:py-8 w-full">
+                                        <div class="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-[2rem] flex items-center justify-center text-emerald-500 shadow-sm animate-bounce shrink-0">
                                             <i data-lucide="check-circle" class="w-8 h-8 md:w-10 md:h-10"></i>
                                         </div>
 
-                                        <div class="space-y-4 md:space-y-6 w-full">
+                                        <div class="space-y-4 md:space-y-6 w-full max-w-full">
                                             <div>
                                                 <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Interpretasi Diagnostik</h6>
-                                                <p class="text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-tight" 
+                                                <p class="text-xl md:text-3xl font-black uppercase italic tracking-tighter leading-tight break-words w-full" 
                                                    :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-500' : 'text-slate-800'"
                                                    x-text="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Observasi Kualitatif' : modalData.hasil"></p>
                                             </div>
-                                            <div class="p-5 md:p-8 bg-slate-50 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 max-w-2xl mx-auto w-full text-left">
+                                            <div class="p-5 md:p-8 bg-slate-50 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 max-w-2xl mx-auto w-full text-left overflow-hidden">
                                                 <h6 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center" x-text="modalData.jenis === 'ATEC Kuesioner' ? 'Kesimpulan ATEC' : 'Rekomendasi Klinis'"></h6>
-                                                <div class="text-xs font-bold leading-relaxed text-center" 
+                                                <div class="text-xs font-bold leading-relaxed text-center w-full" 
                                                    :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-500' : 'text-emerald-600 uppercase tracking-tight'">
                                                     
                                                     <template x-if="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
-                                                        <div class="text-left text-xs text-slate-700 normal-case tracking-normal prose max-w-none prose-sm" x-html="decodeURIComponent(escape(window.atob(modalData.deskripsi_b64)))"></div>
+                                                        <div class="text-left text-xs text-slate-700 normal-case tracking-normal prose max-w-none prose-sm overflow-x-auto break-words w-full custom-scrollbar" x-html="decodeURIComponent(escape(window.atob(modalData.deskripsi_b64)))"></div>
                                                     </template>
                                                     
                                                     <template x-if="modalData.jenis === 'ATEC Kuesioner'">
-                                                        <div class="space-y-4">
-                                                            <div class="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl text-slate-600 font-bold text-[10px]" x-text="modalData.interpretasi"></div>
-                                                            <div class="font-black text-xs uppercase" x-text="modalData.kesimpulan"></div>
+                                                        <div class="space-y-4 w-full">
+                                                            <div class="p-4 bg-white border border-slate-200 shadow-sm rounded-2xl text-slate-600 font-bold text-[10px] break-words" x-text="modalData.interpretasi"></div>
+                                                            <div class="font-black text-xs uppercase break-words" x-text="modalData.kesimpulan"></div>
                                                         </div>
                                                     </template>
 
                                                     <template x-if="!['ATEC Kuesioner', 'OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
-                                                        <span>
+                                                        <span class="break-words">
                                                             <template x-if="modalData.interpretasi">
                                                                 <span x-text="modalData.interpretasi"></span>
                                                             </template>

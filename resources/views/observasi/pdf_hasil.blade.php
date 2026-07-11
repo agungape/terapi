@@ -237,11 +237,11 @@
                 @if ($jenis == 'Penyimpangan Perilaku')
                     <tr>
                         <td><strong>{{ $penyimpangan_perilaku }}</strong><br><small style="color:#6b7280;">KMME</small></td>
-                        <td align="center"><span style="color: {{ $jumlahJawabanYaPerilaku >= 2 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanYaPerilaku }}{{ $jumlahJawabanYaPerilaku >= 2 ? ' *' : '' }}</span></td>
-                        <td>&lt; 2 (Jawaban "YA")</td>
+                        <td align="center"><span style="color: {{ $jumlahJawabanYaPerilaku >= 1 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanYaPerilaku }}{{ $jumlahJawabanYaPerilaku >= 1 ? ' *' : '' }}</span></td>
+                        <td>0 (Semua "TIDAK")</td>
                         <td>
-                            <span class="badge {{ $jumlahJawabanYaPerilaku >= 2 ? 'badge-abnormal' : 'badge-normal' }}">
-                                {{ $jumlahJawabanYaPerilaku >= 2 ? 'Ada Masalah Mental Emosional' : 'Normal' }}
+                            <span class="badge {{ $jumlahJawabanYaPerilaku >= 1 ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $jumlahJawabanYaPerilaku >= 1 ? 'Ada Masalah Mental Emosional' : 'Normal' }}
                             </span>
                         </td>
                     </tr>
@@ -269,13 +269,14 @@
                         </td>
                     </tr>
                 @elseif ($Autis ?? $jenis == 'Autisme')
+                    @php $isAutisAbnormal = ($jumlahJawabanTidakAutis >= 2 || (isset($totalJawabanTidakAutis) && $totalJawabanTidakAutis >= 3)); @endphp
                     <tr>
                         <td><strong>{{ $autis }}</strong><br><small style="color:#6b7280;">M-CHAT</small></td>
-                        <td align="center"><span style="color: {{ $jumlahJawabanTidakAutis >= 2 ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanTidakAutis }}{{ $jumlahJawabanTidakAutis >= 2 ? ' *' : '' }}</span></td>
-                        <td>&lt; 2 (Resiko Rendah)</td>
+                        <td align="center"><span style="color: {{ $isAutisAbnormal ? '#dc2626' : '#059669' }}; font-weight:bold;">{{ $jumlahJawabanTidakAutis }} kritis / {{ $totalJawabanTidakAutis ?? 0 }} total{{ $isAutisAbnormal ? ' *' : '' }}</span></td>
+                        <td>0 kritis / &lt; 3 total</td>
                         <td>
-                            <span class="badge {{ $jumlahJawabanTidakAutis >= 2 ? 'badge-abnormal' : 'badge-normal' }}">
-                                {{ $jumlahJawabanTidakAutis >= 2 ? 'Risiko Tinggi Autisme' : 'Risiko Rendah Autisme' }}
+                            <span class="badge {{ $isAutisAbnormal ? 'badge-abnormal' : 'badge-normal' }}">
+                                {{ $isAutisAbnormal ? 'Risiko Tinggi Autisme' : 'Risiko Rendah Autisme' }}
                             </span>
                         </td>
                     </tr>

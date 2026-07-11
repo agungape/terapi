@@ -798,14 +798,19 @@
                             </div>
                         </div>
 
-                        <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4">
+                        <div class="space-y-4 max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar pb-4" x-data="{ selectedGroup: null }">
                             @foreach ($ageGroups as $group)
-                            <div class="border border-slate-100 rounded-3xl overflow-hidden" x-data="{ open: false }">
-                                <button type="button" @click="open = !open" class="w-full px-8 py-4 bg-slate-50 flex items-center justify-between">
-                                    <h4 class="text-xs font-black text-slate-700 uppercase tracking-widest">{{ $group->nama }}</h4>
-                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300" :class="open ? 'rotate-180' : ''"></i>
+                            <div class="border border-slate-100 rounded-3xl overflow-hidden" x-data="{ open: false }" x-effect="open = (selectedGroup === {{ $group->id }})">
+                                <button type="button" @click="selectedGroup = (selectedGroup === {{ $group->id }} ? null : {{ $group->id }})" class="w-full px-8 py-4 bg-slate-50 flex items-center justify-between transition-colors hover:bg-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-5 h-5 rounded-full border-2 border-purple-300 flex items-center justify-center" :class="selectedGroup === {{ $group->id }} ? 'bg-purple-500 border-purple-500' : 'bg-white'">
+                                            <div class="w-2 h-2 rounded-full bg-white opacity-0" :class="selectedGroup === {{ $group->id }} ? 'opacity-100' : ''"></div>
+                                        </div>
+                                        <h4 class="text-xs font-black text-slate-700 uppercase tracking-widest">{{ $group->nama }}</h4>
+                                    </div>
+                                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300 transition-transform" :class="open ? 'rotate-180' : ''"></i>
                                 </button>
-                                <div x-show="open" class="p-6 space-y-4 bg-white border-t border-slate-50">
+                                <div x-show="open" x-collapse class="p-6 space-y-4 bg-white border-t border-slate-50">
                                     <!-- Inner Category Heading -->
                                     <div class="py-3 px-6 bg-purple-600 rounded-2xl mb-6 shadow-lg shadow-purple-100">
                                         <p class="text-[10px] font-black text-purple-100 uppercase tracking-widest leading-none mb-1">KATEGORI EVALUASI</p>
@@ -820,7 +825,7 @@
                                                 <p class="text-xs font-bold text-slate-600 uppercase tracking-tight">{{ $q->question_text }}</p>
                                                 <div class="flex gap-2">
                                                     <label class="cursor-pointer">
-                                                        <input type="radio" name="answers[{{ $q->id }}]" value="ya" class="hidden peer">
+                                                        <input type="radio" name="answers[{{ $q->id }}]" value="ya" class="hidden peer" :required="selectedGroup === {{ $group->id }}">
                                                         <div class="px-5 py-2 rounded-xl border border-slate-200 text-[10px] font-black uppercase text-slate-400 peer-checked:bg-emerald-500 peer-checked:text-white peer-checked:border-emerald-500 transition-all text-center min-w-[70px]">Ya</div>
                                                     </label>
                                                     <label class="cursor-pointer">
@@ -1312,7 +1317,28 @@
                                 <button type="button" @click="atecStep = 'IV'" :class="atecStep === 'IV' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'" class="px-3 md:px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase transition-all">IV. Fisik</button>
                             </div>
 
-                            <form action="{{ route('observasi.atec_digital') }}" method="POST" class="space-y-4">
+                            <form action="{{ route('observasi.atec_digital') }}" method="POST" class="space-y-4" @submit.prevent="
+                                let allKeys = [{{ $qatec->pluck('id')->implode(', ') }}];
+                                let formData = new FormData($event.target);
+                                let answeredKeys = [];
+                                for (let key of formData.keys()) {
+                                    if(key.startsWith('answers[')) {
+                                        let match = key.match(/\d+/);
+                                        if(match) answeredKeys.push(parseInt(match[0]));
+                                    }
+                                }
+                                let missing = allKeys.filter(k => !answeredKeys.includes(k));
+                                if (missing.length > 0) {
+                                    Swal.fire({
+                                        icon: 'warning', 
+                                        title: 'Belum Lengkap', 
+                                        text: 'Terdapat ' + missing.length + ' pertanyaan yang belum dijawab. Mohon periksa dan lengkapi semua bagian (I - IV) sebelum menyimpan.',
+                                        confirmButtonColor: '#0f172a'
+                                    });
+                                } else {
+                                    $event.target.submit();
+                                }
+                            ">
                                 @csrf
                                 <input type="hidden" name="anak_id" value="{{ $anak->id }}">
                                 
@@ -1604,8 +1630,23 @@
                     onInit: function() {
                         $('.note-editor').addClass('rounded-[2rem] border-0');
                         if (typeof lucide !== 'undefined') lucide.createIcons();
+                    },
+                    onChange: function(contents) {
+                        // Sinkronisasi isi editor ke textarea asli setiap kali berubah
+                        $('#summernote-editor').val(contents);
+                    },
+                    onBlur: function() {
+                        // Sinkronisasi juga saat editor kehilangan fokus
+                        var contents = $('#summernote-editor').summernote('code');
+                        $('#summernote-editor').val(contents);
                     }
                 }
+            });
+
+            // Jaring pengaman: pastikan saat form disubmit, konten Summernote ditulis ke textarea
+            $target.closest('form').off('submit.summernote').on('submit.summernote', function() {
+                var content = $('#summernote-editor').summernote('code');
+                $('#summernote-editor').val(content);
             });
         };
 

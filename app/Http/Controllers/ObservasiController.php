@@ -352,11 +352,6 @@ class ObservasiController extends Controller
         }
 
         $isPenyimpangan = $jumlahYa >= 1; // Standard KMME: 1 atau lebih jawaban Ya berindikasi masalah
-        // WAIT: user plan kata "≥2 jawaban Ya -> kemungkinan masalah". Oh wait. 
-        // Let's re-read user plan: "Interpretasi: ≥2 jawaban "Ya" → kemungkinan masalah mental emosional → rujuk"
-        // Wait, Kemenkes KMME standard: "Bila ada 1 atau lebih jawaban Ya, maka anak kemungkinan mengalami masalah mental emosional." But user plan literally says "≥2 jawaban "Ya" -> kemungkinan masalah mental emosional".
-        // I will follow user plan explicitly:
-        $isPenyimpangan = $jumlahYa >= 2;
 
         $totalSoal = count($answers);
         $hasil     = $isPenyimpangan ? 'Penyimpangan' : 'Normal';
@@ -407,16 +402,16 @@ class ObservasiController extends Controller
             ]);
         }
 
-        $hasil = ($jumlahTidakCritical >= 1 || $totalTidak >= 3) ? 'Risiko Autisme' : 'Tidak Berisiko';
+        $hasil = ($jumlahTidakCritical >= 2 || $totalTidak >= 3) ? 'Risiko Autisme' : 'Tidak Berisiko';
 
         HasilPemeriksaan::create([
             'anak_id'             => $anakId,
             'jenis'               => 'Autisme',
             'hasil'               => $hasil,
             'total_skor'          => $totalTidak,
-            'interpretasi'        => ($jumlahTidakCritical >= 1 || $totalTidak >= 3)
+            'interpretasi'        => ($jumlahTidakCritical >= 2 || $totalTidak >= 3)
                 ? "$jumlahTidakCritical critical item dijawab TIDAK, total $totalTidak TIDAK — Risiko autisme terdeteksi (CHAT)."
-                : "Tidak ada critical item dijawab TIDAK, total $totalTidak TIDAK — Tidak berisiko autisme.",
+                : "Tidak memenuhi ambang batas risiko autisme.",
             'tanggal_pemeriksaan' => now()->toDateString(),
         ]);
 
@@ -696,19 +691,24 @@ class ObservasiController extends Controller
         // Hitung jawaban untuk masing-masing tes
         $jumlahJawabanYaPerilaku = QuestionResponsePerilaku::where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
-            ->where('answer', 'YA')
+            ->where('answer', 'ya')
             ->count();
 
 
-        $criticalNoUrut = [2, 7, 9, 13, 14, 15];
+        $criticalNoUrut = [5, 7, 11, 12, 13];
 
         $jumlahJawabanTidakAutis = QuestionResponseAutis::with(['question_autis'])
             ->where('anak_id', $anak->id)
             ->whereDate('created_at', $tanggal)
-            ->where('answer', 'TIDAK')
+            ->where('answer', 'tidak')
             ->whereHas('question_autis', function ($query) use ($criticalNoUrut) {
                 $query->whereIn('no_urut', $criticalNoUrut);
             })
+            ->count();
+
+        $totalJawabanTidakAutis = QuestionResponseAutis::where('anak_id', $anak->id)
+            ->whereDate('created_at', $tanggal)
+            ->where('answer', 'tidak')
             ->count();
 
         $totalNilaiGpph = QuestionResponseGpph::where('anak_id', $anak->id)
@@ -772,6 +772,7 @@ class ObservasiController extends Controller
             'gpph' => "Gangguan Pemusatan Perhatian dan Hiperaktif (GPPH)",
             'jumlahJawabanYaPerilaku' => $jumlahJawabanYaPerilaku,
             'jumlahJawabanTidakAutis' => $jumlahJawabanTidakAutis,
+            'totalJawabanTidakAutis' => $totalJawabanTidakAutis,
             'jumlahPertanyaanPendengaran' => $jumlahPertanyaanPendengaran,
             'jumlahJawabanTidakPendengaran' => $jumlahJawabanTidakPendengaran,
             'jawabanPenglihatan' => $jawabanPenglihatan,

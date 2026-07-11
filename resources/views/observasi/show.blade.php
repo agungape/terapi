@@ -1438,7 +1438,7 @@
                      @sync-qualitative.window="handleSync($event.detail)"
                      x-show="['hpperilaku', 'hpsensorik', 'edit_qualitative'].includes(modalType)">
                     <div class="mt-4">
-                        <form :action="modalType === 'edit_qualitative' ? (modalData.jenis === 'HpPerilaku' ? `/observasi/hpperilaku/${modalData.id}` : `/observasi/hpsensorik/${modalData.id}`) : (modalType === 'hpperilaku' ? '{{ route('observasi.hpperilaku') }}' : '{{ route('observasi.hpsensorik') }}')" method="POST" class="flex flex-col space-y-6">
+                        <form :action="modalType === 'edit_qualitative' ? (modalData.jenis === 'HpPerilaku' ? `/observasi/hpperilaku/${modalData.id}` : `/observasi/hpsensorik/${modalData.id}`) : (modalType === 'hpperilaku' ? '{{ route('observasi.hpperilaku') }}' : '{{ route('observasi.hpsensorik') }}')" method="POST" class="flex flex-col space-y-6" @submit="if(window.jQuery) { document.getElementById('summernote-editor').value = window.jQuery('#summernote-editor').summernote('code'); }">
                             @csrf
                             <template x-if="modalType === 'edit_qualitative'">
                                 <input type="hidden" name="_method" value="PATCH">

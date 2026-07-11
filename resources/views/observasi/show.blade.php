@@ -324,7 +324,7 @@
                                                 </button>
                                             @endif
                                             
-                                            <form action="{{ route('observasi.destroy_hasil', $h['id']) }}" method="POST" onsubmit="confirmDelete(event)" class="inline-block">
+                                            <form action="{{ route('observasi.destroy_hasil', $h['id']) }}" method="POST" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <input type="hidden" name="jenis_model" value="{{ $h['jenis_model'] }}">
@@ -394,7 +394,7 @@
                                             <button @click="openModal('edit_anthropometri', {{ $anthro->toJson() }})" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
                                                 <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                             </button>
-                                            <form action="{{ route('observasi.anthropometri.destroy', $anthro->id) }}" method="POST" onsubmit="confirmDelete(event)" class="inline-block">
+                                            <form action="{{ route('observasi.anthropometri.destroy', $anthro->id) }}" method="POST" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors btn-hapus">
@@ -1662,36 +1662,6 @@
         observer.observe(document.body, { childList: true, subtree: true });
     });
 
-    function confirmDelete(e) {
-        e.preventDefault();
-        const form = e.target.closest('form');
-        
-        // Ensure SweetAlert2 is available
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: 'Konfirmasi Hapus',
-                text: 'Yakin ingin menghapus data ini? Data yang dihapus tidak dapat dikembalikan.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: window.primaryColor,
-                cancelButtonColor: '#94a3b8',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'rounded-xl shadow-lg font-black tracking-widest',
-                    cancelButton: 'rounded-xl font-black tracking-widest',
-                    popup: 'rounded-[2rem] border-0'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        } else {
-            // Fallback
-            if(confirm('Yakin ingin menghapus data ini?')) form.submit();
-        }
-    }
 
     function qualitativeData() {
         return {

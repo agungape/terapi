@@ -524,7 +524,7 @@
                 </div>
             </template>
 
-            <div class="flex-1 min-h-0" :class="modalType === 'result' ? 'p-0 overflow-hidden flex flex-col' : 'p-4 md:p-8 overflow-y-auto'">
+            <div class="flex-1 min-h-0" :class="modalType === 'result' ? 'p-0 flex flex-col overflow-hidden' : 'p-4 md:p-8 overflow-y-auto'">
                 <!-- KMME Form -->
                 <template x-if="modalType === 'perilaku'">
                     <form action="{{ route('observasi.perilaku') }}" method="POST" class="space-y-6">
@@ -751,22 +751,37 @@
                                     <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 text-[10px] font-black flex items-center justify-center flex-shrink-0">{{ $index + 1 }}</span>
                                     <p class="text-xs font-bold text-slate-700 leading-relaxed">{{ $q->question_text }}</p>
                                 </div>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
+                                <!-- BUG FIX #7: GPPH - semua pilihan kini punya highlight via onclick JS (lebih andal dari peer-checked custom class) -->
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4" x-data="{}" @change="
+                                    Array.from($el.querySelectorAll('input[type=radio]')).forEach(inp => {
+                                        const box = inp.nextElementSibling;
+                                        box.removeAttribute('style');
+                                    });
+                                    const checked = $el.querySelector('input[type=radio]:checked');
+                                    if (checked) {
+                                        const val = parseInt(checked.value);
+                                        const colors = ['#10b981','#3b82f6','#a855f7','#ef4444'];
+                                        const box = checked.nextElementSibling;
+                                        box.style.backgroundColor = colors[val];
+                                        box.style.color = 'white';
+                                        box.style.borderColor = colors[val];
+                                    }
+                                ">
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="answers[{{ $q->id }}]" value="0" class="hidden peer" required>
-                                        <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 peer-checked:bg-emerald-500 peer-checked:text-white peer-checked:border-emerald-500 transition-all text-center">0 - Tdk Pernah</div>
+                                        <input type="radio" name="answers[{{ $q->id }}]" value="0" class="hidden" required>
+                                        <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 transition-all text-center">0 - Tdk Pernah</div>
                                     </label>
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="answers[{{ $q->id }}]" value="1" class="hidden peer peer-checked-blue">
+                                        <input type="radio" name="answers[{{ $q->id }}]" value="1" class="hidden">
                                         <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 transition-all text-center">1 - Kadang</div>
                                     </label>
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="answers[{{ $q->id }}]" value="2" class="hidden peer peer-checked-purple">
+                                        <input type="radio" name="answers[{{ $q->id }}]" value="2" class="hidden">
                                         <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 transition-all text-center">2 - Sering</div>
                                     </label>
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="answers[{{ $q->id }}]" value="3" class="hidden peer">
-                                        <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center">3 - Selalu</div>
+                                        <input type="radio" name="answers[{{ $q->id }}]" value="3" class="hidden">
+                                        <div class="px-2 md:px-3 py-2 rounded-xl border border-slate-200 text-[9px] font-black uppercase text-slate-400 transition-all text-center">3 - Selalu</div>
                                     </label>
                                 </div>
                             </div>
@@ -1489,125 +1504,132 @@
                 </div>
 
                 <!-- Clinical Result Display (Refactored) -->
-                <template x-if="modalType === 'result'">
-                    <div class="h-full flex flex-col w-full text-slate-800 bg-slate-50/50">
-                        <!-- Premium Compact Header -->
-                        <div class="shrink-0 bg-slate-900 text-white rounded-t-[2rem] md:rounded-t-[2.5rem] p-5 md:p-6 z-10 flex justify-between items-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-emerald-500/20 pointer-events-none"></div>
-                            <div class="flex items-center gap-4 relative z-10">
-                                <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
-                                    <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-400"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-0.5">Log Medis Terpadu</p>
-                                    <h3 class="text-base md:text-xl font-black text-white tracking-tight leading-none" x-text="modalData.jenis"></h3>
-                                </div>
+                <!-- BUG FIX #4: Ubah dari template x-if ke div x-show agar h-full berfungsi di dalam flexbox parent -->
+                <div x-show="modalType === 'result'" x-cloak class="flex flex-col w-full text-slate-800 bg-slate-50/50" style="display: none;">
+                    <!-- Premium Compact Header -->
+                    <div class="shrink-0 bg-slate-900 text-white rounded-t-[2rem] md:rounded-t-[2.5rem] p-5 md:p-6 z-10 flex justify-between items-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-emerald-500/20 pointer-events-none"></div>
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                                <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-400"></i>
                             </div>
-                            <button @click="closeModal()" class="w-10 h-10 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl flex items-center justify-center transition-colors border border-white/10 shrink-0 group relative z-10">
-                                <i data-lucide="x" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
-                            </button>
+                            <div>
+                                <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-0.5">Log Medis Terpadu</p>
+                                <h3 class="text-base md:text-xl font-black text-white tracking-tight leading-none" x-text="modalData.jenis"></h3>
+                            </div>
                         </div>
-                        
-                        <!-- Scrollable Content -->
-                        <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 custom-scrollbar">
-                            <div class="space-y-4">
-                                <!-- Compact Metadata -->
-                                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <i data-lucide="calendar" class="w-5 h-5 text-slate-400"></i>
-                                        <span class="text-xs md:text-sm font-bold text-slate-600" x-text="modalData.created_at"></span>
+                        <button @click="closeModal()" class="w-10 h-10 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl flex items-center justify-center transition-colors border border-white/10 shrink-0 group relative z-10">
+                            <i data-lucide="x" class="w-5 h-5 text-slate-300 group-hover:text-white"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Scrollable Content -->
+                    <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 custom-scrollbar">
+                        <div class="space-y-4">
+                            <!-- Compact Metadata -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="calendar" class="w-5 h-5 text-slate-400"></i>
+                                    <span class="text-xs md:text-sm font-bold text-slate-600" x-text="modalData.created_at"></span>
+                                </div>
+                                <div class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div> Valid
+                                </div>
+                            </div>
+
+                            <!-- Image Type (ATEC Bukti foto upload) -->
+                            <template x-if="modalData.is_atec && modalData.image_url">
+                                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
+                                    <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg mb-4 border border-slate-100">
+                                        <i data-lucide="image" class="w-3.5 h-3.5 text-slate-400"></i>
+                                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dokumen Scan ATEC</span>
                                     </div>
-                                    <div class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-2">
-                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div> Valid
+                                    <div class="rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                                        <img :src="modalData.image_url" class="w-full h-auto max-h-[60vh] object-contain">
                                     </div>
                                 </div>
+                            </template>
 
-                                <!-- Image Type (ATEC Bukti) -->
-                                <template x-if="modalData.is_atec && modalData.image_url">
-                                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-center">
-                                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg mb-4 border border-slate-100">
-                                            <i data-lucide="image" class="w-3.5 h-3.5 text-slate-400"></i>
-                                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dokumen Scan</span>
+                            <!-- BUG FIX #1: Fallback jika ATEC tapi image_url kosong -->
+                            <template x-if="modalData.is_atec && !modalData.image_url">
+                                <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100 flex items-center gap-3">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 shrink-0"></i>
+                                    <p class="text-xs font-bold text-amber-700">Berkas gambar hasil ATEC tidak ditemukan atau belum diunggah.</p>
+                                </div>
+                            </template>
+
+                            <!-- Text/Diagnostics Type (non-ATEC foto) -->
+                            <template x-if="!modalData.is_atec">
+                                <div class="space-y-4">
+                                    <!-- Compact Result Status -->
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border"
+                                            :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'bg-red-50 border-red-100 text-red-500' : 'bg-emerald-50 border-emerald-100 text-emerald-500'">
+                                            <i data-lucide="activity" class="w-6 h-6"></i>
                                         </div>
-                                        <div class="rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                                            <img :src="modalData.image_url" class="w-full h-auto max-h-[60vh] object-contain">
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Status Diagnostik</p>
+                                            <h4 class="text-lg md:text-xl font-black uppercase tracking-tight break-words" 
+                                               :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-600' : 'text-slate-800'"
+                                               x-text="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Observasi Kualitatif' : modalData.hasil">
+                                            </h4>
                                         </div>
                                     </div>
-                                </template>
 
-                                <!-- Text/Diagnostics Type -->
-                                <template x-if="!modalData.is_atec">
-                                    <div class="space-y-4">
-                                        <!-- Compact Result Status -->
-                                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border"
-                                                :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'bg-red-50 border-red-100 text-red-500' : 'bg-emerald-50 border-emerald-100 text-emerald-500'">
-                                                <i data-lucide="activity" class="w-6 h-6"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Status Diagnostik</p>
-                                                <h4 class="text-lg md:text-xl font-black uppercase tracking-tight break-words" 
-                                                   :class="(modalData.jenis === 'ATEC Kuesioner' && modalData.total_skor > 50) || ['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil) ? 'text-red-600' : 'text-slate-800'"
-                                                   x-text="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Observasi Kualitatif' : modalData.hasil">
-                                                </h4>
-                                            </div>
+                                    <!-- Detailed Output Block -->
+                                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                                        <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                                            <i data-lucide="file-text" class="w-4 h-4 text-indigo-500"></i>
+                                            <h6 class="text-xs font-black text-slate-700 uppercase tracking-widest" x-text="modalData.jenis === 'ATEC Kuesioner' ? 'Kesimpulan & Metrik ATEC' : (['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Catatan Deskriptif' : 'Rekomendasi Klinis')"></h6>
                                         </div>
-
-                                        <!-- Detailed Output Block -->
-                                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                                            <div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-indigo-500"></i>
-                                                <h6 class="text-xs font-black text-slate-700 uppercase tracking-widest" x-text="modalData.jenis === 'ATEC Kuesioner' ? 'Kesimpulan & Metrik ATEC' : (['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis) ? 'Catatan Deskriptif' : 'Rekomendasi Klinis')"></h6>
-                                            </div>
+                                        
+                                        <div class="text-sm font-medium leading-relaxed w-full">
+                                            <!-- Qualitative HTML Content -->
+                                            <template x-if="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
+                                                <div class="prose prose-slate prose-sm max-w-none w-full overflow-x-auto custom-scrollbar break-words rounded-xl bg-slate-50/50 p-4 border border-slate-100" 
+                                                     x-html="decodeURIComponent(escape(window.atob(modalData.deskripsi_b64)))">
+                                                </div>
+                                            </template>
                                             
-                                            <div class="text-sm font-medium leading-relaxed w-full">
-                                                <!-- Qualitative HTML Content -->
-                                                <template x-if="['OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
-                                                    <div class="prose prose-slate prose-sm max-w-none w-full overflow-x-auto custom-scrollbar break-words rounded-xl bg-slate-50/50 p-4 border border-slate-100" 
-                                                         x-html="decodeURIComponent(escape(window.atob(modalData.deskripsi_b64)))">
+                                            <!-- ATEC Kuesioner Format -->
+                                            <template x-if="modalData.jenis === 'ATEC Kuesioner'">
+                                                <div class="space-y-3">
+                                                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-slate-700 break-words text-xs leading-relaxed" x-text="modalData.interpretasi"></div>
+                                                    <div class="bg-indigo-50 text-indigo-700 rounded-xl p-3 border border-indigo-100 font-bold text-xs uppercase tracking-tight break-words flex items-center gap-2">
+                                                        <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+                                                        <span x-text="modalData.kesimpulan"></span>
                                                     </div>
-                                                </template>
-                                                
-                                                <!-- ATEC Format -->
-                                                <template x-if="modalData.jenis === 'ATEC Kuesioner'">
-                                                    <div class="space-y-3">
-                                                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-slate-700 break-words text-xs leading-relaxed" x-text="modalData.interpretasi"></div>
-                                                        <div class="bg-indigo-50 text-indigo-700 rounded-xl p-3 border border-indigo-100 font-bold text-xs uppercase tracking-tight break-words flex items-center gap-2">
-                                                            <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
-                                                            <span x-text="modalData.kesimpulan"></span>
-                                                        </div>
-                                                    </div>
-                                                </template>
+                                                </div>
+                                            </template>
 
-                                                <!-- Standard Standard Diagnostics Format -->
-                                                <template x-if="!['ATEC Kuesioner', 'OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
-                                                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex gap-3 items-start">
-                                                        <i data-lucide="stethoscope" class="w-5 h-5 text-slate-400 shrink-0 mt-0.5"></i>
-                                                        <p class="text-slate-700 text-xs md:text-sm break-words leading-loose">
-                                                            <template x-if="modalData.interpretasi">
-                                                                <span x-text="modalData.interpretasi"></span>
-                                                            </template>
-                                                            <template x-if="!modalData.interpretasi">
-                                                                <span>
-                                                                    <template x-if="['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil)">
-                                                                        <span class="text-red-600 font-bold">{{ $penyimpangan }}</span>
-                                                                    </template>
-                                                                    <template x-if="!['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil)">
-                                                                        <span class="text-emerald-600 font-bold">{{ $sesuaiUmur }}</span>
-                                                                    </template>
-                                                                </span>
-                                                            </template>
-                                                        </p>
-                                                    </div>
-                                                </template>
-                                            </div>
+                                            <!-- Standard Diagnostics Format -->
+                                            <template x-if="!['ATEC Kuesioner', 'OBS. PERILAKU', 'OBS. SENSORIK'].includes(modalData.jenis)">
+                                                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex gap-3 items-start">
+                                                    <i data-lucide="stethoscope" class="w-5 h-5 text-slate-400 shrink-0 mt-0.5"></i>
+                                                    <p class="text-slate-700 text-xs md:text-sm break-words leading-loose">
+                                                        <template x-if="modalData.interpretasi">
+                                                            <span x-text="modalData.interpretasi"></span>
+                                                        </template>
+                                                        <template x-if="!modalData.interpretasi">
+                                                            <span>
+                                                                <template x-if="['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil)">
+                                                                    <span class="text-red-600 font-bold">{{ $penyimpangan }}</span>
+                                                                </template>
+                                                                <template x-if="!['Penyimpangan', 'Curiga Gangguan Penglihatan', 'Risiko Autisme', 'Kemungkinan GPPH'].includes(modalData.hasil)">
+                                                                    <span class="text-emerald-600 font-bold">{{ $sesuaiUmur }}</span>
+                                                                </template>
+                                                            </span>
+                                                        </template>
+                                                    </p>
+                                                </div>
+                                            </template>
                                         </div>
                                     </div>
-                                </template>
-                            </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
-                </template>
+                </div>
             </div>
         </div>
     </div>
@@ -1656,6 +1678,38 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // BUG FIX #6: Konfirmasi SweetAlert sebelum hapus log pemeriksaan / anthropometri
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-hapus');
+            if (!btn) return;
+
+            e.preventDefault();
+            const form = btn.closest('form');
+            if (!form) return;
+
+            Swal.fire({
+                title: 'Hapus Data?',
+                text: 'Data yang dihapus tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    popup: 'rounded-3xl shadow-2xl',
+                    title: 'font-black text-slate-800 text-lg',
+                    htmlContainer: 'text-slate-500 text-sm',
+                    confirmButton: 'rounded-2xl font-black text-xs uppercase tracking-widest px-6 py-3',
+                    cancelButton: 'rounded-2xl font-black text-xs uppercase tracking-widest px-6 py-3'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
 
     $(document).ready(function() {

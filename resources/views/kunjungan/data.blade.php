@@ -75,74 +75,30 @@
                 </div>
             </div>
             
-            {{-- Smart Search Filter (auto-submit, no button needed) --}}
+            {{-- Smart Search Filter: cari nama saja, auto-submit --}}
             <form id="filter-form" action="{{ route('kunjungan.pencarian') }}" method="GET"
                   class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
 
-                {{-- Cari Nama: auto-submit saat berhenti mengetik --}}
-                <div class="relative flex-1 min-w-[180px]">
+                <div class="relative flex-1 min-w-[220px] max-w-sm">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     <input id="input-nama" type="text" name="nama" value="{{ request('nama') }}"
                            placeholder="Ketik nama anak..."
                            autocomplete="off"
                            class="pl-11 pr-10 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-red-50 focus:border-red-200 transition-all outline-none w-full">
-                    {{-- Clear nama --}}
                     @if(request('nama'))
-                    <a href="{{ route('kunjungan.pencarian', array_filter(['date_range' => request('date_range')])) }}"
+                    <a href="{{ route('kunjungan.data') }}"
                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-400 transition-colors">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </a>
                     @endif
                 </div>
 
-                {{-- Pilih Tanggal: gunakan dua input date biasa agar mobile-friendly --}}
-                @php
-                    $dr = request('date_range');
-                    $drParts = $dr ? explode(' - ', $dr) : [];
-                    $dateFrom = count($drParts) === 2 ? $drParts[0] : '';
-                    $dateTo   = count($drParts) === 2 ? $drParts[1] : '';
-                @endphp
-                <input type="hidden" name="date_range" id="input-date-range"
-                       value="{{ request('date_range') }}">
-
-                <div class="flex items-center gap-2">
-                    <div class="relative">
-                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                        <input id="date-from" type="date" value="{{ $dateFrom }}"
-                               placeholder="Dari"
-                               class="pl-10 pr-3 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-blue-50 focus:border-blue-200 transition-all outline-none w-[150px]">
-                    </div>
-                    <span class="text-slate-300 font-black text-xs">—</span>
-                    <div class="relative">
-                        <i data-lucide="calendar" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                        <input id="date-to" type="date" value="{{ $dateTo }}"
-                               placeholder="Sampai"
-                               class="pl-10 pr-3 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-blue-50 focus:border-blue-200 transition-all outline-none w-[150px]">
-                    </div>
-                </div>
-
-                {{-- Shortcut tanggal cepat --}}
-                <div class="flex items-center gap-1.5">
-                    <button type="button" id="btn-today"
-                            class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2
-                            {{ !$dr ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50' }}">
-                        Hari Ini
-                    </button>
-                    <button type="button" id="btn-week"
-                            class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2 bg-white text-slate-500 border-slate-100 hover:bg-slate-50">
-                        Minggu Ini
-                    </button>
-                    <button type="button" id="btn-month"
-                            class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2 bg-white text-slate-500 border-slate-100 hover:bg-slate-50">
-                        Bulan Ini
-                    </button>
-                    @if(request('date_range') || request('nama'))
-                    <a href="{{ route('kunjungan.data') }}"
-                       class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 border-red-100 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center gap-1">
-                        <i data-lucide="x" class="w-3 h-3"></i> Reset
-                    </a>
-                    @endif
-                </div>
+                @if(request('nama'))
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-[9px] font-black uppercase tracking-wider border border-red-100">
+                    <i data-lucide="user" class="w-3 h-3"></i>
+                    "{{ request('nama') }}"
+                </span>
+                @endif
             </form>
         </div>
 
@@ -529,79 +485,14 @@
     document.addEventListener('DOMContentLoaded', function() {
         lucide.createIcons();
 
-        const form        = document.getElementById('filter-form');
-        const inputNama   = document.getElementById('input-nama');
-        const inputDR     = document.getElementById('input-date-range');
-        const dateFrom    = document.getElementById('date-from');
-        const dateTo      = document.getElementById('date-to');
-        const btnToday    = document.getElementById('btn-today');
-        const btnWeek     = document.getElementById('btn-week');
-        const btnMonth    = document.getElementById('btn-month');
-
-        // Helper: format date ke YYYY-MM-DD
-        const fmt = d => d.toISOString().split('T')[0];
-
-        // Sync dua input date ke hidden input date_range lalu submit
-        function submitWithDates(from, to) {
-            if (from && to) {
-                inputDR.value = from + ' - ' + to;
-            } else {
-                inputDR.value = '';
-            }
-            form.submit();
-        }
+        const form      = document.getElementById('filter-form');
+        const inputNama = document.getElementById('input-nama');
 
         // Auto-submit saat berhenti mengetik nama (debounce 500ms)
         let debounceTimer;
         inputNama.addEventListener('input', function() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => form.submit(), 500);
-        });
-
-        // Auto-submit saat date-from/date-to berubah
-        function onDateChange() {
-            const f = dateFrom.value;
-            const t = dateTo.value;
-            if (f && t && f <= t) {
-                submitWithDates(f, t);
-            } else if (f && !t) {
-                // Jika hanya dari-nya diisi, tunggu sampai to juga diisi
-            } else if (!f && !t) {
-                submitWithDates('', '');
-            }
-        }
-
-        dateFrom.addEventListener('change', onDateChange);
-        dateTo.addEventListener('change', onDateChange);
-
-        // Shortcut: Hari Ini
-        btnToday.addEventListener('click', function() {
-            const today = fmt(new Date());
-            dateFrom.value = today;
-            dateTo.value   = today;
-            submitWithDates(today, today);
-        });
-
-        // Shortcut: Minggu Ini (Senin - Minggu)
-        btnWeek.addEventListener('click', function() {
-            const now  = new Date();
-            const day  = now.getDay(); // 0=Minggu, 1=Senin ...
-            const diff = (day === 0) ? -6 : 1 - day; // Adjust to Monday
-            const mon  = new Date(now); mon.setDate(now.getDate() + diff);
-            const sun  = new Date(mon); sun.setDate(mon.getDate() + 6);
-            dateFrom.value = fmt(mon);
-            dateTo.value   = fmt(sun);
-            submitWithDates(fmt(mon), fmt(sun));
-        });
-
-        // Shortcut: Bulan Ini
-        btnMonth.addEventListener('click', function() {
-            const now   = new Date();
-            const first = new Date(now.getFullYear(), now.getMonth(), 1);
-            const last  = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-            dateFrom.value = fmt(first);
-            dateTo.value   = fmt(last);
-            submitWithDates(fmt(first), fmt(last));
         });
     });
 </script>

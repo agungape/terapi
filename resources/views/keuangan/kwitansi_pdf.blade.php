@@ -151,7 +151,7 @@
     <div class="text-center" style="font-size: 8px; line-height: 1.5; margin: 8px 0; padding: 6px 4px;">
         <div style="font-weight: bold; font-size: 8.5px; margin-bottom: 3px;">[ KEBIJAKAN PEMBAYARAN ]</div>
         Pembayaran yang telah dilakukan bersifat<br>
-        <strong>final dan tidak dapat dikembalikan</strong><br>
+        <strong>final dan tidak dapat dikembalikan / Refund</strong><br>
         dalam bentuk apapun. Dana yang masuk<br>
         sepenuhnya dialokasikan untuk keberlangsungan<br>
         program terapi yang telah disepakati bersama.<br><br>

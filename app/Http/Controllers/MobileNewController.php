@@ -776,8 +776,8 @@ class MobileNewController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('keuangan.kwitansi_pdf', $pdfData);
         
         // Ukuran Thermal 80mm dalam points (1mm = 2.83465pt)
-        // 80mm = 226.77pt, 150mm = 425.2pt
-        $pdf->setPaper([0, 0, 226.77, 425.2], 'portrait');
+        // 80mm = 226.77pt, 250mm = 566.93pt
+        $pdf->setPaper([0, 0, 226.77, 566.93], 'portrait');
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled'      => true,

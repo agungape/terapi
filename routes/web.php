@@ -18,6 +18,7 @@ use App\Http\Controllers\ObservasiController;
 use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PencarianController;
+use App\Http\Controllers\PerusahaanCsrController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgramController;
@@ -55,6 +56,7 @@ Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcod
 // Short Verification Routes
 Route::get('/v/o/{id}/{date}/{sig}', [ObservasiController::class, 'verifyBarcode'])->name('barcode.verify.observasi');
 Route::get('/v/a/{id}/{sig}', [AssessmentController::class, 'verifyBarcode'])->name('barcode.verify.assessment');
+Route::get('/v/k/{token}', [KeuanganController::class, 'verifyKwitansiBarcode'])->name('kwitansi.verify.public');
 
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -147,6 +149,7 @@ Route::group(['middleware' => ['role:super-admin|admin|terapis|keuangan|psikolog
     Route::resource('/career', CareerController::class);
     Route::resource('/tarif', TarifController::class);
     Route::resource('/informasi', InformasiController::class);
+    Route::resource('/perusahaan-csr', PerusahaanCsrController::class);
 
     Route::get('/q-pendengaran', [QuestionController::class, 'index'])->name('question.pendengaran');
     Route::post('/q-pendengaran/simpan', [QuestionController::class, 'pendengaran_store'])->name('qpendengaran.store');

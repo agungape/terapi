@@ -107,6 +107,12 @@
                             </li>
                         @endcan
 
+                            <li class="nav-item">
+                                <a href="{{ route('perusahaan-csr.index') }}" class="nav-link @yield('menuPerusahaanCsr')">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Perusahaan CSR</p>
+                                </a>
+                            </li>
                         @canany(['view master umur', 'view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara'])
                         <li class="nav-item @yield('deteksiShow')">
                             <a href="#" class="nav-link @yield('menuDeteksi')">

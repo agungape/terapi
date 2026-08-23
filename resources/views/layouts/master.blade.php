@@ -410,6 +410,11 @@
             </a>
             @endcan
 
+            <a href="{{ route('perusahaan-csr.index') }}" class="sidebar-link {{ request()->routeIs('perusahaan-csr.*') ? 'active' : '' }}">
+                <i data-lucide="building-2" class="w-4 h-4 shrink-0 {{ request()->routeIs('perusahaan-csr.*') ? 'text-amber-500' : 'text-slate-400' }}"></i>
+                <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Perusahaan CSR</span>
+            </a>
+
             <!-- Deteksi Dini Submenu -->
             @canany(['view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara', 'view master umur'])
             <div x-data="{ open: {{ (request()->is('question*') || request()->is('age*') || request()->routeIs('question.*')) ? 'true' : 'false' }} }" 

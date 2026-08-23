@@ -6,7 +6,7 @@
     <style>
         @page { 
             margin: 5mm;
-            size: 80mm 200mm;
+            size: 80mm 250mm;
         }
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -90,12 +90,51 @@
 </head>
 <body>
     <div class="text-center header">
-        <div class="brand">BRIGHT STAR</div>
+        <div class="brand">BRIGHT STAR OF CHILD</div>
         <div class="address">
-            Therapy & Development Center<br>
-            Bukti Pembayaran Elektronik
+            Pusat Terapi & Tumbuh Kembang Anak<br>
+            Bukti Pembayaran Resmi
         </div>
     </div>
+
+    @if($pemasukkan->perusahaan_csr_id && $pemasukkan->perusahaanCsr)
+    @php
+        $logoBase64 = null;
+        if ($pemasukkan->perusahaanCsr->logo) {
+            $logoPath = storage_path('app/public/' . $pemasukkan->perusahaanCsr->logo);
+            if (file_exists($logoPath)) {
+                $ext = pathinfo($logoPath, PATHINFO_EXTENSION);
+                $logoData = file_get_contents($logoPath);
+                $logoBase64 = 'data:image/' . ($ext === 'svg' ? 'svg+xml' : $ext) . ';base64,' . base64_encode($logoData);
+            }
+        }
+
+        $pjiLogoBase64 = null;
+        $pjiPath = public_path('assets/website/images/pji-removebg-preview.png');
+        if (file_exists($pjiPath)) {
+            $pjiData = file_get_contents($pjiPath);
+            $pjiLogoBase64 = 'data:image/png;base64,' . base64_encode($pjiData);
+        }
+    @endphp
+    <div style="text-align: center; margin: 8px 0; padding: 6px 4px; border: 1px dashed #000; background-color: #fafafa;">
+        <div style="text-align: center; margin-bottom: 5px; line-height: 1;">
+            @if($pjiLogoBase64 && $logoBase64)
+                <img src="{{ $pjiLogoBase64 }}" height="46" alt="Plester Jiwa" style="max-width: 32mm; max-height: 46px; object-fit: contain; vertical-align: middle; margin: 0 2px;">
+                <img src="{{ $logoBase64 }}" height="38" alt="Logo CSR" style="max-width: 30mm; max-height: 38px; object-fit: contain; vertical-align: middle; margin: 0 2px;">
+            @elseif($pjiLogoBase64)
+                <img src="{{ $pjiLogoBase64 }}" height="46" alt="Plester Jiwa" style="max-width: 50mm; max-height: 46px; object-fit: contain; vertical-align: middle;">
+            @elseif($logoBase64)
+                <img src="{{ $logoBase64 }}" height="40" alt="Logo CSR" style="max-width: 50mm; max-height: 40px; object-fit: contain; vertical-align: middle;">
+            @endif
+        </div>
+        
+        <div style="font-size: 8px; font-weight: bold; color: #555; letter-spacing: 0.5px;">PROGRAM KERJASAMA CSR</div>
+        <div style="font-size: 10px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 1px;">{{ $pemasukkan->perusahaanCsr->nama_perusahaan }}</div>
+        @if($pemasukkan->perusahaanCsr->deskripsi_program)
+        <div style="font-size: 8px; font-style: italic; color: #333; margin-top: 2px;">{{ $pemasukkan->perusahaanCsr->deskripsi_program }}</div>
+        @endif
+    </div>
+    @endif
 
     <div class="divider"></div>
 
@@ -161,12 +200,29 @@
 
     <div class="divider"></div>
 
+    @php
+        $dns2d = new \Milon\Barcode\DNS2D();
+        $qrUrl = route('kwitansi.verify.public', ['token' => $pemasukkan->verification_token]);
+        $qrCode = $dns2d->getBarcodePNG($qrUrl, 'QRCODE', 3, 3);
+    @endphp
+    <div class="text-center" style="margin: 8px 0;">
+        <img src="data:image/png;base64,{{ $qrCode }}" width="65" height="65" alt="QR Verifikasi" style="display: block; margin: 0 auto;">
+        <div style="font-size: 7.5px; font-weight: bold; color: #444; margin-top: 4px; letter-spacing: 0.5px;">
+            VERIFIKASI KEASLIAN STRUK
+        </div>
+        <div style="font-size: 7px; color: #888; letter-spacing: 1px; margin-top: 1px;">
+            TRX-{{ str_pad($pemasukkan->id, 6, '0', STR_PAD_LEFT) }}-{{ \Carbon\Carbon::parse($pemasukkan->tanggal)->format('Ymd') }}
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="text-center footer">
         <div class="thanks">TERIMA KASIH</div>
-        Semoga lekas menunjukkan perkembangan<br>
-        yang luar biasa bagi buah hati.<br><br>
-        *** Layanan Terapi Terpercaya ***<br>
-        {{ date('Y') }} &copy; BRIGHT STAR SYSTEM
+        Semoga ananda tercinta terus tumbuh<br>
+        dan berkembang dengan optimal.<br><br>
+        *** Sahabat Tumbuh Kembang Buah Hati ***<br>
+        {{ date('Y') }} &copy; BRIGHT STAR OF CHILD
     </div>
 </body>
 </html>

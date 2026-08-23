@@ -234,10 +234,11 @@ class KeuanganController extends Controller
         $dataTerakhir = Pemasukkan::latest('updated_at')->first();
         $totalPemasukan = Pemasukkan::getTotalPemasukan();
         $formattedPemasukan = number_format($totalPemasukan, 0, ',', '.');
+        $perusahaan_csrs = \App\Models\PerusahaanCsr::all();
 
         return view('keuangan.pemasukkan', compact(
             'pemasukkans', 'kategori', 'kategoris', 'anaks',
-            'saldoKas', 'dataTerakhir', 'formattedPemasukan', 'tarif'
+            'saldoKas', 'dataTerakhir', 'formattedPemasukan', 'tarif', 'perusahaan_csrs'
         ));
     }
 
@@ -297,6 +298,7 @@ class KeuanganController extends Controller
             'jumlah'        => $jumlahBersih,
             'saldo_akhir'   => $saldoAkhir,
             'gambar'        => $namaFile,
+            'perusahaan_csr_id' => $request->perusahaan_csr_id,
         ]);
 
         // Jika pembayaran untuk assessment, update status_bayar assessment
@@ -556,7 +558,7 @@ class KeuanganController extends Controller
 
     public function kwitansi_pdf($id)
     {
-        $pemasukkan = Pemasukkan::with(['Tarif', 'anak', 'kategori'])->findOrFail($id);
+        $pemasukkan = Pemasukkan::with(['Tarif', 'anak', 'kategori', 'perusahaanCsr'])->findOrFail($id);
         
         $pdfData = [
             'pemasukkan' => $pemasukkan,
@@ -565,8 +567,8 @@ class KeuanganController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('keuangan.kwitansi_pdf', $pdfData);
         
         // Ukuran Thermal 80mm dalam points (1mm = 2.83465pt)
-        // 80mm = 226.77pt, 150mm = 425.2pt
-        $pdf->setPaper([0, 0, 226.77, 425.2], 'portrait');
+        // 80mm = 226.77pt, 250mm = 708.66pt (leluasa untuk continuous paper)
+        $pdf->setPaper([0, 0, 226.77, 566.93], 'portrait');
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled'      => true,
@@ -575,5 +577,17 @@ class KeuanganController extends Controller
 
         $filename = 'Kwitansi-' . $pemasukkan->id . '.pdf';
         return $pdf->stream($filename);
+    }
+
+    public function verifyKwitansiBarcode($token)
+    {
+        $id = Pemasukkan::decodeVerificationToken($token);
+        if (!$id) {
+            abort(404, 'Tanda tangan digital kwitansi tidak valid atau data transaksi tidak ditemukan.');
+        }
+
+        $pemasukkan = Pemasukkan::with(['Tarif', 'anak', 'kategori', 'perusahaanCsr'])->findOrFail($id);
+
+        return view('keuangan.barcode_hasil_kwitansi', compact('pemasukkan', 'token'));
     }
 }

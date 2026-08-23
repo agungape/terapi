@@ -26,6 +26,7 @@ class Pemasukkan extends Model
         'jenis_layanan',   // Enum: assessment | paket_terapi | lainnya
         'metode_bayar',    // Enum: tunai | transfer
         'sesi_dibayar',    // Sesi keberapa yang dibayar (untuk paket terapi)
+        'perusahaan_csr_id', // Relasi ke master data perusahaan CSR
     ];
 
     protected $casts = [
@@ -51,6 +52,35 @@ class Pemasukkan extends Model
     public static function getTotalPemasukan(): float
     {
         return (float) self::sum('jumlah');
+    }
+
+    public function getVerificationTokenAttribute(): string
+    {
+        $id = $this->id;
+        $salt = substr(hash('sha256', $id . config('app.key')), 0, 8);
+        $encoded = base64_encode($salt . ':' . $id);
+        return rtrim(strtr($encoded, '+/', '-_'), '=');
+    }
+
+    public static function decodeVerificationToken(string $token): ?int
+    {
+        $padded = strtr($token, '-_', '+/');
+        $decoded = base64_decode($padded);
+        if (!$decoded || !str_contains($decoded, ':')) {
+            return null;
+        }
+
+        [$salt, $id] = explode(':', $decoded, 2);
+        if (!is_numeric($id)) {
+            return null;
+        }
+
+        $expectedSalt = substr(hash('sha256', (int)$id . config('app.key')), 0, 8);
+        if (!hash_equals($expectedSalt, $salt)) {
+            return null;
+        }
+
+        return (int) $id;
     }
 
     protected function saldoakhirFormatted(): Attribute
@@ -91,6 +121,14 @@ class Pemasukkan extends Model
     public function kunjungans(): HasMany
     {
         return $this->hasMany(Kunjungan::class, 'pemasukkan_id');
+    }
+
+    /**
+     * Data Perusahaan CSR (jika ini pembayaran program CSR).
+     */
+    public function perusahaanCsr(): BelongsTo
+    {
+        return $this->belongsTo(PerusahaanCsr::class, 'perusahaan_csr_id');
     }
 
     // ===================== HELPERS =====================

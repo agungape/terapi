@@ -319,6 +319,18 @@
                             </div>
                         </div>
 
+                        {{-- Opsi Perusahaan CSR --}}
+                        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-6">
+                            <label class="text-[10px] font-black text-amber-700 uppercase tracking-widest block mb-2 px-1">Program Perusahaan CSR</label>
+                            <select name="perusahaan_csr_id" class="w-full bg-white border-amber-200 rounded-xl px-4 py-3 text-sm font-bold text-amber-900 focus:ring-4 focus:ring-amber-100 transition-all outline-none">
+                                <option value="">-- Reguler (Bukan CSR) --</option>
+                                @foreach($perusahaan_csrs as $csr)
+                                    <option value="{{ $csr->id }}">{{ $csr->nama_perusahaan }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-[10px] font-bold text-amber-600/70 mt-2 px-1">Pilih perusahaan CSR jika pembayaran ditanggung oleh program CSR. Jika pembayaran mandiri, pilih Reguler.</p>
+                        </div>
+
                         <div id="bukti-transfer1" class="hidden animate-in zoom-in-95 duration-300">
                              <div class="p-8 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-center space-y-4">
                                  <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto text-slate-400 shadow-sm"><i data-lucide="upload-cloud"></i></div>

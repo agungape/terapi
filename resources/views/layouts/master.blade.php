@@ -329,7 +329,7 @@
            }">
 
         <!-- Sidebar Header -->
-        <div class="p-6 flex items-center justify-between border-b border-slate-100 h-[72px] overflow-hidden">
+        <div class="p-6 flex items-center justify-between border-b border-slate-100 h-[72px] overflow-hidden shrink-0">
             <div class="flex items-center gap-3 shrink-0">
                 <div class="p-1 rounded-xl bg-white border border-slate-100 shadow-sm w-10 h-10 flex items-center justify-center shrink-0">
                     <img src="{{ asset('storage/logo/' . ($profile->logo ?? 'logo.jpg')) }}" alt="Logo" class="w-full h-full object-contain overflow-hidden">
@@ -345,7 +345,7 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto scrollbar-hide">
+        <nav id="sidebar-nav" class="flex-1 min-h-0 px-3 py-5 space-y-1 overflow-y-auto scrollbar-hide">
             
 
             
@@ -417,11 +417,11 @@
 
             <!-- Deteksi Dini Submenu -->
             @canany(['view pendengaran', 'view penglihatan', 'view perilaku', 'view autis', 'view gpph', 'view wawancara', 'view master umur'])
-            <div x-data="{ open: {{ (request()->is('question*') || request()->is('age*') || request()->routeIs('question.*')) ? 'true' : 'false' }} }" 
+            <div x-data="{ open: {{ (request()->is('question*') || request()->is('age*') || request()->is('q-*') || request()->routeIs('question.*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('question*') || request()->is('age*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('question*') || request()->is('age*') || request()->is('q-*') || request()->routeIs('question.*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="fingerprint" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Deteksi Dini</span>
@@ -430,25 +430,25 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
                     @can('view master umur')
-                    <a href="{{ route('question.umur') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.umur') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Master Umur</a>
+                    <a href="{{ route('question.umur') }}" @if(request()->routeIs('question.umur')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.umur') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Master Umur</a>
                     @endcan
                     @can('view pendengaran')
-                    <a href="{{ route('question.pendengaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.pendengaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pendengaran</a>
+                    <a href="{{ route('question.pendengaran') }}" @if(request()->routeIs('question.pendengaran')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.pendengaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pendengaran</a>
                     @endcan
                     @can('view penglihatan')
-                    <a href="{{ route('question.penglihatan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.penglihatan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Penglihatan</a>
+                    <a href="{{ route('question.penglihatan') }}" @if(request()->routeIs('question.penglihatan')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.penglihatan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Penglihatan</a>
                     @endcan
                     @can('view perilaku')
-                    <a href="{{ route('question.perilaku') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.perilaku') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Perilaku</a>
+                    <a href="{{ route('question.perilaku') }}" @if(request()->routeIs('question.perilaku')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.perilaku') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Perilaku</a>
                     @endcan
                     @can('view autis')
-                    <a href="{{ route('question.autis') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.autis') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Autis</a>
+                    <a href="{{ route('question.autis') }}" @if(request()->routeIs('question.autis')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.autis') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Autis</a>
                     @endcan
                     @can('view gpph')
-                    <a href="{{ route('question.gpph') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.gpph') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">GPPH</a>
+                    <a href="{{ route('question.gpph') }}" @if(request()->routeIs('question.gpph')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.gpph') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">GPPH</a>
                     @endcan
                     @can('view wawancara')
-                    <a href="{{ route('question.wawancara') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.wawancara') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Wawancara</a>
+                    <a href="{{ route('question.wawancara') }}" @if(request()->routeIs('question.wawancara')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('question.wawancara') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Wawancara</a>
                     @endcan
                 </div>
             </div>
@@ -457,11 +457,11 @@
 
 
             @canany(['view kunjungan', 'view observasi', 'view assessment', 'view riwayat terapi'])
-            <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*')) ? 'true' : 'false' }} }" 
+            <div x-data="{ open: {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*') || request()->is('search-kunjungan*')) ? 'true' : 'false' }} }" 
                  x-init="$watch('open', value => { if(value) { /* sync logic if needed */ } })"
                  class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('observasi*') || request()->is('assessment*') || request()->is('kunjungan*') || request()->is('data*') || request()->is('search-kunjungan*')) ? 'bg-slate-50/80 text-red-500 shadow-sm border border-slate-100' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="activity" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Layanan Terapi</span>
@@ -471,18 +471,18 @@
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1 relative">
                     <div class="absolute left-6 top-0 w-px h-full bg-slate-100"></div>
                     @can('view kunjungan')
-                    <a href="{{ route('kunjungan.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('kunjungan.index') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors flex items-center gap-2">
+                    <a href="{{ route('kunjungan.index') }}" @if(request()->routeIs('kunjungan.index') || request()->routeIs('kunjungan.create*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.index') || request()->routeIs('kunjungan.create*')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors flex items-center gap-2">
                         Pendaftaran Kunjungan
                     </a>
                     @endcan
                     @can('view observasi')
-                    <a href="{{ route('observasi.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('observasi.*') ? 'text-red-500 shadow-none' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Observasi</a>
+                    <a href="{{ route('observasi.index') }}" @if(request()->routeIs('observasi.*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('observasi.*') ? 'text-red-500 shadow-none' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Observasi</a>
                     @endcan
                     @can('view assessment')
-                    <a href="{{ route('assessment.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Assessment</a>
+                    <a href="{{ route('assessment.index') }}" @if(request()->routeIs('assessment.*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('assessment.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Assessment</a>
                     @endcan
                     @can('view riwayat terapi')
-                    <a href="{{ route('kunjungan.data') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.detail')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
+                    <a href="{{ route('kunjungan.data') }}" @if(request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.detail') || request()->routeIs('kunjungan.pencarian')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('kunjungan.data') || request()->routeIs('kunjungan.detail') || request()->routeIs('kunjungan.pencarian')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Riwayat Terapi</a>
                     @endcan
                 </div>
             </div>
@@ -498,9 +498,9 @@
 
 
             @canany(['view rekapan kas', 'view pemasukkan', 'view pengeluaran', 'view kategori', 'view laporan keuangan'])
-            <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*') || request()->is('kategori*') || request()->is('pemasukkan*') || request()->is('pengeluaran*') || request()->is('laporan-keuangan*')) ? 'true' : 'false' }} }" class="space-y-1">
+            <div x-data="{ open: {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*') || request()->is('rekap-kas*') || request()->is('kategori*') || request()->is('pemasukkan*') || request()->is('pengeluaran*') || request()->is('laporan-keuangan*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('keuangan*') ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('keuangan*') || request()->routeIs('keuangan.*') || request()->is('rekap-kas*') || request()->is('kategori*') || request()->is('pemasukkan*') || request()->is('pengeluaran*') || request()->is('laporan-keuangan*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="banknote" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Keuangan</span>
@@ -509,19 +509,19 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
                     @can('view rekapan kas')
-                    <a href="{{ route('keuangan.rekap') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.rekap') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Rekap Kas</a>
+                    <a href="{{ route('keuangan.rekap') }}" @if(request()->routeIs('keuangan.rekap')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.rekap') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Rekap Kas</a>
                     @endcan
                     @can('view pemasukkan')
-                    <a href="{{ route('keuangan.pemasukkan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pemasukkan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pemasukkan</a>
+                    <a href="{{ route('keuangan.pemasukkan') }}" @if(request()->routeIs('keuangan.pemasukkan')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pemasukkan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pemasukkan</a>
                     @endcan
                     @can('view pengeluaran')
-                    <a href="{{ route('keuangan.pengeluaran') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pengeluaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pengeluaran</a>
+                    <a href="{{ route('keuangan.pengeluaran') }}" @if(request()->routeIs('keuangan.pengeluaran')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.pengeluaran') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Pengeluaran</a>
                     @endcan
                     @can('view kategori')
-                    <a href="{{ route('keuangan.kategori') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.kategori') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Kategori Kas</a>
+                    <a href="{{ route('keuangan.kategori') }}" @if(request()->routeIs('keuangan.kategori')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.kategori') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Kategori Kas</a>
                     @endcan
                     @can('view laporan keuangan')
-                    <a href="{{ route('keuangan.laporan') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.laporan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Laporan Keuangan</a>
+                    <a href="{{ route('keuangan.laporan') }}" @if(request()->routeIs('keuangan.laporan')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('keuangan.laporan') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Laporan Keuangan</a>
                     @endcan
                 </div>
             </div>
@@ -535,8 +535,8 @@
 
 
             @can('view pelatihan')
-            <a href="{{ route('pelatihan.index') }}" class="sidebar-link {{ request()->routeIs('pelatihan.index') ? 'active' : '' }}">
-                <i data-lucide="graduation-cap" class="w-4 h-4 shrink-0 {{ request()->routeIs('pelatihan.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
+            <a href="{{ route('pelatihan.index') }}" class="sidebar-link {{ request()->routeIs('pelatihan.*') ? 'active' : '' }}">
+                <i data-lucide="graduation-cap" class="w-4 h-4 shrink-0 {{ request()->routeIs('pelatihan.*') ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Katalog Pelatihan</span>
             </a>
             @endcan
@@ -553,7 +553,7 @@
             @canany(['view role', 'view permission', 'view user', 'view manajemen menu'])
             <div x-data="{ open: {{ (request()->is('roles*') || request()->is('permissions*') || request()->is('users*') || request()->is('manajemen-menu*')) ? 'true' : 'false' }} }" class="space-y-1">
                 <button @click="open = !open" 
-                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ request()->is('roles*') ? 'bg-slate-50/80 text-red-500' : '' }}">
+                        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50/80 hover:text-primary-500 transition-all group {{ (request()->is('roles*') || request()->is('permissions*') || request()->is('users*') || request()->is('manajemen-menu*')) ? 'bg-slate-50/80 text-red-500' : '' }}">
                     <div class="flex items-center gap-3">
                         <i data-lucide="shield-alert" class="w-4 h-4 shrink-0"></i>
                         <span class="text-xs font-bold uppercase tracking-tight" x-show="sidebarOpen">Manajemen Akses</span>
@@ -562,16 +562,16 @@
                 </button>
                 <div x-show="open" x-cloak class="pl-12 space-y-1 py-1">
                     @can('view role')
-                    <a href="{{ route('roles.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('roles.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Roles / Group</a>
+                    <a href="{{ route('roles.index') }}" @if(request()->routeIs('roles.*') || request()->is('roles*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ (request()->routeIs('roles.*') || request()->is('roles*')) ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Roles / Group</a>
                     @endcan
                     @can('view permission')
-                    <a href="{{ route('permissions.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('permissions.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Permissions</a>
+                    <a href="{{ route('permissions.index') }}" @if(request()->routeIs('permissions.*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('permissions.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Permissions</a>
                     @endcan
                     @can('view user')
-                    <a href="{{ route('users.index') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('users.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">User Pengguna</a>
+                    <a href="{{ route('users.index') }}" @if(request()->routeIs('users.*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->routeIs('users.*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">User Pengguna</a>
                     @endcan
                      @can('view manajemen menu')
-                    <a href="{{ url('manajemen-menu') }}" class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->is('manajemen-menu*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Manajemen Menu</a>
+                    <a href="{{ url('manajemen-menu') }}" @if(request()->is('manajemen-menu*')) data-sidebar-active="true" @endif class="block py-2 text-[10px] font-black uppercase tracking-tight {{ request()->is('manajemen-menu*') ? 'text-red-500' : 'text-slate-400' }} hover:text-primary-500 transition-colors">Manajemen Menu</a>
                     @endcan
                 </div>
             </div>
@@ -595,8 +595,8 @@
 
 
             @can('view profile')
-            <a href="{{ route('profile.index') }}" class="sidebar-link {{ request()->routeIs('profile.index') ? 'active' : '' }}">
-                <i data-lucide="settings" class="w-4 h-4 shrink-0 {{ request()->routeIs('profile.index') ? 'text-red-500' : 'text-slate-400' }}"></i>
+            <a href="{{ route('profile.index') }}" class="sidebar-link {{ (request()->routeIs('profile.index') || request()->routeIs('profile.create') || request()->routeIs('profile.edit')) ? 'active' : '' }}">
+                <i data-lucide="settings" class="w-4 h-4 shrink-0 {{ (request()->routeIs('profile.index') || request()->routeIs('profile.create') || request()->routeIs('profile.edit')) ? 'text-red-500' : 'text-slate-400' }}"></i>
                 <span x-show="isMobile ? true : sidebarOpen" class="text-xs font-bold uppercase tracking-tight">Profil Yayasan</span>
             </a>
             @endcan
@@ -629,6 +629,141 @@
             </div>
         </nav>
     </aside>
+    <script>
+        (function () {
+            var SCROLL_KEY = 'sidebar_nav_scroll_top';
+            var CLICK_KEY = 'sidebar_nav_from_click';
+            var nav = document.getElementById('sidebar-nav');
+            if (!nav) return;
+
+            var isRestoring = true;
+            var alpineDone = false;
+            var userInteracted = false;
+            var savedRaw = null;
+            var fromClick = false;
+            var targetScroll = null;
+
+            try {
+                savedRaw = sessionStorage.getItem(SCROLL_KEY);
+                fromClick = sessionStorage.getItem(CLICK_KEY) === '1';
+                sessionStorage.removeItem(CLICK_KEY);
+            } catch (e) {}
+
+            if (savedRaw !== null && !isNaN(parseFloat(savedRaw))) {
+                targetScroll = parseFloat(savedRaw);
+                // Terapkan scrollTop secepat mungkin sebelum konten utama dirender agar sidebar tidak meloncat ke atas
+                nav.scrollTop = targetScroll;
+            }
+
+            ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (evtName) {
+                nav.addEventListener(evtName, function () {
+                    userInteracted = true;
+                }, { passive: true });
+            });
+
+            nav.addEventListener('scroll', function () {
+                if (isRestoring) return;
+                try {
+                    sessionStorage.setItem(SCROLL_KEY, String(nav.scrollTop));
+                } catch (e) {}
+            }, { passive: true });
+
+            nav.addEventListener('click', function (e) {
+                var link = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+                if (link) {
+                    var href = link.getAttribute('href') || '';
+                    var isSameTabNav = !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0 && (!link.target || link.target === '_self');
+                    if (href && href !== '#' && isSameTabNav) {
+                        try {
+                            sessionStorage.setItem(SCROLL_KEY, String(nav.scrollTop));
+                            sessionStorage.setItem(CLICK_KEY, '1');
+                        } catch (err) {}
+                    }
+                    return;
+                }
+
+                // Saat dropdown/accordion sidebar di bagian bawah dibuka, pastikan isinya ikut terlihat
+                var btn = e.target && e.target.closest ? e.target.closest('button') : null;
+                if (btn && btn.parentElement) {
+                    var submenu = (btn.nextElementSibling && btn.nextElementSibling.hasAttribute('x-show'))
+                        ? btn.nextElementSibling
+                        : null;
+                    if (submenu) {
+                        requestAnimationFrame(function () {
+                            requestAnimationFrame(function () {
+                                if (submenu.getClientRects().length > 0) {
+                                    var navRect = nav.getBoundingClientRect();
+                                    var subRect = submenu.getBoundingClientRect();
+                                    if (subRect.bottom > navRect.bottom - 8) {
+                                        nav.scrollTop += Math.min(subRect.bottom - (navRect.bottom - 12), subRect.height + 16);
+                                        try {
+                                            sessionStorage.setItem(SCROLL_KEY, String(nav.scrollTop));
+                                        } catch (err) {}
+                                    }
+                                }
+                            });
+                        });
+                    }
+                }
+            });
+
+            window.addEventListener('pagehide', function () {
+                if (isRestoring) return;
+                try {
+                    sessionStorage.setItem(SCROLL_KEY, String(nav.scrollTop));
+                } catch (e) {}
+            });
+
+            function ensureActiveVisible() {
+                var activeEl = nav.querySelector('[data-sidebar-active="true"], .sidebar-link.active');
+                if (activeEl && activeEl.getClientRects().length > 0) {
+                    var navRect = nav.getBoundingClientRect();
+                    var itemRect = activeEl.getBoundingClientRect();
+                    var outTop = itemRect.top < navRect.top + 8;
+                    var outBottom = itemRect.bottom > navRect.bottom - 8;
+
+                    if ((targetScroll === null || !fromClick) && (outTop || outBottom)) {
+                        nav.scrollTop += (itemRect.top - navRect.top) - (nav.clientHeight / 2) + (itemRect.height / 2);
+                    } else if (fromClick && outTop) {
+                        nav.scrollTop -= (navRect.top + 12 - itemRect.top);
+                    } else if (fromClick && outBottom) {
+                        nav.scrollTop += (itemRect.bottom - (navRect.bottom - 12));
+                    }
+                }
+            }
+
+            function applyAfterAlpine() {
+                alpineDone = true;
+                requestAnimationFrame(function () {
+                    if (!userInteracted) {
+                        if (targetScroll !== null) {
+                            nav.scrollTop = targetScroll;
+                        }
+                        ensureActiveVisible();
+                    }
+                    isRestoring = false;
+                    try {
+                        sessionStorage.setItem(SCROLL_KEY, String(nav.scrollTop));
+                    } catch (e) {}
+                });
+            }
+
+            document.addEventListener('alpine:initialized', applyAfterAlpine, { once: true });
+
+            // Fallback apabila script Alpine dari CDN lambat atau gagal dimuat
+            var fallbackTimer = setTimeout(function () {
+                if (alpineDone) return;
+                if (!userInteracted && !window.Alpine) {
+                    ensureActiveVisible();
+                }
+                isRestoring = false;
+            }, 800);
+
+            document.addEventListener('alpine:initialized', function () {
+                clearTimeout(fallbackTimer);
+            }, { once: true });
+        })();
+    </script>
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 min-h-screen">

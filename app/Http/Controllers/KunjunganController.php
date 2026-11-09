@@ -511,4 +511,20 @@ class KunjunganController extends Controller
 
         return redirect()->back()->with('success', "Terapis telah di Perbaharui");
     }
+
+    public function updateWaktu(Request $request, Kunjungan $kunjungan)
+    {
+        if (!auth()->user() || !auth()->user()->hasRole('super-admin')) {
+            abort(403, 'Hanya Super Admin yang dapat mengubah waktu kunjungan.');
+        }
+
+        $validated = $request->validate([
+            'waktu_kunjungan' => 'required|date',
+        ]);
+
+        $kunjungan->created_at = Carbon::parse($validated['waktu_kunjungan']);
+        $kunjungan->save();
+
+        return redirect()->back()->with('success', 'Waktu kunjungan berhasil diperbarui.');
+    }
 }

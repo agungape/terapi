@@ -9,11 +9,12 @@
         formData: {
             id: '',
             nama_perusahaan: '',
-            deskripsi_program: ''
+            deskripsi_program: '',
+            logo_url: null
         },
         openCreateModal() {
             this.editMode = false;
-            this.formData = { id: '', nama_perusahaan: '', deskripsi_program: '' };
+            this.formData = { id: '', nama_perusahaan: '', deskripsi_program: '', logo_url: null };
             this.modalOpen = true;
         },
         openEditModal(data) {
@@ -21,7 +22,8 @@
             this.formData = { 
                 id: data.id, 
                 nama_perusahaan: data.nama_perusahaan, 
-                deskripsi_program: data.deskripsi_program 
+                deskripsi_program: data.deskripsi_program,
+                logo_url: data.logo_url || null
             };
             this.modalOpen = true;
         }
@@ -71,14 +73,16 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($csr->logo)
-                                <img src="{{ asset('storage/' . $csr->logo) }}" alt="Logo" class="h-10 mx-auto object-contain rounded bg-white">
+                                <img src="{{ route('perusahaan-csr.logo', $csr->id) }}?v={{ optional($csr->updated_at)->timestamp ?? time() }}"
+                                     alt="Logo {{ $csr->nama_perusahaan }}"
+                                     class="h-10 mx-auto object-contain rounded bg-white p-1 border border-slate-100">
                             @else
                                 <span class="text-[9px] font-bold text-slate-300 uppercase">Tidak ada logo</span>
                             @endif
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2">
-                                <button @click="openEditModal({ id: '{{ $csr->id }}', nama_perusahaan: `{{ addslashes($csr->nama_perusahaan) }}`, deskripsi_program: `{{ addslashes($csr->deskripsi_program) }}` })"
+                                <button @click="openEditModal({ id: '{{ $csr->id }}', nama_perusahaan: {{ \Illuminate\Support\Js::from($csr->nama_perusahaan) }}, deskripsi_program: {{ \Illuminate\Support\Js::from($csr->deskripsi_program) }}, logo_url: {{ \Illuminate\Support\Js::from($csr->logo ? route('perusahaan-csr.logo', $csr->id) . '?v=' . (optional($csr->updated_at)->timestamp ?? time()) : null) }} })"
                                         class="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100" title="Ubah CSR">
                                     <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
                                 </button>
@@ -165,9 +169,15 @@
                     
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Logo Perusahaan (Opsional)</label>
+                        <template x-if="editMode && formData.logo_url">
+                            <div class="p-3 bg-slate-50 border border-slate-100 rounded-2xl flex items-center gap-3 mb-2">
+                                <img :src="formData.logo_url" alt="Logo Saat Ini" class="h-12 w-auto object-contain rounded bg-white p-1 border border-slate-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Logo saat ini</span>
+                            </div>
+                        </template>
                         <input type="file" name="logo" accept="image/*"
                                class="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-slate-600 focus:ring-4 focus:ring-amber-50 focus:border-amber-500 transition-all outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase px-1 mt-1">Format: JPG, PNG, SVG (Maks 2MB). Kosongkan jika tidak ada/ingin logo lama.</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase px-1 mt-1">Format: JPG, PNG, SVG, WEBP (Maks 2MB). Kosongkan jika tidak ada/ingin logo lama.</p>
                     </div>
                 </div>
 

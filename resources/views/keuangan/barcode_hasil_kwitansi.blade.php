@@ -368,7 +368,7 @@
         <div class="csr-badge-box">
             <div class="csr-badge-logo">
                 @if($pemasukkan->perusahaanCsr->logo)
-                    <img src="{{ asset('storage/' . $pemasukkan->perusahaanCsr->logo) }}" alt="Logo CSR">
+                    <img src="{{ route('perusahaan-csr.logo', $pemasukkan->perusahaanCsr->id) }}?v={{ optional($pemasukkan->perusahaanCsr->updated_at)->timestamp ?? time() }}" alt="Logo CSR">
                 @else
                     <i class="fa-solid fa-building text-amber-500"></i>
                 @endif

@@ -132,7 +132,7 @@
                                     </form>
                                     @endcan
                                     
-                                    @can('edit kunjungan')
+                                    @if(auth()->user()->can('edit kunjungan') || auth()->user()->hasRole('super-admin'))
                                     <div class="relative" x-data="{ open: false }">
                                         <button @click="open = !open" class="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-700 border-2 border-slate-100 rounded-2xl text-[10px] font-black uppercase transition-all hover:border-amber-200 hover:text-amber-600 shadow-sm">
                                             {{ $kun->anak->nib }}
@@ -140,8 +140,9 @@
                                         </button>
                                         <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-2"
                                              class="absolute left-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 p-2" x-cloak>
+                                            @can('edit kunjungan')
                                             @if ($kun->status === 'hadir')
-                                            <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
+                                            <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
                                                     class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl flex items-center gap-3 transition-colors">
                                                 <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
                                                     <i data-lucide="user-plus" class="w-4 h-4"></i>
@@ -149,23 +150,33 @@
                                                 Tambah Pendamping
                                             </button>
                                             @endif
-                                            <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' }); open = false"
+                                            <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { status: '{{ $kun->status }}' }); open = false"
                                                     class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl flex items-center gap-3 transition-colors">
                                                 <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
                                                     <i data-lucide="edit-2" class="w-4 h-4"></i>
                                                 </div>
                                                 Edit Status
                                             </button>
-                                            <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
+                                            <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
                                                     class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl flex items-center gap-3 transition-colors">
                                                 <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
                                                     <i data-lucide="user-cog" class="w-4 h-4"></i>
                                                 </div>
                                                 Ganti Terapis Utama
                                             </button>
+                                            @endcan
+                                            @role('super-admin')
+                                            <button type="button" @click="openModal('edit-waktu', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { waktu_kunjungan: '{{ $kun->created_at->format('Y-m-d\TH:i') }}' }); open = false"
+                                                    class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-purple-50 hover:text-purple-700 rounded-xl flex items-center gap-3 transition-colors">
+                                                <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                                </div>
+                                                Edit Waktu Kunjungan
+                                            </button>
+                                            @endrole
                                         </div>
                                     </div>
-                                    @endcan
+                                    @endif
                                 </div>
                             </td>
     
@@ -214,9 +225,19 @@
     
                             {{-- Waktu --}}
                             <td class="px-8 py-5">
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-bold text-slate-700">{{ $kun->created_at->format('d M Y') }}</span>
-                                    <span class="text-[10px] font-medium text-slate-400">{{ $kun->created_at->format('H:i') }} WIB</span>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex flex-col whitespace-nowrap">
+                                        <span class="text-xs font-bold text-slate-700">{{ $kun->created_at->format('d M Y') }}</span>
+                                        <span class="text-[10px] font-medium text-slate-400">{{ $kun->created_at->format('H:i') }} WIB</span>
+                                    </div>
+                                    @role('super-admin')
+                                    <button type="button"
+                                            @click="openModal('edit-waktu', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { waktu_kunjungan: '{{ $kun->created_at->format('Y-m-d\TH:i') }}' })"
+                                            class="p-1.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all border border-purple-100 shadow-sm shrink-0"
+                                            title="Edit Waktu Kunjungan (Super Admin)">
+                                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    @endrole
                                 </div>
                             </td>
     
@@ -291,7 +312,17 @@
                     @endphp
                     <div class="text-right">
                         <span class="text-[10px] font-black uppercase italic {{ $statusCls }} tracking-widest">{{ str_replace('_', ' ', $kun->status) }}</span>
-                        <p class="text-[9px] font-bold text-slate-400 mt-0.5">{{ $kun->created_at->format('d M, H:i') }}</p>
+                        <div class="flex items-center justify-end gap-1.5 mt-0.5">
+                            <p class="text-[9px] font-bold text-slate-400">{{ $kun->created_at->format('d M Y, H:i') }} WIB</p>
+                            @role('super-admin')
+                            <button type="button"
+                                    @click="openModal('edit-waktu', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { waktu_kunjungan: '{{ $kun->created_at->format('Y-m-d\TH:i') }}' })"
+                                    class="p-1 bg-purple-50 text-purple-600 rounded-md hover:bg-purple-600 hover:text-white transition-all border border-purple-100"
+                                    title="Edit Waktu Kunjungan">
+                                <i data-lucide="clock" class="w-3 h-3"></i>
+                            </button>
+                            @endrole
+                        </div>
                     </div>
                 </div>
 
@@ -323,15 +354,16 @@
                         </form>
                         @endcan
                         
-                        @can('edit kunjungan')
+                        @if(auth()->user()->can('edit kunjungan') || auth()->user()->hasRole('super-admin'))
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="w-9 h-9 bg-slate-900 text-white rounded-xl flex items-center justify-center transition-all hover:bg-primary-500">
                                 <i data-lucide="settings" class="w-4 h-4"></i>
                             </button>
                             <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-2"
                                  class="absolute left-0 bottom-full mb-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 p-2" x-cloak>
+                                @can('edit kunjungan')
                                 @if ($kun->status === 'hadir')
-                                <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
+                                <button type="button" @click="openModal('tambah-terapis', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { terapis_id: '{{ $kun->terapis_id_pendamping }}' }); open = false"
                                         class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl flex items-center gap-3 transition-colors">
                                     <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
                                         <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
@@ -339,23 +371,33 @@
                                     Tambah Pendamping
                                 </button>
                                 @endif
-                                <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { status: '{{ $kun->status }}' }); open = false"
+                                <button type="button" @click="openModal('edit-status', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { status: '{{ $kun->status }}' }); open = false"
                                         class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl flex items-center gap-3 transition-colors">
                                     <div class="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
                                         <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                     </div>
                                     Edit Status
                                 </button>
-                                <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ $kun->anak->nama }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
+                                <button type="button" @click="openModal('edit-terapis', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { terapis_id: '{{ $kun->terapis_id }}' }); open = false"
                                         class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-amber-50 hover:text-amber-700 rounded-xl flex items-center gap-3 transition-colors">
                                     <div class="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
                                         <i data-lucide="user-cog" class="w-3.5 h-3.5"></i>
                                     </div>
                                     Ganti Terapis Utama
                                 </button>
+                                @endcan
+                                @role('super-admin')
+                                <button type="button" @click="openModal('edit-waktu', '{{ $kun->id }}', '{{ addslashes($kun->anak->nama) }}', { waktu_kunjungan: '{{ $kun->created_at->format('Y-m-d\TH:i') }}' }); open = false"
+                                        class="w-full text-left px-4 py-3 text-xs font-bold text-slate-600 hover:bg-purple-50 hover:text-purple-700 rounded-xl flex items-center gap-3 transition-colors">
+                                    <div class="w-7 h-7 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+                                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                    Edit Waktu Kunjungan
+                                </button>
+                                @endrole
                             </div>
                         </div>
-                        @endcan
+                        @endif
                     </div>
                     @can('show rekammedis')
                     @if ($kun->status == 'hadir')
@@ -404,8 +446,11 @@
             
             <form :action="
                 modalType === 'tambah-terapis' ? '{{ route('kunjungan.tambah-terapis', ':id') }}'.replace(':id', selectedId) : (
-                modalType === 'edit-status' ? '{{ route('kunjungan.update-status', ':id') }}'.replace(':id', selectedId) :
-                '{{ route('kunjungan.update-terapis', ':id') }}'.replace(':id', selectedId))
+                modalType === 'edit-status' ? '{{ route('kunjungan.update-status', ':id') }}'.replace(':id', selectedId) : (
+                @role('super-admin')
+                modalType === 'edit-waktu' ? '{{ route('kunjungan.update-waktu', ':id') }}'.replace(':id', selectedId) :
+                @endrole
+                '{{ route('kunjungan.update-terapis', ':id') }}'.replace(':id', selectedId)))
             " method="POST">
                 @csrf
                 @method('PUT')
@@ -414,12 +459,16 @@
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
                     <div class="flex items-center gap-5 relative z-10">
                         <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shadow-inner">
-                            <i :data-lucide="modalType === 'tambah-terapis' ? 'user-plus' : (modalType === 'edit-status' ? 'edit-2' : 'user-cog')" 
-                               :class="modalType === 'tambah-terapis' ? 'text-emerald-400' : (modalType === 'edit-status' ? 'text-blue-400' : 'text-amber-400')"></i>
+                            <span x-show="modalType === 'tambah-terapis'"><i data-lucide="user-plus" class="text-emerald-400"></i></span>
+                            <span x-show="modalType === 'edit-status'"><i data-lucide="edit-2" class="text-blue-400"></i></span>
+                            <span x-show="modalType === 'edit-terapis'"><i data-lucide="user-cog" class="text-amber-400"></i></span>
+                            @role('super-admin')
+                            <span x-show="modalType === 'edit-waktu'"><i data-lucide="clock" class="text-purple-400"></i></span>
+                            @endrole
                         </div>
                         <div>
                             <h5 class="text-xs font-black uppercase tracking-[0.2em] mb-1" 
-                                x-text="modalType === 'tambah-terapis' ? 'Tambah Pendamping' : (modalType === 'edit-status' ? 'Ubah Status' : 'Ganti Terapis')"></h5>
+                                x-text="modalType === 'tambah-terapis' ? 'Tambah Pendamping' : (modalType === 'edit-status' ? 'Ubah Status' : (@role('super-admin') modalType === 'edit-waktu' ? 'Edit Waktu Kunjungan' : @endrole 'Ganti Terapis'))"></h5>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest" x-text="selectedAnak"></p>
                         </div>
                     </div>
@@ -463,6 +512,17 @@
                             </select>
                         </div>
                     </template>
+
+                    @role('super-admin')
+                    <template x-if="modalType === 'edit-waktu'">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">Tanggal & Waktu Kunjungan</label>
+                            <input type="datetime-local" name="waktu_kunjungan" x-model="currentData.waktu_kunjungan" required
+                                   class="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-purple-50 focus:border-purple-200 transition-all outline-none">
+                            <p class="text-[10px] font-bold text-slate-400 px-1 pt-1">Ubah tanggal dan jam kunjungan anak (WIB). Akses khusus Super Admin.</p>
+                        </div>
+                    </template>
+                    @endrole
                 </div>
 
                 <div class="bg-slate-50/50 p-8 flex flex-col md:flex-row justify-end gap-3 border-t border-slate-100">
@@ -470,7 +530,7 @@
                             class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-100">Batal</button>
                     <button type="submit" 
                             class="px-12 py-4 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl italic transition-all group"
-                            :class="modalType === 'tambah-terapis' ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-100' : (modalType === 'edit-status' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-amber-500 hover:bg-amber-600 shadow-amber-100')">
+                            :class="modalType === 'tambah-terapis' ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-100' : (modalType === 'edit-status' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : (@role('super-admin') modalType === 'edit-waktu' ? 'bg-purple-600 hover:bg-purple-700 shadow-purple-100' : @endrole 'bg-amber-500 hover:bg-amber-600 shadow-amber-100'))">
                         Update Data <i data-lucide="arrow-right" class="w-3.5 h-3.5 inline ml-1 group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>

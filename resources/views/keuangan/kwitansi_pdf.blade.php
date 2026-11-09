@@ -101,9 +101,20 @@
     @php
         $logoBase64 = null;
         if ($pemasukkan->perusahaanCsr->logo) {
-            $logoPath = storage_path('app/public/' . $pemasukkan->perusahaanCsr->logo);
-            if (file_exists($logoPath)) {
-                $ext = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $relLogo = ltrim(str_replace(['..', '\\'], ['', '/'], $pemasukkan->perusahaanCsr->logo), '/');
+            $logoPath = null;
+            foreach ([
+                storage_path('app/public/' . $relLogo),
+                storage_path('app/public/public/' . $relLogo),
+                public_path('storage/' . $relLogo),
+            ] as $candidate) {
+                if (file_exists($candidate) && is_file($candidate)) {
+                    $logoPath = $candidate;
+                    break;
+                }
+            }
+            if ($logoPath) {
+                $ext = strtolower(pathinfo($logoPath, PATHINFO_EXTENSION));
                 $logoData = file_get_contents($logoPath);
                 $logoBase64 = 'data:image/' . ($ext === 'svg' ? 'svg+xml' : $ext) . ';base64,' . base64_encode($logoData);
             }

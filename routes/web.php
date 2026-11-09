@@ -57,6 +57,7 @@ Route::get('/barcode/assessment/scan', [AssessmentController::class, 'scanBarcod
 Route::get('/v/o/{id}/{date}/{sig}', [ObservasiController::class, 'verifyBarcode'])->name('barcode.verify.observasi');
 Route::get('/v/a/{id}/{sig}', [AssessmentController::class, 'verifyBarcode'])->name('barcode.verify.assessment');
 Route::get('/v/k/{token}', [KeuanganController::class, 'verifyKwitansiBarcode'])->name('kwitansi.verify.public');
+Route::get('/csr-logo/{perusahaan_csr}', [PerusahaanCsrController::class, 'logo'])->name('perusahaan-csr.logo');
 
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -288,4 +289,28 @@ Route::group(['middleware' => ['role:anak']], function () {
 // =====================================================================
 Route::group(['middleware' => ['auth', 'role:super-admin']], function () {
     Route::get('/super-admin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+    Route::put('/data/{kunjungan}/edit-waktu', [KunjunganController::class, 'updateWaktu'])->name('kunjungan.update-waktu');
 });
+
+// Fallback route untuk file public storage apabila symlink public/storage tidak aktif di server
+Route::get('/storage/{path}', function ($path) {
+    $baseDir = realpath(storage_path('app/public'));
+    if (!$baseDir) {
+        abort(404);
+    }
+
+    $cleanPath = ltrim(str_replace(['..', '\\'], ['', '/'], $path), '/');
+    $fullPath = realpath($baseDir . DIRECTORY_SEPARATOR . $cleanPath);
+
+    if (!$fullPath || !is_file($fullPath)) {
+        $fullPath = realpath($baseDir . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . $cleanPath);
+    }
+
+    if (!$fullPath || strpos($fullPath, $baseDir) !== 0 || !is_file($fullPath)) {
+        abort(404);
+    }
+
+    return response()->file($fullPath, [
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+})->where('path', '.*')->name('storage.fallback');
